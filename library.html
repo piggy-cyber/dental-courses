@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Semester-organized D1 course library.">
+  <title>Course Library | D1</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <header class="site-header" aria-label="Primary navigation">
+    <a class="brand" href="index.html">
+      <span class="brand-mark" aria-hidden="true">D1</span>
+      <span>D1 Course Library</span>
+    </a>
+    <nav class="site-nav" aria-label="Site navigation">
+      <a href="index.html">Home</a>
+      <a href="#fall-2025">Fall</a>
+      <a href="#spring-2026">Spring</a>
+      <a href="#textbook-companions">Textbooks</a>
+      <a href="course.html?course=HWDP%20131&demo=student">Course Hub</a>
+      <a href="management.html">Management</a>
+      <a href="login.html">Log in</a>
+    </nav>
+  </header>
+
+  <main class="library-shell">
+    <section class="library-main" aria-labelledby="library-title">
+      <div class="library-top">
+        <div>
+          <p class="eyebrow">Course Files</p>
+          <h1 id="library-title">Semester Library</h1>
+          <p class="library-subtitle">Guides, syllabi, textbook companions, media, and class folders by semester.</p>
+        </div>
+        <label class="library-search" for="library-search">
+          <span>Search</span>
+          <input id="library-search" type="search" placeholder="Class, code, or file type" autocomplete="off">
+        </label>
+      </div>
+
+      <div class="library-toolbar" aria-label="Library controls">
+        <nav class="semester-tabs" aria-label="Semester jumps">
+          <a href="#fall-2025">Fall 2025</a>
+          <a href="#spring-2026">Spring 2026</a>
+          <a href="#textbook-companions">Textbooks</a>
+        </nav>
+        <div class="type-tabs" role="group" aria-label="Filter by file type">
+          <button class="filter-button is-active" type="button" data-filter="all" aria-pressed="true">All</button>
+          <button class="filter-button" type="button" data-filter="guide" aria-pressed="false">Guides</button>
+          <button class="filter-button" type="button" data-filter="syllabus" aria-pressed="false">Syllabi</button>
+          <button class="filter-button" type="button" data-filter="companion" aria-pressed="false">Textbooks</button>
+          <button class="filter-button" type="button" data-filter="web" aria-pressed="false">Pages</button>
+          <button class="filter-button" type="button" data-filter="media" aria-pressed="false">Media</button>
+          <button class="filter-button" type="button" data-filter="source" aria-pressed="false">Files</button>
+        </div>
+      </div>
+
+      <div id="audit-summary" class="audit-summary" aria-label="Library access summary"></div>
+      <p id="result-count" class="result-count" aria-live="polite"></p>
+      <div id="library-results"></div>
+      <p id="empty-state" class="empty-state" hidden>No matching files found.</p>
+
+      <section id="textbook-companions" class="companion-section" aria-labelledby="textbook-title">
+        <div class="semester-heading">
+          <h2 id="textbook-title">Textbook Companions</h2>
+          <span>3 files</span>
+        </div>
+        <div class="companion-grid">
+          <a href="login.html" aria-label="Request access for REHE 151 Dental Anatomy textbook companion">
+            <span class="file-pill locked"><span>LOCK</span>Textbook</span>
+            <strong>REHE 151 Dental Anatomy</strong>
+          </a>
+          <a href="login.html" aria-label="Request access for HEWB 123 Facial Growth and Development textbook companion">
+            <span class="file-pill locked"><span>LOCK</span>Textbook</span>
+            <strong>HEWB 123 Facial Growth and Development</strong>
+          </a>
+          <a href="login.html" aria-label="Request access for HEWB 130 Oral Histology textbook companion">
+            <span class="file-pill locked"><span>LOCK</span>Textbook</span>
+            <strong>HEWB 130 Oral Histology</strong>
+          </a>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>D1 Course Library</p>
+    <p>Semester-organized course files.</p>
+  </footer>
+
+  <script src="assets/js/course-data.js"></script>
+  <script src="assets/js/source-inventory.js"></script>
+  <script src="assets/js/library.js?v=20260702c"></script>
+</body>
+</html>

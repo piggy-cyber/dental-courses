@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="D1 Course Library student access.">
+  <title>Log In | D1 Course Library</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <header class="site-header" aria-label="Primary navigation">
+    <a class="brand" href="index.html">
+      <span class="brand-mark" aria-hidden="true">D1</span>
+      <span>D1 Course Library</span>
+    </a>
+    <nav class="site-nav" aria-label="Site navigation">
+      <a href="index.html">Home</a>
+      <a href="library.html">Library</a>
+      <a href="course.html?course=HWDP%20131&demo=student">Student Preview</a>
+      <a href="management.html">Lecture Map</a>
+    </nav>
+  </header>
+
+  <main class="login-shell">
+    <section class="login-panel" aria-labelledby="login-title">
+      <div class="login-copy">
+        <p class="eyebrow">Student Access</p>
+        <h1 id="login-title">Library account access</h1>
+        <p>Access to course files, lecture embeds, captions, and study sets is limited to approved Google accounts.</p>
+        <div class="login-access-list" aria-label="Access status">
+          <span>Request account</span>
+          <span>Owner reviews access</span>
+          <span>Approved students enter the course hub</span>
+        </div>
+        <div id="account-state" class="account-state" aria-live="polite"></div>
+      </div>
+
+      <div class="auth-stack">
+        <form id="student-login-form" class="login-form" aria-label="Student login">
+          <h2>Sign in</h2>
+          <label for="student-email">
+            Google account email
+            <input id="student-email" name="email" type="email" autocomplete="email" placeholder="name@case.edu">
+          </label>
+          <label for="student-password">
+            Password
+            <input id="student-password" name="password" type="password" autocomplete="current-password">
+          </label>
+          <button id="google-demo-account" class="button primary" type="button">Continue with Google demo</button>
+          <button class="button secondary" type="submit">Sign in with email demo</button>
+          <a class="button secondary" href="course.html?course=HEWB%20121&demo=sample">Open free sample</a>
+          <a class="button secondary" href="course.html?course=HWDP%20131&demo=student">Preview approved view</a>
+          <button id="demo-approved-account" class="button secondary" type="button">Use approved example</button>
+          <p id="login-status" class="form-status" aria-live="polite"></p>
+        </form>
+
+        <form id="student-request-form" class="login-form" aria-label="Student registration">
+          <h2>Request student account</h2>
+          <label for="request-name">
+            Name
+            <input id="request-name" name="name" type="text" autocomplete="name" placeholder="First Last">
+          </label>
+          <label for="request-email">
+            School email
+            <input id="request-email" name="request-email" type="email" autocomplete="email" placeholder="name@case.edu">
+          </label>
+          <button class="button secondary" type="submit">Request access</button>
+          <p id="request-status" class="form-status" aria-live="polite"></p>
+        </form>
+
+        <section class="owner-card" aria-label="Owner account">
+          <span>Owner</span>
+          <strong>Master account will be seeded during the secure launch setup.</strong>
+          <a class="button secondary" href="owner.html?demo=owner">Preview owner queue</a>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>D1 Course Library</p>
+    <p>Secure access draft.</p>
+  </footer>
+  <script src="assets/js/login-demo.js?v=20260702c"></script>
+</body>
+</html>

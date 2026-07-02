@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Master account management preview for student access requests.">
+  <title>Account Management | D1 Course Library</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <header class="site-header" aria-label="Primary navigation">
+    <a class="brand" href="index.html">
+      <span class="brand-mark" aria-hidden="true">D1</span>
+      <span>D1 Course Library</span>
+    </a>
+    <nav class="site-nav" aria-label="Site navigation">
+      <a href="index.html">Home</a>
+      <a href="library.html">Library</a>
+      <a href="course.html?course=HWDP%20131&demo=student">Student Preview</a>
+      <a href="login.html">Log in</a>
+    </nav>
+  </header>
+
+  <main class="owner-shell">
+    <section class="owner-hero" aria-labelledby="owner-title">
+      <div>
+        <p class="eyebrow">Master Account</p>
+        <h1 id="owner-title">Account management</h1>
+        <p>Review student signups and grant D1 or D2 library access from one queue.</p>
+      </div>
+      <div class="owner-summary" id="owner-summary"></div>
+    </section>
+
+    <section class="approval-board" aria-labelledby="approval-title">
+      <div class="section-title-row">
+        <div>
+          <p class="eyebrow">Access Queue</p>
+          <h2 id="approval-title">Student accounts</h2>
+        </div>
+        <div class="owner-actions">
+          <button id="export-access-queue" class="button secondary" type="button">Export queue</button>
+          <a class="button secondary" href="course.html?course=HWDP%20131&demo=student">Open student view</a>
+        </div>
+      </div>
+      <p id="owner-status" class="form-status" aria-live="polite"></p>
+      <div id="approval-list" class="approval-list"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>D1 Course Library</p>
+    <p>Owner approval preview.</p>
+  </footer>
+
+  <script src="assets/js/access-demo.js?v=20260702c"></script>
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Course resource hub with ordered lectures, captions, videos, files, and supplemental study resources.">
+  <title>Course Hub | D1 Course Library</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <header class="site-header" aria-label="Primary navigation">
+    <a class="brand" href="index.html">
+      <span class="brand-mark" aria-hidden="true">D1</span>
+      <span>D1 Course Library</span>
+    </a>
+    <nav class="site-nav" aria-label="Site navigation">
+      <a href="index.html">Home</a>
+      <a href="library.html">Library</a>
+      <a href="management.html">Lecture Map</a>
+      <a href="login.html">Account</a>
+    </nav>
+  </header>
+
+  <main class="course-shell">
+    <aside class="course-sidebar" aria-label="Course list">
+      <div class="sidebar-top">
+        <span>Courses</span>
+        <strong>Student Preview</strong>
+      </div>
+      <div id="course-nav" class="course-nav"></div>
+    </aside>
+
+    <section class="course-workspace" aria-live="polite">
+      <div id="access-banner" class="access-banner"></div>
+
+      <section class="course-hero-panel" aria-labelledby="course-title">
+        <div>
+          <p id="course-semester" class="eyebrow"></p>
+          <h1 id="course-title"></h1>
+          <p id="course-subtitle"></p>
+        </div>
+        <div id="course-stats" class="course-stats"></div>
+      </section>
+
+      <section id="course-overview" class="course-overview" aria-label="Course overview"></section>
+
+      <section class="course-tools" aria-label="Course filters">
+        <label for="course-select">
+          Class
+          <select id="course-select"></select>
+        </label>
+        <label for="course-view">
+          View
+          <select id="course-view">
+            <option value="lectures">Lectures first</option>
+            <option value="youtube">Videos with captions</option>
+            <option value="needs-review">Packet gaps</option>
+            <option value="resources">Supplemental files</option>
+          </select>
+        </label>
+        <label for="course-search">
+          Search
+          <input id="course-search" type="search" placeholder="Lecture, transcript, file, or resource" autocomplete="off">
+        </label>
+      </section>
+
+      <section class="course-section" aria-labelledby="lecture-feed-title">
+        <div class="section-title-row">
+          <div>
+            <p class="eyebrow">Navigation</p>
+            <h2 id="lecture-feed-title">Lecture order</h2>
+          </div>
+          <span id="lecture-feed-count"></span>
+        </div>
+        <div id="lecture-feed" class="course-lecture-feed"></div>
+      </section>
+
+      <section class="course-section" aria-labelledby="resource-shelf-title">
+        <div class="section-title-row">
+          <div>
+            <p class="eyebrow">Resource Shelf</p>
+            <h2 id="resource-shelf-title">Supplemental files</h2>
+          </div>
+          <span id="resource-shelf-count"></span>
+        </div>
+        <div id="resource-kind-tabs" class="resource-kind-tabs"></div>
+        <div id="resource-shelf" class="resource-shelf"></div>
+      </section>
+    </section>
+  </main>
+
+  <div id="transcript-modal" class="transcript-modal" hidden>
+    <div class="transcript-dialog" role="dialog" aria-modal="true" aria-labelledby="transcript-title">
+      <div class="transcript-dialog-head">
+        <div>
+          <p id="transcript-meta" class="eyebrow"></p>
+          <h2 id="transcript-title"></h2>
+        </div>
+        <button id="transcript-close" type="button" aria-label="Close transcript">Close</button>
+      </div>
+      <textarea id="transcript-text" readonly></textarea>
+      <div class="transcript-dialog-actions">
+        <button id="transcript-copy" class="button primary" type="button">Copy text</button>
+        <button id="transcript-download" class="button secondary" type="button">Download TXT</button>
+        <span id="transcript-status" aria-live="polite"></span>
+      </div>
+    </div>
+  </div>
+
+  <div id="resource-modal" class="transcript-modal resource-modal" hidden>
+    <div class="resource-dialog" role="dialog" aria-modal="true" aria-labelledby="resource-title">
+      <div class="transcript-dialog-head">
+        <div>
+          <p id="resource-meta" class="eyebrow"></p>
+          <h2 id="resource-title"></h2>
+        </div>
+        <button id="resource-close" type="button" aria-label="Close resource">Close</button>
+      </div>
+      <div id="resource-detail" class="resource-detail"></div>
+      <div class="resource-dialog-actions">
+        <button id="resource-open" class="button primary" type="button">Open file</button>
+        <button id="resource-copy-name" class="button secondary" type="button">Copy file name</button>
+        <span id="resource-status" aria-live="polite"></span>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <p>D1 Course Library</p>
+    <p>Course page preview uses local demo access.</p>
+  </footer>
+
+  <script src="assets/js/course-data.js"></script>
+  <script src="assets/js/lecture-data.js"></script>
+  <script src="assets/js/resource-map.js"></script>
+  <script src="assets/js/youtube-videos.js"></script>
+  <script src="assets/js/transcript-content.js"></script>
+  <script src="assets/js/course-page.js?v=20260702d"></script>
+  <script src="assets/js/private-preview-loader.js?v=20260702b"></script>
+</body>
+</html>

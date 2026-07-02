@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Lecture, caption, video, and file management dashboard for the D1 Course Library.">
+  <title>Lecture Map | D1 Course Library</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <header class="site-header" aria-label="Primary navigation">
+    <a class="brand" href="index.html">
+      <span class="brand-mark" aria-hidden="true">D1</span>
+      <span>D1 Course Library</span>
+    </a>
+    <nav class="site-nav" aria-label="Site navigation">
+      <a href="index.html">Home</a>
+      <a href="library.html">Library</a>
+      <a href="login.html">Log in</a>
+    </nav>
+  </header>
+
+  <main class="management-shell">
+    <section class="management-top" aria-labelledby="management-title">
+      <div>
+        <p class="eyebrow">Lecture Map</p>
+        <h1 id="management-title">Videos, captions, and lecture files</h1>
+        <p>Use this dashboard to see which captions have matching YouTube embeds and which PDFs or PowerPoints sit with them.</p>
+      </div>
+      <div id="management-summary" class="management-summary" aria-label="Lecture map summary"></div>
+    </section>
+
+    <section class="management-controls" aria-label="Lecture map controls">
+      <label for="course-filter">
+        Class
+        <select id="course-filter"></select>
+      </label>
+      <label for="status-filter">
+        View
+        <select id="status-filter">
+          <option value="youtube">YouTube embedded</option>
+          <option value="all">All captions</option>
+          <option value="matched">Files matched</option>
+          <option value="needs-review">Needs review</option>
+          <option value="files">Has lecture files</option>
+        </select>
+      </label>
+      <label for="management-search">
+        Search
+        <input id="management-search" type="search" placeholder="Lecture, class, or file name" autocomplete="off">
+      </label>
+    </section>
+
+    <p id="management-count" class="result-count" aria-live="polite"></p>
+
+    <section class="lecture-table" aria-label="Lecture pairings">
+      <div class="lecture-table-head" aria-hidden="true">
+        <span>Lecture / Caption</span>
+        <span>Lecture Files</span>
+      </div>
+      <div id="lecture-rows"></div>
+      <p id="management-empty" class="empty-state" hidden>No matching lecture rows found.</p>
+    </section>
+
+    <section class="unmatched-section" aria-labelledby="unmatched-title">
+      <div class="semester-heading">
+        <h2 id="unmatched-title">YouTube Videos To Place</h2>
+        <span id="unmatched-count">0 videos</span>
+      </div>
+      <div id="unmatched-videos" class="unmatched-grid"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>D1 Course Library</p>
+    <p>YouTube embeds stay out of GitHub until protected access is ready.</p>
+  </footer>
+
+  <script src="assets/js/course-data.js"></script>
+  <script src="assets/js/lecture-data.js"></script>
+  <script src="assets/js/youtube-videos.js"></script>
+  <script src="assets/js/manage.js"></script>
+  <script src="assets/js/private-preview-loader.js?v=20260702b"></script>
+</body>
+</html>
