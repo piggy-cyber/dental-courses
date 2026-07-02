@@ -1,0 +1,95 @@
+/* 
+   Dental Professional Design System
+   Palette: Deep Navy (#002b5c), Clinical Teal (#008b8b), Soft Grey (#f8f9fa)
+*/
+
+:root {
+  --navy: #002b5c;
+  --teal: #008b8b;
+  --grey-light: #f8f9fa;
+  --white: #ffffff;
+  --text-main: #333333;
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+body {
+  font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: var(--text-main);
+  line-height: 1.6;
+  margin: 0;
+  background-color: var(--white);
+}
+
+/* Hero Section */
+.hero {
+  background-color: var(--navy);
+  color: var(--white);
+  padding: 80px 20px;
+  text-align: center;
+  border-bottom: 4px solid var(--teal);
+}
+
+.hero h1 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+/* Course Card Container */
+.course-card {
+  background: var(--white);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  padding: 24px;
+  margin: 20px 0;
+  border-left: 6px solid var(--teal);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.course-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+/* Quick Links Sidebar */
+.quick-links {
+  background: var(--grey-light);
+  padding: 20px;
+  border-radius: 8px;
+  list-style: none;
+  border: 1px solid #e1e4e8;
+}
+
+.quick-links h3 {
+  margin-top: 0;
+  color: var(--navy);
+  font-size: 1.1rem;
+}
+
+.quick-links li {
+  margin-bottom: 10px;
+}
+
+.quick-links a {
+  color: var(--teal);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.quick-links a:hover {
+  text-decoration: underline;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .hero {
+    padding: 50px 15px;
+  }
+  
+  .hero h1 {
+    font-size: 2rem;
+  }
+  
+  .course-card {
+    padding: 16px;
+  }
+}
