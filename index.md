@@ -12,19 +12,17 @@ hero:
     - theme: alt
       text: Featured: Cariology
       link: /courses/cariology
-
-features:
-  - title: Structured Coursework
-    details: Systematized notes with clear learning objectives, clinical correlations, and study-ready summaries.
-  - title: High-Yield Cheat Sheets
-    details: Distilled, priority-based concepts designed to maximize retention for high-stakes exams.
-  - title: Clinical Integration
-    details: Evidence-based resources that bridge the gap between theoretical foundations and practical application.
 ---
 
-## Academic Curriculum
+## Key Features
 
-Organized by subject area for streamlined navigation.
+::: features
+- **Structured Coursework**: Systematized notes with clear learning objectives, clinical correlations, and study-ready summaries.
+- **High-Yield Cheat Sheets**: Distilled, priority-based concepts designed to maximize retention for high-stakes exams.
+- **Clinical Integration**: Evidence-based resources that bridge the gap between theoretical foundations and practical application.
+:::
+
+## Academic Curriculum
 
 | Course Name | Code |
 | :--- | :--- |
