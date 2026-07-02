@@ -45,7 +45,7 @@ Organized by subject area for streamlined navigation.
 | Dental Materials I | 100/9338 |
 | Introduction to Radiography | 100/9429 |
 | **Practice & Public Health** | |
-| "ACE: Outreach Preventive Dentistry" | 100/10979 |
+| ACE: Outreach Preventive Dentistry | 100/10979 |
 | Epidemiology for Public Health | 100/10977 |
 | Clinical Observation and Assisting I | 100/11237 |
 | Ergonomics | 100/9432 |
