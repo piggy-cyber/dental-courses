@@ -42,19 +42,44 @@ export type CampusWeather = {
   high: number;
   low: number;
   precipChancePct: number;
+  weekly: DailyCampusWeather[];
+};
+
+export type DailyCampusWeather = {
+  date: string;
+  weekday: string;
+  label: string;
+  high: number;
+  low: number;
+  precipChancePct: number;
 };
 
 export async function getCampusWeather(): Promise<CampusWeather | null> {
   const url =
     `https://api.open-meteo.com/v1/forecast?latitude=${HEC_LAT}&longitude=${HEC_LON}` +
     `&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m` +
-    `&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max` +
-    `&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=America%2FNew_York&forecast_days=1`;
+    `&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max` +
+    `&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=America%2FNew_York&forecast_days=7`;
 
   try {
     const res = await fetch(url, { next: { revalidate: 900 } });
     if (!res.ok) return null;
     const data = await res.json();
+    const weekday = new Intl.DateTimeFormat("en-US", {
+      timeZone: "America/New_York",
+      weekday: "short",
+    });
+    const weekly: DailyCampusWeather[] = (data.daily.time ?? []).map(
+      (date: string, index: number) => ({
+        date,
+        weekday: weekday.format(new Date(`${date}T12:00:00-04:00`)),
+        label: WEATHER_LABELS[data.daily.weather_code[index]] ?? "—",
+        high: Math.round(data.daily.temperature_2m_max[index]),
+        low: Math.round(data.daily.temperature_2m_min[index]),
+        precipChancePct: data.daily.precipitation_probability_max[index] ?? 0,
+      })
+    );
+
     return {
       temperature: Math.round(data.current.temperature_2m),
       feelsLike: Math.round(data.current.apparent_temperature),
@@ -63,6 +88,7 @@ export async function getCampusWeather(): Promise<CampusWeather | null> {
       high: Math.round(data.daily.temperature_2m_max[0]),
       low: Math.round(data.daily.temperature_2m_min[0]),
       precipChancePct: data.daily.precipitation_probability_max[0] ?? 0,
+      weekly,
     };
   } catch {
     return null;
