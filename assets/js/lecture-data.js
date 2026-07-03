@@ -1722,10 +1722,23 @@ window.lectureData = {
       "transcriptSource": "Echo360",
       "transcript": true,
       "mediaCount": 0,
-      "lectureFileCount": 0,
-      "status": "needs-review",
+      "lectureFileCount": 2,
+      "status": "matched",
       "media": [],
-      "lectureFiles": []
+      "lectureFiles": [
+        {
+          "name": "Lecture 1 - Introduction to Histology and Methods of Study - OH - 2025 - Canvas.pdf",
+          "title": "Lecture 1 - Introduction to Histology and Methods of Study - OH - 2025 - Canvas",
+          "type": "PDF",
+          "source": "Course file"
+        },
+        {
+          "name": "Lecture 1 Study Guide-- Intro to Histology.docx",
+          "title": "Lecture 1 Study Guide-- Intro to Histology",
+          "type": "DOCX",
+          "source": "Course file"
+        }
+      ]
     },
     {
       "id": "hewb-130-2025-08-20-hewb-130-oh-orofacial-development",
@@ -1834,12 +1847,6 @@ window.lectureData = {
           "title": "LECTURE 6- Dental Pulp and Cementum 2025 - Canvas",
           "type": "PDF",
           "source": "Course file"
-        },
-        {
-          "name": "Dental Materials SG.pdf",
-          "title": "Dental Materials SG",
-          "type": "PDF",
-          "source": "Course file"
         }
       ]
     },
@@ -1853,10 +1860,22 @@ window.lectureData = {
       "transcriptSource": "Echo360",
       "transcript": true,
       "mediaCount": 0,
-      "lectureFileCount": 1,
+      "lectureFileCount": 3,
       "status": "matched",
       "media": [],
       "lectureFiles": [
+        {
+          "name": "LECTURE 7 - Gingiva Histoanatomy - Dr. Rolf 2025.pdf",
+          "title": "LECTURE 7 - Gingiva Histoanatomy - Dr. Rolf 2025",
+          "type": "PDF",
+          "source": "Course file"
+        },
+        {
+          "name": "Lecture 7 - Periodontal Histoanatomy - PDL & Alveolar Bone Dr. Rolf 2025.pdf",
+          "title": "Lecture 7 - Periodontal Histoanatomy - PDL & Alveolar Bone Dr. Rolf 2025",
+          "type": "PDF",
+          "source": "Course file"
+        },
         {
           "name": "Histology of the Periodontium. American Academy of Periodontology Literature Reviews 1996.pdf",
           "title": "Histology of the Periodontium. American Academy of Periodontology Literature Reviews 1996",

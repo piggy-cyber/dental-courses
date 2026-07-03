@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { setAccountStatus } from "./actions";
+import { setAccountStatus } from "@/app/admin/actions";
+import { adminLabel } from "@/lib/roles";
 import type { Account } from "./page";
 
 const STATUS_STYLES: Record<Account["status"], string> = {
@@ -33,21 +34,26 @@ export function AccountRow({
 
   return (
     <li className="flex flex-wrap items-center justify-between gap-3 px-4 py-3">
-      <div className="min-w-0">
-        <p className="truncate text-sm font-medium text-slate-800">
+      <div className="min-w-0 flex-1">
+        <p className="truncate text-sm font-medium text-brand-ink">
           {account.name ?? account.email}
           {account.role === "owner" && (
-            <span className="ml-2 rounded-full bg-blue-50 px-2 py-0.5 text-xs font-semibold text-blue-700">
-              Owner
+            <span className="ml-2 rounded-full bg-brand-soft px-2 py-0.5 text-xs font-semibold text-brand-navy">
+              {adminLabel(account.role)}
             </span>
           )}
-          {isSelf && <span className="ml-2 text-xs text-slate-400">(you)</span>}
+          {isSelf && <span className="ml-2 text-xs text-brand-muted">(you)</span>}
         </p>
-        <p className="truncate text-xs text-slate-400">
-          {account.email} &middot; joined{" "}
-          {new Date(account.created_at).toLocaleDateString()}
+        <p className="truncate text-xs text-brand-muted">
+          {account.email} · joined {new Date(account.created_at).toLocaleDateString()}
         </p>
-        {error && <p className="text-xs text-rose-600">{error}</p>}
+        {account.access_note && (
+          <p className="mt-2 rounded-lg bg-brand-soft px-3 py-2 text-xs text-brand-ink">
+            <span className="font-semibold">Request: </span>
+            {account.access_note}
+          </p>
+        )}
+        {error && <p className="mt-1 text-xs text-rose-600">{error}</p>}
       </div>
 
       <div className="flex items-center gap-2">

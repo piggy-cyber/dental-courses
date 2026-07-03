@@ -1712,26 +1712,6 @@ window.resourceMap = {
           "locked": true
         },
         {
-          "name": "asdf.pdf",
-          "ext": "PDF",
-          "kind": "Document",
-          "use": "Supplemental document",
-          "origin": "Course Folder",
-          "section": "Course Root",
-          "sizeMb": 0.07,
-          "locked": true
-        },
-        {
-          "name": "Dental Materials SG.pdf",
-          "ext": "PDF",
-          "kind": "Document",
-          "use": "Supplemental document",
-          "origin": "Course Folder",
-          "section": "Course Root",
-          "sizeMb": 0.97,
-          "locked": true
-        },
-        {
           "name": "Dentin - Study Guide.docx",
           "ext": "DOCX",
           "kind": "Study Guide",
@@ -15004,6 +14984,16 @@ window.resourceMap = {
       "title": "Dental Materials I",
       "semester": "Spring 2026",
       "resources": [
+        {
+          "name": "Dental Materials SG.pdf",
+          "ext": "PDF",
+          "kind": "Study Guide",
+          "use": "Study guide",
+          "origin": "Course Folder",
+          "section": "Course Root",
+          "sizeMb": 0.97,
+          "locked": true
+        },
         {
           "name": "Glass ionomers(1).pptx",
           "ext": "PPTX",

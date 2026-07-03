@@ -1,0 +1,49 @@
+import Link from "next/link";
+import { BrandMarkPublic } from "@/components/BrandMark";
+import { AboutContent } from "@/components/AboutContent";
+import { getSessionProfile } from "@/lib/access";
+
+export const metadata = {
+  title: "About — D1 Course Library",
+  description:
+    "Who built the D1 Course Library, what's inside, and how class access works.",
+};
+
+export default async function AboutPage() {
+  const { profile } = await getSessionProfile();
+  const backHref = profile?.status === "approved" ? "/home" : "/";
+  const backLabel = profile?.status === "approved" ? "Back to dashboard" : "Back to sign in";
+
+  return (
+    <div className="min-h-screen bg-brand-paper text-brand-ink">
+      <header className="sticky top-0 z-10 border-b border-brand-line bg-brand-panel/90 backdrop-blur">
+        <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-3">
+          <BrandMarkPublic />
+          <Link
+            href={backHref}
+            className="text-sm font-medium text-brand-muted hover:text-brand-navy"
+          >
+            {backLabel}
+          </Link>
+        </div>
+      </header>
+
+      <main className="mx-auto max-w-3xl px-4 py-12">
+        <AboutContent />
+
+        <div className="mt-10">
+          <Link
+            href={backHref}
+            className="inline-flex rounded-lg bg-brand-blue px-5 py-2.5 font-semibold text-white hover:opacity-90"
+          >
+            {backLabel}
+          </Link>
+        </div>
+      </main>
+
+      <footer className="border-t border-brand-line py-8 text-center text-sm text-brand-muted">
+        D1 Course Library · Every lecture, one desk.
+      </footer>
+    </div>
+  );
+}

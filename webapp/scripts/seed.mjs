@@ -16,6 +16,7 @@ import {
   youtubeMatches,
   sortLectureRows,
   canonicalResources,
+  shouldImportResource,
   syntheticLectureRows,
 } from "./lib/data.mjs";
 
@@ -124,6 +125,7 @@ for (const course of courseData) {
   );
   for (const item of list) {
     if (item.kind === "Transcript") continue;
+    if (!shouldImportResource(item, course.code)) continue;
     resources.push({
       course_code: course.code,
       name: item.name,
@@ -191,6 +193,41 @@ function loadStudentPillars() {
 const pillarResources = loadStudentPillars();
 resources.push(...pillarResources);
 
+let skippedImport = 0;
+for (const course of courseData) {
+  skippedImport += (resourceMap.courses?.[course.code]?.resources ?? []).filter(
+    (item) => item.kind !== "Transcript" && !shouldImportResource(item, course.code)
+  ).length;
+}
+if (skippedImport) console.log(`Skipping ${skippedImport} survival-guide / misfiled resources`);
+
+async function preserveStoragePaths(rows) {
+  const existing = [];
+  for (let from = 0; ; from += 1000) {
+    const { data, error } = await supabase
+      .from("resources")
+      .select("course_code, name, storage_path")
+      .not("storage_path", "is", null)
+      .range(from, from + 999);
+    if (error) throw new Error(`resources read: ${error.message}`);
+    if (!data?.length) break;
+    existing.push(...data);
+    if (data.length < 1000) break;
+  }
+  const byKey = new Map(
+    existing.map((row) => [`${row.course_code}\0${row.name}`, row.storage_path])
+  );
+  let linked = 0;
+  for (const row of rows) {
+    const path = byKey.get(`${row.course_code}\0${row.name}`);
+    if (path) {
+      row.storage_path = path;
+      linked += 1;
+    }
+  }
+  if (linked) console.log(`  preserved ${linked} storage_path links`);
+}
+
 const DELETE_FILTERS = {
   courses: ["code", "___none___"],
   lectures: ["id", "___none___"],
@@ -219,6 +256,7 @@ console.log("Importing course library into Supabase...");
 await replaceTable("courses", courses);
 await replaceTable("lectures", lectures);
 await replaceTable("transcripts", transcripts, 50);
+await preserveStoragePaths(resources);
 await replaceTable("resources", resources);
 
 const withVideo = lectures.filter((lecture) => lecture.youtube_id).length;

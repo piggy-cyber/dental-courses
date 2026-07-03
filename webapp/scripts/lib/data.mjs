@@ -156,6 +156,22 @@ export function canonicalResources(resources, course) {
   return resources.filter((item) => item.kind !== "Syllabus" || item === selected);
 }
 
+// --- import filters (drop survival-guide bleed and known misfiles) ---
+
+const ARCHIVE_SECTION = /^(Fall Semester|Previous Year|Spring Semester)\s*$/i;
+
+export function shouldImportResource(item, courseCode) {
+  if (item.origin === "Survival Guide") return false;
+  if (ARCHIVE_SECTION.test(String(item.section || "").trim())) return false;
+
+  if (courseCode === "HEWB 130") {
+    if (/^(asdf|1\. ergo review)/i.test(item.name)) return false;
+    if (/^Dental Materials SG/i.test(item.name)) return false;
+  }
+
+  return true;
+}
+
 // --- synthetic slide-based lecture rows for underlisted courses ---
 
 function isLectureDeckResource(item) {
@@ -166,7 +182,7 @@ function isLectureDeckResource(item) {
   return !/(exam|review|outline|memorization|statistics|written notes|read me|study guide|syllabus)/i.test(item.name);
 }
 
-function relatedScore(row, item) {
+export function relatedScore(row, item) {
   const rowKey = compactResourceText(row.lectureTitle, row.courseCode);
   const itemKey = compactResourceText(item.name, row.courseCode);
   if (!rowKey || !itemKey) return 0;
@@ -187,6 +203,9 @@ function relatedScore(row, item) {
 }
 
 export function syntheticLectureRows(course, existingRows, resources) {
+  const datedLectures = existingRows.filter((row) => row.date || row.transcript);
+  if (datedLectures.length >= 5) return [];
+
   const candidates = resources.filter((item) => isLectureDeckResource(item));
   if (!candidates.length) return [];
   if (existingRows.length >= 8 && existingRows.length >= candidates.length * 0.65) return [];

@@ -1,26 +1,67 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --brand-ink: #172033;
+  --brand-navy: #17375f;
+  --brand-blue: #2878a8;
+  --brand-teal: #278b83;
+  --brand-gold: #ad7923;
+  --brand-paper: #f7f8f9;
+  --brand-panel: #ffffff;
+  --brand-soft: #eef5f4;
+  --brand-line: #dce3e7;
+  --brand-muted: #687782;
+  --brand-shadow: 0 12px 26px rgba(23, 32, 51, 0.06);
+
+  --background: var(--brand-paper);
+  --foreground: var(--brand-ink);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-brand-ink: var(--brand-ink);
+  --color-brand-navy: var(--brand-navy);
+  --color-brand-blue: var(--brand-blue);
+  --color-brand-teal: var(--brand-teal);
+  --color-brand-gold: var(--brand-gold);
+  --color-brand-paper: var(--brand-paper);
+  --color-brand-panel: var(--brand-panel);
+  --color-brand-soft: var(--brand-soft);
+  --color-brand-line: var(--brand-line);
+  --color-brand-muted: var(--brand-muted);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), Inter, "Segoe UI", sans-serif;
+}
+
+.eyebrow {
+  color: var(--brand-teal);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.prose-brand h2 {
+  color: var(--brand-navy);
+  font-size: 1.125rem;
+  font-weight: 700;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.prose-brand p,
+.prose-brand li {
+  color: var(--brand-muted);
+  line-height: 1.65;
+}
+
+.prose-brand strong {
+  color: var(--brand-ink);
 }

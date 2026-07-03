@@ -14,7 +14,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "D1 Course Library",
-  description: "Course hub for the Health Education Campus D1 class.",
+  description:
+    "Every lecture, one desk — videos, transcripts, mastery guides, and course files for Case Western D1.",
 };
 
 export default function RootLayout({

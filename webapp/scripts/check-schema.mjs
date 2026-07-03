@@ -17,3 +17,21 @@ for (const table of tables) {
   const { error } = await supabase.from(table).select("*").limit(0);
   console.log(`${table}: ${error ? error.message : "ok"}`);
 }
+
+const { error: profileFieldsError } = await supabase
+  .from("profiles")
+  .select("username, bio, avatar_url, updated_at")
+  .limit(0);
+console.log(`profile fields: ${profileFieldsError ? profileFieldsError.message : "ok"}`);
+
+const { error: accessFieldsError } = await supabase
+  .from("profiles")
+  .select("access_note, approved_by")
+  .limit(0);
+console.log(`access fields: ${accessFieldsError ? accessFieldsError.message : "ok"}`);
+
+const { data: buckets } = await supabase.storage.listBuckets();
+const bucketNames = new Set((buckets ?? []).map((b) => b.name));
+for (const name of ["course-files", "avatars"]) {
+  console.log(`bucket ${name}: ${bucketNames.has(name) ? "ok" : "missing"}`);
+}
