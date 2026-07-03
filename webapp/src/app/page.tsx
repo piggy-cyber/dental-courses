@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { SignInPanel } from "@/components/SignInPanel";
 import { BrandMarkPublic } from "@/components/BrandMark";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { AboutSummary } from "@/components/AboutContent";
 import { AccessRequestForm } from "@/components/AccessRequestForm";
 import { getSessionProfile } from "@/lib/access";
@@ -23,14 +24,17 @@ export default async function LoginHomePage({
   return (
     <main className="app-shell-bg min-h-screen">
       <header className="border-b border-brand-line bg-brand-panel/90 px-6 py-3 backdrop-blur">
-        <div className="mx-auto flex max-w-6xl items-center justify-between">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-3">
           <BrandMarkPublic />
-          <Link
-            href="/about"
-            className="text-sm font-medium text-brand-muted hover:text-brand-navy"
-          >
-            About
-          </Link>
+          <div className="flex items-center gap-3">
+            <ThemeToggle compact />
+            <Link
+              href="/about"
+              className="text-sm font-medium text-brand-muted hover:text-brand-navy"
+            >
+              About
+            </Link>
+          </div>
         </div>
       </header>
 
@@ -62,7 +66,7 @@ export default async function LoginHomePage({
             {!profile ? (
               <>
                 <SignInPanel />
-                <p className="mt-4 text-sm text-brand-muted">
+                <p className="mt-4 text-sm text-white/70">
                   Roster students with a matching personal Gmail are approved automatically.
                 </p>
                 {params.auth_error && (

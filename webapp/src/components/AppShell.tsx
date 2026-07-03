@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import type { Profile } from "@/lib/access";
 import { BrandMark } from "@/components/BrandMark";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { UserAvatar } from "@/components/UserAvatar";
 
 export type AppShellCourse = {
@@ -104,6 +105,9 @@ export function AppShell({
             Organized course resources, videos, transcripts, and files for the
             collections you have been granted.
           </p>
+          <div className="mt-4">
+            <ThemeToggle compact />
+          </div>
         </div>
 
         <div className="sidebar-scroll flex-1 overflow-y-auto px-4 py-5">
@@ -239,6 +243,9 @@ export function AppShell({
             </Link>
 
             <div className="flex shrink-0 items-center gap-2">
+              <div className="sm:hidden">
+                <ThemeToggle compact />
+              </div>
               <div className="hidden gap-1">
                 {STUDENT_LINKS.slice(0, 3).map((link) => (
                   <Link
