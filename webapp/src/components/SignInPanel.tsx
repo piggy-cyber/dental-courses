@@ -67,7 +67,7 @@ export function SignInPanel() {
     <div className="space-y-4 text-left">
       <form onSubmit={sendMagicLink} className="space-y-3">
         <label className="block text-sm font-medium text-slate-700" htmlFor="email">
-          Email sign-in
+          Personal Gmail sign-in
         </label>
         <input
           id="email"
@@ -75,7 +75,7 @@ export function SignInPanel() {
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="you@example.com"
+          placeholder="yourname@gmail.com"
           className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-slate-900 outline-none ring-blue-600 focus:ring-2"
         />
         <button
@@ -102,7 +102,7 @@ export function SignInPanel() {
         disabled={busy !== null}
         className="inline-flex w-full items-center justify-center gap-3 rounded-lg border border-slate-300 bg-white px-4 py-2.5 font-semibold text-slate-800 hover:bg-slate-50 disabled:opacity-60"
       >
-        {busy === "google" ? "Opening Google..." : "Sign in with Google"}
+        {busy === "google" ? "Opening Google..." : "Sign in with personal Gmail"}
       </button>
 
       {error && (

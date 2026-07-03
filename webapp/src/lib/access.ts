@@ -10,6 +10,10 @@ export type Profile = {
   access_note: string | null;
   role: "student" | "owner";
   status: "pending" | "approved" | "revoked";
+  roster_id: string | null;
+  roster_match: boolean;
+  access_tiers: string[];
+  admin_note: string | null;
 };
 
 export async function getSessionProfile(): Promise<{
@@ -24,7 +28,9 @@ export async function getSessionProfile(): Promise<{
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("id, email, name, username, bio, avatar_url, access_note, role, status")
+    .select(
+      "id, email, name, username, bio, avatar_url, access_note, role, status, roster_id, roster_match, access_tiers, admin_note"
+    )
     .eq("id", user.id)
     .single();
 

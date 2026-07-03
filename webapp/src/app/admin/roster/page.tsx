@@ -1,0 +1,67 @@
+import { requireAdminProfile } from "@/app/admin/actions";
+import { createClient } from "@/lib/supabase/server";
+import { RosterTable } from "./RosterTable";
+
+export const dynamic = "force-dynamic";
+
+export type RosterProfile = {
+  id: string;
+  email: string;
+  name: string | null;
+  username: string | null;
+  status: "pending" | "approved" | "revoked";
+};
+
+export type RosterRow = {
+  id: string;
+  full_name: string;
+  email: string | null;
+  cohort: string;
+  status: "expected" | "signed_in" | "withdrawn";
+  profile_id: string | null;
+  profile: RosterProfile | null;
+};
+
+export default async function AdminRosterPage() {
+  await requireAdminProfile();
+  const supabase = await createClient();
+  const { data: rosterRows } = await supabase
+    .from("student_roster")
+    .select("id, full_name, email, cohort, status, profile_id")
+    .order("cohort")
+    .order("full_name");
+
+  const profileIds = [
+    ...new Set(((rosterRows as RosterRow[] | null) ?? []).map((row) => row.profile_id).filter(Boolean)),
+  ] as string[];
+
+  const { data: profileRows } = profileIds.length
+    ? await supabase
+        .from("profiles")
+        .select("id, email, name, username, status")
+        .in("id", profileIds)
+    : { data: [] };
+
+  const profilesById = new Map(
+    (profileRows as RosterProfile[] | null)?.map((profile) => [profile.id, profile])
+  );
+
+  const rows =
+    ((rosterRows as Omit<RosterRow, "profile">[] | null) ?? []).map((row) => ({
+      ...row,
+      profile: row.profile_id ? profilesById.get(row.profile_id) ?? null : null,
+    }));
+
+  return (
+    <div className="space-y-8">
+      <header>
+        <h1 className="text-2xl font-bold text-brand-navy">Roster</h1>
+        <p className="mt-1 text-brand-muted">
+          Track expected classmates, signed-in matches, and future D2-D4 cohorts.
+        </p>
+      </header>
+
+      <RosterTable rows={rows} />
+    </div>
+  );
+}

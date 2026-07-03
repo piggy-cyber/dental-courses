@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { getSessionProfile } from "@/lib/access";
 import { isAdmin } from "@/lib/roles";
+import { normalizeTiers } from "@/lib/tiers";
 
 export async function requireAdminProfile() {
   const { profile, userId } = await getSessionProfile();
@@ -18,20 +19,105 @@ export async function setAccountStatus(
   status: "approved" | "pending" | "revoked"
 ) {
   const { userId: adminId } = await requireAdminProfile();
+  if (userId === adminId && status !== "approved") {
+    throw new Error("You cannot revoke or pend your own admin account.");
+  }
+
   const supabase = await createClient();
+  const now = new Date().toISOString();
 
   const update: Record<string, unknown> = {
     status,
-    approved_at: status === "approved" ? new Date().toISOString() : null,
+    approved_at: status === "approved" ? now : null,
+    approved_by: status === "approved" ? adminId : null,
+    revoked_at: status === "revoked" ? now : null,
+    revoked_by: status === "revoked" ? adminId : null,
   };
-  if (status === "approved") {
-    update.approved_by = adminId;
-  }
 
   const { error } = await supabase.from("profiles").update(update).eq("id", userId);
   if (error) throw new Error(error.message);
 
+  revalidateAdminPaths(userId);
+}
+
+export async function updateAccountProfile(
+  userId: string,
+  fields: {
+    name?: string | null;
+    username?: string | null;
+    bio?: string | null;
+  }
+) {
+  await requireAdminProfile();
+  const supabase = await createClient();
+
+  const update = {
+    name: cleanOptionalText(fields.name),
+    username: cleanOptionalText(fields.username),
+    bio: cleanOptionalText(fields.bio),
+  };
+
+  const { error } = await supabase.from("profiles").update(update).eq("id", userId);
+  if (error) throw new Error(error.message);
+  revalidateAdminPaths(userId);
+}
+
+export async function setAccessTiers(userId: string, tiers: string[]) {
+  await requireAdminProfile();
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("profiles")
+    .update({ access_tiers: normalizeTiers(tiers) })
+    .eq("id", userId);
+  if (error) throw new Error(error.message);
+  revalidateAdminPaths(userId);
+}
+
+export async function saveAdminNote(userId: string, note: string) {
+  await requireAdminProfile();
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("profiles")
+    .update({ admin_note: note.trim() || null })
+    .eq("id", userId);
+  if (error) throw new Error(error.message);
+  revalidateAdminPaths(userId);
+}
+
+export async function addRosterEntry(input: {
+  fullName: string;
+  email?: string | null;
+  cohort: string;
+}) {
+  await requireAdminProfile();
+  const fullName = input.fullName.trim();
+  const email = input.email?.trim().toLowerCase() || null;
+  const cohort = input.cohort.trim().toLowerCase();
+
+  if (!fullName) throw new Error("Roster name is required.");
+  if (!/^d[1-4]-\d{4}$/.test(cohort)) throw new Error("Use a cohort like d1-2025.");
+  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    throw new Error("Use a valid email address.");
+  }
+
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("student_roster")
+    .insert({ full_name: fullName, email, cohort, status: "expected" });
+  if (error) throw new Error(error.message);
+
+  const { error: recheckError } = await supabase.rpc("recheck_roster_matches");
+  if (recheckError) throw new Error(recheckError.message);
   revalidateAdminPaths();
+}
+
+export async function recheckRosterMatches(): Promise<number> {
+  await requireAdminProfile();
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("recheck_roster_matches");
+  if (error) throw new Error(error.message);
+  revalidateAdminPaths();
+  return Number(data ?? 0);
 }
 
 export async function promoteToAdmin(userId: string) {
@@ -43,7 +129,7 @@ export async function promoteToAdmin(userId: string) {
     .eq("id", userId)
     .eq("role", "student");
   if (error) throw new Error(error.message);
-  revalidateAdminPaths();
+  revalidateAdminPaths(userId);
 }
 
 export async function demoteAdmin(userId: string) {
@@ -69,7 +155,7 @@ export async function demoteAdmin(userId: string) {
     .eq("id", userId)
     .eq("role", "owner");
   if (error) throw new Error(error.message);
-  revalidateAdminPaths();
+  revalidateAdminPaths(userId);
 }
 
 export async function saveAccessNote(note: string) {
@@ -85,10 +171,18 @@ export async function saveAccessNote(note: string) {
   revalidatePath("/");
 }
 
-function revalidateAdminPaths() {
+function cleanOptionalText(value: string | null | undefined) {
+  const trimmed = value?.trim() ?? "";
+  return trimmed || null;
+}
+
+function revalidateAdminPaths(accountId?: string) {
   revalidatePath("/admin");
   revalidatePath("/admin/accounts");
+  if (accountId) revalidatePath(`/admin/accounts/${accountId}`);
+  revalidatePath("/admin/roster");
   revalidatePath("/admin/team");
   revalidatePath("/admin/operations");
+  revalidatePath("/library");
   revalidatePath("/owner");
 }

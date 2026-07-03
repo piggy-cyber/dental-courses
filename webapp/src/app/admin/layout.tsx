@@ -7,6 +7,7 @@ import { BrandMark } from "@/components/BrandMark";
 const ADMIN_LINKS = [
   { href: "/admin", label: "Dashboard" },
   { href: "/admin/accounts", label: "Accounts" },
+  { href: "/admin/roster", label: "Roster" },
   { href: "/admin/team", label: "Team" },
   { href: "/admin/operations", label: "Operations" },
 ];

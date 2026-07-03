@@ -39,8 +39,8 @@ export default async function LoginHomePage({
           <p className="eyebrow">Health Education Campus · D1</p>
           <h1 className="mt-2 text-3xl font-bold text-brand-navy">Course Library</h1>
           <p className="mt-3 text-brand-muted">
-            Sign in to access lectures, videos, transcripts, and course files
-            for approved classmates.
+            Use your personal Gmail, not your @case.edu address, to access approved
+            lectures, videos, transcripts, and course files.
           </p>
 
           <div className="mt-8">
@@ -48,7 +48,7 @@ export default async function LoginHomePage({
               <>
                 <SignInPanel />
                 <p className="mt-4 text-sm text-brand-muted">
-                  Use your email or Google. New accounts need owner approval.
+                  Roster students with a matching personal Gmail are approved automatically.
                 </p>
                 {params.auth_error && (
                   <p className="mt-3 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800">
@@ -66,8 +66,9 @@ export default async function LoginHomePage({
                 </p>
                 <p className="mt-1 text-sm text-amber-800">{profile.email}</p>
                 <p className="mt-2 text-sm text-amber-800">
-                  You&apos;ll get a dashboard and full library access once an admin
-                  approves your account.
+                  {profile.status === "revoked"
+                    ? "Contact an admin if you think this is a mistake."
+                    : "Roster students with a matching email are approved automatically. Other accounts stay pending for manual review."}
                 </p>
                 {profile.status === "pending" && (
                   <AccessRequestForm initialNote={profile.access_note} />

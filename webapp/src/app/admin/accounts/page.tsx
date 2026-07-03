@@ -1,68 +1,76 @@
 import { createClient } from "@/lib/supabase/server";
 import { requireAdminProfile } from "@/app/admin/actions";
-import { AccountRow } from "./AccountRow";
+import { AccountsTable } from "./AccountsTable";
 
 export const dynamic = "force-dynamic";
+
+export type AccountRoster = {
+  id: string;
+  full_name: string;
+  email: string | null;
+  cohort: string;
+  status: "expected" | "signed_in" | "withdrawn";
+  profile_id: string | null;
+};
 
 export type Account = {
   id: string;
   email: string;
   name: string | null;
+  username: string | null;
   role: "student" | "owner";
   status: "pending" | "approved" | "revoked";
   created_at: string;
   approved_at: string | null;
   access_note: string | null;
+  access_tiers: string[];
+  roster_id: string | null;
+  roster: AccountRoster | null;
 };
 
 export default async function AdminAccountsPage() {
   const { userId } = await requireAdminProfile();
   const supabase = await createClient();
-  const { data } = await supabase
-    .from("profiles")
-    .select("id, email, name, role, status, created_at, approved_at, access_note")
-    .order("created_at", { ascending: false });
+  const [{ data: profileRows }, { data: rosterRows }] = await Promise.all([
+    supabase
+      .from("profiles")
+      .select(
+        "id, email, name, username, role, status, created_at, approved_at, access_note, access_tiers, roster_id"
+      )
+      .order("created_at", { ascending: false }),
+    supabase
+      .from("student_roster")
+      .select("id, full_name, email, cohort, status, profile_id")
+      .order("cohort")
+      .order("full_name"),
+  ]);
 
-  const accounts = (data as Account[]) ?? [];
-  const pending = accounts.filter((account) => account.status === "pending");
-  const others = accounts.filter((account) => account.status !== "pending");
+  const rosterById = new Map((rosterRows as AccountRoster[] | null)?.map((row) => [row.id, row]));
+  const rosterByProfile = new Map(
+    (rosterRows as AccountRoster[] | null)
+      ?.filter((row) => row.profile_id)
+      .map((row) => [row.profile_id!, row])
+  );
+  const accounts =
+    (profileRows as Omit<Account, "roster">[] | null)?.map((account) => ({
+      ...account,
+      access_tiers: account.access_tiers ?? [],
+      roster:
+        (account.roster_id ? rosterById.get(account.roster_id) : null) ??
+        rosterByProfile.get(account.id) ??
+        null,
+    })) ?? [];
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-8">
       <header>
         <h1 className="text-2xl font-bold text-brand-navy">Accounts</h1>
         <p className="mt-1 text-brand-muted">
-          Approve who can enter the library. New sign-ins land here as pending.
+          Search students, review roster matches, and control status or tiers.
         </p>
       </header>
 
-      <section>
-        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-brand-muted">
-          Waiting for approval ({pending.length})
-        </h2>
-        {pending.length === 0 ? (
-          <p className="rounded-xl border border-brand-line bg-brand-panel p-6 text-sm text-brand-muted">
-            No pending requests.
-          </p>
-        ) : (
-          <ul className="divide-y divide-brand-line overflow-hidden rounded-xl border border-brand-line bg-brand-panel">
-            {pending.map((account) => (
-              <AccountRow key={account.id} account={account} isSelf={account.id === userId} />
-            ))}
-          </ul>
-        )}
-      </section>
-
-      <section>
-        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-brand-muted">
-          All other accounts ({others.length})
-        </h2>
-        <ul className="divide-y divide-brand-line overflow-hidden rounded-xl border border-brand-line bg-brand-panel">
-          {others.map((account) => (
-            <AccountRow key={account.id} account={account} isSelf={account.id === userId} />
-          ))}
-        </ul>
-      </section>
+      <AccountsTable accounts={accounts} currentUserId={userId} />
     </div>
   );
 }
