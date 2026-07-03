@@ -6,7 +6,7 @@ import { getSessionProfile } from "@/lib/access";
 export const metadata = {
   title: "About — D1 Course Library",
   description:
-    "Who built the D1 Course Library, what's inside, and how class access works.",
+    "What is inside the D1 Course Library, why it exists, and how classmates can contribute.",
 };
 
 export default async function AboutPage() {
