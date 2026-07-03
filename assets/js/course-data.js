@@ -8,6 +8,7 @@ window.courseData = [
     access: "locked",
     resources: {
       guide: true,
+      companion: true,
       syllabus: true
     }
   },
@@ -32,6 +33,7 @@ window.courseData = [
     access: "locked",
     resources: {
       guide: true,
+      companion: true,
       syllabus: true,
       coursePage: true,
       cheatSheet: true
@@ -46,6 +48,7 @@ window.courseData = [
     access: "locked",
     resources: {
       guide: true,
+      companion: true,
       syllabus: true
     }
   },
@@ -58,6 +61,7 @@ window.courseData = [
     access: "locked",
     resources: {
       guide: true,
+      companion: true,
       syllabus: true
     }
   },
@@ -83,7 +87,8 @@ window.courseData = [
     access: "locked",
     resources: {
       guide: true,
-      syllabus: true
+      syllabus: true,
+      companion: true
     }
   },
   {
@@ -95,7 +100,8 @@ window.courseData = [
     access: "locked",
     resources: {
       guide: true,
-      syllabus: true
+      syllabus: true,
+      companion: true
     }
   },
   {
@@ -107,7 +113,8 @@ window.courseData = [
     access: "locked",
     resources: {
       guide: true,
-      syllabus: true
+      syllabus: true,
+      companion: true
     }
   },
   {
@@ -132,6 +139,7 @@ window.courseData = [
     access: "locked",
     resources: {
       guide: true,
+      companion: true,
       syllabus: true
     }
   },
@@ -144,6 +152,7 @@ window.courseData = [
     access: "locked",
     resources: {
       guide: true,
+      companion: true,
       syllabus: true
     }
   },
@@ -156,6 +165,7 @@ window.courseData = [
     access: "locked",
     resources: {
       guide: true,
+      companion: true,
       syllabus: true
     }
   },
@@ -168,6 +178,7 @@ window.courseData = [
     access: "locked",
     resources: {
       guide: true,
+      companion: true,
       syllabus: true
     }
   },
@@ -180,6 +191,7 @@ window.courseData = [
     access: "locked",
     resources: {
       guide: true,
+      companion: true,
       syllabus: true
     }
   },
@@ -192,7 +204,8 @@ window.courseData = [
     access: "locked",
     resources: {
       guide: true,
-      syllabus: true
+      syllabus: true,
+      companion: true
     }
   },
   {
@@ -204,7 +217,8 @@ window.courseData = [
     access: "locked",
     resources: {
       guide: true,
-      syllabus: true
+      syllabus: true,
+      companion: true
     }
   },
   {
@@ -216,7 +230,8 @@ window.courseData = [
     access: "locked",
     resources: {
       guide: true,
-      syllabus: true
+      syllabus: true,
+      companion: true
     }
   },
   {
@@ -227,7 +242,8 @@ window.courseData = [
     area: "Practice",
     access: "locked",
     resources: {
-      guide: true
+      guide: true,
+      companion: true
     }
   }
 ];

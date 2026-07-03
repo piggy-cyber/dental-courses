@@ -6,6 +6,7 @@
 // Usage:  node scripts/seed.mjs
 // Needs NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SECRET_KEY in webapp/.env.local.
 import path from "node:path";
+import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { createClient } from "@supabase/supabase-js";
 import {
@@ -137,6 +138,59 @@ for (const course of courseData) {
   }
 }
 
+function loadStudentPillars() {
+  const manifestPath = path.join(webappRoot, "data/student-pillars.json");
+  try {
+    const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
+    const rows = [];
+    for (const item of manifest.pillars) {
+      if (item.masteryGuide) {
+        for (const [ext, name] of [
+          ["PDF", item.masteryGuide.pdf],
+          ["DOCX", item.masteryGuide.docx],
+        ]) {
+          rows.push({
+            course_code: item.courseCode,
+            name,
+            kind: "Course Mastery Guide",
+            ext,
+            section: "Study Guides",
+            use_label: "Course mastery guide",
+            size_mb: null,
+            storage_path: null,
+            is_canonical_syllabus: false,
+          });
+        }
+      }
+      if (item.textbookCompanion) {
+        for (const [ext, name] of [
+          ["PDF", item.textbookCompanion.pdf],
+          ["DOCX", item.textbookCompanion.docx],
+        ]) {
+          rows.push({
+            course_code: item.courseCode,
+            name,
+            kind: "Textbook Companion",
+            ext,
+            section: "Textbook Companion",
+            use_label: "Course textbook companion",
+            size_mb: null,
+            storage_path: null,
+            is_canonical_syllabus: false,
+          });
+        }
+      }
+    }
+    return rows;
+  } catch {
+    console.warn("No student pillar manifest found; skipping pillars.");
+    return [];
+  }
+}
+
+const pillarResources = loadStudentPillars();
+resources.push(...pillarResources);
+
 const DELETE_FILTERS = {
   courses: ["code", "___none___"],
   lectures: ["id", "___none___"],
@@ -170,4 +224,5 @@ await replaceTable("resources", resources);
 const withVideo = lectures.filter((lecture) => lecture.youtube_id).length;
 console.log("");
 console.log(`Done. ${courses.length} courses, ${lectures.length} lectures ` +
-  `(${withVideo} with video), ${transcripts.length} transcripts, ${resources.length} files.`);
+  `(${withVideo} with video), ${transcripts.length} transcripts, ${resources.length} files ` +
+  `(incl. ${pillarResources.length} pillar files).`);

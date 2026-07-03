@@ -1,0 +1,337 @@
+{
+  "generatedAt": "2026-07-03T01:49:25.814Z",
+  "hubRoot": "/Users/rickahn/Downloads/cheat sheet final",
+  "masteryDir": "/Users/rickahn/Downloads/cheat sheet final/01 - Cheat Sheets",
+  "textbookDir": "/Users/rickahn/Downloads/cheat sheet final/02 - Textbook Companions",
+  "pendingDir": "/Users/rickahn/Downloads/cheat sheet final/New Textbook Companions - Pending Add",
+  "summary": {
+    "masteryGuides": 19,
+    "textbookCompanions": 19,
+    "missingTextbook": []
+  },
+  "pillars": [
+    {
+      "courseCode": "HEWB 121",
+      "title": "Foundations of Life Science",
+      "slug": "hewb-121",
+      "masteryGuide": {
+        "pdf": "HEWB 121 Foundations of Life Science Course Mastery Guide.pdf",
+        "docx": "HEWB 121 Foundations of Life Science Course Mastery Guide.docx",
+        "sourceDir": "/Users/rickahn/Downloads/cheat sheet final/01 - Cheat Sheets"
+      },
+      "textbookCompanion": {
+        "pdf": "HEWB 121 Foundations of Life Science Textbook Companion.pdf",
+        "docx": "HEWB 121 Foundations of Life Science Textbook Companion.docx",
+        "source": "textbook-root",
+        "folder": "Foundations of Life Science",
+        "sourceDir": "/Users/rickahn/Downloads/cheat sheet final/02 - Textbook Companions/Foundations of Life Science"
+      }
+    },
+    {
+      "courseCode": "HEWB 130",
+      "title": "Oral Histology",
+      "slug": "hewb-130",
+      "masteryGuide": {
+        "pdf": "HEWB 130 Oral Histology Course Mastery Guide.pdf",
+        "docx": "HEWB 130 Oral Histology Course Mastery Guide.docx",
+        "sourceDir": "/Users/rickahn/Downloads/cheat sheet final/01 - Cheat Sheets"
+      },
+      "textbookCompanion": {
+        "pdf": "HEWB 130 Oral Histology Textbook Companion.pdf",
+        "docx": "HEWB 130 Oral Histology Textbook Companion.docx",
+        "source": "pending-add",
+        "folder": "Oral Histology",
+        "sourceDir": "/Users/rickahn/Downloads/cheat sheet final/New Textbook Companions - Pending Add/Oral Histology"
+      }
+    },
+    {
+      "courseCode": "DSPR 136",
+      "title": "Cariology",
+      "slug": "dspr-136",
+      "masteryGuide": {
+        "pdf": "DSPR 136 Cariology Course Mastery Guide.pdf",
+        "docx": "DSPR 136 Cariology Course Mastery Guide.docx",
+        "sourceDir": "/Users/rickahn/Downloads/cheat sheet final/01 - Cheat Sheets"
+      },
+      "textbookCompanion": {
+        "pdf": "DSPR 136 Cariology Textbook Companion.pdf",
+        "docx": "DSPR 136 Cariology Textbook Companion.docx",
+        "source": "textbook-root",
+        "folder": "Cariology",
+        "sourceDir": "/Users/rickahn/Downloads/cheat sheet final/02 - Textbook Companions/Cariology"
+      }
+    },
+    {
+      "courseCode": "DSPR 139",
+      "title": "Neoplasia",
+      "slug": "dspr-139",
+      "masteryGuide": {
+        "pdf": "DSPR 139 Neoplasia Course Mastery Guide.pdf",
+        "docx": "DSPR 139 Neoplasia Course Mastery Guide.docx",
+        "sourceDir": "/Users/rickahn/Downloads/cheat sheet final/01 - Cheat Sheets"
+      },
+      "textbookCompanion": {
+        "pdf": "DSPR 139 Neoplasia Textbook Companion.pdf",
+        "docx": "DSPR 139 Neoplasia Textbook Companion.docx",
+        "source": "textbook-root",
+        "folder": "Neoplasia",
+        "sourceDir": "/Users/rickahn/Downloads/cheat sheet final/02 - Textbook Companions/Neoplasia"
+      }
+    },
+    {
+      "courseCode": "HWDP 131",
+      "title": "Heart and Lungs Health and Disease",
+      "slug": "hwdp-131",
+      "masteryGuide": {
+        "pdf": "HWDP 131 Heart and Lungs Health and Disease Course Mastery Guide.pdf",
+        "docx": "HWDP 131 Heart and Lungs Health and Disease Course Mastery Guide.docx",
+        "sourceDir": "/Users/rickahn/Downloads/cheat sheet final/01 - Cheat Sheets"
+      },
+      "textbookCompanion": {
+        "pdf": "HWDP 131 Heart and Lungs Health and Disease Textbook Companion.pdf",
+        "docx": "HWDP 131 Heart and Lungs Health and Disease Textbook Companion.docx",
+        "source": "textbook-root",
+        "folder": "Heart and Lungs Health and Disease",
+        "sourceDir": "/Users/rickahn/Downloads/cheat sheet final/02 - Textbook Companions/Heart and Lungs Health and Disease"
+      }
+    },
+    {
+      "courseCode": "REHE 151",
+      "title": "Dental Anatomy",
+      "slug": "rehe-151",
+      "masteryGuide": {
+        "pdf": "REHE 151 Dental Anatomy Course Mastery Guide.pdf",
+        "docx": "REHE 151 Dental Anatomy Course Mastery Guide.docx",
+        "sourceDir": "/Users/rickahn/Downloads/cheat sheet final/01 - Cheat Sheets"
+      },
+      "textbookCompanion": {
+        "pdf": "REHE 151 Dental Anatomy and Occlusion Textbook Companion.pdf",
+        "docx": "REHE 151 Dental Anatomy and Occlusion Textbook Companion.docx",
+        "source": "pending-add",
+        "folder": "Dental Anatomy and Occlusion",
+        "sourceDir": "/Users/rickahn/Downloads/cheat sheet final/New Textbook Companions - Pending Add/Dental Anatomy and Occlusion"
+      }
+    },
+    {
+      "courseCode": "MAHE 145",
+      "title": "ACE Outreach Preventive Dentistry",
+      "slug": "mahe-145",
+      "masteryGuide": {
+        "pdf": "MAHE 145 ACE Outreach Preventive Dentistry Course Mastery Guide.pdf",
+        "docx": "MAHE 145 ACE Outreach Preventive Dentistry Course Mastery Guide.docx",
+        "sourceDir": "/Users/rickahn/Downloads/cheat sheet final/01 - Cheat Sheets"
+      },
+      "textbookCompanion": {
+        "pdf": "MAHE 145 ACE Outreach Preventive Dentistry Textbook Companion.pdf",
+        "docx": "MAHE 145 ACE Outreach Preventive Dentistry Textbook Companion.docx",
+        "source": "pending-add",
+        "folder": "ACE Outreach Preventive Dentistry",
+        "sourceDir": "/Users/rickahn/Downloads/cheat sheet final/New Textbook Companions - Pending Add/ACE Outreach Preventive Dentistry"
+      }
+    },
+    {
+      "courseCode": "LDRS 111",
+      "title": "Epidemiology for Dentistry",
+      "slug": "ldrs-111",
+      "masteryGuide": {
+        "pdf": "LDRS 111 Epidemiology for Dentistry Course Mastery Guide.pdf",
+        "docx": "LDRS 111 Epidemiology for Dentistry Course Mastery Guide.docx",
+        "sourceDir": "/Users/rickahn/Downloads/cheat sheet final/01 - Cheat Sheets"
+      },
+      "textbookCompanion": {
+        "pdf": "LDRS 111 Epidemiology for Dentistry Textbook Companion.pdf",
+        "docx": "LDRS 111 Epidemiology for Dentistry Textbook Companion.docx",
+        "source": "pending-add",
+        "folder": "Epidemiology for Dentistry",
+        "sourceDir": "/Users/rickahn/Downloads/cheat sheet final/New Textbook Companions - Pending Add/Epidemiology for Dentistry"
+      }
+    },
+    {
+      "courseCode": "LDRS 113",
+      "title": "Personal Finance",
+      "slug": "ldrs-113",
+      "masteryGuide": {
+        "pdf": "LDRS 113 Personal Finance Course Mastery Guide.pdf",
+        "docx": "LDRS 113 Personal Finance Course Mastery Guide.docx",
+        "sourceDir": "/Users/rickahn/Downloads/cheat sheet final/01 - Cheat Sheets"
+      },
+      "textbookCompanion": {
+        "pdf": "LDRS 113 Personal Finance Textbook Companion.pdf",
+        "docx": "LDRS 113 Personal Finance Textbook Companion.docx",
+        "source": "pending-add",
+        "folder": "Personal Finance",
+        "sourceDir": "/Users/rickahn/Downloads/cheat sheet final/New Textbook Companions - Pending Add/Personal Finance"
+      }
+    },
+    {
+      "courseCode": "HEWB 123",
+      "title": "Facial Growth and Development",
+      "slug": "hewb-123",
+      "masteryGuide": {
+        "pdf": "HEWB 123 Facial Growth and Development Course Mastery Guide.pdf",
+        "docx": "HEWB 123 Facial Growth and Development Course Mastery Guide.docx",
+        "sourceDir": "/Users/rickahn/Downloads/cheat sheet final/01 - Cheat Sheets"
+      },
+      "textbookCompanion": {
+        "pdf": "HEWB 123 Facial Growth and Development Textbook Companion.pdf",
+        "docx": "HEWB 123 Facial Growth and Development Textbook Companion.docx",
+        "source": "pending-add",
+        "folder": "Facial Growth and Development",
+        "sourceDir": "/Users/rickahn/Downloads/cheat sheet final/New Textbook Companions - Pending Add/Facial Growth and Development"
+      }
+    },
+    {
+      "courseCode": "HEWB 124",
+      "title": "Masticatory Dynamics",
+      "slug": "hewb-124",
+      "masteryGuide": {
+        "pdf": "HEWB 124 Masticatory Dynamics Course Mastery Guide.pdf",
+        "docx": "HEWB 124 Masticatory Dynamics Course Mastery Guide.docx",
+        "sourceDir": "/Users/rickahn/Downloads/cheat sheet final/01 - Cheat Sheets"
+      },
+      "textbookCompanion": {
+        "pdf": "HEWB 124 Masticatory Dynamics Textbook Companion.pdf",
+        "docx": "HEWB 124 Masticatory Dynamics Textbook Companion.docx",
+        "source": "textbook-root",
+        "folder": "Masticatory Dynamics",
+        "sourceDir": "/Users/rickahn/Downloads/cheat sheet final/02 - Textbook Companions/Masticatory Dynamics"
+      }
+    },
+    {
+      "courseCode": "HEWB 128",
+      "title": "Body as Host",
+      "slug": "hewb-128",
+      "masteryGuide": {
+        "pdf": "HEWB 128 Body as Host Course Mastery Guide.pdf",
+        "docx": "HEWB 128 Body as Host Course Mastery Guide.docx",
+        "sourceDir": "/Users/rickahn/Downloads/cheat sheet final/01 - Cheat Sheets"
+      },
+      "textbookCompanion": {
+        "pdf": "HEWB 128 Body as Host Textbook Companion.pdf",
+        "docx": "HEWB 128 Body as Host Textbook Companion.docx",
+        "source": "textbook-root",
+        "folder": "Body as Host",
+        "sourceDir": "/Users/rickahn/Downloads/cheat sheet final/02 - Textbook Companions/Body as Host"
+      }
+    },
+    {
+      "courseCode": "HEWB 134",
+      "title": "Head and Neck Structure and Function",
+      "slug": "hewb-134",
+      "masteryGuide": {
+        "pdf": "HEWB 134 Head and Neck Structure and Function Course Mastery Guide.pdf",
+        "docx": "HEWB 134 Head and Neck Structure and Function Course Mastery Guide.docx",
+        "sourceDir": "/Users/rickahn/Downloads/cheat sheet final/01 - Cheat Sheets"
+      },
+      "textbookCompanion": {
+        "pdf": "HEWB 134 Head and Neck Structure and Function Textbook Companion APPROVED 2026-07-02.pdf",
+        "docx": "HEWB 134 Head and Neck Structure and Function Textbook Companion APPROVED 2026-07-02.docx",
+        "source": "textbook-approved",
+        "folder": "Head and Neck",
+        "sourceDir": "/Users/rickahn/Downloads/cheat sheet final/02 - Textbook Companions/Head and Neck/approved"
+      }
+    },
+    {
+      "courseCode": "HWDP 142",
+      "title": "GI System in Health and Disease",
+      "slug": "hwdp-142",
+      "masteryGuide": {
+        "pdf": "HWDP 142 GI System in Health and Disease Course Mastery Guide.pdf",
+        "docx": "HWDP 142 GI System in Health and Disease Course Mastery Guide.docx",
+        "sourceDir": "/Users/rickahn/Downloads/cheat sheet final/01 - Cheat Sheets"
+      },
+      "textbookCompanion": {
+        "pdf": "HWDP 142 GI System in Health and Disease Textbook Companion.pdf",
+        "docx": "HWDP 142 GI System in Health and Disease Textbook Companion.docx",
+        "source": "textbook-root",
+        "folder": "GI System in Health and Disease",
+        "sourceDir": "/Users/rickahn/Downloads/cheat sheet final/02 - Textbook Companions/GI System in Health and Disease"
+      }
+    },
+    {
+      "courseCode": "REHE 120",
+      "title": "Intro to Radiography",
+      "slug": "rehe-120",
+      "masteryGuide": {
+        "pdf": "REHE 120 Intro to Radiography Course Mastery Guide.pdf",
+        "docx": "REHE 120 Intro to Radiography Course Mastery Guide.docx",
+        "sourceDir": "/Users/rickahn/Downloads/cheat sheet final/01 - Cheat Sheets"
+      },
+      "textbookCompanion": {
+        "pdf": "REHE 120 Intro to Radiography Textbook Companion.pdf",
+        "docx": "REHE 120 Intro to Radiography Textbook Companion.docx",
+        "source": "textbook-root",
+        "folder": "Intro to Radiography",
+        "sourceDir": "/Users/rickahn/Downloads/cheat sheet final/02 - Textbook Companions/Intro to Radiography"
+      }
+    },
+    {
+      "courseCode": "REHE 152",
+      "title": "B.P. Fixed Prosthetics",
+      "slug": "rehe-152",
+      "masteryGuide": {
+        "pdf": "REHE 152 B.P. Fixed Prosthetics Course Mastery Guide.pdf",
+        "docx": "REHE 152 B.P. Fixed Prosthetics Course Mastery Guide.docx",
+        "sourceDir": "/Users/rickahn/Downloads/cheat sheet final/01 - Cheat Sheets"
+      },
+      "textbookCompanion": {
+        "pdf": "REHE 152 Basic Procedures in Fixed Prosthodontics I Textbook Companion.pdf",
+        "docx": "REHE 152 Basic Procedures in Fixed Prosthodontics I Textbook Companion.docx",
+        "source": "pending-add",
+        "folder": "Basic Procedures in Fixed Prosthodontics I",
+        "sourceDir": "/Users/rickahn/Downloads/cheat sheet final/New Textbook Companions - Pending Add/Basic Procedures in Fixed Prosthodontics I"
+      }
+    },
+    {
+      "courseCode": "REHE 158",
+      "title": "Dental Materials I",
+      "slug": "rehe-158",
+      "masteryGuide": {
+        "pdf": "REHE 158 Dental Materials I Course Mastery Guide.pdf",
+        "docx": "REHE 158 Dental Materials I Course Mastery Guide.docx",
+        "sourceDir": "/Users/rickahn/Downloads/cheat sheet final/01 - Cheat Sheets"
+      },
+      "textbookCompanion": {
+        "pdf": "REHE 158 Dental Materials I Textbook Companion.pdf",
+        "docx": "REHE 158 Dental Materials I Textbook Companion.docx",
+        "source": "pending-add",
+        "folder": "Dental Materials I",
+        "sourceDir": "/Users/rickahn/Downloads/cheat sheet final/New Textbook Companions - Pending Add/Dental Materials I"
+      }
+    },
+    {
+      "courseCode": "REHE 162",
+      "title": "BP Restorative Dentistry I",
+      "slug": "rehe-162",
+      "masteryGuide": {
+        "pdf": "REHE 162 BP Restorative Dentistry I Course Mastery Guide.pdf",
+        "docx": "REHE 162 BP Restorative Dentistry I Course Mastery Guide.docx",
+        "sourceDir": "/Users/rickahn/Downloads/cheat sheet final/01 - Cheat Sheets"
+      },
+      "textbookCompanion": {
+        "pdf": "REHE 162 BP Restorative Dentistry I Textbook Companion.pdf",
+        "docx": "REHE 162 BP Restorative Dentistry I Textbook Companion.docx",
+        "source": "pending-add",
+        "folder": "BP Restorative Dentistry I",
+        "sourceDir": "/Users/rickahn/Downloads/cheat sheet final/New Textbook Companions - Pending Add/BP Restorative Dentistry I"
+      }
+    },
+    {
+      "courseCode": "LDRS 118",
+      "title": "Ergonomics",
+      "slug": "ldrs-118",
+      "masteryGuide": {
+        "pdf": "LDRS 118 Ergonomics Course Mastery Guide.pdf",
+        "docx": "LDRS 118 Ergonomics Course Mastery Guide.docx",
+        "sourceDir": "/Users/rickahn/Downloads/cheat sheet final/01 - Cheat Sheets"
+      },
+      "textbookCompanion": {
+        "pdf": "LDRS 118 Ergonomics Textbook Companion.pdf",
+        "docx": "LDRS 118 Ergonomics Textbook Companion.docx",
+        "source": "pending-add",
+        "folder": "Ergonomics",
+        "sourceDir": "/Users/rickahn/Downloads/cheat sheet final/New Textbook Companions - Pending Add/Ergonomics"
+      }
+    }
+  ]
+}

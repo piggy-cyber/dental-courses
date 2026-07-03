@@ -28,6 +28,8 @@ type Resource = {
 
 const KIND_ORDER = [
   "Syllabus",
+  "Textbook Companion",
+  "Course Mastery Guide",
   "Slides",
   "Document",
   "Study Guide",
