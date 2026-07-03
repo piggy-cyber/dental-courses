@@ -9,10 +9,18 @@ export function SignInButton() {
   async function signIn() {
     setBusy(true);
     const supabase = createClient();
-    await supabase.auth.signInWithOAuth({
+    const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "google",
-      options: { redirectTo: `${window.location.origin}/auth/callback` },
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+        skipBrowserRedirect: true,
+      },
     });
+    if (error || !data.url) {
+      setBusy(false);
+      return;
+    }
+    window.location.assign(data.url);
   }
 
   return (

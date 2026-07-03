@@ -14,6 +14,7 @@ import {
   loadEnv,
   buildVideoIndex,
   youtubeMatches,
+  resolveLectureYoutube,
   sortLectureRows,
   canonicalResources,
   shouldImportResource,
@@ -68,6 +69,7 @@ const courses = courseData.map((course, index) => ({
 const lectures = [];
 const transcripts = [];
 const seenLectureIds = new Set();
+let transcriptVideoCount = 0;
 
 for (const course of courseData) {
   const baseRows = (lectureData.rows || []).filter(
@@ -86,8 +88,13 @@ for (const course of courseData) {
     if (seenLectureIds.has(row.id)) return;
     seenLectureIds.add(row.id);
 
-    const matches = youtubeMatches(row, videoIndex);
-    const video = matches.find((v) => v.visibility !== "private") ?? matches[0] ?? null;
+    const transcript = transcriptItems[row.id];
+    const { id: youtubeId, visibility: youtubeVisibility, source: youtubeSource } =
+      resolveLectureYoutube({
+        row,
+        videoIndex,
+        transcriptText: transcript?.text,
+      });
 
     lectures.push({
       id: row.id,
@@ -95,13 +102,15 @@ for (const course of courseData) {
       title: row.lectureTitle,
       lecture_date: row.date || null,
       transcript_source: row.transcriptSource ?? null,
-      youtube_id: video?.id ?? null,
-      youtube_visibility: video?.visibility ?? null,
+      youtube_id: youtubeId,
+      youtube_visibility: youtubeVisibility,
       synthetic: Boolean(row.synthetic),
       sort_order: index,
     });
+    if (youtubeSource === "transcript") {
+      transcriptVideoCount += 1;
+    }
 
-    const transcript = transcriptItems[row.id];
     if (transcript?.text) {
       transcripts.push({
         lecture_id: row.id,
@@ -193,6 +202,29 @@ function loadStudentPillars() {
 const pillarResources = loadStudentPillars();
 resources.push(...pillarResources);
 
+function dedupeResources(rows) {
+  const seen = new Map();
+  for (const row of rows) {
+    const key = `${row.course_code}\0${row.name}`;
+    if (!seen.has(key)) {
+      seen.set(key, row);
+      continue;
+    }
+    const existing = seen.get(key);
+    if (!existing.storage_path && row.storage_path) {
+      seen.set(key, row);
+    }
+  }
+  const deduped = [...seen.values()];
+  const removed = rows.length - deduped.length;
+  if (removed) console.log(`Deduped ${removed} duplicate resource rows`);
+  return deduped;
+}
+
+const dedupedResources = dedupeResources(resources);
+resources.length = 0;
+resources.push(...dedupedResources);
+
 let skippedImport = 0;
 for (const course of courseData) {
   skippedImport += (resourceMap.courses?.[course.code]?.resources ?? []).filter(
@@ -262,5 +294,5 @@ await replaceTable("resources", resources);
 const withVideo = lectures.filter((lecture) => lecture.youtube_id).length;
 console.log("");
 console.log(`Done. ${courses.length} courses, ${lectures.length} lectures ` +
-  `(${withVideo} with video), ${transcripts.length} transcripts, ${resources.length} files ` +
+  `(${withVideo} with video, ${transcriptVideoCount} from transcript URLs), ${transcripts.length} transcripts, ${resources.length} files ` +
   `(incl. ${pillarResources.length} pillar files).`);

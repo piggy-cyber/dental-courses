@@ -13,14 +13,24 @@ export function SignInPanel() {
     setBusy("google");
     setError(null);
     const supabase = createClient();
-    const { error: authError } = await supabase.auth.signInWithOAuth({
+    const { data, error: authError } = await supabase.auth.signInWithOAuth({
       provider: "google",
-      options: { redirectTo: `${window.location.origin}/auth/callback` },
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+        skipBrowserRedirect: true,
+      },
     });
     if (authError) {
       setError(authError.message);
       setBusy(null);
+      return;
     }
+    if (!data.url) {
+      setError("Google sign-in did not return a login URL.");
+      setBusy(null);
+      return;
+    }
+    window.location.assign(data.url);
   }
 
   async function sendMagicLink(event: React.FormEvent) {

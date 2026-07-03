@@ -1,79 +1,101 @@
-import { ReportProblemButton } from "@/components/ReportProblemButton";
-import type { CourseResource } from "@/lib/course-organize";
+"use client";
+
+import { ResourceFileActions } from "@/components/ResourceFileActions";
+import type { CourseEssentials, CourseResource } from "@/lib/course-organize";
+
+function extLabel(resource: CourseResource) {
+  return String(resource.ext ?? resource.kind ?? "File").toUpperCase();
+}
 
 export function ResourceFileRow({ resource }: { resource: CourseResource }) {
   return (
-    <li className="flex flex-col gap-1 px-3 py-2 sm:flex-row sm:items-center sm:justify-between">
+    <li className="flex flex-col gap-2 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
       <div className="min-w-0">
-        <p className="truncate text-sm text-slate-800">{resource.name}</p>
-        <p className="text-xs text-slate-400">
+        <p className="truncate text-sm font-medium text-brand-ink">{resource.name}</p>
+        <p className="text-xs text-brand-muted">
           {resource.kind}
           {resource.ext ? ` · ${resource.ext}` : ""}
         </p>
       </div>
-      <div className="flex shrink-0 items-center gap-3">
-        {resource.storage_path ? (
-          <a
-            href={`/api/resource/${resource.id}`}
-            target="_blank"
-            rel="noreferrer"
-            className="rounded-full border border-brand-line px-3 py-1 text-xs font-medium text-brand-blue hover:bg-brand-soft"
-          >
-            Open
-          </a>
-        ) : (
-          <span className="text-xs text-slate-400">Not uploaded</span>
-        )}
-        <ReportProblemButton resourceId={resource.id} resourceName={resource.name} />
-      </div>
+      <ResourceFileActions resource={resource} />
     </li>
   );
 }
 
+const ESSENTIAL_ACCENTS = {
+  Syllabus: "border-l-brand-blue",
+  "Cheat sheet": "border-l-brand-gold",
+  "Textbook version": "border-l-brand-teal",
+} as const;
+
 export function CourseEssentialsPanel({
   essentials,
 }: {
-  essentials: {
-    syllabus: CourseResource | null;
-    masteryGuide: CourseResource | null;
-    textbookCompanion: CourseResource | null;
-  };
+  essentials: CourseEssentials;
 }) {
   const items = [
-    { label: "Syllabus", resource: essentials.syllabus },
-    { label: "Course cheatsheet", resource: essentials.masteryGuide },
-    { label: "Textbook companion", resource: essentials.textbookCompanion },
-  ].filter((item) => item.resource);
+    {
+      label: "Syllabus" as const,
+      description: "Schedule, requirements, and exam dates.",
+      resources: essentials.syllabus,
+    },
+    {
+      label: "Cheat sheet" as const,
+      description: "Condensed mastery guide for quick review.",
+      resources: essentials.masteryGuide,
+    },
+    {
+      label: "Textbook version" as const,
+      description: "Long-form companion for deeper study.",
+      resources: essentials.textbookCompanion,
+    },
+  ].filter((item) => item.resources.length > 0);
 
   if (!items.length) return null;
 
   return (
-    <section className="rounded-xl border border-brand-teal/30 bg-brand-soft p-5">
-      <h2 className="text-sm font-semibold uppercase tracking-wider text-brand-teal">
-        Start here
-      </h2>
-      <ul className="mt-3 divide-y divide-brand-line/60">
-        {items.map(({ label, resource }) => (
-          <li key={resource!.id} className="flex items-center justify-between gap-4 py-3 first:pt-0 last:pb-0">
-            <div>
-              <p className="text-xs font-semibold uppercase text-brand-muted">{label}</p>
-              <p className="mt-0.5 text-sm font-medium text-brand-ink">{resource!.name}</p>
-            </div>
-            {resource!.storage_path ? (
-              <a
-                href={`/api/resource/${resource!.id}`}
-                target="_blank"
-                rel="noreferrer"
-                className="shrink-0 rounded-full border border-brand-teal px-4 py-1.5 text-sm font-medium text-brand-teal hover:bg-white"
-              >
-                Open
-              </a>
-            ) : (
-              <span className="text-xs text-slate-400">Not uploaded</span>
-            )}
-          </li>
-        ))}
-      </ul>
+    <section className="space-y-4">
+      <div>
+        <p className="eyebrow text-brand-gold">Start here</p>
+        <h2 className="mt-1 text-xl font-bold text-brand-navy">Course essentials</h2>
+      </div>
+      <div className="grid gap-4 lg:grid-cols-3">
+        {items.map(({ label, description, resources }) => {
+          const accent = ESSENTIAL_ACCENTS[label];
+
+          return (
+            <article
+              key={label}
+              className={`rounded-xl border border-brand-line border-l-4 bg-brand-panel p-5 shadow-sm ${accent}`}
+            >
+              <div>
+                <h3 className="font-semibold text-brand-navy">{label}</h3>
+                <p className="mt-1 text-sm text-brand-muted">{description}</p>
+              </div>
+              <ul className="mt-4 space-y-3">
+                {resources.map((resource) => (
+                  <li
+                    key={resource.id}
+                    className="border-t border-brand-line/70 pt-3 first:border-t-0 first:pt-0"
+                  >
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-medium text-brand-ink">
+                        {resource.name}
+                      </p>
+                      <p className="mt-0.5 text-xs font-semibold text-brand-muted">
+                        {extLabel(resource)}
+                      </p>
+                    </div>
+                    <div className="mt-2">
+                      <ResourceFileActions resource={resource} />
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </article>
+          );
+        })}
+      </div>
     </section>
   );
 }

@@ -1,6 +1,7 @@
 import path from "node:path";
 import {
   canonicalResources,
+  lectureNumberFromName,
   loadSiteData,
   relatedScore,
   shouldImportResource,
@@ -30,18 +31,20 @@ export type CourseResource = {
   kind: string | null;
   ext: string | null;
   section: string | null;
+  use_label?: string | null;
+  size_mb?: number | null;
   storage_path: string | null;
   is_canonical_syllabus: boolean;
 };
 
 export type CourseEssentials = {
-  syllabus: CourseResource | null;
-  masteryGuide: CourseResource | null;
-  textbookCompanion: CourseResource | null;
+  syllabus: CourseResource[];
+  masteryGuide: CourseResource[];
+  textbookCompanion: CourseResource[];
 };
 
 const ARCHIVE_SECTION = /fall semester|survival guide|previous year|spring semester/i;
-const MISFILED_NAME = /^(asdf|1\. ergo review)/i;
+const MISFILED_NAME = /^(asdf|1\. ergo review|copy of lecture \d+)/i;
 const WRONG_COURSE_NAME = /dental materials sg/i;
 
 export function isArchivedResource(resource: CourseResource) {
@@ -75,15 +78,33 @@ export function pickEssentials(resources: CourseResource[]): CourseEssentials {
     active.find((r) => r.is_canonical_syllabus) ??
     active.find((r) => r.kind === "Syllabus") ??
     null;
-  const masteryGuide =
-    active.find((r) => r.kind === "Course Mastery Guide" && r.ext === "PDF") ??
-    active.find((r) => r.kind === "Course Mastery Guide") ??
-    null;
-  const textbookCompanion =
-    active.find((r) => r.kind === "Textbook Companion" && r.ext === "PDF") ??
-    active.find((r) => r.kind === "Textbook Companion") ??
-    null;
-  return { syllabus, masteryGuide, textbookCompanion };
+  const masteryGuide = active
+    .filter((r) => r.kind === "Course Mastery Guide")
+    .sort(sortResourceFormats);
+  const textbookCompanion = active
+    .filter((r) => r.kind === "Textbook Companion")
+    .sort(sortResourceFormats);
+  return {
+    syllabus: syllabus ? [syllabus] : [],
+    masteryGuide,
+    textbookCompanion,
+  };
+}
+
+function formatRank(resource: CourseResource) {
+  const ext = String(resource.ext ?? "").toUpperCase();
+  if (ext === "PDF") return 1;
+  if (ext === "DOCX") return 2;
+  if (ext === "DOC") return 3;
+  if (ext === "PPTX") return 4;
+  if (ext === "PPT") return 5;
+  return 99;
+}
+
+function sortResourceFormats(a: CourseResource, b: CourseResource) {
+  const rank = formatRank(a) - formatRank(b);
+  if (rank !== 0) return rank;
+  return a.name.localeCompare(b.name, undefined, { numeric: true });
 }
 
 const KIND_RANK: Record<string, number> = {
@@ -101,11 +122,19 @@ function resourceKindFromExt(ext?: string) {
   return "Other";
 }
 
+function normalizeResourceName(name: string) {
+  return name.replace(/\s+/g, " ").trim();
+}
+
 function dbResourceByName(
   resources: CourseResource[],
   name: string
 ): CourseResource | undefined {
-  return resources.find((r) => r.name === name);
+  const exact = resources.find((r) => r.name === name);
+  if (exact) return exact;
+  const normalized = normalizeResourceName(name);
+  if (normalized === name) return undefined;
+  return resources.find((r) => normalizeResourceName(r.name) === normalized);
 }
 
 export function relatedResourcesForLecture(
@@ -113,7 +142,8 @@ export function relatedResourcesForLecture(
   lectureTitle: string,
   explicitFiles: LectureFileRef[],
   pool: CourseResource[],
-  sourceResources: { name: string; kind?: string; ext?: string; section?: string }[]
+  sourceResources: { name: string; kind?: string; ext?: string; section?: string }[],
+  options: { lectureIndex?: number } = {}
 ) {
   const seen = new Set<string>();
   const linked: CourseResource[] = [];
@@ -128,19 +158,32 @@ export function relatedResourcesForLecture(
     add(dbResourceByName(pool, file.name));
   }
 
-  const row = { lectureTitle, courseCode };
-  const scored = sourceResources
-    .filter((item) => item.kind !== "Local Media Source" && item.kind !== "Transcript")
-    .map((item) => ({
-      item,
-      score: relatedScore(row, item),
-    }))
-    .filter((entry) => entry.score > 0)
-    .sort((a, b) => b.score - a.score)
-    .slice(0, 8);
+  if (!explicitFiles.length) {
+    const pairedLectureNumbers = explicitFiles
+      .map((file) => lectureNumberFromName(file.name))
+      .filter((value): value is number => value !== null);
 
-  for (const { item } of scored) {
-    add(dbResourceByName(pool, item.name));
+    const row = {
+      lectureTitle,
+      courseCode,
+      lectureNumber: options.lectureIndex ?? null,
+    };
+    const scored = sourceResources
+      .filter((item) => item.kind !== "Local Media Source" && item.kind !== "Transcript")
+      .map((item) => ({
+        item,
+        score: relatedScore(row, item, {
+          lectureIndex: options.lectureIndex,
+          pairedLectureNumbers,
+        }),
+      }))
+      .filter((entry) => entry.score >= 40)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 8);
+
+    for (const { item } of scored) {
+      add(dbResourceByName(pool, item.name));
+    }
   }
 
   return linked.sort((a, b) => {
@@ -160,9 +203,11 @@ export function organizeCourseResources(
   const essentials = pickEssentials(active);
 
   const reservedNames = new Set(
-    [essentials.syllabus, essentials.masteryGuide, essentials.textbookCompanion]
-      .filter(Boolean)
-      .map((r) => r!.name)
+    [
+      ...essentials.syllabus,
+      ...essentials.masteryGuide,
+      ...essentials.textbookCompanion,
+    ].map((r) => r.name)
   );
 
   const pool = active.filter(
@@ -178,4 +223,4 @@ export function organizeCourseResources(
   return { essentials, pool, archive, sourceResources };
 }
 
-export { relatedScore, resourceKindFromExt };
+export { lectureNumberFromName, relatedScore, resourceKindFromExt };

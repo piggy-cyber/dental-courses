@@ -1,3 +1,4 @@
+import bundledCatalog from "../data/youtube-catalog.json";
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import vm from "node:vm";
@@ -24,7 +25,7 @@ function compactTitle(value: string) {
   return normalizeTitle(value).replace(/[^a-z0-9]/g, "");
 }
 
-function loadVideos(): YoutubeVideo[] {
+function loadVideosFromRepoFiles(): YoutubeVideo[] {
   const repoRoot = path.resolve(process.cwd(), "..");
   const jsDir = path.join(repoRoot, "assets", "js");
   const privatePath = path.join(jsDir, "youtube-videos.private.js");
@@ -36,6 +37,12 @@ function loadVideos(): YoutubeVideo[] {
   vm.createContext(context);
   vm.runInContext(readFileSync(filePath, "utf8"), context);
   return context.window.youtubeVideos?.videos ?? [];
+}
+
+function loadVideos(): YoutubeVideo[] {
+  const fromFiles = loadVideosFromRepoFiles();
+  if (fromFiles.length) return fromFiles;
+  return bundledCatalog.videos ?? [];
 }
 
 let cached: YoutubeVideo[] | null = null;

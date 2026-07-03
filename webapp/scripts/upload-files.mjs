@@ -11,12 +11,22 @@
 // Usage:  node scripts/upload-files.mjs
 //         node scripts/upload-files.mjs --dry
 //         node scripts/upload-files.mjs --canvas
-import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
+//         node scripts/upload-files.mjs --link-storage --course "HEWB 130"
+//         node scripts/upload-files.mjs --canvas --compress
+import { existsSync, readdirSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { createClient } from "@supabase/supabase-js";
 import { loadEnv } from "./lib/data.mjs";
+import { prepareUploadPayload, convertOfficeToPdf } from "./lib/compress-file.mjs";
+import {
+  DEFAULT_COURSE_FILES_DIR,
+  canvasStorageKeyFromRelPath,
+  fetchAllResources,
+  linkExistingStorage,
+  normalizeBasename,
+} from "./lib/storage-reconcile.mjs";
 
 const webappRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const repoRoot = path.resolve(webappRoot, "..");
@@ -24,6 +34,20 @@ loadEnv(webappRoot);
 
 const dryRun = process.argv.includes("--dry");
 const includeCanvas = process.argv.includes("--canvas");
+const essentialsOnly = process.argv.includes("--essentials");
+const linkStorageOnly = process.argv.includes("--link-storage");
+const compressLarge = process.argv.includes("--compress");
+const courseFilter = readFlagValue("course")?.trim() ?? null;
+
+function readFlagValue(name) {
+  const flag = `--${name}`;
+  const inline = `${flag}=`;
+  const inlineValue = process.argv.find((arg) => arg.startsWith(inline));
+  if (inlineValue) return inlineValue.slice(inline.length);
+  const index = process.argv.indexOf(flag);
+  if (index >= 0) return process.argv[index + 1];
+  return null;
+}
 
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const secret = process.env.SUPABASE_SECRET_KEY;
@@ -39,38 +63,65 @@ const supabase = createClient(url, secret, {
 /** @type {Map<string, { localPath: string, relPath: string }[]>} */
 const filesByName = new Map();
 
+function aliasNames(name) {
+  const aliases = new Set([name, normalizeBasename(name)]);
+  try {
+    const decoded = decodeURIComponent(name);
+    aliases.add(decoded);
+    aliases.add(normalizeBasename(decoded));
+  } catch {
+    // not URL-encoded
+  }
+  const encoded = encodeURIComponent(name);
+  aliases.add(encoded);
+  aliases.add(normalizeBasename(encoded));
+  return [...aliases];
+}
+
+function indexLocalFile(name, entry) {
+  for (const alias of aliasNames(name)) {
+    const list = filesByName.get(alias) ?? [];
+    if (!list.some((item) => item.localPath === entry.localPath)) {
+      list.push(entry);
+      filesByName.set(alias, list);
+    }
+  }
+}
+
 function walk(dir, rootDir) {
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
-    if (entry.name.startsWith(".")) continue;
+    if (entry.name.startsWith(".") || entry.name.startsWith("~$")) continue;
     const full = path.join(dir, entry.name);
     if (entry.isDirectory()) {
       walk(full, rootDir);
       continue;
     }
     const relPath = path.relative(rootDir, full);
-    const list = filesByName.get(entry.name) ?? [];
-    list.push({ localPath: full, relPath });
-    filesByName.set(entry.name, list);
+    indexLocalFile(entry.name, { localPath: full, relPath });
   }
 }
 
 const pillarsRoot = path.join(repoRoot, "private-staging/student-pillars");
-if (existsSync(pillarsRoot)) {
+if (!linkStorageOnly && existsSync(pillarsRoot)) {
   walk(pillarsRoot, pillarsRoot);
   console.log(`Indexed ${filesByName.size} pillar files under ${pillarsRoot}`);
-} else {
+} else if (!linkStorageOnly) {
   console.log(`Pillar staging folder not found (skipped): ${pillarsRoot}`);
 }
 
 const filesRoot =
-  process.env.COURSE_FILES_DIR ||
-  path.join(os.homedir(), "Downloads", "Case Western D1 2025-2026");
-if (includeCanvas && existsSync(filesRoot)) {
-  const before = filesByName.size;
-  walk(filesRoot, filesRoot);
-  console.log(`Indexed ${filesByName.size - before} Canvas filenames under ${filesRoot}`);
-} else if (includeCanvas) {
-  console.log(`Course files folder not found (skipped): ${filesRoot}`);
+  process.env.COURSE_FILES_DIR || DEFAULT_COURSE_FILES_DIR;
+const legacyFilesRoot = path.join(os.homedir(), "Downloads", "Case Western D1 2025-2026");
+if (!linkStorageOnly && includeCanvas) {
+  for (const root of [filesRoot, legacyFilesRoot]) {
+    if (!existsSync(root)) {
+      console.log(`Course files folder not found (skipped): ${root}`);
+      continue;
+    }
+    const before = filesByName.size;
+    walk(root, root);
+    console.log(`Indexed ${filesByName.size - before} filenames under ${root}`);
+  }
 }
 
 const CONTENT_TYPES = {
@@ -112,18 +163,8 @@ function pillarStorageKey(resource) {
 }
 
 /** Mirror local folder layout: library/HWDP 131 - Heart.../subdir/file.pdf */
-function sanitizePathSegment(segment) {
-  return segment
-    .normalize("NFC")
-    .replace(/[''´`]/g, "_")
-    .replace(/[^\x00-\x7F]/g, (char) => {
-      const map = { "–": "-", "—": "-", "'": "_", "'": "_" };
-      return map[char] ?? "_";
-    });
-}
-
 function canvasStorageKey(relPath) {
-  return `library/${relPath.split(path.sep).map(sanitizePathSegment).join("/")}`;
+  return canvasStorageKeyFromRelPath(relPath);
 }
 
 function scoreCandidate(resource, relPath) {
@@ -144,10 +185,45 @@ function scoreCandidate(resource, relPath) {
 }
 
 function resolveLocalPath(resource) {
-  const candidates = filesByName.get(resource.name);
-  if (!candidates?.length) return null;
-  if (candidates.length === 1) return candidates[0];
-  return candidates
+  const lookupNames = [resource.name, normalizeBasename(resource.name)];
+  let candidates = [];
+  for (const name of lookupNames) {
+    const hits = filesByName.get(name);
+    if (hits?.length) candidates.push(...hits);
+  }
+
+  if (!candidates.length && /\.pptx?$/i.test(resource.name)) {
+    const stem = resource.name.replace(/\.pptx?$/i, "");
+    const stems = [stem];
+    const yearMatch = stem.match(/^(.*?)(20\d{2})$/i);
+    if (yearMatch) {
+      stems.push(`${yearMatch[1]}${Number(yearMatch[2]) + 1}`);
+      stems.push(`${yearMatch[1]}${Number(yearMatch[2]) - 1}`);
+    }
+    for (const s of stems) {
+      for (const suffix of [".pdf", ".pptx.pdf"]) {
+        for (const name of [s + suffix, normalizeBasename(s + suffix)]) {
+          const hits = filesByName.get(name);
+          if (hits?.length) candidates.push(...hits);
+        }
+      }
+    }
+  }
+
+  if (!candidates.length && /\.pdf$/i.test(resource.name)) {
+    const stem = resource.name.replace(/\.pdf$/i, "");
+    for (const suffix of [".pptx.pdf", ".pdf"]) {
+      for (const name of [stem + suffix, normalizeBasename(stem + suffix)]) {
+        const hits = filesByName.get(name);
+        if (hits?.length) candidates.push(...hits);
+      }
+    }
+  }
+
+  if (!candidates.length) return null;
+  const unique = [...new Map(candidates.map((item) => [item.localPath, item])).values()];
+  if (unique.length === 1) return unique[0];
+  return unique
     .slice()
     .sort((a, b) => scoreCandidate(resource, b.relPath) - scoreCandidate(resource, a.relPath))[0];
 }
@@ -158,34 +234,64 @@ function storageKey(resource, localEntry) {
   return canvasStorageKey(localEntry.relPath);
 }
 
-const { data: resources, error } = await fetchAllResources();
+const { data: resources, error } = await fetchAllResources(supabase);
 if (error) {
   console.error(`Could not read resources table: ${error.message}`);
   process.exit(1);
 }
-
-async function fetchAllResources() {
-  const pageSize = 1000;
-  const rows = [];
-  for (let from = 0; ; from += pageSize) {
-    const { data, error } = await supabase
-      .from("resources")
-      .select("id, course_code, name, kind, section, storage_path")
-      .range(from, from + pageSize - 1);
-    if (error) return { data: null, error };
-    if (!data?.length) break;
-    rows.push(...data);
-    if (data.length < pageSize) break;
-  }
-  return { data: rows, error: null };
+if (courseFilter) {
+  console.log(`Course filter: ${courseFilter}`);
+}
+if (linkStorageOnly) {
+  await linkExistingStorage(supabase, resources, { courseFilter, dryRun });
+  process.exit(0);
+}
+if (essentialsOnly) {
+  console.log("Essentials only: syllabus, course mastery guides, textbook companions");
+}
+if (compressLarge) {
+  console.log("Compress: oversized PDFs will be compressed with ghostscript before upload");
 }
 
 let uploaded = 0;
+let compressed = 0;
 let skipped = 0;
 let missing = 0;
 let skippedYoutube = 0;
+let skippedOtherCourse = 0;
+let skippedNonEssential = 0;
 
-for (const resource of resources) {
+function isEssentialResource(resource) {
+  return ["Syllabus", "Course Mastery Guide", "Textbook Companion"].includes(
+    resource.kind
+  );
+}
+
+function uploadPriority(resource) {
+  if (resource.kind === "Syllabus") return 1;
+  if (resource.kind === "Course Mastery Guide") return 2;
+  if (resource.kind === "Textbook Companion") return 3;
+  return 9;
+}
+
+const uploadQueue = resources
+  .slice()
+  .sort(
+    (a, b) =>
+      uploadPriority(a) - uploadPriority(b) ||
+      a.course_code.localeCompare(b.course_code) ||
+      a.name.localeCompare(b.name, undefined, { numeric: true })
+  );
+
+for (const resource of uploadQueue) {
+  if (courseFilter && resource.course_code !== courseFilter) {
+    skippedOtherCourse += 1;
+    continue;
+  }
+  if (essentialsOnly && !isEssentialResource(resource)) {
+    skippedNonEssential += 1;
+    continue;
+  }
   if (resource.kind === "Local Media Source") {
     skippedYoutube += 1;
     continue;
@@ -201,24 +307,37 @@ for (const resource of resources) {
   }
 
   const key = storageKey(resource, localEntry);
+  const maxMb = Number(process.env.UPLOAD_MAX_MB || 50);
+  const maxBytes = maxMb * 1024 * 1024;
+
+  const payload = prepareUploadPayload(localEntry.localPath, {
+    compress: compressLarge,
+    maxBytes,
+    resourceName: resource.name,
+  });
+
   if (dryRun) {
-    console.log(`[dry] ${resource.name} -> ${key}`);
+    const tag = payload.compressed ? " [compressed]" : "";
+    console.log(`[dry] ${resource.name} -> ${key}${tag}`);
     uploaded += 1;
     continue;
   }
 
-  const size = statSync(localEntry.localPath).size;
-  const maxMb = Number(process.env.UPLOAD_MAX_MB || 200);
-  if (size > maxMb * 1024 * 1024) {
-    console.warn(`Skipping ${resource.name}: larger than ${maxMb} MB`);
+  if (!payload.ok) {
+    if (payload.skip) console.warn(`Skipping ${resource.name}: ${payload.reason}`);
+    else console.warn(`Skipping ${resource.name}: upload prep failed`);
     continue;
   }
 
   const ext = path.extname(localEntry.localPath).toLowerCase();
+  const contentType =
+    payload.compressed || payload.converted
+      ? "application/pdf"
+      : CONTENT_TYPES[ext] ?? "application/octet-stream";
   const { error: uploadError } = await supabase.storage
     .from("course-files")
-    .upload(key, readFileSync(localEntry.localPath), {
-      contentType: CONTENT_TYPES[ext] ?? "application/octet-stream",
+    .upload(key, payload.buffer, {
+      contentType,
       upsert: true,
     });
   if (uploadError) {
@@ -229,17 +348,36 @@ for (const resource of resources) {
   const { error: updateError } = await supabase
     .from("resources")
     .update({ storage_path: key })
-    .eq("id", resource.id);
+    .eq("course_code", resource.course_code)
+    .eq("name", resource.name)
+    .is("storage_path", null);
   if (updateError) {
     console.warn(`Uploaded but could not link ${resource.name}: ${updateError.message}`);
     continue;
   }
 
   uploaded += 1;
-  process.stdout.write(`Uploaded ${uploaded} files...\r`);
+  if (payload.compressed || payload.converted) {
+    compressed += 1;
+    const before = ((payload.originalBytes ?? 0) / (1024 * 1024)).toFixed(1);
+    const after = (payload.sizeBytes / (1024 * 1024)).toFixed(1);
+    const tag = payload.converted
+      ? payload.compressed
+        ? "converted+compressed"
+        : "converted"
+      : "compressed";
+    console.log(`${tag}: ${resource.name} (${before} → ${after} MB${payload.profile ? ", " + payload.profile : ""})`);
+  } else {
+    process.stdout.write(`Uploaded ${uploaded} files...\r`);
+  }
 }
 
 console.log("");
 console.log(
-  `Done. Uploaded ${uploaded}, already linked ${skipped}, YouTube-only ${skippedYoutube}, no local match ${missing}.`
+  `Done. Uploaded ${uploaded}` +
+    (compressed ? ` (${compressed} compressed)` : "") +
+    `, already linked ${skipped}, YouTube-only ${skippedYoutube}, no local match ${missing}` +
+    (courseFilter ? `, skipped other courses ${skippedOtherCourse}` : "") +
+    (essentialsOnly ? `, skipped non-essential ${skippedNonEssential}` : "") +
+    "."
 );

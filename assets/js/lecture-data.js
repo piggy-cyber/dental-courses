@@ -1750,7 +1750,7 @@ window.lectureData = {
       "transcriptSource": "Echo360",
       "transcript": true,
       "mediaCount": 0,
-      "lectureFileCount": 1,
+      "lectureFileCount": 2,
       "status": "matched",
       "media": [],
       "lectureFiles": [
@@ -1758,6 +1758,12 @@ window.lectureData = {
           "name": "LECTURE 2- Development of the Orofacial Region - 2025 - Canvas.pdf",
           "title": "LECTURE 2- Development of the Orofacial Region - 2025 - Canvas",
           "type": "PDF",
+          "source": "Course file"
+        },
+        {
+          "name": "Lecture 2 Study Guide-- Development of the Orofacial Region.docx",
+          "title": "Lecture 2 Study Guide-- Development of the Orofacial Region",
+          "type": "DOCX",
           "source": "Course file"
         }
       ]
@@ -1772,7 +1778,7 @@ window.lectureData = {
       "transcriptSource": "Echo360",
       "transcript": true,
       "mediaCount": 0,
-      "lectureFileCount": 1,
+      "lectureFileCount": 2,
       "status": "matched",
       "media": [],
       "lectureFiles": [
@@ -1780,6 +1786,12 @@ window.lectureData = {
           "name": "LECTURE 3- Odontogenesis - 2025 - Canvas.pdf",
           "title": "LECTURE 3- Odontogenesis - 2025 - Canvas",
           "type": "PDF",
+          "source": "Course file"
+        },
+        {
+          "name": "Lecture 3 Study Guide-- Development of the Teeth.docx",
+          "title": "Lecture 3 Study Guide-- Development of the Teeth",
+          "type": "DOCX",
           "source": "Course file"
         }
       ]
@@ -1794,7 +1806,7 @@ window.lectureData = {
       "transcriptSource": "Echo360",
       "transcript": true,
       "mediaCount": 0,
-      "lectureFileCount": 1,
+      "lectureFileCount": 2,
       "status": "matched",
       "media": [],
       "lectureFiles": [
@@ -1802,6 +1814,12 @@ window.lectureData = {
           "name": "LECTURE 4- Enamel - 2025 - Canvas.pdf",
           "title": "LECTURE 4- Enamel - 2025 - Canvas",
           "type": "PDF",
+          "source": "Course file"
+        },
+        {
+          "name": "Lecture 4 Study Guide--Enamel.docx",
+          "title": "Lecture 4 Study Guide--Enamel",
+          "type": "DOCX",
           "source": "Course file"
         }
       ]
@@ -1816,7 +1834,7 @@ window.lectureData = {
       "transcriptSource": "Echo360",
       "transcript": true,
       "mediaCount": 0,
-      "lectureFileCount": 1,
+      "lectureFileCount": 2,
       "status": "matched",
       "media": [],
       "lectureFiles": [
@@ -1824,6 +1842,12 @@ window.lectureData = {
           "name": "LECTURE 5- Dentin - 2025 - Canvas.pdf",
           "title": "LECTURE 5- Dentin - 2025 - Canvas",
           "type": "PDF",
+          "source": "Course file"
+        },
+        {
+          "name": "Lecture 5 Study Guide--Dentin.docx",
+          "title": "Lecture 5 Study Guide--Dentin",
+          "type": "DOCX",
           "source": "Course file"
         }
       ]
@@ -1847,6 +1871,12 @@ window.lectureData = {
           "title": "LECTURE 6- Dental Pulp and Cementum 2025 - Canvas",
           "type": "PDF",
           "source": "Course file"
+        },
+        {
+          "name": "Lecture 6 Study Guide-- Pulp_Cementum.docx",
+          "title": "Lecture 6 Study Guide-- Pulp_Cementum",
+          "type": "DOCX",
+          "source": "Course file"
         }
       ]
     },
@@ -1860,7 +1890,7 @@ window.lectureData = {
       "transcriptSource": "Echo360",
       "transcript": true,
       "mediaCount": 0,
-      "lectureFileCount": 3,
+      "lectureFileCount": 5,
       "status": "matched",
       "media": [],
       "lectureFiles": [
@@ -1881,6 +1911,18 @@ window.lectureData = {
           "title": "Histology of the Periodontium. American Academy of Periodontology Literature Reviews 1996",
           "type": "PDF",
           "source": "Course file"
+        },
+        {
+          "name": "Study Guide 2025 - Periodontal Histoanatomy of the PDL, Alveolar Bone, Gingiva.pdf",
+          "title": "Study Guide 2025 - Periodontal Histoanatomy of the PDL, Alveolar Bone, Gingiva",
+          "type": "PDF",
+          "source": "Course file"
+        },
+        {
+          "name": "Lecture 9&10 Study Guide-- PDL and Alveolar Bone.docx",
+          "title": "Lecture 9&10 Study Guide-- PDL and Alveolar Bone",
+          "type": "DOCX",
+          "source": "Course file"
         }
       ]
     },
@@ -1894,7 +1936,7 @@ window.lectureData = {
       "transcriptSource": "Echo360",
       "transcript": true,
       "mediaCount": 0,
-      "lectureFileCount": 1,
+      "lectureFileCount": 2,
       "status": "matched",
       "media": [],
       "lectureFiles": [
@@ -1902,6 +1944,12 @@ window.lectureData = {
           "name": "LECTURE 7- Oral Mucosa 2025 - Canvas.pdf",
           "title": "LECTURE 7- Oral Mucosa 2025 - Canvas",
           "type": "PDF",
+          "source": "Course file"
+        },
+        {
+          "name": "Lecture 7 Study Guide-- Oral Mucosa.docx",
+          "title": "Lecture 7 Study Guide-- Oral Mucosa",
+          "type": "DOCX",
           "source": "Course file"
         }
       ]
@@ -1916,7 +1964,7 @@ window.lectureData = {
       "transcriptSource": "Echo360",
       "transcript": true,
       "mediaCount": 0,
-      "lectureFileCount": 1,
+      "lectureFileCount": 2,
       "status": "matched",
       "media": [],
       "lectureFiles": [
@@ -1924,6 +1972,12 @@ window.lectureData = {
           "name": "LECTURE 9- Salivary Glands 2025 - Canvas.pdf",
           "title": "LECTURE 9- Salivary Glands 2025 - Canvas",
           "type": "PDF",
+          "source": "Course file"
+        },
+        {
+          "name": "Lecture 8 Study Guide --Salivary Glands.docx",
+          "title": "Lecture 8 Study Guide --Salivary Glands",
+          "type": "DOCX",
           "source": "Course file"
         }
       ]
@@ -1938,7 +1992,7 @@ window.lectureData = {
       "transcriptSource": "Echo360",
       "transcript": true,
       "mediaCount": 0,
-      "lectureFileCount": 1,
+      "lectureFileCount": 3,
       "status": "matched",
       "media": [],
       "lectureFiles": [
@@ -1946,6 +2000,18 @@ window.lectureData = {
           "name": "LECTURE 10- Eruption and Shedding of Teeth 2024 - Canvas.pdf",
           "title": "LECTURE 10- Eruption and Shedding of Teeth 2024 - Canvas",
           "type": "PDF",
+          "source": "Course file"
+        },
+        {
+          "name": "LECTURE 9- Temporomandibular Junction 2024 - Canvas.pdf",
+          "title": "LECTURE 9- Temporomandibular Junction 2024 - Canvas",
+          "type": "PDF",
+          "source": "Course file"
+        },
+        {
+          "name": "Lecture 11_12 Study Guide-- TMJ & Eruption.docx",
+          "title": "Lecture 11_12 Study Guide-- TMJ & Eruption",
+          "type": "DOCX",
           "source": "Course file"
         }
       ]
@@ -2962,9 +3028,15 @@ window.lectureData = {
           "source": "Course file"
         },
         {
-          "name": "Vascular anatomy.pptx",
-          "title": "Vascular anatomy",
-          "type": "PPTX",
+          "name": "HWDP 131 Cardiovascular & Respiratory Anatomy Fall25 Newcomer.pdf",
+          "title": "Cardiovascular & Respiratory Anatomy Fall25 Newcomer (PDF)",
+          "type": "PDF",
+          "source": "Course file"
+        },
+        {
+          "name": "HWDP 131 Gross Anatomy Hit List 2023.docx",
+          "title": "Gross Anatomy Hit List 2023",
+          "type": "DOCX",
           "source": "Course file"
         },
         {
@@ -3106,8 +3178,8 @@ window.lectureData = {
       "transcriptSource": "Echo360",
       "transcript": true,
       "mediaCount": 2,
-      "lectureFileCount": 0,
-      "status": "needs-review",
+      "lectureFileCount": 2,
+      "status": "matched",
       "media": [
         {
           "name": "2a Arrhythmias and Cardiac Cycle 1.mp4",
@@ -3122,7 +3194,20 @@ window.lectureData = {
           "source": "Course file"
         }
       ],
-      "lectureFiles": []
+      "lectureFiles": [
+        {
+          "name": "Heart Disase Pourian 2025 pt 1.pdf",
+          "title": "Heart Disease Pourian 2025 pt 1",
+          "type": "PDF",
+          "source": "Course file"
+        },
+        {
+          "name": "Heart Disase part 2 Pourian 2025.pdf",
+          "title": "Heart Disease part 2 Pourian 2025",
+          "type": "PDF",
+          "source": "Course file"
+        }
+      ]
     },
     {
       "id": "hwdp-131-2025-10-20-hwdp-131-hlhd-hemodynamics",
@@ -3404,6 +3489,24 @@ window.lectureData = {
           "title": "Perio-Cardio Study Guide Questions for Final 2025 - Dr. Rolf",
           "type": "PDF",
           "source": "Course file"
+        },
+        {
+          "name": "Heart Disase - Pourian 2024.pptx",
+          "title": "Heart Disease - Pourian 2024",
+          "type": "PPTX",
+          "source": "Course file"
+        },
+        {
+          "name": "Heart Disase Pourian 2025 pt 1.pdf",
+          "title": "Heart Disease Pourian 2025 pt 1",
+          "type": "PDF",
+          "source": "Course file"
+        },
+        {
+          "name": "Heart Disase part 2 Pourian 2025.pdf",
+          "title": "Heart Disease part 2 Pourian 2025",
+          "type": "PDF",
+          "source": "Course file"
         }
       ]
     },
@@ -3430,6 +3533,12 @@ window.lectureData = {
         {
           "name": "HL Gas transport 10_30  -  Compatibility Mode.pdf",
           "title": "HL Gas transport 10 30 - Compatibility Mode",
+          "type": "PDF",
+          "source": "Course file"
+        },
+        {
+          "name": "HL Gas transport 10_30 - Compatibility Mode.pdf",
+          "title": "HL Gas transport 10 30 - Compatibility Mode (alt)",
           "type": "PDF",
           "source": "Course file"
         }
@@ -3494,6 +3603,18 @@ window.lectureData = {
           "title": "11. 2025 Respiratory Drugs Our Patients Take - SLewis",
           "type": "PPTX",
           "source": "Course file"
+        },
+        {
+          "name": "8. 2025 ACTUAL EXAM QUESTIONS CARDIOVASCULAR DRUGS - SJlewis.docx",
+          "title": "2025 CV drugs exam questions",
+          "type": "DOCX",
+          "source": "Course file"
+        },
+        {
+          "name": "10. 2025 ACTUAL EXAM QUESTIONS CARDIOVASCULAR DRUGS - WITH ANSWERS - SJLewis.docx",
+          "title": "2025 CV drugs exam questions with answers",
+          "type": "DOCX",
+          "source": "Course file"
         }
       ]
     },
@@ -3547,6 +3668,12 @@ window.lectureData = {
           "title": "D1-Respiratory Histology for 2025c",
           "type": "PDF",
           "source": "Course file"
+        },
+        {
+          "name": "14. 2025 RESPIRATORY DRUGS EXAM QUESTIONS - SJlewis with answers.docx",
+          "title": "2025 respiratory drugs exam questions with answers",
+          "type": "DOCX",
+          "source": "Course file"
         }
       ]
     },
@@ -3560,8 +3687,8 @@ window.lectureData = {
       "transcriptSource": "Echo360",
       "transcript": true,
       "mediaCount": 2,
-      "lectureFileCount": 0,
-      "status": "needs-review",
+      "lectureFileCount": 3,
+      "status": "matched",
       "media": [
         {
           "name": "3a Pressure, Resistance, and Flow 1.mp4",
@@ -3576,7 +3703,44 @@ window.lectureData = {
           "source": "Course file"
         }
       ],
-      "lectureFiles": []
+      "lectureFiles": [
+        {
+          "name": "HL Environmental Effects 11_6.pptx",
+          "title": "HL Environmental Effects 11 6",
+          "type": "PPTX",
+          "source": "Course file"
+        },
+        {
+          "name": "Learning Objectives for Physiology of Breathing.docx",
+          "title": "Learning Objectives for Physiology of Breathing",
+          "type": "DOCX",
+          "source": "Course file"
+        },
+        {
+          "name": "Lung Diseases Part 1 2025.pdf",
+          "title": "Lung Diseases Part 1 2025",
+          "type": "PDF",
+          "source": "Course file"
+        },
+        {
+          "name": "Lung Diseases Part 2 2025.pdf",
+          "title": "Lung Diseases Part 2 2025",
+          "type": "PDF",
+          "source": "Course file"
+        },
+        {
+          "name": "Diseases of the lungs CM 10-31.pdf",
+          "title": "Diseases of the lungs CM 10-31",
+          "type": "PDF",
+          "source": "Course file"
+        },
+        {
+          "name": "Diseases of the lungs CM 11-8.pdf",
+          "title": "Diseases of the lungs CM 11-8",
+          "type": "PDF",
+          "source": "Course file"
+        }
+      ]
     },
     {
       "id": "ldrs-111-2025-09-15-ldrs-111-epi-epidemiology-of-oral-disease-i-09-15-25",
@@ -5988,7 +6152,7 @@ window.lectureData = {
       "transcriptSource": "Echo360",
       "transcript": true,
       "mediaCount": 0,
-      "lectureFileCount": 4,
+      "lectureFileCount": 5,
       "status": "matched",
       "media": [],
       "lectureFiles": [
@@ -6014,6 +6178,12 @@ window.lectureData = {
           "name": "HEWB 134 Skull Lab Guide.pdf",
           "title": "Skull Lab Guide",
           "type": "PDF",
+          "source": "Course file"
+        },
+        {
+          "name": "HEWB 134 Superficial & Deep Face Lab Structures.docx",
+          "title": "Superficial & Deep Face Lab Structures",
+          "type": "DOCX",
           "source": "Course file"
         }
       ]
@@ -6163,6 +6333,18 @@ window.lectureData = {
           "title": "Cranial Nerves '26",
           "type": "PPTX",
           "source": "Course file"
+        },
+        {
+          "name": "HEWB 134 Cranial Vault & Orbit Lab Hit List.docx",
+          "title": "Cranial Vault & Orbit Lab Hit List",
+          "type": "DOCX",
+          "source": "Course file"
+        },
+        {
+          "name": "The Orbit & Its Contents HEWB 134 Sp26 Newcomer.pptx",
+          "title": "The Orbit & Its Contents",
+          "type": "PPTX",
+          "source": "Course file"
         }
       ]
     },
@@ -6243,6 +6425,18 @@ window.lectureData = {
           "title": "Model 3 Face and Neck",
           "type": "PPTX",
           "source": "Course file"
+        },
+        {
+          "name": "DEEP NECK '26.pptx",
+          "title": "DEEP NECK '26",
+          "type": "PPTX",
+          "source": "Course file"
+        },
+        {
+          "name": "HEWB 134 Deep Face & Gnathostomatic System Newcomer Sp26.pptx",
+          "title": "Deep Face & Gnathostomatic System",
+          "type": "PPTX",
+          "source": "Course file"
         }
       ]
     },
@@ -6321,6 +6515,12 @@ window.lectureData = {
         {
           "name": "HN Model 14 Nasal Cavity 2.pptx",
           "title": "Model 14 Nasal Cavity 2",
+          "type": "PPTX",
+          "source": "Course file"
+        },
+        {
+          "name": "HEWB 134 Oropharynx & Oral Cavity Lecture (1).pptx",
+          "title": "Oropharynx & Oral Cavity Lecture (1)",
           "type": "PPTX",
           "source": "Course file"
         }
@@ -6437,6 +6637,18 @@ window.lectureData = {
           "title": "Anatomy of Local Anesthesia Lecture Newcomer Sp26",
           "type": "PPTX",
           "source": "Course file"
+        },
+        {
+          "name": "CWRU dental lecture part 2 - based on IAOM second part.pptx",
+          "title": "CWRU dental lecture part 2 - OSA",
+          "type": "PPTX",
+          "source": "Course file"
+        },
+        {
+          "name": "CWRU Dental school anatomy part 1 based on Northwestern-1.pptx",
+          "title": "CWRU Dental school anatomy part 1",
+          "type": "PPTX",
+          "source": "Course file"
         }
       ]
     },
@@ -6512,10 +6724,23 @@ window.lectureData = {
       "transcriptSource": "Echo360",
       "transcript": true,
       "mediaCount": 0,
-      "lectureFileCount": 0,
-      "status": "needs-review",
+      "lectureFileCount": 2,
+      "status": "matched",
       "media": [],
-      "lectureFiles": []
+      "lectureFiles": [
+        {
+          "name": "Exam 3 Lecture Review Sp25.pptx",
+          "title": "Exam 3 Lecture Review Sp25",
+          "type": "PPTX",
+          "source": "Course file"
+        },
+        {
+          "name": "Exam I Review Concepts.pdf",
+          "title": "Exam I Review Concepts",
+          "type": "PDF",
+          "source": "Course file"
+        }
+      ]
     },
     {
       "id": "hwdp-142-2026-01-05-hwdp-142-gi-neural-regulation-of-eating-hunger-satiety",
@@ -6630,9 +6855,9 @@ window.lectureData = {
           "source": "Course file"
         },
         {
-          "name": "Digestive System Part I - 2026 - SODM - Canvas.pdf",
-          "title": "Digestive System Part I - 2026 - SODM - Canvas",
-          "type": "PDF",
+          "name": "Digestive Histology - Study guide.docx",
+          "title": "Digestive Histology - Study guide",
+          "type": "DOCX",
           "source": "Course file"
         }
       ]
@@ -6680,6 +6905,12 @@ window.lectureData = {
           "name": "Organs of Abdominal Cavity Lecture Newcomer Sp26.pptx",
           "title": "Organs of Abdominal Cavity Lecture Newcomer Sp26",
           "type": "PPTX",
+          "source": "Course file"
+        },
+        {
+          "name": "Organs of Abdominal Cavity Lecture Newcomer Sp26.pptx.pdf",
+          "title": "Organs of Abdominal Cavity Lecture (PDF)",
+          "type": "PDF",
           "source": "Course file"
         }
       ]
@@ -6974,6 +7205,18 @@ window.lectureData = {
         {
           "name": "Diseases of the gastrointestinal tract.pptx.pdf",
           "title": "Diseases of the gastrointestinal tract.pptx",
+          "type": "PDF",
+          "source": "Course file"
+        },
+        {
+          "name": "GI Hit List (1).docx",
+          "title": "GI Hit List",
+          "type": "DOCX",
+          "source": "Course file"
+        },
+        {
+          "name": "GI Diseases 26.pdf",
+          "title": "GI Diseases 26",
           "type": "PDF",
           "source": "Course file"
         }

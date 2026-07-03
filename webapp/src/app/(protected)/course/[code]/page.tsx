@@ -1,21 +1,24 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { TranscriptButton } from "@/components/TranscriptButton";
+import { CourseBreadcrumb } from "@/components/CourseBreadcrumb";
+import { CourseReportSection } from "@/components/CourseReportSection";
 import {
   CourseEssentialsPanel,
   ResourceFileRow,
 } from "@/components/CourseResourceRows";
+import { CourseLectureSection } from "@/components/CourseLectureSection";
 import {
   getSourceLectureRows,
   organizeCourseResources,
   relatedResourcesForLecture,
   type CourseResource,
 } from "@/lib/course-organize";
+import { groupLecturesForDisplay } from "@/lib/lecture-groups";
 import {
   isEmbeddable,
   matchFilenameToYoutube,
 } from "@/lib/youtube-catalog";
+import { CollapsibleVideoEmbed } from "@/components/CollapsibleVideoEmbed";
 
 export const dynamic = "force-dynamic";
 
@@ -27,7 +30,17 @@ type Lecture = {
   youtube_id: string | null;
   youtube_visibility: string | null;
   synthetic: boolean;
+  sort_order: number;
 };
+
+function StatChip({ label, value }: { label: string; value: string | number }) {
+  return (
+    <span className="inline-flex items-center gap-1.5 rounded-full border border-brand-line bg-white px-3 py-1 text-xs">
+      <span className="font-semibold text-brand-navy">{value}</span>
+      <span className="text-brand-muted">{label}</span>
+    </span>
+  );
+}
 
 export default async function CoursePage({
   params,
@@ -44,13 +57,13 @@ export default async function CoursePage({
       supabase
         .from("lectures")
         .select(
-          "id, title, lecture_date, transcript_source, youtube_id, youtube_visibility, synthetic"
+          "id, title, lecture_date, transcript_source, youtube_id, youtube_visibility, synthetic, sort_order"
         )
         .eq("course_code", courseCode)
         .order("sort_order"),
       supabase
         .from("resources")
-        .select("id, name, kind, ext, section, size_mb, storage_path, is_canonical_syllabus")
+        .select("id, name, kind, ext, section, use_label, size_mb, storage_path, is_canonical_syllabus")
         .eq("course_code", courseCode)
         .order("name"),
       supabase.from("transcripts").select("lecture_id"),
@@ -69,9 +82,16 @@ export default async function CoursePage({
     resourceList
   );
 
-  const sourceById = new Map(getSourceLectureRows(courseCode).map((row) => [row.id, row]));
+  const sourceRows = getSourceLectureRows(courseCode);
+  const sourceById = new Map(sourceRows.map((row) => [row.id, row]));
+  const lectureIndexById = new Map<string, number>();
+  sourceRows
+    .filter((row) => row.date)
+    .slice()
+    .sort((a, b) => String(a.date).localeCompare(String(b.date)))
+    .forEach((row, index) => lectureIndexById.set(row.id, index + 1));
 
-  const lectureList = ((lectures as Lecture[]) ?? []).filter((l) => !l.synthetic);
+  const lectureList = (lectures as Lecture[]) ?? [];
   const linkedNames = new Set<string>();
 
   const lecturesWithFiles = lectureList.map((lecture) => {
@@ -81,7 +101,8 @@ export default async function CoursePage({
       lecture.title,
       source?.lectureFiles ?? [],
       pool,
-      sourceResources
+      sourceResources,
+      { lectureIndex: lectureIndexById.get(lecture.id) }
     );
     for (const file of files) linkedNames.add(file.name);
     return { lecture, files };
@@ -106,122 +127,90 @@ export default async function CoursePage({
   }).length;
 
   const transcriptCount = lectureList.filter((l) => hasTranscript.has(l.id)).length;
+  const uploadedFileCount = resourceList.filter(
+    (resource) => resource.storage_path && resource.kind !== "Local Media Source"
+  ).length;
+  const activeFileCount = resourceList.filter(
+    (resource) => resource.kind !== "Local Media Source" && !archive.some((item) => item.id === resource.id)
+  ).length;
+
+  const reportableResources = resourceList.filter(
+    (resource) =>
+      resource.kind !== "Local Media Source" &&
+      !archive.some((item) => item.id === resource.id)
+  );
+
+  const organized = groupLecturesForDisplay(lecturesWithFiles);
+  const hasModules = organized.moduleGroups.length > 0;
+  const hasClass = organized.classGroups.length > 0;
+  const hasSessions = organized.classGroups.some((group) => group.kind === "session");
+  const lectureBlurb =
+    hasModules && hasClass
+      ? "Video modules first (YouTube + parts), then in-class Echo360 sessions — everything for this course in one place."
+      : hasModules
+        ? "Numbered video modules with transcript and shared slides per topic."
+        : hasSessions
+          ? "Each class session covers several topics in one recording and transcript."
+          : "Each lecture links its video, transcript, slide deck, and related files.";
 
   return (
     <div className="space-y-10">
-      <header>
-        <Link href="/library" className="text-sm text-brand-blue hover:underline">
-          &larr; All courses
-        </Link>
-        <h1 className="mt-2 text-2xl font-bold">
-          {course.code} &middot; {course.title}
-        </h1>
-        <p className="mt-1 text-sm text-slate-500">
-          {course.semester} &middot; {lectureList.length} lectures &middot; {transcriptCount}{" "}
-          transcripts &middot; {videoCount + supplementalVideoCount} videos
-        </p>
+      <header className="overflow-hidden rounded-2xl border border-brand-line bg-gradient-to-br from-brand-navy via-[#1e4a72] to-brand-teal p-6 text-white shadow-[var(--brand-shadow)] sm:p-8">
+        <CourseBreadcrumb courseCode={course.code} courseTitle={course.title} />
+        <div className="mt-4 flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p className="text-sm font-medium text-white/70">{course.semester}</p>
+            <h1 className="mt-1 text-2xl font-bold tracking-tight sm:text-3xl">
+              {course.code}
+              <span className="font-normal text-white/90"> · {course.title}</span>
+            </h1>
+          </div>
+        </div>
+        <div className="mt-5 flex flex-wrap gap-2">
+          <StatChip label="lectures" value={lectureList.length} />
+          <StatChip label="transcripts" value={transcriptCount} />
+          <StatChip label="videos" value={videoCount + supplementalVideoCount} />
+          <StatChip label="files online" value={`${uploadedFileCount}/${activeFileCount}`} />
+        </div>
       </header>
 
       <CourseEssentialsPanel essentials={essentials} />
 
-      <section className="space-y-4">
+      <section className="space-y-5">
         <div>
-          <h2 className="text-lg font-semibold">Lectures</h2>
-          <p className="mt-1 text-sm text-slate-500">
-            Each lecture links its slide deck, study guide, and related files.
-          </p>
+          <p className="eyebrow">Lecture path</p>
+          <h2 className="mt-1 text-xl font-bold text-brand-navy">Lectures</h2>
+          <p className="mt-1 text-sm text-brand-muted">{lectureBlurb}</p>
         </div>
-        {lecturesWithFiles.length === 0 && (
-          <p className="text-slate-500">No lectures imported for this course yet.</p>
-        )}
-        {lecturesWithFiles.map(({ lecture, files }, index) => {
-          const embeddable =
-            lecture.youtube_id && lecture.youtube_visibility !== "private";
-          return (
-            <article
-              key={lecture.id}
-              className="rounded-xl border border-brand-line bg-brand-panel p-5 shadow-sm"
-            >
-              <div className="flex flex-wrap items-baseline justify-between gap-2">
-                <h3 className="font-semibold text-slate-900">
-                  <span className="mr-2 text-slate-400">{index + 1}.</span>
-                  {lecture.title}
-                </h3>
-                <p className="text-xs text-slate-400">
-                  {lecture.lecture_date ?? ""}
-                  {lecture.transcript_source
-                    ? ` \u00b7 ${lecture.transcript_source}`
-                    : ""}
-                </p>
-              </div>
-
-              {embeddable && (
-                <div className="mt-4 aspect-video w-full max-w-2xl overflow-hidden rounded-lg bg-slate-100">
-                  <iframe
-                    src={`https://www.youtube.com/embed/${lecture.youtube_id}`}
-                    title={lecture.title}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    className="h-full w-full"
-                    loading="lazy"
-                  />
-                </div>
-              )}
-              {lecture.youtube_id && !embeddable && (
-                <p className="mt-3 text-sm text-amber-600">
-                  Video exists but is still set to private on YouTube.
-                </p>
-              )}
-
-              {hasTranscript.has(lecture.id) && (
-                <div className="mt-4">
-                  <TranscriptButton lectureId={lecture.id} title={lecture.title} />
-                </div>
-              )}
-
-              {files.length > 0 ? (
-                <div className="mt-4">
-                  <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">
-                    Lecture files
-                  </p>
-                  <ul className="divide-y divide-slate-100 overflow-hidden rounded-lg border border-slate-200 bg-white">
-                    {files.map((resource) => (
-                      <ResourceFileRow key={resource.id} resource={resource} />
-                    ))}
-                  </ul>
-                </div>
-              ) : (
-                <p className="mt-3 text-sm text-slate-400">No matched files for this lecture yet.</p>
-              )}
-            </article>
-          );
-        })}
+        <CourseLectureSection
+          lecturesWithFiles={lecturesWithFiles}
+          hasTranscript={hasTranscript}
+        />
       </section>
 
       {mediaResources.length > 0 && (
         <section className="space-y-4">
-          <h2 className="text-lg font-semibold">Supplemental videos</h2>
-          <ul className="divide-y divide-slate-100 overflow-hidden rounded-xl border border-slate-200 bg-white">
+          <div>
+            <p className="eyebrow">Watch</p>
+            <h2 className="mt-1 text-xl font-bold text-brand-navy">Supplemental videos</h2>
+          </div>
+          <ul className="divide-y divide-brand-line overflow-hidden rounded-xl border border-brand-line bg-brand-panel">
             {mediaResources.map((resource) => {
               const video = matchFilenameToYoutube(resource.name);
               const embeddable = video && isEmbeddable(video);
               return (
                 <li key={resource.id} className="px-4 py-4">
                   <div className="flex flex-wrap items-baseline justify-between gap-2">
-                    <p className="text-sm font-medium text-slate-800">{resource.name}</p>
+                    <p className="text-sm font-medium text-brand-ink">{resource.name}</p>
                     {!video && (
-                      <span className="text-xs text-slate-400">Not on YouTube yet</span>
+                      <span className="text-xs text-brand-muted">Not on YouTube yet</span>
                     )}
                   </div>
                   {embeddable && video && (
-                    <div className="mt-3 aspect-video w-full max-w-2xl overflow-hidden rounded-lg bg-slate-100">
-                      <iframe
-                        src={`https://www.youtube.com/embed/${video.id}`}
-                        title={video.title}
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                        className="h-full w-full"
-                        loading="lazy"
+                    <div className="mt-3">
+                      <CollapsibleVideoEmbed
+                        youtubeId={video.id}
+                        title={video.title || resource.name}
                       />
                     </div>
                   )}
@@ -235,8 +224,9 @@ export default async function CoursePage({
       {supplemental.length > 0 && (
         <section className="space-y-4">
           <div>
-            <h2 className="text-lg font-semibold">Labs, flashcards & extras</h2>
-            <p className="mt-1 text-sm text-slate-500">
+            <p className="eyebrow">Beyond lectures</p>
+            <h2 className="mt-1 text-xl font-bold text-brand-navy">Labs, flashcards & extras</h2>
+            <p className="mt-1 text-sm text-brand-muted">
               {supplemental.length} files not tied to a specific lecture — lab guides, Anki decks,
               and reference material.
             </p>
@@ -245,10 +235,10 @@ export default async function CoursePage({
             .sort(([a], [b]) => a.localeCompare(b))
             .map(([kind, items]) => (
               <div key={kind}>
-                <h3 className="mb-2 text-sm font-semibold uppercase tracking-wider text-slate-400">
+                <h3 className="mb-2 text-sm font-semibold uppercase tracking-wider text-brand-muted">
                   {kind} ({items.length})
                 </h3>
-                <ul className="divide-y divide-slate-100 overflow-hidden rounded-xl border border-slate-200 bg-white">
+                <ul className="divide-y divide-brand-line overflow-hidden rounded-xl border border-brand-line bg-brand-panel">
                   {items.map((resource) => (
                     <ResourceFileRow key={resource.id} resource={resource} />
                   ))}
@@ -259,21 +249,20 @@ export default async function CoursePage({
       )}
 
       {archive.length > 0 && (
-        <details className="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-4">
-          <summary className="cursor-pointer text-sm font-medium text-slate-600">
+        <details className="rounded-xl border border-dashed border-brand-line bg-brand-soft/50 p-4">
+          <summary className="cursor-pointer text-sm font-medium text-brand-muted">
             Archived / survival-guide copies ({archive.length}) — likely duplicates from other
             courses or old class folders
           </summary>
-          <ul className="mt-3 divide-y divide-slate-200">
+          <ul className="mt-3 divide-y divide-brand-line overflow-hidden rounded-lg border border-brand-line bg-white">
             {archive.map((resource) => (
-              <li key={resource.id} className="py-2 text-xs text-slate-500">
-                {resource.name}
-                {resource.section ? ` · ${resource.section}` : ""}
-              </li>
+              <ResourceFileRow key={resource.id} resource={resource} />
             ))}
           </ul>
         </details>
       )}
+
+      <CourseReportSection courseCode={courseCode} resources={reportableResources} />
     </div>
   );
 }
