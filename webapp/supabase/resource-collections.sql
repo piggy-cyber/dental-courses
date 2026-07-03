@@ -24,11 +24,24 @@ create table if not exists public.profile_resource_collection_grants (
   primary key (profile_id, collection_id)
 );
 
+create table if not exists public.course_collection_members (
+  collection_id text not null references public.resource_collections(id) on delete cascade,
+  course_code text not null references public.courses(code) on delete cascade,
+  sort_order integer not null default 0,
+  display_semester text,
+  display_area text,
+  created_at timestamptz not null default now(),
+  primary key (collection_id, course_code)
+);
+
 create index if not exists resource_collections_sort_idx
   on public.resource_collections (sort_order, label);
 
 create index if not exists profile_collection_grants_collection_idx
   on public.profile_resource_collection_grants (collection_id);
+
+create index if not exists course_collection_members_course_idx
+  on public.course_collection_members (course_code, sort_order);
 
 insert into public.resource_collections (
   id,
@@ -113,6 +126,25 @@ join public.resource_collections rc
 where p.status = 'approved'
 on conflict do nothing;
 
+insert into public.course_collection_members (
+  collection_id,
+  course_code,
+  sort_order,
+  display_semester,
+  display_area
+)
+select
+  c.resource_collection_id,
+  c.code,
+  c.sort_order,
+  c.semester,
+  c.area
+from public.courses c
+on conflict (collection_id, course_code) do update
+set sort_order = excluded.sort_order,
+    display_semester = excluded.display_semester,
+    display_area = excluded.display_area;
+
 create or replace function public.can_access_resource_collection(collection_id text)
 returns boolean
 language sql
@@ -140,9 +172,25 @@ set search_path = public
 as $$
   select exists (
     select 1
-    from public.courses c
-    where c.code = can_access_course.course_code
-      and public.can_access_resource_collection(c.resource_collection_id)
+    from public.course_collection_members m
+    where m.course_code = can_access_course.course_code
+      and public.can_access_resource_collection(m.collection_id)
+  );
+$$;
+
+create or replace function public.can_access_course_collection(course_code text, collection_id text)
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select exists (
+    select 1
+    from public.course_collection_members m
+    where m.course_code = can_access_course_collection.course_code
+      and m.collection_id = can_access_course_collection.collection_id
+      and public.can_access_resource_collection(m.collection_id)
   );
 $$;
 
@@ -278,6 +326,7 @@ $$;
 
 alter table public.resource_collections enable row level security;
 alter table public.profile_resource_collection_grants enable row level security;
+alter table public.course_collection_members enable row level security;
 
 drop policy if exists "read granted resource collections" on public.resource_collections;
 create policy "read granted resource collections" on public.resource_collections
@@ -293,6 +342,14 @@ create policy "read own collection grants" on public.profile_resource_collection
 
 drop policy if exists "owner manages collection grants" on public.profile_resource_collection_grants;
 create policy "owner manages collection grants" on public.profile_resource_collection_grants
+  for all using (public.is_owner()) with check (public.is_owner());
+
+drop policy if exists "read granted course collection members" on public.course_collection_members;
+create policy "read granted course collection members" on public.course_collection_members
+  for select using (public.can_access_resource_collection(collection_id));
+
+drop policy if exists "owner manages course collection members" on public.course_collection_members;
+create policy "owner manages course collection members" on public.course_collection_members
   for all using (public.is_owner()) with check (public.is_owner());
 
 drop policy if exists "approved read courses" on public.courses;

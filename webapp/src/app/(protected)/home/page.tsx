@@ -30,6 +30,16 @@ type HomeCourseWithCollection = HomeCourse & {
   collection: ResourceCollectionSummary;
 };
 
+type HomeMembership = {
+  collection_id: string;
+  sort_order: number;
+  courses: Omit<HomeCourse, "resource_collection_id" | "resource_collections"> | Omit<
+    HomeCourse,
+    "resource_collection_id" | "resource_collections"
+  >[] | null;
+  resource_collections?: ResourceCollectionSummary | ResourceCollectionSummary[] | null;
+};
+
 function StatCard({ label, value }: { label: string; value: string | number }) {
   return (
     <div className="rounded-lg border border-brand-line bg-brand-panel p-4 shadow-sm">
@@ -64,9 +74,9 @@ export default async function HomeDashboardPage() {
       .select("*", { count: "exact", head: true })
       .not("storage_path", "is", null),
     supabase
-      .from("courses")
+      .from("course_collection_members")
       .select(
-        "code, title, semester, area, library_tier, sort_order, resource_collection_id, resource_collections(id, label, short_label, description, source_tier, source_cohort, sort_order)"
+        "collection_id, sort_order, courses(code, title, semester, area, library_tier, sort_order), resource_collections(id, label, short_label, description, source_tier, source_cohort, sort_order)"
       )
       .order("sort_order"),
     getCampusWeather(),
@@ -76,7 +86,18 @@ export default async function HomeDashboardPage() {
   const displayName = profile?.name ?? profile?.email?.split("@")[0] ?? "Student";
   const handle = profile?.username ? `@${profile.username}` : null;
   const hasCanvasFeed = Boolean(profile?.canvas_ics_url);
-  const rawCourseList = (courses as HomeCourse[] | null) ?? [];
+  const rawCourseList = ((courses as HomeMembership[] | null) ?? []).flatMap((membership) => {
+    const course = Array.isArray(membership.courses) ? membership.courses[0] : membership.courses;
+    if (!course) return [];
+    return [
+      {
+        ...course,
+        sort_order: membership.sort_order ?? course.sort_order,
+        resource_collection_id: membership.collection_id,
+        resource_collections: membership.resource_collections,
+      },
+    ];
+  });
   const visibleCollections = uniqueCollections(rawCourseList);
   const courseList: HomeCourseWithCollection[] = rawCourseList.map((course) => ({
     ...course,
@@ -332,7 +353,7 @@ export default async function HomeDashboardPage() {
                         {semesterCourses.map((course) => (
                           <Link
                             key={`${collection.id}-${course.code}`}
-                            href={`/course/${encodeURIComponent(course.code)}`}
+                            href={`/course/${encodeURIComponent(course.code)}?collection=${encodeURIComponent(collection.id)}`}
                             className="rounded-lg border border-brand-line bg-white p-4 transition hover:border-brand-blue hover:shadow-sm"
                           >
                             <div className="flex items-start justify-between gap-3">

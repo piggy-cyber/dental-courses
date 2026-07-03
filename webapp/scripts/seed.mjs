@@ -13,7 +13,6 @@ import {
   loadSiteData,
   loadEnv,
   buildVideoIndex,
-  youtubeMatches,
   resolveLectureYoutube,
   sortLectureRows,
   canonicalResources,
@@ -267,6 +266,8 @@ const DELETE_FILTERS = {
   resources: ["id", -1],
 };
 
+const DEFAULT_RESOURCE_COLLECTION_ID = "d1-2025-2026";
+
 async function replaceTable(table, rows, chunkSize = 500) {
   const [column, sentinel] = DELETE_FILTERS[table];
   const { error: deleteError } = await supabase
@@ -284,8 +285,31 @@ async function replaceTable(table, rows, chunkSize = 500) {
   console.log(`  ${table}: ${rows.length} rows          `);
 }
 
+async function upsertDefaultCourseCollectionMembers(rows) {
+  const memberships = rows.map((course) => ({
+    collection_id: DEFAULT_RESOURCE_COLLECTION_ID,
+    course_code: course.code,
+    sort_order: course.sort_order,
+    display_semester: course.semester,
+    display_area: course.area,
+  }));
+
+  const { error } = await supabase
+    .from("course_collection_members")
+    .upsert(memberships, { onConflict: "collection_id,course_code" });
+  if (error) {
+    if (/course_collection_members/i.test(error.message)) {
+      console.warn("  course_collection_members missing; run apply-resource-collections.mjs");
+      return;
+    }
+    throw new Error(`course_collection_members upsert: ${error.message}`);
+  }
+  console.log(`  course_collection_members: ${memberships.length} rows`);
+}
+
 console.log("Importing course library into Supabase...");
 await replaceTable("courses", courses);
+await upsertDefaultCourseCollectionMembers(courses);
 await replaceTable("lectures", lectures);
 await replaceTable("transcripts", transcripts, 50);
 await preserveStoragePaths(resources);

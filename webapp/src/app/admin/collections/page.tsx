@@ -18,7 +18,7 @@ type Collection = {
 };
 
 type CourseRow = {
-  resource_collection_id: string;
+  collection_id: string;
 };
 
 type ResourceRow = {
@@ -46,14 +46,14 @@ export default async function AdminCollectionsPage() {
         )
         .order("sort_order")
         .order("label"),
-      supabase.from("courses").select("resource_collection_id"),
+      supabase.from("course_collection_members").select("collection_id"),
       supabase.from("resources").select("resource_collection_id"),
       supabase.from("profile_resource_collection_grants").select("collection_id"),
     ]);
 
   const courseCounts = new Map<string, number>();
   for (const row of ((courses as CourseRow[] | null) ?? [])) {
-    increment(courseCounts, row.resource_collection_id);
+    increment(courseCounts, row.collection_id);
   }
 
   const resourceCounts = new Map<string, number>();

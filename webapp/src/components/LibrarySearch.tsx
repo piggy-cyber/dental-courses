@@ -164,7 +164,7 @@ export function LibrarySearch({ courses }: { courses: CourseCard[] }) {
                         {semesterCourses.map((course) => (
                           <Link
                             key={`${course.collectionId}-${course.code}`}
-                            href={`/course/${encodeURIComponent(course.code)}`}
+                            href={`/course/${encodeURIComponent(course.code)}?collection=${encodeURIComponent(course.collectionId)}`}
                             className="group rounded-xl border border-brand-line bg-white p-5 shadow-sm transition hover:border-brand-blue hover:shadow-md"
                           >
                             <p className="text-xs font-semibold uppercase tracking-wider text-brand-blue">

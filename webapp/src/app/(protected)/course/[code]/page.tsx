@@ -63,27 +63,58 @@ function StatChip({ label, value }: { label: string; value: string | number }) {
 
 export default async function CoursePage({
   params,
+  searchParams,
 }: {
   params: Promise<{ code: string }>;
+  searchParams: Promise<{ collection?: string }>;
 }) {
   const { code } = await params;
+  const { collection: requestedCollectionId } = await searchParams;
   const courseCode = decodeURIComponent(code);
   const supabase = await createClient();
 
-  const { data: courseRow } = await supabase
-    .from("courses")
+  let membershipQuery = supabase
+    .from("course_collection_members")
     .select(
-      "code, title, semester, resource_collection_id, resource_collections(id, label, short_label)"
+      "collection_id, courses(code, title, semester, resource_collection_id), resource_collections(id, label, short_label)"
     )
-    .eq("code", courseCode)
-    .single();
+    .eq("course_code", courseCode)
+    .order("sort_order")
+    .limit(1);
 
-  if (!courseRow) notFound();
+  if (requestedCollectionId) {
+    membershipQuery = membershipQuery.eq("collection_id", requestedCollectionId);
+  }
 
-  const course = courseRow as Course;
-  const collection = Array.isArray(course.resource_collections)
-    ? course.resource_collections[0]
-    : course.resource_collections;
+  const { data: membershipRows } = await membershipQuery;
+  const membership = membershipRows?.[0] as
+    | {
+        collection_id: string;
+        courses: Course | Course[] | null;
+        resource_collections:
+          | {
+              id: string;
+              label: string;
+              short_label: string;
+            }
+          | {
+              id: string;
+              label: string;
+              short_label: string;
+            }[]
+          | null;
+      }
+    | undefined;
+
+  if (!membership) notFound();
+
+  const course = Array.isArray(membership.courses) ? membership.courses[0] : membership.courses;
+  if (!course) notFound();
+
+  const collection = Array.isArray(membership.resource_collections)
+    ? membership.resource_collections[0]
+    : membership.resource_collections;
+  const resourceCollectionId = membership.collection_id;
 
   const [{ data: lectures }, { data: resources }, { data: transcriptRows }] =
     await Promise.all([
@@ -93,13 +124,13 @@ export default async function CoursePage({
           "id, title, lecture_date, transcript_source, youtube_id, youtube_visibility, synthetic, sort_order"
         )
         .eq("course_code", courseCode)
-        .eq("resource_collection_id", course.resource_collection_id)
+        .eq("resource_collection_id", resourceCollectionId)
         .order("sort_order"),
       supabase
         .from("resources")
         .select("id, name, kind, ext, section, use_label, size_mb, storage_path, is_canonical_syllabus")
         .eq("course_code", courseCode)
-        .eq("resource_collection_id", course.resource_collection_id)
+        .eq("resource_collection_id", resourceCollectionId)
         .order("name"),
       supabase.from("transcripts").select("lecture_id"),
     ]);

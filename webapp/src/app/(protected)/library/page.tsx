@@ -12,15 +12,15 @@ export default async function LibraryPage() {
   const { profile } = await getSessionProfile();
   const supabase = await createClient();
   const query = supabase
-    .from("courses")
+    .from("course_collection_members")
     .select(
-      "code, title, semester, area, sort_order, library_tier, resource_collection_id, resource_collections(id, label, short_label, description, source_tier, source_cohort, sort_order)"
+      "collection_id, sort_order, courses(code, title, semester, area, sort_order, library_tier), resource_collections(id, label, short_label, description, source_tier, source_cohort, sort_order)"
     )
     .order("sort_order");
 
-  const { data: courses } = await query;
+  const { data: memberships } = await query;
 
-  if (!courses?.length) {
+  if (!memberships?.length) {
     return (
       <div className="rounded-xl border border-brand-line bg-brand-panel p-8 text-center text-brand-muted">
         {profile?.role === "owner"
@@ -41,8 +41,23 @@ export default async function LibraryPage() {
     resource_collections?: ResourceCollectionSummary | ResourceCollectionSummary[] | null;
   };
 
-  const courseCards: CourseCard[] = ((courses as RawCourse[] | null) ?? []).map((course) => {
-    const collection = collectionFromRow(course);
+  type RawMembership = {
+    collection_id: string;
+    sort_order: number;
+    courses: Omit<RawCourse, "resource_collection_id" | "resource_collections"> | Omit<
+      RawCourse,
+      "resource_collection_id" | "resource_collections"
+    >[] | null;
+    resource_collections?: ResourceCollectionSummary | ResourceCollectionSummary[] | null;
+  };
+
+  const courseCards: CourseCard[] = ((memberships as RawMembership[] | null) ?? []).flatMap((membership) => {
+    const course = Array.isArray(membership.courses) ? membership.courses[0] : membership.courses;
+    if (!course) return [];
+    const collection = collectionFromRow({
+      resource_collection_id: membership.collection_id,
+      resource_collections: membership.resource_collections,
+    });
     return {
       code: course.code,
       title: course.title,

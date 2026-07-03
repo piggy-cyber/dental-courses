@@ -20,6 +20,7 @@ const tables = [
   "resources",
   "resource_collections",
   "profile_resource_collection_grants",
+  "course_collection_members",
 ];
 for (const table of tables) {
   const { error } = await supabase.from(table).select("*").limit(0);
@@ -61,6 +62,12 @@ const { error: collectionFieldsError } = await supabase
 console.log(
   `resource collection fields: ${collectionFieldsError ? collectionFieldsError.message : "ok"}`
 );
+
+const { error: memberFieldsError } = await supabase
+  .from("course_collection_members")
+  .select("collection_id, course_code, sort_order, display_semester, display_area")
+  .limit(0);
+console.log(`course collection members: ${memberFieldsError ? memberFieldsError.message : "ok"}`);
 
 const { data: buckets } = await supabase.storage.listBuckets();
 const bucketNames = new Set((buckets ?? []).map((b) => b.name));
