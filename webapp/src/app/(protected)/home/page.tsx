@@ -57,11 +57,12 @@ export default async function HomeDashboardPage() {
       .select("code, title, semester, area, library_tier, sort_order")
       .order("sort_order"),
     getCampusWeather(),
-    getTodaysSchedule(profile?.canvas_ics_url ?? undefined),
+    getTodaysSchedule(profile?.canvas_ics_url ?? null),
   ]);
 
   const displayName = profile?.name ?? profile?.email?.split("@")[0] ?? "Student";
   const handle = profile?.username ? `@${profile.username}` : null;
+  const hasCanvasFeed = Boolean(profile?.canvas_ics_url);
   const courseList = (courses as HomeCourse[] | null) ?? [];
   const coursesBySemester = new Map<string, HomeCourse[]>();
   for (const course of courseList) {
@@ -200,33 +201,58 @@ export default async function HomeDashboardPage() {
         )}
       </section>
 
-      {schedule && (
-        <section className="rounded-xl border border-brand-line bg-brand-panel p-5 shadow-sm">
-          <div className="mb-3 flex items-baseline justify-between gap-3">
-            <div>
-              <p className="eyebrow">{schedule.heading}</p>
-              <h2 className="mt-1 text-lg font-bold text-brand-navy">Canvas schedule</h2>
-            </div>
+      <section className="rounded-xl border border-brand-line bg-brand-panel p-5 shadow-sm">
+        <div className="mb-3 flex flex-wrap items-baseline justify-between gap-3">
+          <div>
+            <p className="eyebrow">{hasCanvasFeed && schedule ? schedule.heading : "Canvas"}</p>
+            <h2 className="mt-1 text-lg font-bold text-brand-navy">Canvas calendar</h2>
           </div>
-          {schedule.events.length > 0 ? (
-            <ul className="divide-y divide-brand-line">
-              {schedule.events.slice(0, 6).map((event) => (
-                <li
-                  key={`${event.dateLabel}-${event.time}-${event.title}`}
-                  className="flex gap-4 py-3 text-sm"
-                >
-                  <span className="w-32 shrink-0 font-semibold text-brand-navy">
-                    {event.dateLabel} · {event.time}
-                  </span>
-                  <span className="text-brand-ink">{event.title}</span>
-                </li>
-              ))}
-            </ul>
+          <Link href="/profile" className="text-sm font-medium text-brand-blue hover:underline">
+            {hasCanvasFeed ? "Edit feed" : "Connect Canvas"}
+          </Link>
+        </div>
+        {hasCanvasFeed ? (
+          schedule ? (
+            schedule.events.length > 0 ? (
+              <ul className="divide-y divide-brand-line">
+                {schedule.events.slice(0, 6).map((event) => (
+                  <li
+                    key={`${event.dateLabel}-${event.time}-${event.title}`}
+                    className="flex gap-4 py-3 text-sm"
+                  >
+                    <span className="w-32 shrink-0 font-semibold text-brand-navy">
+                      {event.dateLabel} · {event.time}
+                    </span>
+                    <span className="text-brand-ink">{event.title}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-sm text-brand-muted">No upcoming Canvas events found.</p>
+            )
           ) : (
-            <p className="text-sm text-brand-muted">No upcoming Canvas events found.</p>
-          )}
-        </section>
-      )}
+            <p className="text-sm text-brand-muted">
+              Canvas could not be read right now. Check the saved calendar feed in your profile.
+            </p>
+          )
+        ) : (
+          <div className="rounded-lg border border-dashed border-brand-line bg-white/60 p-4">
+            <div>
+              <p className="font-semibold text-brand-navy">Add your Canvas feed</p>
+              <p className="mt-1 text-sm text-brand-muted">
+                Save your Canvas calendar feed URL in your profile to show classes and deadlines
+                here.
+              </p>
+            </div>
+            <Link
+              href="/profile"
+              className="mt-3 inline-flex rounded-lg bg-brand-blue px-4 py-2 text-sm font-semibold text-white hover:opacity-90"
+            >
+              Open profile
+            </Link>
+          </div>
+        )}
+      </section>
 
       {courseList.length > 0 && (
         <section className="space-y-5">

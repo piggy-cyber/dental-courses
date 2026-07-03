@@ -165,16 +165,17 @@ export function ProfileForm({ profile }: { profile: ProfileFormData }) {
       </label>
 
       <label className="block">
-        <span className="text-sm font-medium text-brand-ink">Canvas calendar feed</span>
+        <span className="text-sm font-medium text-brand-ink">Canvas calendar feed URL</span>
         <input
+          type="url"
           value={canvasUrl}
           onChange={(e) => setCanvasUrl(e.target.value)}
           placeholder="https://canvas.case.edu/feeds/calendars/user_...ics"
           className="mt-1 w-full rounded-lg border border-brand-line px-3 py-2"
         />
         <span className="mt-1 block text-xs text-brand-muted">
-          Paste your Canvas calendar feed URL. Your homepage will show today&apos;s Canvas
-          schedule after you save.
+          Use the Canvas calendar feed URL ending in .ics. It is saved to your profile and shown
+          only on your homepage.
         </span>
       </label>
 

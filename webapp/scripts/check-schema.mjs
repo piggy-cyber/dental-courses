@@ -20,7 +20,7 @@ for (const table of tables) {
 
 const { error: profileFieldsError } = await supabase
   .from("profiles")
-  .select("username, bio, avatar_url, updated_at")
+  .select("username, bio, avatar_url, updated_at, canvas_ics_url")
   .limit(0);
 console.log(`profile fields: ${profileFieldsError ? profileFieldsError.message : "ok"}`);
 

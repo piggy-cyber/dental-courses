@@ -4,7 +4,8 @@ This is the real, secure version of the course site. Nobody sees anything
 except the homepage until you approve their account.
 
 How it works, in one paragraph: students visit the homepage (date, campus
-weather, today's schedule). They sign in with Google. That puts them on your
+weather, and their own saved Canvas calendar feed). They sign in with Google.
+That puts them on your
 approval list as "pending" — they still can't see anything. You open the
 Accounts page and click Approve. From that moment they can see everything:
 courses, videos, transcripts, files. You can revoke anyone anytime.
@@ -53,8 +54,8 @@ through some settings once. About 30 minutes. Everything below is copy-paste.
    - `NEXT_PUBLIC_SUPABASE_URL` = the "Project URL"
    - `NEXT_PUBLIC_SUPABASE_ANON_KEY` = the "anon public" key
    - `SUPABASE_SECRET_KEY` = the "service_role" key (keep this one secret!)
-3. Optional but nice: set `CANVAS_ICS_URL` to your Canvas calendar feed so
-   the homepage shows today's classes.
+3. Each approved student can add their own Canvas calendar feed from the
+   profile page after signing in.
 
 ## Step 5 — Load your course library into the database
 
@@ -103,8 +104,7 @@ The easiest host for Next.js is Vercel (free for this size):
 2. Go to https://vercel.com, sign in with GitHub, click "Add New -> Project",
    pick the `dental-courses` repo.
 3. Set "Root Directory" to `webapp`.
-4. Add the same three environment variables from `.env.local`
-   (plus `CANVAS_ICS_URL` if you use it).
+4. Add the same three environment variables from `.env.local`.
 5. Click Deploy.
 6. After it deploys, add your live URL to two allow-lists:
    - Supabase: Authentication -> URL Configuration -> Site URL + Redirect URLs

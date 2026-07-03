@@ -57,11 +57,12 @@ function validateCanvasCalendarUrl(value: string) {
     return "Canvas calendar URL must start with https://";
   }
 
-  if (!url.hostname.endsWith("instructure.com") && !url.hostname.includes("canvas")) {
+  const hostname = url.hostname.toLowerCase();
+  if (hostname !== "canvas.case.edu" && !hostname.endsWith(".instructure.com")) {
     return "Use a Canvas calendar feed URL.";
   }
 
-  if (!url.pathname.endsWith(".ics") && !url.href.includes(".ics")) {
+  if (!url.pathname.toLowerCase().endsWith(".ics")) {
     return "Use the Canvas calendar feed URL ending in .ics.";
   }
 
