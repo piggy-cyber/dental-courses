@@ -1,6 +1,5 @@
 // Reads today's events from a Canvas calendar feed (.ics URL).
-// The feed URL stays server-side in the CANVAS_ICS_URL env var; it is never
-// sent to the browser. If the variable is not set, the section is hidden.
+// The feed URL stays server-side; it is never sent to the browser.
 
 export type TodayEvent = { time: string; title: string };
 
@@ -24,8 +23,7 @@ function parseIcsDate(value: string): Date | null {
   return new Date(+y, +mo - 1, +d, +h, +mi, +s);
 }
 
-export async function getTodaysSchedule(): Promise<TodayEvent[] | null> {
-  const feedUrl = process.env.CANVAS_ICS_URL;
+export async function getTodaysSchedule(feedUrl = process.env.CANVAS_ICS_URL): Promise<TodayEvent[] | null> {
   if (!feedUrl) return null;
 
   try {

@@ -8,6 +8,7 @@ type ProfileUpdate = {
   username?: string | null;
   bio?: string | null;
   avatar_url?: string | null;
+  canvas_ics_url?: string | null;
 };
 
 export async function updateProfile(fields: ProfileUpdate): Promise<{ error?: string }> {
@@ -27,6 +28,11 @@ export async function updateProfile(fields: ProfileUpdate): Promise<{ error?: st
     if (taken) return { error: "That username is already taken." };
   }
 
+  if (fields.canvas_ics_url) {
+    const validationError = validateCanvasCalendarUrl(fields.canvas_ics_url);
+    if (validationError) return { error: validationError };
+  }
+
   const { error } = await supabase
     .from("profiles")
     .update(fields)
@@ -37,4 +43,27 @@ export async function updateProfile(fields: ProfileUpdate): Promise<{ error?: st
   revalidatePath("/home");
   revalidatePath("/profile");
   return {};
+}
+
+function validateCanvasCalendarUrl(value: string) {
+  let url: URL;
+  try {
+    url = new URL(value);
+  } catch {
+    return "Use the full Canvas calendar feed URL.";
+  }
+
+  if (url.protocol !== "https:") {
+    return "Canvas calendar URL must start with https://";
+  }
+
+  if (!url.hostname.endsWith("instructure.com") && !url.hostname.includes("canvas")) {
+    return "Use a Canvas calendar feed URL.";
+  }
+
+  if (!url.pathname.endsWith(".ics") && !url.href.includes(".ics")) {
+    return "Use the Canvas calendar feed URL ending in .ics.";
+  }
+
+  return null;
 }

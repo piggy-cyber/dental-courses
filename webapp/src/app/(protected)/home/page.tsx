@@ -56,7 +56,7 @@ export default async function HomeDashboardPage() {
       .select("code, title, semester, area, library_tier, sort_order")
       .order("sort_order"),
     getCampusWeather(),
-    getTodaysSchedule(),
+    getTodaysSchedule(profile?.canvas_ics_url ?? undefined),
   ]);
 
   const displayName = profile?.name ?? profile?.email?.split("@")[0] ?? "Student";
