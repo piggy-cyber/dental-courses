@@ -73,6 +73,96 @@ export async function setAccessTiers(userId: string, tiers: string[]) {
   revalidateAdminPaths(userId);
 }
 
+export async function setResourceCollectionGrants(userId: string, collectionIds: string[]) {
+  const { userId: adminId } = await requireAdminProfile();
+  const supabase = await createClient();
+  const normalized = [...new Set(collectionIds.map((id) => id.trim()).filter(Boolean))];
+
+  if (normalized.length > 0) {
+    const { data: collections, error: collectionError } = await supabase
+      .from("resource_collections")
+      .select("id")
+      .in("id", normalized);
+    if (collectionError) throw new Error(collectionError.message);
+    const found = new Set((collections ?? []).map((collection) => collection.id));
+    const missing = normalized.filter((id) => !found.has(id));
+    if (missing.length) {
+      throw new Error(`Unknown resource collection: ${missing.join(", ")}`);
+    }
+  }
+
+  const { error: deleteError } = await supabase
+    .from("profile_resource_collection_grants")
+    .delete()
+    .eq("profile_id", userId);
+  if (deleteError) throw new Error(deleteError.message);
+
+  if (normalized.length > 0) {
+    const { error: insertError } = await supabase
+      .from("profile_resource_collection_grants")
+      .insert(
+        normalized.map((collectionId) => ({
+          profile_id: userId,
+          collection_id: collectionId,
+          granted_by: adminId,
+        }))
+      );
+    if (insertError) throw new Error(insertError.message);
+  }
+
+  revalidateAdminPaths(userId);
+  revalidatePath("/home");
+  revalidatePath("/library");
+}
+
+export async function createResourceCollection(input: {
+  id?: string | null;
+  label: string;
+  shortLabel: string;
+  description?: string | null;
+  sourceTier?: string | null;
+  sourceCohort?: string | null;
+  defaultForTier?: boolean;
+}) {
+  await requireAdminProfile();
+  const supabase = await createClient();
+
+  const label = input.label.trim();
+  const shortLabel = input.shortLabel.trim();
+  const sourceTier = cleanOptionalText(input.sourceTier)?.toLowerCase() ?? null;
+  const sourceCohort = cleanOptionalText(input.sourceCohort)?.toLowerCase() ?? null;
+  const id = cleanOptionalText(input.id) ?? slugifyCollectionId(label || shortLabel);
+
+  if (!id || !/^[a-z0-9][a-z0-9-]{2,62}$/.test(id)) {
+    throw new Error("Collection ID must use lowercase letters, numbers, and hyphens.");
+  }
+  if (!label) throw new Error("Collection name is required.");
+  if (!shortLabel) throw new Error("Short label is required.");
+  if (sourceTier && !["d1", "d2", "d3", "d4"].includes(sourceTier)) {
+    throw new Error("Source tier must be D1, D2, D3, or D4.");
+  }
+
+  const { count } = await supabase
+    .from("resource_collections")
+    .select("*", { count: "exact", head: true });
+
+  const { error } = await supabase.from("resource_collections").insert({
+    id,
+    label,
+    short_label: shortLabel,
+    description: cleanOptionalText(input.description),
+    source_tier: sourceTier,
+    source_cohort: sourceCohort,
+    default_for_tier: Boolean(input.defaultForTier),
+    sort_order: ((count ?? 0) + 1) * 10,
+  });
+  if (error) throw new Error(error.message);
+
+  revalidatePath("/admin");
+  revalidatePath("/admin/collections");
+  revalidatePath("/admin/accounts");
+}
+
 export async function saveAdminNote(userId: string, note: string) {
   await requireAdminProfile();
   const supabase = await createClient();
@@ -196,6 +286,15 @@ export async function updateReportStatus(
 function cleanOptionalText(value: string | null | undefined) {
   const trimmed = value?.trim() ?? "";
   return trimmed || null;
+}
+
+function slugifyCollectionId(value: string) {
+  return value
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 63);
 }
 
 function revalidateAdminPaths(accountId?: string) {

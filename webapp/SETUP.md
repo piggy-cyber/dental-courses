@@ -9,6 +9,9 @@ That puts them on your
 approval list as "pending" — they still can't see anything. You open the
 Accounts page and click Approve. From that moment they can see everything:
 courses, videos, transcripts, files. You can revoke anyone anytime.
+Admins control exactly which resource collections each student sees, so a
+student can have separate access to their own D1 resources and prior-year D2
+resources without browsing every course-year bucket.
 
 You need to create two free accounts (Supabase and Google Cloud) and click
 through some settings once. About 30 minutes. Everything below is copy-paste.
@@ -64,11 +67,14 @@ In a terminal, from the `webapp` folder:
 ```bash
 npm install
 node scripts/seed.mjs
+node scripts/apply-resource-collections.mjs
 ```
 
 This reads the course data from the static site (including your private
 YouTube IDs and transcripts, which live only on your Mac) and loads it into
 the database, where only approved accounts can read it.
+The resource collection migration creates the default D1 resource set and
+backfills approved accounts that already have matching D1 access.
 
 ## Step 6 — Make yourself the owner
 

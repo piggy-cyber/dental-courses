@@ -33,6 +33,25 @@ type Lecture = {
   sort_order: number;
 };
 
+type Course = {
+  code: string;
+  title: string;
+  semester: string | null;
+  resource_collection_id: string;
+  resource_collections:
+    | {
+        id: string;
+        label: string;
+        short_label: string;
+      }
+    | {
+        id: string;
+        label: string;
+        short_label: string;
+      }[]
+    | null;
+};
+
 function StatChip({ label, value }: { label: string; value: string | number }) {
   return (
     <span className="inline-flex items-center gap-1.5 rounded-full border border-brand-line bg-white px-3 py-1 text-xs">
@@ -51,25 +70,39 @@ export default async function CoursePage({
   const courseCode = decodeURIComponent(code);
   const supabase = await createClient();
 
-  const [{ data: course }, { data: lectures }, { data: resources }, { data: transcriptRows }] =
+  const { data: courseRow } = await supabase
+    .from("courses")
+    .select(
+      "code, title, semester, resource_collection_id, resource_collections(id, label, short_label)"
+    )
+    .eq("code", courseCode)
+    .single();
+
+  if (!courseRow) notFound();
+
+  const course = courseRow as Course;
+  const collection = Array.isArray(course.resource_collections)
+    ? course.resource_collections[0]
+    : course.resource_collections;
+
+  const [{ data: lectures }, { data: resources }, { data: transcriptRows }] =
     await Promise.all([
-      supabase.from("courses").select("code, title, semester").eq("code", courseCode).single(),
       supabase
         .from("lectures")
         .select(
           "id, title, lecture_date, transcript_source, youtube_id, youtube_visibility, synthetic, sort_order"
         )
         .eq("course_code", courseCode)
+        .eq("resource_collection_id", course.resource_collection_id)
         .order("sort_order"),
       supabase
         .from("resources")
         .select("id, name, kind, ext, section, use_label, size_mb, storage_path, is_canonical_syllabus")
         .eq("course_code", courseCode)
+        .eq("resource_collection_id", course.resource_collection_id)
         .order("name"),
       supabase.from("transcripts").select("lecture_id"),
     ]);
-
-  if (!course) notFound();
 
   const hasTranscript = new Set(
     (transcriptRows ?? []).map((row: { lecture_id: string }) => row.lecture_id)
@@ -159,7 +192,9 @@ export default async function CoursePage({
         <CourseBreadcrumb courseCode={course.code} courseTitle={course.title} />
         <div className="mt-4 flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p className="text-sm font-medium text-white/70">{course.semester}</p>
+            <p className="text-sm font-medium text-white/70">
+              {[collection?.short_label, course.semester].filter(Boolean).join(" · ")}
+            </p>
             <h1 className="mt-1 text-2xl font-bold tracking-tight sm:text-3xl">
               {course.code}
               <span className="font-normal text-white/90"> · {course.title}</span>

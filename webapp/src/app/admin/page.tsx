@@ -16,6 +16,7 @@ export default async function AdminDashboardPage() {
     { count: openReportCount },
     { count: courseCount },
     { count: lectureCount },
+    { count: collectionCount },
     { data: resources },
     { data: recentProfiles },
   ] = await Promise.all([
@@ -38,6 +39,7 @@ export default async function AdminDashboardPage() {
       .eq("status", "open"),
     supabase.from("courses").select("*", { count: "exact", head: true }),
     supabase.from("lectures").select("*", { count: "exact", head: true }),
+    supabase.from("resource_collections").select("*", { count: "exact", head: true }),
     supabase.from("resources").select("kind, storage_path"),
     supabase
       .from("profiles")
@@ -112,7 +114,7 @@ export default async function AdminDashboardPage() {
         </Link>
       </div>
 
-      <section className="grid gap-4 md:grid-cols-4">
+      <section className="grid gap-4 md:grid-cols-5">
         <Link
           href="/admin/accounts"
           className="rounded-xl border border-brand-line bg-brand-panel p-5 hover:bg-brand-soft"
@@ -133,6 +135,15 @@ export default async function AdminDashboardPage() {
         >
           <h2 className="font-semibold text-brand-navy">Team</h2>
           <p className="mt-1 text-sm text-brand-muted">Promote or demote admins.</p>
+        </Link>
+        <Link
+          href="/admin/collections"
+          className="rounded-xl border border-brand-line bg-brand-panel p-5 hover:bg-brand-soft"
+        >
+          <h2 className="font-semibold text-brand-navy">Collections</h2>
+          <p className="mt-1 text-sm text-brand-muted">
+            {collectionCount ?? 0} resource set{collectionCount === 1 ? "" : "s"}.
+          </p>
         </Link>
         <Link
           href="/admin/operations"

@@ -3,12 +3,13 @@
 import { useState, useTransition } from "react";
 import {
   saveAdminNote,
+  setResourceCollectionGrants,
   setAccessTiers,
   setAccountStatus,
   updateAccountProfile,
 } from "@/app/admin/actions";
 import { ACCESS_TIERS, tierLabel } from "@/lib/tiers";
-import type { AccountDetail, RosterMatch } from "./page";
+import type { AccountDetail, AdminResourceCollection, RosterMatch } from "./page";
 
 const STATUS_STYLES: Record<AccountDetail["status"], string> = {
   approved: "border-emerald-200 bg-emerald-50 text-emerald-700",
@@ -20,15 +21,20 @@ export function AccountDetailForm({
   account,
   roster,
   isSelf,
+  collections,
+  grantedCollectionIds,
 }: {
   account: AccountDetail;
   roster: RosterMatch | null;
   isSelf: boolean;
+  collections: AdminResourceCollection[];
+  grantedCollectionIds: string[];
 }) {
   const [name, setName] = useState(account.name ?? "");
   const [username, setUsername] = useState(account.username ?? "");
   const [bio, setBio] = useState(account.bio ?? "");
   const [tiers, setTiers] = useState(account.access_tiers);
+  const [collectionIds, setCollectionIds] = useState(grantedCollectionIds);
   const [adminNote, setAdminNote] = useState(account.admin_note ?? "");
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -40,6 +46,14 @@ export function AccountDetailForm({
     );
   }
 
+  function toggleCollection(collectionId: string) {
+    setCollectionIds((current) =>
+      current.includes(collectionId)
+        ? current.filter((item) => item !== collectionId)
+        : [...current, collectionId]
+    );
+  }
+
   function save() {
     setMessage(null);
     setError(null);
@@ -47,6 +61,7 @@ export function AccountDetailForm({
       try {
         await updateAccountProfile(account.id, { name, username, bio });
         await setAccessTiers(account.id, tiers);
+        await setResourceCollectionGrants(account.id, collectionIds);
         await saveAdminNote(account.id, adminNote);
         setMessage("Saved.");
       } catch (e) {
@@ -101,7 +116,44 @@ export function AccountDetailForm({
         </label>
 
         <fieldset>
-          <legend className="text-sm font-medium text-brand-navy">Access tiers</legend>
+          <legend className="text-sm font-medium text-brand-navy">Resource collection access</legend>
+          <p className="mt-1 text-sm text-brand-muted">
+            These grants control what appears on the student&apos;s homepage and library.
+          </p>
+          <div className="mt-3 grid gap-3 sm:grid-cols-2">
+            {collections.map((collection) => (
+              <label
+                key={collection.id}
+                className="flex items-start gap-3 rounded-lg border border-brand-line px-3 py-3 text-sm"
+              >
+                <input
+                  type="checkbox"
+                  checked={collectionIds.includes(collection.id)}
+                  onChange={() => toggleCollection(collection.id)}
+                  className="mt-1"
+                />
+                <span>
+                  <span className="font-semibold text-brand-navy">{collection.label}</span>
+                  <span className="mt-0.5 block text-xs text-brand-muted">
+                    {collection.description ?? collection.short_label}
+                    {!collection.is_active ? " · inactive" : ""}
+                  </span>
+                </span>
+              </label>
+            ))}
+          </div>
+          {collections.length === 0 && (
+            <p className="mt-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800">
+              No resource collections exist yet. Run the resource collection migration.
+            </p>
+          )}
+        </fieldset>
+
+        <fieldset>
+          <legend className="text-sm font-medium text-brand-navy">Year tags</legend>
+          <p className="mt-1 text-sm text-brand-muted">
+            These labels help with roster defaults. Resource collections above control course access.
+          </p>
           <div className="mt-2 grid gap-2 sm:grid-cols-4">
             {ACCESS_TIERS.map((tier) => (
               <label

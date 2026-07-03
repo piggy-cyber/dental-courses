@@ -5,6 +5,11 @@ import { isAdmin } from "@/lib/roles";
 import { getTodaysSchedule } from "@/lib/schedule";
 import { tierLabel } from "@/lib/tiers";
 import { getCampusWeather } from "@/lib/weather";
+import {
+  collectionFromRow,
+  uniqueCollections,
+  type ResourceCollectionSummary,
+} from "@/lib/resource-collections";
 import { UserAvatar } from "@/components/UserAvatar";
 import { SiteReportSection } from "@/components/SiteReportSection";
 
@@ -17,6 +22,12 @@ type HomeCourse = {
   area: string | null;
   library_tier: string;
   sort_order: number;
+  resource_collection_id: string;
+  resource_collections?: ResourceCollectionSummary | ResourceCollectionSummary[] | null;
+};
+
+type HomeCourseWithCollection = HomeCourse & {
+  collection: ResourceCollectionSummary;
 };
 
 function StatCard({ label, value }: { label: string; value: string | number }) {
@@ -54,7 +65,9 @@ export default async function HomeDashboardPage() {
       .not("storage_path", "is", null),
     supabase
       .from("courses")
-      .select("code, title, semester, area, library_tier, sort_order")
+      .select(
+        "code, title, semester, area, library_tier, sort_order, resource_collection_id, resource_collections(id, label, short_label, description, source_tier, source_cohort, sort_order)"
+      )
       .order("sort_order"),
     getCampusWeather(),
     getTodaysSchedule(profile?.canvas_ics_url ?? null),
@@ -63,12 +76,17 @@ export default async function HomeDashboardPage() {
   const displayName = profile?.name ?? profile?.email?.split("@")[0] ?? "Student";
   const handle = profile?.username ? `@${profile.username}` : null;
   const hasCanvasFeed = Boolean(profile?.canvas_ics_url);
-  const courseList = (courses as HomeCourse[] | null) ?? [];
-  const coursesBySemester = new Map<string, HomeCourse[]>();
+  const rawCourseList = (courses as HomeCourse[] | null) ?? [];
+  const visibleCollections = uniqueCollections(rawCourseList);
+  const courseList: HomeCourseWithCollection[] = rawCourseList.map((course) => ({
+    ...course,
+    collection: collectionFromRow(course),
+  }));
+  const coursesByCollection = new Map<string, HomeCourseWithCollection[]>();
   for (const course of courseList) {
-    const key = course.semester ?? "Other";
-    if (!coursesBySemester.has(key)) coursesBySemester.set(key, []);
-    coursesBySemester.get(key)!.push(course);
+    const key = course.collection.id;
+    if (!coursesByCollection.has(key)) coursesByCollection.set(key, []);
+    coursesByCollection.get(key)!.push(course);
   }
 
   return (
@@ -88,14 +106,23 @@ export default async function HomeDashboardPage() {
                 <h1 className="text-2xl font-bold text-brand-navy">{displayName}</h1>
                 <div className="mt-1 flex flex-wrap gap-2 text-xs">
                   {handle && <span className="font-medium text-brand-teal">{handle}</span>}
-                  {profile?.access_tiers?.map((tier) => (
-                    <span
-                      key={tier}
-                      className="rounded-full bg-brand-soft px-2 py-0.5 font-semibold text-brand-navy"
-                    >
-                      {tierLabel(tier)}
-                    </span>
-                  ))}
+                  {visibleCollections.length > 0
+                    ? visibleCollections.map((collection) => (
+                        <span
+                          key={collection.id}
+                          className="rounded-full bg-brand-soft px-2 py-0.5 font-semibold text-brand-navy"
+                        >
+                          {collection.short_label}
+                        </span>
+                      ))
+                    : profile?.access_tiers?.map((tier) => (
+                        <span
+                          key={tier}
+                          className="rounded-full bg-brand-soft px-2 py-0.5 font-semibold text-brand-navy"
+                        >
+                          {tierLabel(tier)}
+                        </span>
+                      ))}
                 </div>
               </div>
             </div>
@@ -169,8 +196,8 @@ export default async function HomeDashboardPage() {
           className="rounded-xl border border-brand-line bg-brand-panel p-5 shadow-sm transition hover:border-brand-teal"
         >
           <p className="eyebrow">Study</p>
-          <h2 className="mt-1 font-bold text-brand-navy">Open all courses</h2>
-          <p className="mt-2 text-sm text-brand-muted">Search the full library.</p>
+          <h2 className="mt-1 font-bold text-brand-navy">Open your collections</h2>
+          <p className="mt-2 text-sm text-brand-muted">Search courses you have been granted.</p>
         </Link>
         <Link
           href="/profile"
@@ -259,42 +286,78 @@ export default async function HomeDashboardPage() {
           <div className="flex flex-wrap items-baseline justify-between gap-3">
             <div>
               <p className="eyebrow">Courses</p>
-              <h2 className="mt-1 text-xl font-bold text-brand-navy">Quick course navigation</h2>
+              <h2 className="mt-1 text-xl font-bold text-brand-navy">Your course collections</h2>
             </div>
             <Link href="/library" className="text-sm font-medium text-brand-blue hover:underline">
               Search library
             </Link>
           </div>
 
-          {[...coursesBySemester.entries()].map(([semester, semesterCourses]) => (
-            <div key={semester}>
-              <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-brand-muted">
-                {semester}
-              </h3>
-              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                {semesterCourses.map((course) => (
-                  <Link
-                    key={course.code}
-                    href={`/course/${encodeURIComponent(course.code)}`}
-                    className="rounded-lg border border-brand-line bg-brand-panel p-4 transition hover:border-brand-blue hover:shadow-sm"
-                  >
-                    <div className="flex items-start justify-between gap-3">
-                      <p className="text-xs font-semibold uppercase text-brand-blue">
-                        {course.code}
-                      </p>
-                      {isAdmin(profile) && (
-                        <span className="rounded-full bg-brand-soft px-2 py-0.5 text-[11px] font-semibold text-brand-navy">
-                          {tierLabel(course.library_tier)}
-                        </span>
-                      )}
+          {visibleCollections.map((collection) => {
+            const collectionCourses = coursesByCollection.get(collection.id) ?? [];
+            const coursesBySemester = new Map<string, HomeCourseWithCollection[]>();
+            for (const course of collectionCourses) {
+              const key = course.semester ?? "Other";
+              if (!coursesBySemester.has(key)) coursesBySemester.set(key, []);
+              coursesBySemester.get(key)!.push(course);
+            }
+
+            return (
+              <section
+                key={collection.id}
+                className="rounded-xl border border-brand-line bg-brand-panel p-5 shadow-sm"
+              >
+                <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <p className="eyebrow">{collection.short_label}</p>
+                    <h3 className="mt-1 text-lg font-bold text-brand-navy">
+                      {collection.label}
+                    </h3>
+                    {collection.description && (
+                      <p className="mt-1 text-sm text-brand-muted">{collection.description}</p>
+                    )}
+                  </div>
+                  <span className="rounded-full bg-brand-soft px-3 py-1 text-xs font-semibold text-brand-navy">
+                    {collectionCourses.length} course{collectionCourses.length === 1 ? "" : "s"}
+                  </span>
+                </div>
+
+                <div className="space-y-4">
+                  {[...coursesBySemester.entries()].map(([semester, semesterCourses]) => (
+                    <div key={`${collection.id}-${semester}`}>
+                      <h4 className="mb-2 text-xs font-semibold uppercase tracking-wide text-brand-muted">
+                        {semester}
+                      </h4>
+                      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                        {semesterCourses.map((course) => (
+                          <Link
+                            key={`${collection.id}-${course.code}`}
+                            href={`/course/${encodeURIComponent(course.code)}`}
+                            className="rounded-lg border border-brand-line bg-white p-4 transition hover:border-brand-blue hover:shadow-sm"
+                          >
+                            <div className="flex items-start justify-between gap-3">
+                              <p className="text-xs font-semibold uppercase text-brand-blue">
+                                {course.code}
+                              </p>
+                              {isAdmin(profile) && (
+                                <span className="rounded-full bg-brand-soft px-2 py-0.5 text-[11px] font-semibold text-brand-navy">
+                                  {tierLabel(course.library_tier)}
+                                </span>
+                              )}
+                            </div>
+                            <p className="mt-1 font-medium text-brand-ink">{course.title}</p>
+                            {course.area && (
+                              <p className="mt-1 text-xs text-brand-muted">{course.area}</p>
+                            )}
+                          </Link>
+                        ))}
+                      </div>
                     </div>
-                    <p className="mt-1 font-medium text-brand-ink">{course.title}</p>
-                    {course.area && <p className="mt-1 text-xs text-brand-muted">{course.area}</p>}
-                  </Link>
-                ))}
-              </div>
-            </div>
-          ))}
+                  ))}
+                </div>
+              </section>
+            );
+          })}
         </section>
       )}
 

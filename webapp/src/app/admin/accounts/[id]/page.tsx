@@ -32,6 +32,17 @@ export type RosterMatch = {
   profile_id: string | null;
 };
 
+export type AdminResourceCollection = {
+  id: string;
+  label: string;
+  short_label: string;
+  description: string | null;
+  source_tier: string | null;
+  source_cohort: string | null;
+  is_active: boolean;
+  sort_order: number;
+};
+
 export default async function AdminAccountDetailPage({
   params,
 }: {
@@ -75,6 +86,22 @@ export default async function AdminAccountDetailPage({
     roster = (data as RosterMatch | null) ?? null;
   }
 
+  const [{ data: collections }, { data: grantRows }] = await Promise.all([
+    supabase
+      .from("resource_collections")
+      .select("id, label, short_label, description, source_tier, source_cohort, is_active, sort_order")
+      .order("sort_order")
+      .order("label"),
+    supabase
+      .from("profile_resource_collection_grants")
+      .select("collection_id")
+      .eq("profile_id", account.id),
+  ]);
+
+  const grantedCollectionIds = new Set(
+    ((grantRows as { collection_id: string }[] | null) ?? []).map((row) => row.collection_id)
+  );
+
   return (
     <div className="space-y-6">
       <header className="flex flex-wrap items-start justify-between gap-3">
@@ -95,7 +122,13 @@ export default async function AdminAccountDetailPage({
         </Link>
       </header>
 
-      <AccountDetailForm account={account} roster={roster} isSelf={account.id === userId} />
+      <AccountDetailForm
+        account={account}
+        roster={roster}
+        isSelf={account.id === userId}
+        collections={(collections as AdminResourceCollection[] | null) ?? []}
+        grantedCollectionIds={[...grantedCollectionIds]}
+      />
     </div>
   );
 }
