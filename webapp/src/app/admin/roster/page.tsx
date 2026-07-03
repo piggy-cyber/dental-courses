@@ -54,9 +54,12 @@ export default async function AdminRosterPage() {
 
   return (
     <div className="space-y-8">
-      <header>
-        <h1 className="text-2xl font-bold text-brand-navy">Roster</h1>
-        <p className="mt-1 text-brand-muted">
+      <header className="app-card p-6">
+        <p className="eyebrow text-brand-gold">Admin</p>
+        <h1 className="mt-1 text-3xl font-bold tracking-tight text-brand-navy">
+          Roster
+        </h1>
+        <p className="mt-2 text-brand-muted">
           Track expected classmates, signed-in matches, and future D2-D4 cohorts.
         </p>
       </header>

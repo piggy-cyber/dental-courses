@@ -56,7 +56,7 @@ export function TranscriptButton({
         <button
           onClick={load}
           disabled={loading}
-          className="rounded-full border border-slate-300 px-4 py-1.5 text-sm font-medium text-slate-700 transition hover:border-blue-300 hover:text-blue-700 disabled:opacity-60"
+          className="rounded-full border border-brand-line bg-white/70 px-4 py-1.5 text-sm font-semibold text-brand-navy transition hover:border-brand-blue hover:bg-white disabled:opacity-60"
         >
           {loading ? "Loading..." : open ? "Hide transcript" : "View transcript"}
         </button>
@@ -64,13 +64,13 @@ export function TranscriptButton({
           <>
             <button
               onClick={copy}
-              className="rounded-full border border-slate-300 px-4 py-1.5 text-sm font-medium text-slate-700 transition hover:border-blue-300 hover:text-blue-700"
+              className="rounded-full border border-brand-line bg-white/70 px-4 py-1.5 text-sm font-semibold text-brand-navy transition hover:border-brand-blue hover:bg-white"
             >
               {copied ? "Copied" : "Copy"}
             </button>
             <button
               onClick={download}
-              className="rounded-full border border-slate-300 px-4 py-1.5 text-sm font-medium text-slate-700 transition hover:border-blue-300 hover:text-blue-700"
+              className="rounded-full border border-brand-line bg-white/70 px-4 py-1.5 text-sm font-semibold text-brand-navy transition hover:border-brand-blue hover:bg-white"
             >
               Download .txt
             </button>
@@ -78,7 +78,7 @@ export function TranscriptButton({
         )}
       </div>
       {open && text && (
-        <pre className="mt-3 max-h-80 overflow-y-auto whitespace-pre-wrap rounded-lg bg-slate-50 p-4 text-xs leading-relaxed text-slate-600">
+        <pre className="mt-3 max-h-80 overflow-y-auto whitespace-pre-wrap rounded-xl border border-brand-line bg-white/80 p-4 text-xs leading-relaxed text-brand-muted">
           {text}
         </pre>
       )}

@@ -17,7 +17,7 @@ function FileList({ files, label = "Lecture files" }: { files: CourseResource[];
       <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-brand-muted">
         {label}
       </p>
-      <ul className="divide-y divide-brand-line overflow-hidden rounded-lg border border-brand-line bg-white">
+      <ul className="divide-y divide-brand-line overflow-hidden rounded-xl border border-brand-line bg-white/80">
         {files.map((resource) => (
           <ResourceFileRow key={resource.id} resource={resource} />
         ))}
@@ -91,8 +91,8 @@ function PartBlock({
     <div
       className={
         compact
-          ? "rounded-lg border border-brand-line bg-white p-4"
-          : "rounded-lg border border-brand-line bg-white p-4"
+          ? "rounded-xl border border-brand-line bg-white/80 p-4"
+          : "rounded-xl border border-brand-line bg-white/80 p-4"
       }
     >
       <div className="flex flex-wrap items-center justify-between gap-2">
@@ -126,11 +126,11 @@ function SeriesGroupCard({
   const [leadPart, ...moreParts] = group.parts;
 
   return (
-    <article className="overflow-hidden rounded-xl border border-brand-line bg-brand-panel shadow-sm">
-      <div className="border-b border-brand-line bg-gradient-to-r from-brand-gold/10 to-white px-5 py-4">
+    <article className="app-card overflow-hidden">
+      <div className="border-b border-brand-line bg-brand-soft/70 px-5 py-4">
         <div className="flex flex-wrap items-baseline justify-between gap-2">
           <h3 className="font-semibold text-brand-navy">
-            <span className="mr-2 inline-flex h-7 w-7 items-center justify-center rounded-full bg-brand-gold/15 text-sm font-bold text-brand-gold">
+            <span className="mr-2 inline-flex h-7 w-7 items-center justify-center rounded-full bg-brand-gold/20 text-sm font-bold text-brand-gold">
               {index + 1}
             </span>
             {group.title}
@@ -144,7 +144,7 @@ function SeriesGroupCard({
         </p>
       </div>
       <div className="space-y-4 p-5">
-        <div className="rounded-xl border-2 border-brand-gold/30 bg-brand-gold/5 p-4">
+        <div className="rounded-xl border-2 border-brand-gold/30 bg-brand-gold/10 p-4">
           <p className="text-xs font-semibold uppercase tracking-wider text-brand-gold">
             Watch first · {leadPart.partLabel}
           </p>
@@ -195,11 +195,11 @@ function SessionGroupCard({
   const { lecture } = group;
   const embeddable = lectureEmbeddable(lecture);
   return (
-    <article className="overflow-hidden rounded-xl border border-brand-line bg-brand-panel shadow-sm">
-      <div className="border-b border-brand-line bg-gradient-to-r from-brand-blue/10 to-white px-5 py-4">
+    <article className="app-card overflow-hidden">
+      <div className="border-b border-brand-line bg-brand-soft/70 px-5 py-4">
         <div className="flex flex-wrap items-baseline justify-between gap-2">
           <h3 className="font-semibold text-brand-navy">
-            <span className="mr-2 inline-flex h-7 w-7 items-center justify-center rounded-full bg-brand-blue/15 text-sm font-bold text-brand-blue">
+            <span className="mr-2 inline-flex h-7 w-7 items-center justify-center rounded-full bg-brand-blue/20 text-sm font-bold text-brand-blue">
               {index + 1}
             </span>
             {lecture.lecture_date ? `${lecture.lecture_date} · Class session` : "Class session"}
@@ -210,7 +210,7 @@ function SessionGroupCard({
           {group.topics.map((topic) => (
             <span
               key={topic}
-              className="rounded-full border border-brand-line bg-white px-2.5 py-1 text-xs font-medium text-brand-navy"
+              className="rounded-full border border-brand-line bg-white/80 px-2.5 py-1 text-xs font-medium text-brand-navy"
             >
               {topic}
             </span>
@@ -245,10 +245,9 @@ function SingleGroupCard({
   hasTranscript: Set<string>;
 }) {
   const { lecture } = group;
-  const embeddable = lectureEmbeddable(lecture);
   return (
-    <article className="overflow-hidden rounded-xl border border-brand-line bg-brand-panel shadow-sm">
-      <div className="border-b border-brand-line bg-gradient-to-r from-brand-soft/80 to-white px-5 py-4">
+    <article className="app-card overflow-hidden">
+      <div className="border-b border-brand-line bg-brand-soft/70 px-5 py-4">
         <div className="flex flex-wrap items-baseline justify-between gap-2">
           <h3 className="font-semibold text-brand-navy">
             <span className="mr-2 inline-flex h-7 w-7 items-center justify-center rounded-full bg-brand-teal/10 text-sm font-bold text-brand-teal">

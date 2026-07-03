@@ -85,14 +85,14 @@ export function AccountDetailForm({
 
   return (
     <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
-      <section className="space-y-5 rounded-xl border border-brand-line bg-brand-panel p-5">
+      <section className="app-card space-y-5 p-5">
         <div className="grid gap-4 sm:grid-cols-2">
           <label className="block text-sm">
             <span className="font-medium text-brand-navy">Name</span>
             <input
               value={name}
               onChange={(event) => setName(event.target.value)}
-              className="mt-1 w-full rounded-lg border border-brand-line px-3 py-2 text-brand-ink"
+              className="app-input mt-1 w-full rounded-xl px-3 py-2"
             />
           </label>
           <label className="block text-sm">
@@ -100,7 +100,7 @@ export function AccountDetailForm({
             <input
               value={username}
               onChange={(event) => setUsername(event.target.value)}
-              className="mt-1 w-full rounded-lg border border-brand-line px-3 py-2 text-brand-ink"
+              className="app-input mt-1 w-full rounded-xl px-3 py-2"
             />
           </label>
         </div>
@@ -111,7 +111,7 @@ export function AccountDetailForm({
             value={bio}
             onChange={(event) => setBio(event.target.value)}
             rows={3}
-            className="mt-1 w-full rounded-lg border border-brand-line px-3 py-2 text-brand-ink"
+            className="app-input mt-1 w-full rounded-xl px-3 py-2"
           />
         </label>
 
@@ -124,7 +124,7 @@ export function AccountDetailForm({
             {collections.map((collection) => (
               <label
                 key={collection.id}
-                className="flex items-start gap-3 rounded-lg border border-brand-line px-3 py-3 text-sm"
+                className="flex items-start gap-3 rounded-xl border border-brand-line bg-white/60 px-3 py-3 text-sm"
               >
                 <input
                   type="checkbox"
@@ -158,7 +158,7 @@ export function AccountDetailForm({
             {ACCESS_TIERS.map((tier) => (
               <label
                 key={tier}
-                className="flex items-center gap-2 rounded-lg border border-brand-line px-3 py-2 text-sm"
+              className="flex items-center gap-2 rounded-xl border border-brand-line bg-white/60 px-3 py-2 text-sm"
               >
                 <input
                   type="checkbox"
@@ -177,12 +177,12 @@ export function AccountDetailForm({
             value={adminNote}
             onChange={(event) => setAdminNote(event.target.value)}
             rows={5}
-            className="mt-1 w-full rounded-lg border border-brand-line px-3 py-2 text-brand-ink"
+            className="app-input mt-1 w-full rounded-xl px-3 py-2"
           />
         </label>
 
         {account.access_note && (
-          <div className="rounded-lg border border-brand-line bg-brand-soft p-3 text-sm">
+          <div className="rounded-xl border border-brand-line bg-brand-soft p-3 text-sm">
             <p className="font-medium text-brand-navy">Student access note</p>
             <p className="mt-1 text-brand-ink">{account.access_note}</p>
           </div>
@@ -203,7 +203,7 @@ export function AccountDetailForm({
       </section>
 
       <aside className="space-y-4">
-        <section className="rounded-xl border border-brand-line bg-brand-panel p-5">
+        <section className="app-card p-5">
           <p className="text-sm font-semibold text-brand-navy">Status</p>
           <span
             className={`mt-3 inline-flex rounded-full border px-3 py-1 text-xs font-semibold ${STATUS_STYLES[account.status]}`}
@@ -238,7 +238,7 @@ export function AccountDetailForm({
           </div>
         </section>
 
-        <section className="rounded-xl border border-brand-line bg-brand-panel p-5 text-sm">
+        <section className="app-card p-5 text-sm">
           <p className="font-semibold text-brand-navy">Account</p>
           <dl className="mt-3 space-y-2 text-brand-muted">
             <div>
@@ -256,7 +256,7 @@ export function AccountDetailForm({
           </dl>
         </section>
 
-        <section className="rounded-xl border border-brand-line bg-brand-panel p-5 text-sm">
+        <section className="app-card p-5 text-sm">
           <p className="font-semibold text-brand-navy">Roster match</p>
           {roster ? (
             <dl className="mt-3 space-y-2 text-brand-muted">

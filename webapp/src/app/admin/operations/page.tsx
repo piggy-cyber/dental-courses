@@ -78,30 +78,33 @@ export default async function AdminOperationsPage() {
 
   return (
     <div className="space-y-10">
-      <header>
-        <h1 className="text-2xl font-bold text-brand-navy">Operations</h1>
-        <p className="mt-1 text-brand-muted">
+      <header className="app-card p-6">
+        <p className="eyebrow text-brand-gold">Admin</p>
+        <h1 className="mt-1 text-3xl font-bold tracking-tight text-brand-navy">
+          Operations
+        </h1>
+        <p className="mt-2 text-brand-muted">
           Library upload health and pending user export.
         </p>
       </header>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="rounded-xl border border-brand-line bg-brand-panel p-5">
+        <div className="app-card p-5">
           <p className="text-2xl font-bold text-brand-navy">{totalLinked}</p>
           <p className="text-sm text-brand-muted">Files in Supabase storage</p>
         </div>
-        <div className="rounded-xl border border-brand-line bg-brand-panel p-5">
+        <div className="app-card p-5">
           <p className="text-2xl font-bold text-brand-navy">{missing}</p>
           <p className="text-sm text-brand-muted">Files not uploaded yet</p>
         </div>
-        <div className="rounded-xl border border-brand-line bg-brand-panel p-5">
+        <div className="app-card p-5">
           <p className="text-2xl font-bold text-brand-navy">{youtubeLinked}</p>
           <p className="text-sm text-brand-muted">YouTube videos linked</p>
           {youtubePending > 0 && (
             <p className="mt-1 text-xs text-amber-700">{youtubePending} not on YouTube yet</p>
           )}
         </div>
-        <div className="rounded-xl border border-brand-line bg-brand-panel p-5">
+        <div className="app-card p-5">
           <p className="text-2xl font-bold text-brand-navy">{openReports.length}</p>
           <p className="text-sm text-brand-muted">Open reports</p>
           {(pendingUsers?.length ?? 0) > 0 && (
@@ -117,7 +120,7 @@ export default async function AdminOperationsPage() {
         <p className="mb-3 text-xs text-brand-muted">
           Counts exclude Local Media Source rows (YouTube, not storage).
         </p>
-        <div className="overflow-hidden rounded-xl border border-brand-line bg-brand-panel">
+        <div className="app-card overflow-hidden">
           <table className="w-full text-left text-sm">
             <thead className="border-b border-brand-line bg-brand-soft text-brand-muted">
               <tr>
@@ -141,7 +144,7 @@ export default async function AdminOperationsPage() {
         </div>
       </section>
 
-      <section className="rounded-xl border border-brand-line bg-brand-soft p-5">
+      <section className="app-card-muted p-5">
         <div className="flex flex-wrap items-baseline justify-between gap-3">
           <div>
             <h2 className="font-semibold text-brand-navy">Issue reports</h2>
@@ -154,7 +157,7 @@ export default async function AdminOperationsPage() {
           </span>
         </div>
         {problemReports?.length ? (
-          <ul className="mt-3 divide-y divide-brand-line rounded-lg bg-brand-panel">
+          <ul className="mt-3 divide-y divide-brand-line overflow-hidden rounded-xl border border-brand-line bg-brand-panel">
             {problemReports.map((row) => (
               <li key={row.id} className="px-3 py-2 text-sm">
                 <div className="flex flex-wrap items-start justify-between gap-3">
@@ -178,7 +181,7 @@ export default async function AdminOperationsPage() {
                         ? "bg-amber-50 text-amber-700"
                         : row.status === "resolved"
                           ? "bg-emerald-50 text-emerald-700"
-                          : "bg-slate-100 text-slate-600"
+                          : "bg-brand-soft text-brand-muted"
                     }`}
                   >
                     {row.status}
@@ -207,12 +210,12 @@ export default async function AdminOperationsPage() {
         )}
       </section>
 
-      <section className="rounded-xl border border-brand-line bg-brand-soft p-5">
+      <section className="app-card-muted p-5">
         <h2 className="font-semibold text-brand-navy">Export pending users</h2>
         <p className="mt-1 text-sm text-brand-muted">
           Copy this CSV for payment tracking or outreach.
         </p>
-        <pre className="mt-3 max-h-48 overflow-auto rounded-lg bg-brand-panel p-3 text-xs">
+        <pre className="mt-3 max-h-48 overflow-auto rounded-xl border border-brand-line bg-brand-panel p-3 text-xs">
           {csvRows || "No pending users"}
         </pre>
         <Link href="/admin/accounts" className="mt-3 inline-block text-sm text-brand-blue hover:underline">

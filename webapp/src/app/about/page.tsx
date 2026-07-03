@@ -15,9 +15,9 @@ export default async function AboutPage() {
   const backLabel = profile?.status === "approved" ? "Back to dashboard" : "Back to sign in";
 
   return (
-    <div className="min-h-screen bg-brand-paper text-brand-ink">
+    <div className="app-shell-bg min-h-screen text-brand-ink">
       <header className="sticky top-0 z-10 border-b border-brand-line bg-brand-panel/90 backdrop-blur">
-        <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-3">
+        <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-3">
           <BrandMarkPublic />
           <Link
             href={backHref}
@@ -28,13 +28,15 @@ export default async function AboutPage() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-3xl px-4 py-12">
-        <AboutContent />
+      <main className="mx-auto max-w-4xl px-4 py-12">
+        <section className="app-card p-6 sm:p-8">
+          <AboutContent />
+        </section>
 
         <div className="mt-10">
           <Link
             href={backHref}
-            className="inline-flex rounded-lg bg-brand-blue px-5 py-2.5 font-semibold text-white hover:opacity-90"
+            className="inline-flex rounded-full bg-brand-blue px-5 py-2.5 font-semibold text-white hover:opacity-90"
           >
             {backLabel}
           </Link>

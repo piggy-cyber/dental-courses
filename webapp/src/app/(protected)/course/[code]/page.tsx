@@ -54,9 +54,9 @@ type Course = {
 
 function StatChip({ label, value }: { label: string; value: string | number }) {
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-full border border-brand-line bg-white px-3 py-1 text-xs">
-      <span className="font-semibold text-brand-navy">{value}</span>
-      <span className="text-brand-muted">{label}</span>
+    <span className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/10 px-3 py-1 text-xs">
+      <span className="font-semibold text-white">{value}</span>
+      <span className="text-white/60">{label}</span>
     </span>
   );
 }
@@ -219,7 +219,7 @@ export default async function CoursePage({
 
   return (
     <div className="space-y-10">
-      <header className="overflow-hidden rounded-2xl border border-brand-line bg-gradient-to-br from-brand-navy via-[#1e4a72] to-brand-teal p-6 text-white shadow-[var(--brand-shadow)] sm:p-8">
+      <header className="app-hero overflow-hidden rounded-2xl p-6 text-white shadow-[var(--brand-shadow)] sm:p-8">
         <CourseBreadcrumb courseCode={course.code} courseTitle={course.title} />
         <div className="mt-4 flex flex-wrap items-end justify-between gap-4">
           <div>
@@ -260,7 +260,7 @@ export default async function CoursePage({
             <p className="eyebrow">Watch</p>
             <h2 className="mt-1 text-xl font-bold text-brand-navy">Supplemental videos</h2>
           </div>
-          <ul className="divide-y divide-brand-line overflow-hidden rounded-xl border border-brand-line bg-brand-panel">
+          <ul className="app-card divide-y divide-brand-line overflow-hidden">
             {mediaResources.map((resource) => {
               const video = matchFilenameToYoutube(resource.name);
               const embeddable = video && isEmbeddable(video);
@@ -300,11 +300,11 @@ export default async function CoursePage({
           {[...supplementalByKind.entries()]
             .sort(([a], [b]) => a.localeCompare(b))
             .map(([kind, items]) => (
-              <div key={kind}>
-                <h3 className="mb-2 text-sm font-semibold uppercase tracking-wider text-brand-muted">
+              <div key={kind} className="app-card overflow-hidden">
+                <h3 className="border-b border-brand-line px-4 py-3 text-sm font-semibold uppercase tracking-wider text-brand-muted">
                   {kind} ({items.length})
                 </h3>
-                <ul className="divide-y divide-brand-line overflow-hidden rounded-xl border border-brand-line bg-brand-panel">
+                <ul className="divide-y divide-brand-line">
                   {items.map((resource) => (
                     <ResourceFileRow key={resource.id} resource={resource} />
                   ))}
@@ -320,7 +320,7 @@ export default async function CoursePage({
             Archived / survival-guide copies ({archive.length}) — likely duplicates from other
             courses or old class folders
           </summary>
-          <ul className="mt-3 divide-y divide-brand-line overflow-hidden rounded-lg border border-brand-line bg-white">
+          <ul className="mt-3 divide-y divide-brand-line overflow-hidden rounded-xl border border-brand-line bg-white/80">
             {archive.map((resource) => (
               <ResourceFileRow key={resource.id} resource={resource} />
             ))}

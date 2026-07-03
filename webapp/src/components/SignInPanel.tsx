@@ -66,7 +66,7 @@ export function SignInPanel() {
   return (
     <div className="space-y-4 text-left">
       <form onSubmit={sendMagicLink} className="space-y-3">
-        <label className="block text-sm font-medium text-slate-700" htmlFor="email">
+        <label className="block text-sm font-semibold text-white/80" htmlFor="email">
           Personal Gmail sign-in
         </label>
         <input
@@ -76,12 +76,12 @@ export function SignInPanel() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="yourname@gmail.com"
-          className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-slate-900 outline-none ring-blue-600 focus:ring-2"
+          className="w-full rounded-xl border border-white/20 bg-white/95 px-4 py-2.5 text-brand-ink outline-none focus:border-brand-gold focus:ring-2 focus:ring-brand-gold/25"
         />
         <button
           type="submit"
           disabled={busy !== null}
-          className="w-full rounded-lg bg-brand-blue px-4 py-2.5 font-semibold text-white hover:opacity-90 disabled:opacity-60"
+          className="w-full rounded-full bg-brand-gold px-4 py-2.5 font-semibold text-brand-sidebar hover:opacity-90 disabled:opacity-60"
         >
           {busy === "email" ? "Sending link..." : "Email me a sign-in link"}
         </button>
@@ -89,10 +89,10 @@ export function SignInPanel() {
 
       <div className="relative py-1">
         <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-slate-200" />
+          <div className="w-full border-t border-white/20" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-slate-50 px-2 text-slate-400">or</span>
+          <span className="bg-transparent px-3 text-white/50">or</span>
         </div>
       </div>
 
@@ -100,13 +100,13 @@ export function SignInPanel() {
         type="button"
         onClick={signInWithGoogle}
         disabled={busy !== null}
-        className="inline-flex w-full items-center justify-center gap-3 rounded-lg border border-slate-300 bg-white px-4 py-2.5 font-semibold text-slate-800 hover:bg-slate-50 disabled:opacity-60"
+        className="inline-flex w-full items-center justify-center gap-3 rounded-full border border-white/20 bg-white/10 px-4 py-2.5 font-semibold text-white hover:bg-white/20 disabled:opacity-60"
       >
         {busy === "google" ? "Opening Google..." : "Sign in with personal Gmail"}
       </button>
 
       {error && (
-        <p className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800">
+        <p className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800">
           {error}
         </p>
       )}

@@ -59,19 +59,19 @@ export function CourseReportSection({
   if (!resources.length) return null;
 
   return (
-    <section className="rounded-xl border border-dashed border-brand-line bg-brand-soft/60 p-5">
+    <section className="rounded-2xl border border-dashed border-brand-line bg-brand-soft/70 p-5">
       {!open ? (
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <p className="font-medium text-brand-navy">Something look wrong?</p>
             <p className="mt-1 text-sm text-brand-muted">
-            Wrong file, broken link, missing upload, or general issue for {courseCode}.
+              Wrong file, broken link, missing upload, or general issue for {courseCode}.
             </p>
           </div>
           <button
             type="button"
             onClick={() => setOpen(true)}
-            className="rounded-full border border-amber-700/30 bg-white px-4 py-2 text-sm font-medium text-amber-900 hover:bg-amber-50"
+            className="rounded-full border border-brand-gold/40 bg-white/70 px-4 py-2 text-sm font-semibold text-brand-gold hover:bg-white"
           >
             Report an issue
           </button>
@@ -84,7 +84,7 @@ export function CourseReportSection({
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value as IssueCategory)}
-              className="mt-1 w-full rounded-lg border border-brand-line bg-white px-3 py-2 text-sm text-brand-ink"
+              className="app-input mt-1 w-full rounded-xl px-3 py-2 text-sm"
             >
               {ISSUE_TYPES.map((type) => (
                 <option key={type.value} value={type.value}>
@@ -98,7 +98,7 @@ export function CourseReportSection({
             <select
               value={resourceId}
               onChange={(e) => setResourceId(e.target.value)}
-              className="mt-1 w-full rounded-lg border border-brand-line bg-white px-3 py-2 text-sm text-brand-ink"
+              className="app-input mt-1 w-full rounded-xl px-3 py-2 text-sm"
             >
               <option value="">General course/site issue</option>
               {resources.map((resource) => (
@@ -116,7 +116,7 @@ export function CourseReportSection({
               onChange={(e) => setMessage(e.target.value)}
               rows={3}
               placeholder="What should an admin fix? Add the page, file, or button if relevant."
-              className="mt-1 w-full rounded-lg border border-brand-line bg-white px-3 py-2 text-sm"
+              className="app-input mt-1 w-full rounded-xl px-3 py-2 text-sm"
             />
           </label>
           <div className="flex flex-wrap gap-2">
@@ -124,7 +124,7 @@ export function CourseReportSection({
               type="button"
               onClick={submit}
               disabled={status === "sending" || !message.trim()}
-              className="rounded-full bg-amber-800 px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
+              className="rounded-full bg-brand-gold px-4 py-2 text-sm font-semibold text-brand-sidebar disabled:opacity-50"
             >
               {status === "sending" ? "Sending…" : status === "sent" ? "Sent — thanks!" : "Send report"}
             </button>

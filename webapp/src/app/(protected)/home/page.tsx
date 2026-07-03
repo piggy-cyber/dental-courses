@@ -42,9 +42,9 @@ type HomeMembership = {
 
 function StatCard({ label, value }: { label: string; value: string | number }) {
   return (
-    <div className="rounded-lg border border-brand-line bg-brand-panel p-4 shadow-sm">
-      <p className="text-2xl font-bold text-brand-navy">{value}</p>
-      <p className="text-sm text-brand-muted">{label}</p>
+    <div className="rounded-xl border border-white/10 bg-white/10 p-4">
+      <p className="text-2xl font-bold text-white">{value}</p>
+      <p className="text-sm text-white/60">{label}</p>
     </div>
   );
 }
@@ -112,8 +112,8 @@ export default async function HomeDashboardPage() {
 
   return (
     <div className="space-y-8">
-      <header className="grid gap-4 lg:grid-cols-[1fr_360px]">
-        <section className="rounded-xl border border-brand-line bg-brand-panel p-5 shadow-sm">
+      <header className="grid gap-5 xl:grid-cols-[1fr_380px]">
+        <section className="app-hero rounded-2xl p-6 text-white shadow-[var(--brand-shadow)] sm:p-7">
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div className="flex items-center gap-4">
               <UserAvatar
@@ -121,17 +121,20 @@ export default async function HomeDashboardPage() {
                 email={profile?.email}
                 avatarUrl={profile?.avatar_url}
                 size="lg"
+                className="ring-4 ring-white/10"
               />
               <div>
-                <p className="eyebrow">Home</p>
-                <h1 className="text-2xl font-bold text-brand-navy">{displayName}</h1>
+                <p className="eyebrow text-brand-gold">Student desk</p>
+                <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                  {displayName}
+                </h1>
                 <div className="mt-1 flex flex-wrap gap-2 text-xs">
-                  {handle && <span className="font-medium text-brand-teal">{handle}</span>}
+                  {handle && <span className="font-medium text-white/70">{handle}</span>}
                   {visibleCollections.length > 0
                     ? visibleCollections.map((collection) => (
                         <span
                           key={collection.id}
-                          className="rounded-full bg-brand-soft px-2 py-0.5 font-semibold text-brand-navy"
+                          className="rounded-full bg-white/10 px-2 py-0.5 font-semibold text-white/90"
                         >
                           {collection.short_label}
                         </span>
@@ -139,7 +142,7 @@ export default async function HomeDashboardPage() {
                     : profile?.access_tiers?.map((tier) => (
                         <span
                           key={tier}
-                          className="rounded-full bg-brand-soft px-2 py-0.5 font-semibold text-brand-navy"
+                          className="rounded-full bg-white/10 px-2 py-0.5 font-semibold text-white/90"
                         >
                           {tierLabel(tier)}
                         </span>
@@ -149,7 +152,7 @@ export default async function HomeDashboardPage() {
             </div>
             <Link
               href="/profile"
-              className="rounded-lg border border-brand-line px-4 py-2 text-sm font-medium text-brand-navy hover:bg-brand-soft"
+              className="rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white hover:bg-white/20"
             >
               Edit profile
             </Link>
@@ -163,7 +166,7 @@ export default async function HomeDashboardPage() {
           </div>
         </section>
 
-        <section className="rounded-xl border border-brand-line bg-brand-panel p-5 shadow-sm">
+        <section className="app-card p-5">
           <div className="flex items-start justify-between gap-4">
             <div>
               <p className="eyebrow">Cleveland 44106</p>
@@ -179,24 +182,27 @@ export default async function HomeDashboardPage() {
           {weather ? (
             <>
               <div className="mt-4 grid grid-cols-3 gap-2 text-sm">
-                <div className="rounded-lg bg-brand-soft p-3">
+                <div className="rounded-xl bg-brand-soft p-3">
                   <p className="font-semibold text-brand-navy">{weather.label}</p>
                   <p className="text-xs text-brand-muted">Current</p>
                 </div>
-                <div className="rounded-lg bg-brand-soft p-3">
+                <div className="rounded-xl bg-brand-soft p-3">
                   <p className="font-semibold text-brand-navy">
                     {weather.high}° / {weather.low}°
                   </p>
                   <p className="text-xs text-brand-muted">High / low</p>
                 </div>
-                <div className="rounded-lg bg-brand-soft p-3">
+                <div className="rounded-xl bg-brand-soft p-3">
                   <p className="font-semibold text-brand-navy">{weather.precipChancePct}%</p>
                   <p className="text-xs text-brand-muted">Rain</p>
                 </div>
               </div>
               <div className="mt-4 grid grid-cols-7 gap-1.5">
                 {weather.weekly.map((day) => (
-                  <div key={day.date} className="rounded-lg border border-brand-line p-2 text-center">
+                  <div
+                    key={day.date}
+                    className="rounded-xl border border-brand-line bg-white/60 p-2 text-center"
+                  >
                     <p className="text-xs font-semibold text-brand-navy">{day.weekday}</p>
                     <p className="mt-1 text-sm font-bold text-brand-ink">{day.high}°</p>
                     <p className="text-xs text-brand-muted">{day.low}°</p>
@@ -214,7 +220,7 @@ export default async function HomeDashboardPage() {
       <section className="grid gap-4 md:grid-cols-3">
         <Link
           href="/library"
-          className="rounded-xl border border-brand-line bg-brand-panel p-5 shadow-sm transition hover:border-brand-teal"
+          className="app-card p-5 transition hover:-translate-y-0.5 hover:border-brand-teal"
         >
           <p className="eyebrow">Study</p>
           <h2 className="mt-1 font-bold text-brand-navy">Open your collections</h2>
@@ -222,7 +228,7 @@ export default async function HomeDashboardPage() {
         </Link>
         <Link
           href="/profile"
-          className="rounded-xl border border-brand-line bg-brand-panel p-5 shadow-sm transition hover:border-brand-teal"
+          className="app-card p-5 transition hover:-translate-y-0.5 hover:border-brand-teal"
         >
           <p className="eyebrow">Account</p>
           <h2 className="mt-1 font-bold text-brand-navy">Profile and access</h2>
@@ -231,7 +237,7 @@ export default async function HomeDashboardPage() {
         {isAdmin(profile) ? (
           <Link
             href="/admin"
-            className="rounded-xl border border-brand-line bg-brand-panel p-5 shadow-sm transition hover:border-brand-gold"
+            className="app-card p-5 transition hover:-translate-y-0.5 hover:border-brand-gold"
           >
             <p className="eyebrow text-brand-gold">Admin</p>
             <h2 className="mt-1 font-bold text-brand-navy">Control center</h2>
@@ -240,7 +246,7 @@ export default async function HomeDashboardPage() {
         ) : (
           <Link
             href="/about"
-            className="rounded-xl border border-brand-line bg-brand-panel p-5 shadow-sm transition hover:border-brand-teal"
+            className="app-card p-5 transition hover:-translate-y-0.5 hover:border-brand-teal"
           >
             <p className="eyebrow">About</p>
             <h2 className="mt-1 font-bold text-brand-navy">What is this?</h2>
@@ -249,7 +255,7 @@ export default async function HomeDashboardPage() {
         )}
       </section>
 
-      <section className="rounded-xl border border-brand-line bg-brand-panel p-5 shadow-sm">
+      <section className="app-card p-5">
         <div className="mb-3 flex flex-wrap items-baseline justify-between gap-3">
           <div>
             <p className="eyebrow">{hasCanvasFeed && schedule ? schedule.heading : "Canvas"}</p>
@@ -284,7 +290,7 @@ export default async function HomeDashboardPage() {
             </p>
           )
         ) : (
-          <div className="rounded-lg border border-dashed border-brand-line bg-white/60 p-4">
+          <div className="rounded-xl border border-dashed border-brand-line bg-white/60 p-4">
             <div>
               <p className="font-semibold text-brand-navy">Add your Canvas feed</p>
               <p className="mt-1 text-sm text-brand-muted">
@@ -294,7 +300,7 @@ export default async function HomeDashboardPage() {
             </div>
             <Link
               href="/profile"
-              className="mt-3 inline-flex rounded-lg bg-brand-blue px-4 py-2 text-sm font-semibold text-white hover:opacity-90"
+              className="mt-3 inline-flex rounded-full bg-brand-blue px-4 py-2 text-sm font-semibold text-white hover:opacity-90"
             >
               Open profile
             </Link>
@@ -326,7 +332,7 @@ export default async function HomeDashboardPage() {
             return (
               <section
                 key={collection.id}
-                className="rounded-xl border border-brand-line bg-brand-panel p-5 shadow-sm"
+                className="app-card p-5"
               >
                 <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
                   <div>
@@ -354,7 +360,7 @@ export default async function HomeDashboardPage() {
                           <Link
                             key={`${collection.id}-${course.code}`}
                             href={`/course/${encodeURIComponent(course.code)}?collection=${encodeURIComponent(collection.id)}`}
-                            className="rounded-lg border border-brand-line bg-white p-4 transition hover:border-brand-blue hover:shadow-sm"
+                            className="rounded-xl border border-brand-line bg-white/75 p-4 transition hover:-translate-y-0.5 hover:border-brand-blue hover:bg-white hover:shadow-sm"
                           >
                             <div className="flex items-start justify-between gap-3">
                               <p className="text-xs font-semibold uppercase text-brand-blue">
@@ -399,7 +405,7 @@ export default async function HomeDashboardPage() {
             <Link
               key={item.href}
               href={item.href}
-              className="rounded-lg border border-brand-line bg-brand-panel p-4 transition hover:border-brand-teal"
+              className="app-card p-4 transition hover:-translate-y-0.5 hover:border-brand-teal"
             >
               <p className="font-semibold text-brand-navy">{item.label}</p>
               <p className="mt-1 text-sm text-brand-muted">{item.detail}</p>

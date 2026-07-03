@@ -22,7 +22,7 @@ export default async function LibraryPage() {
 
   if (!memberships?.length) {
     return (
-      <div className="rounded-xl border border-brand-line bg-brand-panel p-8 text-center text-brand-muted">
+      <div className="app-card p-8 text-center text-brand-muted">
         {profile?.role === "owner"
           ? "No courses loaded yet. Run the seed script to import the course library."
           : "No resource collections are assigned to your account yet."}
@@ -73,10 +73,14 @@ export default async function LibraryPage() {
 
   return (
     <div className="space-y-8">
-      <header>
-        <h1 className="text-2xl font-bold text-brand-navy">Courses</h1>
-        <p className="mt-1 text-brand-muted">
-          Pick a granted collection, then open its courses, lectures, videos, transcripts, and files.
+      <header className="app-card p-6">
+        <p className="eyebrow">Library</p>
+        <h1 className="mt-1 text-3xl font-bold tracking-tight text-brand-navy">
+          Courses by collection
+        </h1>
+        <p className="mt-2 max-w-2xl text-brand-muted">
+          Pick a granted collection, then open the matching course set with its lectures,
+          videos, transcripts, and files.
         </p>
       </header>
 

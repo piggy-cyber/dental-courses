@@ -59,7 +59,7 @@ export function AboutContent({ compact = false }: AboutContentProps) {
           </p>
 
           <h2>Disclaimer</h2>
-          <p className="rounded-xl border border-brand-line bg-brand-panel p-4 text-sm">
+          <p className="rounded-xl border border-brand-line bg-white/70 p-4 text-sm">
             This is an independent, student-run resource. It is strictly not
             affiliated with, endorsed by, sponsored by, or representative of Case
             Western Reserve University or the School of Dental Medicine. All
@@ -82,7 +82,7 @@ export function AboutContent({ compact = false }: AboutContentProps) {
 
 export function AboutSummary() {
   return (
-    <section className="rounded-xl border border-brand-line bg-brand-panel p-6 text-left shadow-sm">
+    <section className="app-card p-6 text-left">
       <AboutContent compact />
       <Link
         href="/about"

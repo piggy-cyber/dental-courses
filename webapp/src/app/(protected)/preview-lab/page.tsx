@@ -36,7 +36,7 @@ export default async function PreviewLabPage() {
       </header>
 
       {list.length === 0 ? (
-        <div className="rounded-xl border border-brand-line bg-brand-panel p-8 text-center text-sm text-brand-muted">
+        <div className="app-card p-8 text-center text-sm text-brand-muted">
           <p>No uploaded files in storage yet.</p>
           <p className="mt-2">
             Run{" "}

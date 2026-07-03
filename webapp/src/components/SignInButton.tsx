@@ -27,7 +27,7 @@ export function SignInButton() {
     <button
       onClick={signIn}
       disabled={busy}
-      className="inline-flex items-center gap-3 rounded-full bg-blue-700 px-6 py-3 text-base font-semibold text-white shadow-lg shadow-blue-700/20 transition hover:bg-blue-800 disabled:opacity-60"
+      className="inline-flex items-center gap-3 rounded-full bg-brand-blue px-6 py-3 text-base font-semibold text-white shadow-lg shadow-brand-blue/20 transition hover:opacity-90 disabled:opacity-60"
     >
       <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden="true">
         <path

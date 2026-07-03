@@ -74,16 +74,16 @@ export function LibrarySearch({ courses }: { courses: CourseCard[] }) {
 
   return (
     <div className="space-y-10">
-      <div className="space-y-4">
+      <div className="app-card-muted p-4">
         {collections.length > 1 && (
-          <div className="flex flex-wrap gap-2">
+          <div className="mb-4 flex flex-wrap gap-2">
             <button
               type="button"
               onClick={() => setCollectionId("all")}
-              className={`rounded-full border px-3 py-1.5 text-sm font-semibold ${
+              className={`rounded-full border px-3 py-1.5 text-sm font-semibold transition ${
                 collectionId === "all"
                   ? "border-brand-blue bg-brand-blue text-white"
-                  : "border-brand-line bg-brand-panel text-brand-navy hover:bg-brand-soft"
+                  : "border-brand-line bg-brand-panel text-brand-navy hover:border-brand-blue hover:bg-white"
               }`}
             >
               All granted
@@ -93,10 +93,10 @@ export function LibrarySearch({ courses }: { courses: CourseCard[] }) {
                 key={collection.collectionId}
                 type="button"
                 onClick={() => setCollectionId(collection.collectionId)}
-                className={`rounded-full border px-3 py-1.5 text-sm font-semibold ${
+                className={`rounded-full border px-3 py-1.5 text-sm font-semibold transition ${
                   collectionId === collection.collectionId
                     ? "border-brand-blue bg-brand-blue text-white"
-                    : "border-brand-line bg-brand-panel text-brand-navy hover:bg-brand-soft"
+                    : "border-brand-line bg-brand-panel text-brand-navy hover:border-brand-blue hover:bg-white"
                 }`}
               >
                 {collection.collectionShortLabel}
@@ -110,7 +110,7 @@ export function LibrarySearch({ courses }: { courses: CourseCard[] }) {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search by course code, title, collection, or area..."
-          className="w-full max-w-md rounded-lg border border-brand-line bg-brand-panel px-4 py-2.5 text-brand-ink outline-none ring-brand-blue focus:ring-2"
+          className="app-input w-full max-w-xl rounded-full px-4 py-2.5"
         />
         {query && (
           <p className="mt-2 text-sm text-brand-muted">
@@ -136,7 +136,7 @@ export function LibrarySearch({ courses }: { courses: CourseCard[] }) {
             return (
               <section
                 key={collection.collectionId}
-                className="rounded-xl border border-brand-line bg-brand-panel p-5 shadow-sm"
+                className="app-card p-5"
               >
                 <div className="mb-5 flex flex-wrap items-start justify-between gap-3">
                   <div>
@@ -165,7 +165,7 @@ export function LibrarySearch({ courses }: { courses: CourseCard[] }) {
                           <Link
                             key={`${course.collectionId}-${course.code}`}
                             href={`/course/${encodeURIComponent(course.code)}?collection=${encodeURIComponent(course.collectionId)}`}
-                            className="group rounded-xl border border-brand-line bg-white p-5 shadow-sm transition hover:border-brand-blue hover:shadow-md"
+                            className="group rounded-xl border border-brand-line bg-white/75 p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-blue hover:bg-white hover:shadow-md"
                           >
                             <p className="text-xs font-semibold uppercase tracking-wider text-brand-blue">
                               {course.code}

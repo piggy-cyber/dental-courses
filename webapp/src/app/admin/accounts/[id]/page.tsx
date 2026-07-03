@@ -104,19 +104,19 @@ export default async function AdminAccountDetailPage({
 
   return (
     <div className="space-y-6">
-      <header className="flex flex-wrap items-start justify-between gap-3">
+      <header className="app-card flex flex-wrap items-start justify-between gap-3 p-6">
         <div>
           <Link href="/admin/accounts" className="text-sm text-brand-blue hover:underline">
             Back to accounts
           </Link>
-          <h1 className="mt-2 text-2xl font-bold text-brand-navy">
+          <h1 className="mt-2 text-3xl font-bold tracking-tight text-brand-navy">
             {account.name ?? account.email}
           </h1>
           <p className="mt-1 text-brand-muted">{account.email}</p>
         </div>
         <Link
           href="/admin/roster"
-          className="rounded-full border border-brand-line px-4 py-2 text-sm font-semibold text-brand-navy hover:bg-brand-soft"
+          className="rounded-full border border-brand-line bg-white/70 px-4 py-2 text-sm font-semibold text-brand-navy hover:border-brand-blue hover:bg-white"
         >
           Open roster
         </Link>

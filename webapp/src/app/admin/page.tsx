@@ -55,10 +55,12 @@ export default async function AdminDashboardPage() {
 
   return (
     <div className="space-y-10">
-      <header>
+      <header className="app-card p-6">
         <p className="eyebrow text-brand-gold">Admin portal</p>
-        <h1 className="text-2xl font-bold text-brand-navy">Dashboard</h1>
-        <p className="mt-1 text-brand-muted">
+        <h1 className="mt-1 text-3xl font-bold tracking-tight text-brand-navy">
+          Dashboard
+        </h1>
+        <p className="mt-2 text-brand-muted">
           Manage access, monitor library health, and run operations.
         </p>
       </header>
@@ -66,43 +68,43 @@ export default async function AdminDashboardPage() {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
         <Link
           href="/admin/accounts"
-          className="rounded-xl border border-brand-line bg-brand-panel p-5 shadow-sm transition hover:border-brand-gold"
+          className="app-card p-5 transition hover:-translate-y-0.5 hover:border-brand-gold"
         >
           <p className="text-2xl font-bold text-brand-navy">{pendingCount ?? 0}</p>
           <p className="text-sm text-brand-muted">Pending approvals</p>
         </Link>
         <Link
           href="/admin/accounts"
-          className="rounded-xl border border-brand-line bg-brand-panel p-5 shadow-sm transition hover:border-brand-gold"
+          className="app-card p-5 transition hover:-translate-y-0.5 hover:border-brand-gold"
         >
           <p className="text-2xl font-bold text-brand-navy">{revokedCount ?? 0}</p>
           <p className="text-sm text-brand-muted">Banned/revoked</p>
         </Link>
         <Link
           href="/admin/roster"
-          className="rounded-xl border border-brand-line bg-brand-panel p-5 shadow-sm transition hover:border-brand-gold"
+          className="app-card p-5 transition hover:-translate-y-0.5 hover:border-brand-gold"
         >
           <p className="text-2xl font-bold text-brand-navy">{rosterUnsignedCount ?? 0}</p>
           <p className="text-sm text-brand-muted">Roster not signed in</p>
         </Link>
         <Link
           href="/admin/operations"
-          className="rounded-xl border border-brand-line bg-brand-panel p-5 shadow-sm transition hover:border-brand-gold"
+          className="app-card p-5 transition hover:-translate-y-0.5 hover:border-brand-gold"
         >
           <p className="text-2xl font-bold text-brand-navy">{openReportCount ?? 0}</p>
           <p className="text-sm text-brand-muted">Open reports</p>
         </Link>
-        <div className="rounded-xl border border-brand-line bg-brand-panel p-5 shadow-sm">
+        <div className="app-card p-5">
           <p className="text-2xl font-bold text-brand-navy">{courseCount ?? 0}</p>
           <p className="text-sm text-brand-muted">Courses</p>
         </div>
-        <div className="rounded-xl border border-brand-line bg-brand-panel p-5 shadow-sm">
+        <div className="app-card p-5">
           <p className="text-2xl font-bold text-brand-navy">{lectureCount ?? 0}</p>
           <p className="text-sm text-brand-muted">Lectures</p>
         </div>
         <Link
           href="/admin/operations"
-          className="rounded-xl border border-brand-line bg-brand-panel p-5 shadow-sm transition hover:border-brand-gold"
+          className="app-card p-5 transition hover:-translate-y-0.5 hover:border-brand-gold"
         >
           <p className="text-2xl font-bold text-brand-navy">
             {linkedCount}/{resourceCount}
@@ -117,28 +119,28 @@ export default async function AdminDashboardPage() {
       <section className="grid gap-4 md:grid-cols-5">
         <Link
           href="/admin/accounts"
-          className="rounded-xl border border-brand-line bg-brand-panel p-5 hover:bg-brand-soft"
+          className="app-card p-5 transition hover:-translate-y-0.5 hover:border-brand-blue"
         >
           <h2 className="font-semibold text-brand-navy">Accounts</h2>
           <p className="mt-1 text-sm text-brand-muted">Approve or revoke library access.</p>
         </Link>
         <Link
           href="/admin/roster"
-          className="rounded-xl border border-brand-line bg-brand-panel p-5 hover:bg-brand-soft"
+          className="app-card p-5 transition hover:-translate-y-0.5 hover:border-brand-blue"
         >
           <h2 className="font-semibold text-brand-navy">Roster</h2>
           <p className="mt-1 text-sm text-brand-muted">Track expected students and matches.</p>
         </Link>
         <Link
           href="/admin/team"
-          className="rounded-xl border border-brand-line bg-brand-panel p-5 hover:bg-brand-soft"
+          className="app-card p-5 transition hover:-translate-y-0.5 hover:border-brand-blue"
         >
           <h2 className="font-semibold text-brand-navy">Team</h2>
           <p className="mt-1 text-sm text-brand-muted">Promote or demote admins.</p>
         </Link>
         <Link
           href="/admin/collections"
-          className="rounded-xl border border-brand-line bg-brand-panel p-5 hover:bg-brand-soft"
+          className="app-card p-5 transition hover:-translate-y-0.5 hover:border-brand-blue"
         >
           <h2 className="font-semibold text-brand-navy">Collections</h2>
           <p className="mt-1 text-sm text-brand-muted">
@@ -147,7 +149,7 @@ export default async function AdminDashboardPage() {
         </Link>
         <Link
           href="/admin/operations"
-          className="rounded-xl border border-brand-line bg-brand-panel p-5 hover:bg-brand-soft"
+          className="app-card p-5 transition hover:-translate-y-0.5 hover:border-brand-blue"
         >
           <h2 className="font-semibold text-brand-navy">Operations</h2>
           <p className="mt-1 text-sm text-brand-muted">Upload coverage and exports.</p>
@@ -158,7 +160,7 @@ export default async function AdminDashboardPage() {
         <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-brand-muted">
           Recent sign-ins
         </h2>
-        <ul className="divide-y divide-brand-line overflow-hidden rounded-xl border border-brand-line bg-brand-panel">
+        <ul className="app-card divide-y divide-brand-line overflow-hidden">
           {(recentProfiles ?? []).map((row) => (
             <li key={row.email} className="flex justify-between gap-4 px-4 py-3 text-sm">
               <span className="font-medium text-brand-ink">{row.name ?? row.email}</span>
@@ -170,7 +172,7 @@ export default async function AdminDashboardPage() {
         </ul>
       </section>
 
-      <section className="rounded-xl border border-brand-line bg-brand-soft p-5 text-sm text-brand-muted">
+      <section className="app-card-muted p-5 text-sm text-brand-muted">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
             <h2 className="font-semibold text-brand-navy">Roster automation</h2>
@@ -182,7 +184,7 @@ export default async function AdminDashboardPage() {
         </div>
       </section>
 
-      <section className="rounded-xl border border-brand-line bg-brand-soft p-5 text-sm text-brand-muted">
+      <section className="app-card-muted p-5 text-sm text-brand-muted">
         <h2 className="font-semibold text-brand-navy">Maintenance scripts</h2>
         <ul className="mt-2 list-disc space-y-1 pl-5">
           <li>

@@ -108,18 +108,18 @@ export function AccountsTable({
 
   return (
     <div className="space-y-4">
-      <div className="grid gap-3 rounded-xl border border-brand-line bg-brand-panel p-4 md:grid-cols-[1fr_auto_auto_auto]">
+      <div className="app-card-muted grid gap-3 p-4 md:grid-cols-[1fr_auto_auto_auto]">
         <input
           type="search"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           placeholder="Search name, email, username..."
-          className="min-w-0 rounded-lg border border-brand-line px-3 py-2 text-sm outline-none ring-brand-blue focus:ring-2"
+          className="app-input min-w-0 rounded-xl px-3 py-2 text-sm"
         />
         <select
           value={status}
           onChange={(event) => setStatus(event.target.value as "all" | Account["status"])}
-          className="rounded-lg border border-brand-line px-3 py-2 text-sm"
+          className="app-input rounded-xl px-3 py-2 text-sm"
         >
           <option value="all">All statuses</option>
           <option value="pending">Pending</option>
@@ -129,7 +129,7 @@ export function AccountsTable({
         <select
           value={tier}
           onChange={(event) => setTier(event.target.value)}
-          className="rounded-lg border border-brand-line px-3 py-2 text-sm"
+          className="app-input rounded-xl px-3 py-2 text-sm"
         >
           <option value="all">All tiers</option>
           {ACCESS_TIERS.map((item) => (
@@ -141,7 +141,7 @@ export function AccountsTable({
         <select
           value={cohort}
           onChange={(event) => setCohort(event.target.value)}
-          className="rounded-lg border border-brand-line px-3 py-2 text-sm"
+          className="app-input rounded-xl px-3 py-2 text-sm"
         >
           <option value="all">All cohorts</option>
           {cohorts.map((item) => (
@@ -156,7 +156,7 @@ export function AccountsTable({
         {filtered.length} of {accounts.length} accounts
       </p>
 
-      <div className="overflow-x-auto rounded-xl border border-brand-line bg-brand-panel">
+      <div className="app-card overflow-x-auto">
         <table className="w-full min-w-[900px] text-left text-sm">
           <thead className="border-b border-brand-line bg-brand-soft text-xs uppercase tracking-wide text-brand-muted">
             <tr>

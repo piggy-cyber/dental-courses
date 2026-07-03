@@ -21,9 +21,9 @@ export default async function LoginHomePage({
   }
 
   return (
-    <main className="min-h-screen bg-brand-paper">
-      <header className="border-b border-brand-line bg-brand-panel/90 px-6 py-3">
-        <div className="mx-auto flex max-w-4xl items-center justify-between">
+    <main className="app-shell-bg min-h-screen">
+      <header className="border-b border-brand-line bg-brand-panel/90 px-6 py-3 backdrop-blur">
+        <div className="mx-auto flex max-w-6xl items-center justify-between">
           <BrandMarkPublic />
           <Link
             href="/about"
@@ -34,14 +34,29 @@ export default async function LoginHomePage({
         </div>
       </header>
 
-      <div className="mx-auto grid max-w-4xl gap-10 px-6 py-12 lg:grid-cols-2 lg:items-start">
-        <section className="text-center lg:text-left">
-          <p className="eyebrow">Health Education Campus · D1</p>
-          <h1 className="mt-2 text-3xl font-bold text-brand-navy">Course Library</h1>
-          <p className="mt-3 text-brand-muted">
+      <div className="mx-auto grid max-w-6xl gap-8 px-6 py-10 lg:grid-cols-[1.08fr_0.92fr] lg:items-start">
+        <section className="app-hero rounded-2xl p-7 text-white shadow-[var(--brand-shadow)] sm:p-10">
+          <p className="eyebrow text-brand-gold">Health Education Campus · D1</p>
+          <h1 className="mt-3 max-w-2xl text-4xl font-bold tracking-tight text-white sm:text-5xl">
+            Course Library
+          </h1>
+          <p className="mt-4 max-w-xl text-lg leading-relaxed text-white/70">
             Use your personal Gmail, not your @case.edu address, to access approved
             lectures, videos, transcripts, and course files.
           </p>
+
+          <div className="mt-8 grid gap-3 sm:grid-cols-3">
+            {[
+              ["Videos", "Lecture recordings"],
+              ["Transcripts", "Searchable review"],
+              ["Files", "Course resources"],
+            ].map(([label, detail]) => (
+              <div key={label} className="rounded-xl border border-white/10 bg-white/10 p-4">
+                <p className="font-semibold text-white">{label}</p>
+                <p className="text-sm text-white/60">{detail}</p>
+              </div>
+            ))}
+          </div>
 
           <div className="mt-8">
             {!profile ? (
@@ -51,7 +66,7 @@ export default async function LoginHomePage({
                   Roster students with a matching personal Gmail are approved automatically.
                 </p>
                 {params.auth_error && (
-                  <p className="mt-3 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800">
+                  <p className="mt-3 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800">
                     Sign-in failed. Try the email link, or confirm Google is enabled
                     in Supabase.
                   </p>

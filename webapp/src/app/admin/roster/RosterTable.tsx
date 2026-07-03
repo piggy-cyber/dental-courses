@@ -77,7 +77,7 @@ export function RosterTable({ rows }: { rows: RosterRow[] }) {
   return (
     <div className="space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="inline-flex rounded-full border border-brand-line bg-brand-panel p-1">
+        <div className="inline-flex rounded-full border border-brand-line bg-brand-panel p-1 shadow-sm">
           {ACCESS_TIERS.map((tier) => (
             <button
               key={tier}
@@ -96,32 +96,32 @@ export function RosterTable({ rows }: { rows: RosterRow[] }) {
         <button
           type="button"
           onClick={exportCsv}
-          className="rounded-full border border-brand-line px-4 py-2 text-sm font-semibold text-brand-navy hover:bg-brand-soft"
+          className="rounded-full border border-brand-line bg-white/70 px-4 py-2 text-sm font-semibold text-brand-navy hover:border-brand-blue hover:bg-white"
         >
           Export CSV
         </button>
       </div>
 
-      <section className="rounded-xl border border-brand-line bg-brand-panel p-4">
+      <section className="app-card p-4">
         <h2 className="font-semibold text-brand-navy">Add roster row</h2>
         <div className="mt-3 grid gap-3 md:grid-cols-[1fr_1fr_auto_auto]">
           <input
             value={fullName}
             onChange={(event) => setFullName(event.target.value)}
             placeholder="Full name"
-            className="rounded-lg border border-brand-line px-3 py-2 text-sm"
+            className="app-input rounded-xl px-3 py-2 text-sm"
           />
           <input
             value={email}
             onChange={(event) => setEmail(event.target.value)}
             placeholder="Personal Gmail optional"
             type="email"
-            className="rounded-lg border border-brand-line px-3 py-2 text-sm"
+            className="app-input rounded-xl px-3 py-2 text-sm"
           />
           <select
             value={cohort}
             onChange={(event) => setCohort(event.target.value)}
-            className="rounded-lg border border-brand-line px-3 py-2 text-sm"
+            className="app-input rounded-xl px-3 py-2 text-sm"
           >
             {COHORT_OPTIONS.map((option) => (
               <option key={option} value={option}>
@@ -147,7 +147,7 @@ export function RosterTable({ rows }: { rows: RosterRow[] }) {
         <span>{unsignedCount} not signed in</span>
       </div>
 
-      <div className="overflow-x-auto rounded-xl border border-brand-line bg-brand-panel">
+      <div className="app-card overflow-x-auto">
         <table className="w-full min-w-[820px] text-left text-sm">
           <thead className="border-b border-brand-line bg-brand-soft text-xs uppercase tracking-wide text-brand-muted">
             <tr>

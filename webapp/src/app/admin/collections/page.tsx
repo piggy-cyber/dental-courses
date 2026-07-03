@@ -68,7 +68,7 @@ export default async function AdminCollectionsPage() {
 
   return (
     <div className="space-y-8">
-      <header className="flex flex-wrap items-start justify-between gap-3">
+      <header className="app-card flex flex-wrap items-start justify-between gap-3 p-6">
         <div>
           <p className="eyebrow text-brand-gold">Admin</p>
           <h1 className="mt-1 text-2xl font-bold text-brand-navy">Resource collections</h1>
@@ -79,7 +79,7 @@ export default async function AdminCollectionsPage() {
         </div>
         <Link
           href="/admin/accounts"
-          className="rounded-full border border-brand-line px-4 py-2 text-sm font-semibold text-brand-navy hover:bg-brand-soft"
+          className="rounded-full border border-brand-line bg-white/70 px-4 py-2 text-sm font-semibold text-brand-navy hover:border-brand-blue hover:bg-white"
         >
           Assign to accounts
         </Link>
@@ -87,7 +87,7 @@ export default async function AdminCollectionsPage() {
 
       <CollectionCreateForm />
 
-      <section className="overflow-hidden rounded-xl border border-brand-line bg-brand-panel shadow-sm">
+      <section className="app-card overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead className="border-b border-brand-line bg-brand-soft text-brand-muted">
             <tr>

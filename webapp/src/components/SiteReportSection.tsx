@@ -42,7 +42,7 @@ export function SiteReportSection() {
   }
 
   return (
-    <section className="rounded-xl border border-brand-line bg-brand-panel p-5 shadow-sm">
+    <section className="app-card p-5">
       {!open ? (
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
@@ -55,7 +55,7 @@ export function SiteReportSection() {
           <button
             type="button"
             onClick={() => setOpen(true)}
-            className="rounded-full border border-amber-700/30 px-4 py-2 text-sm font-semibold text-amber-900 hover:bg-amber-50"
+            className="rounded-full border border-brand-gold/40 bg-white/70 px-4 py-2 text-sm font-semibold text-brand-gold hover:bg-white"
           >
             Report issue
           </button>
@@ -68,7 +68,7 @@ export function SiteReportSection() {
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value as IssueCategory)}
-                className="mt-1 w-full rounded-lg border border-brand-line bg-white px-3 py-2 text-sm text-brand-ink"
+                className="app-input mt-1 w-full rounded-xl px-3 py-2 text-sm"
               >
                 {ISSUE_TYPES.map((type) => (
                   <option key={type.value} value={type.value}>
@@ -84,7 +84,7 @@ export function SiteReportSection() {
                 onChange={(e) => setMessage(e.target.value)}
                 rows={3}
                 placeholder="Example: The homepage weather loads, but the Canvas schedule is missing after I saved my feed."
-                className="mt-1 w-full rounded-lg border border-brand-line bg-white px-3 py-2 text-sm"
+                className="app-input mt-1 w-full rounded-xl px-3 py-2 text-sm"
               />
             </label>
           </div>
@@ -93,7 +93,7 @@ export function SiteReportSection() {
               type="button"
               onClick={submit}
               disabled={status === "sending" || !message.trim()}
-              className="rounded-full bg-amber-800 px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
+              className="rounded-full bg-brand-gold px-4 py-2 text-sm font-semibold text-brand-sidebar disabled:opacity-50"
             >
               {status === "sending" ? "Sending..." : status === "sent" ? "Sent" : "Send report"}
             </button>

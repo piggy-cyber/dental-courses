@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import {
   extUpper,
@@ -32,17 +33,20 @@ function PreviewFrame({ strategy, meta }: { strategy: PreviewStrategy; meta: Pre
       <iframe
         src={meta.signedUrl}
         title={meta.name}
-        className="h-[70vh] w-full rounded-lg border border-brand-line bg-white"
+        className="h-[70vh] w-full rounded-xl border border-brand-line bg-white"
       />
     );
   }
 
   if (strategy === "image") {
     return (
-      <img
+      <Image
         src={meta.signedUrl}
         alt={meta.name}
-        className="mx-auto max-h-[70vh] max-w-full rounded-lg border border-brand-line bg-white object-contain"
+        width={1200}
+        height={900}
+        className="mx-auto max-h-[70vh] max-w-full rounded-xl border border-brand-line bg-white object-contain"
+        unoptimized
       />
     );
   }
@@ -57,7 +61,7 @@ function PreviewFrame({ strategy, meta }: { strategy: PreviewStrategy; meta: Pre
         <iframe
           src={officeEmbedUrl(meta.signedUrl)}
           title={meta.name}
-          className="h-[70vh] w-full rounded-lg border border-brand-line bg-white"
+          className="h-[70vh] w-full rounded-xl border border-brand-line bg-white"
         />
       </div>
     );
@@ -68,7 +72,7 @@ function PreviewFrame({ strategy, meta }: { strategy: PreviewStrategy; meta: Pre
       <video
         src={meta.signedUrl}
         controls
-        className="mx-auto max-h-[70vh] w-full rounded-lg border border-brand-line bg-black"
+        className="mx-auto max-h-[70vh] w-full rounded-xl border border-brand-line bg-black"
       >
         Your browser does not support video playback.
       </video>
@@ -80,7 +84,7 @@ function PreviewFrame({ strategy, meta }: { strategy: PreviewStrategy; meta: Pre
   }
 
   return (
-    <div className="rounded-lg border border-dashed border-brand-line bg-white px-6 py-12 text-center">
+    <div className="rounded-xl border border-dashed border-brand-line bg-white px-6 py-12 text-center">
       <p className="font-medium text-brand-navy">Preview not supported</p>
       <p className="mt-2 text-sm text-brand-muted">
         {upper || "This file type"} (e.g. APKG, ZIP) — download to open locally.
@@ -126,7 +130,7 @@ function TextPreview({ resourceId }: { resourceId: number | string }) {
   }
 
   return (
-    <pre className="max-h-[70vh] overflow-auto rounded-lg border border-brand-line bg-white p-4 text-xs leading-relaxed text-brand-ink">
+    <pre className="max-h-[70vh] overflow-auto rounded-xl border border-brand-line bg-white p-4 text-xs leading-relaxed text-brand-ink">
       {text}
     </pre>
   );
@@ -178,7 +182,7 @@ export function ResourcePreviewPanel({ resourceId }: { resourceId: number }) {
 
   if (loading) {
     return (
-      <div className="rounded-xl border border-brand-line bg-brand-panel p-8 text-center text-sm text-brand-muted">
+      <div className="app-card p-8 text-center text-sm text-brand-muted">
         Loading preview…
       </div>
     );
@@ -195,7 +199,7 @@ export function ResourcePreviewPanel({ resourceId }: { resourceId: number }) {
   const strategy = previewStrategy(meta.ext);
 
   return (
-    <div className="overflow-hidden rounded-xl border border-brand-line bg-brand-panel shadow-sm">
+    <div className="app-card overflow-hidden">
       <div className="flex flex-wrap items-start justify-between gap-4 border-b border-brand-line px-5 py-4">
         <div className="min-w-0">
           <p className="text-xs font-semibold uppercase tracking-wider text-brand-muted">
@@ -208,13 +212,13 @@ export function ResourcePreviewPanel({ resourceId }: { resourceId: number }) {
           href={`/api/resource/${resourceId}`}
           target="_blank"
           rel="noreferrer"
-          className="shrink-0 rounded-full border border-brand-line bg-white px-4 py-2 text-sm font-medium text-brand-blue transition hover:bg-brand-soft"
+          className="shrink-0 rounded-full border border-brand-line bg-white/70 px-4 py-2 text-sm font-semibold text-brand-blue transition hover:border-brand-blue hover:bg-white"
         >
           Download
         </a>
       </div>
 
-      <div className="bg-slate-100 p-4">
+      <div className="bg-brand-soft/70 p-4">
         {strategy === "text" ? (
           <TextPreview resourceId={resourceId} />
         ) : (

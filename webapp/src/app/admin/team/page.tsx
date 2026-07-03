@@ -27,15 +27,18 @@ export default async function AdminTeamPage() {
 
   return (
     <div className="space-y-8">
-      <header>
-        <h1 className="text-2xl font-bold text-brand-navy">Admin team</h1>
-        <p className="mt-1 text-brand-muted">
+      <header className="app-card p-6">
+        <p className="eyebrow text-brand-gold">Admin</p>
+        <h1 className="mt-1 text-3xl font-bold tracking-tight text-brand-navy">
+          Admin team
+        </h1>
+        <p className="mt-2 text-brand-muted">
           Promote trusted classmates to help manage approvals. {admins.length} admin
           {admins.length === 1 ? "" : "s"} currently.
         </p>
       </header>
 
-      <ul className="divide-y divide-brand-line overflow-hidden rounded-xl border border-brand-line bg-brand-panel">
+      <ul className="app-card divide-y divide-brand-line overflow-hidden">
         {members.map((member) => (
           <TeamRow key={member.id} member={member} isSelf={member.id === userId} />
         ))}

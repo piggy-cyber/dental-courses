@@ -41,7 +41,7 @@ export function CollectionCreateForm() {
   }
 
   return (
-    <section className="rounded-xl border border-brand-line bg-brand-panel p-5 shadow-sm">
+    <section className="app-card p-5">
       <div>
         <p className="eyebrow">New collection</p>
         <h2 className="mt-1 font-semibold text-brand-navy">Create a resource set</h2>
@@ -57,7 +57,7 @@ export function CollectionCreateForm() {
             value={label}
             onChange={(event) => setLabel(event.target.value)}
             placeholder="D2 2024-2025 Resources"
-            className="mt-1 w-full rounded-lg border border-brand-line px-3 py-2 text-brand-ink"
+            className="app-input mt-1 w-full rounded-xl px-3 py-2"
           />
         </label>
         <label className="block text-sm">
@@ -66,7 +66,7 @@ export function CollectionCreateForm() {
             value={shortLabel}
             onChange={(event) => setShortLabel(event.target.value)}
             placeholder="Prior D2 Resources"
-            className="mt-1 w-full rounded-lg border border-brand-line px-3 py-2 text-brand-ink"
+            className="app-input mt-1 w-full rounded-xl px-3 py-2"
           />
         </label>
         <label className="block text-sm">
@@ -74,7 +74,7 @@ export function CollectionCreateForm() {
           <select
             value={sourceTier}
             onChange={(event) => setSourceTier(event.target.value)}
-            className="mt-1 w-full rounded-lg border border-brand-line px-3 py-2 text-brand-ink"
+            className="app-input mt-1 w-full rounded-xl px-3 py-2"
           >
             <option value="">No tier</option>
             <option value="d1">D1</option>
@@ -89,7 +89,7 @@ export function CollectionCreateForm() {
             value={sourceCohort}
             onChange={(event) => setSourceCohort(event.target.value)}
             placeholder="d2-2024"
-            className="mt-1 w-full rounded-lg border border-brand-line px-3 py-2 text-brand-ink"
+            className="app-input mt-1 w-full rounded-xl px-3 py-2"
           />
         </label>
       </div>
@@ -101,11 +101,11 @@ export function CollectionCreateForm() {
           onChange={(event) => setDescription(event.target.value)}
           rows={3}
           placeholder="Resource bundle imported from last year's D2 class."
-          className="mt-1 w-full rounded-lg border border-brand-line px-3 py-2 text-brand-ink"
+          className="app-input mt-1 w-full rounded-xl px-3 py-2"
         />
       </label>
 
-      <label className="mt-4 flex items-start gap-3 rounded-lg border border-brand-line p-3 text-sm">
+      <label className="mt-4 flex items-start gap-3 rounded-xl border border-brand-line bg-white/60 p-3 text-sm">
         <input
           type="checkbox"
           checked={defaultForTier}

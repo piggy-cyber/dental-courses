@@ -64,10 +64,7 @@ export function CourseEssentialsPanel({
           const accent = ESSENTIAL_ACCENTS[label];
 
           return (
-            <article
-              key={label}
-              className={`rounded-xl border border-brand-line border-l-4 bg-brand-panel p-5 shadow-sm ${accent}`}
-            >
+            <article key={label} className={`app-card border-l-4 p-5 ${accent}`}>
               <div>
                 <h3 className="font-semibold text-brand-navy">{label}</h3>
                 <p className="mt-1 text-sm text-brand-muted">{description}</p>
