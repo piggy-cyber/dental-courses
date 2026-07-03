@@ -2,6 +2,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdminProfile } from "@/app/admin/actions";
 import { isEmbeddable, matchFilenameToYoutube } from "@/lib/youtube-catalog";
+import { ReportStatusControls } from "./ReportStatusControls";
 
 export const dynamic = "force-dynamic";
 
@@ -54,9 +55,14 @@ export default async function AdminOperationsPage() {
 
   const { data: problemReports } = await supabase
     .from("resource_reports")
-    .select("id, message, created_at, resources(name, course_code), profiles(email)")
+    .select(
+      "id, message, category, status, course_code, admin_note, created_at, resolved_at, resources(name, course_code), profiles(email)"
+    )
+    .order("status", { ascending: true })
     .order("created_at", { ascending: false })
-    .limit(20);
+    .limit(50);
+
+  const openReports = (problemReports ?? []).filter((row) => row.status === "open");
 
   const csvRows = [
     "email,name,access_note,created_at",
@@ -96,8 +102,11 @@ export default async function AdminOperationsPage() {
           )}
         </div>
         <div className="rounded-xl border border-brand-line bg-brand-panel p-5">
-          <p className="text-2xl font-bold text-brand-navy">{pendingUsers?.length ?? 0}</p>
-          <p className="text-sm text-brand-muted">Pending users</p>
+          <p className="text-2xl font-bold text-brand-navy">{openReports.length}</p>
+          <p className="text-sm text-brand-muted">Open reports</p>
+          {(pendingUsers?.length ?? 0) > 0 && (
+            <p className="mt-1 text-xs text-amber-700">{pendingUsers?.length ?? 0} pending users</p>
+          )}
         </div>
       </div>
 
@@ -133,23 +142,63 @@ export default async function AdminOperationsPage() {
       </section>
 
       <section className="rounded-xl border border-brand-line bg-brand-soft p-5">
-        <h2 className="font-semibold text-brand-navy">Reported file problems</h2>
-        <p className="mt-1 text-sm text-brand-muted">
-          Student reports from course pages. Run resource-reports.sql if this stays empty after reports.
-        </p>
+        <div className="flex flex-wrap items-baseline justify-between gap-3">
+          <div>
+            <h2 className="font-semibold text-brand-navy">Issue reports</h2>
+            <p className="mt-1 text-sm text-brand-muted">
+              Student reports from course pages and the homepage. Open reports stay first.
+            </p>
+          </div>
+          <span className="rounded-full bg-brand-panel px-3 py-1 text-xs font-semibold text-brand-navy">
+            {openReports.length} open
+          </span>
+        </div>
         {problemReports?.length ? (
           <ul className="mt-3 divide-y divide-brand-line rounded-lg bg-brand-panel">
             {problemReports.map((row) => (
               <li key={row.id} className="px-3 py-2 text-sm">
-                <p className="font-medium text-brand-ink">
-                  {(row.resources as { course_code?: string; name?: string })?.course_code}{" "}
-                  · {(row.resources as { name?: string })?.name}
-                </p>
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <p className="font-medium text-brand-ink">
+                      {(row.resources as { course_code?: string; name?: string } | null)
+                        ?.course_code ??
+                        row.course_code ??
+                        "Site"}{" "}
+                      ·{" "}
+                      {(row.resources as { name?: string } | null)?.name ??
+                        "General issue"}
+                    </p>
+                    <p className="mt-0.5 text-xs uppercase tracking-wide text-brand-muted">
+                      {String(row.category).replace("_", " ")}
+                    </p>
+                  </div>
+                  <span
+                    className={`rounded-full px-2 py-0.5 text-xs font-semibold ${
+                      row.status === "open"
+                        ? "bg-amber-50 text-amber-700"
+                        : row.status === "resolved"
+                          ? "bg-emerald-50 text-emerald-700"
+                          : "bg-slate-100 text-slate-600"
+                    }`}
+                  >
+                    {row.status}
+                  </span>
+                </div>
                 <p className="text-brand-muted">{row.message}</p>
                 <p className="text-xs text-brand-muted">
                   {(row.profiles as { email?: string })?.email} ·{" "}
                   {new Date(row.created_at).toLocaleString()}
                 </p>
+                {row.admin_note && (
+                  <p className="mt-2 rounded-lg bg-brand-soft px-3 py-2 text-xs text-brand-ink">
+                    <span className="font-semibold">Admin note: </span>
+                    {row.admin_note}
+                  </p>
+                )}
+                <ReportStatusControls
+                  reportId={row.id}
+                  currentStatus={row.status as "open" | "resolved" | "dismissed"}
+                />
               </li>
             ))}
           </ul>

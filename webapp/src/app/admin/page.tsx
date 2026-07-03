@@ -13,6 +13,7 @@ export default async function AdminDashboardPage() {
     { count: pendingCount },
     { count: revokedCount },
     { count: rosterUnsignedCount },
+    { count: openReportCount },
     { count: courseCount },
     { count: lectureCount },
     { data: resources },
@@ -31,6 +32,10 @@ export default async function AdminDashboardPage() {
       .select("*", { count: "exact", head: true })
       .eq("status", "expected")
       .is("profile_id", null),
+    supabase
+      .from("resource_reports")
+      .select("*", { count: "exact", head: true })
+      .eq("status", "open"),
     supabase.from("courses").select("*", { count: "exact", head: true }),
     supabase.from("lectures").select("*", { count: "exact", head: true }),
     supabase.from("resources").select("kind, storage_path"),
@@ -77,6 +82,13 @@ export default async function AdminDashboardPage() {
         >
           <p className="text-2xl font-bold text-brand-navy">{rosterUnsignedCount ?? 0}</p>
           <p className="text-sm text-brand-muted">Roster not signed in</p>
+        </Link>
+        <Link
+          href="/admin/operations"
+          className="rounded-xl border border-brand-line bg-brand-panel p-5 shadow-sm transition hover:border-brand-gold"
+        >
+          <p className="text-2xl font-bold text-brand-navy">{openReportCount ?? 0}</p>
+          <p className="text-sm text-brand-muted">Open reports</p>
         </Link>
         <div className="rounded-xl border border-brand-line bg-brand-panel p-5 shadow-sm">
           <p className="text-2xl font-bold text-brand-navy">{courseCount ?? 0}</p>

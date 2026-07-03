@@ -6,6 +6,7 @@ import { getTodaysSchedule } from "@/lib/schedule";
 import { tierLabel } from "@/lib/tiers";
 import { getCampusWeather } from "@/lib/weather";
 import { UserAvatar } from "@/components/UserAvatar";
+import { SiteReportSection } from "@/components/SiteReportSection";
 
 export const dynamic = "force-dynamic";
 
@@ -296,6 +297,8 @@ export default async function HomeDashboardPage() {
           ))}
         </div>
       </section>
+
+      <SiteReportSection />
     </div>
   );
 }

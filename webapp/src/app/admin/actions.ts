@@ -171,6 +171,28 @@ export async function saveAccessNote(note: string) {
   revalidatePath("/");
 }
 
+export async function updateReportStatus(
+  reportId: number,
+  status: "open" | "resolved" | "dismissed",
+  adminNote?: string
+) {
+  const { userId } = await requireAdminProfile();
+  const supabase = await createClient();
+  const update = {
+    status,
+    admin_note: cleanOptionalText(adminNote),
+    resolved_at: status === "open" ? null : new Date().toISOString(),
+    resolved_by: status === "open" ? null : userId,
+  };
+  const { error } = await supabase
+    .from("resource_reports")
+    .update(update)
+    .eq("id", reportId);
+  if (error) throw new Error(error.message);
+  revalidatePath("/admin");
+  revalidatePath("/admin/operations");
+}
+
 function cleanOptionalText(value: string | null | undefined) {
   const trimmed = value?.trim() ?? "";
   return trimmed || null;

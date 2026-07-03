@@ -1,8 +1,20 @@
 "use client";
 
 import { useState } from "react";
-import { reportResourceProblem } from "@/app/(protected)/course/actions";
+import {
+  reportResourceProblem,
+  type IssueCategory,
+} from "@/app/(protected)/course/actions";
 import type { CourseResource } from "@/lib/course-organize";
+
+const ISSUE_TYPES: { value: IssueCategory; label: string }[] = [
+  { value: "file", label: "Wrong or broken file" },
+  { value: "missing", label: "Missing upload" },
+  { value: "wrong_match", label: "Wrong lecture/file match" },
+  { value: "broken_link", label: "Broken link or preview" },
+  { value: "site", label: "General site issue" },
+  { value: "other", label: "Other" },
+];
 
 export function CourseReportSection({
   courseCode,
@@ -12,24 +24,34 @@ export function CourseReportSection({
   resources: CourseResource[];
 }) {
   const [open, setOpen] = useState(false);
-  const [resourceId, setResourceId] = useState(String(resources[0]?.id ?? ""));
+  const [resourceId, setResourceId] = useState("");
+  const [category, setCategory] = useState<IssueCategory>("file");
   const [message, setMessage] = useState("");
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [error, setError] = useState<string | null>(null);
 
   const uploaded = resources.filter((r) => r.storage_path);
 
   async function submit() {
-    if (!message.trim() || !resourceId) return;
+    if (!message.trim()) return;
     setStatus("sending");
-    const result = await reportResourceProblem(Number(resourceId), message.trim());
+    setError(null);
+    const result = await reportResourceProblem({
+      resourceId: resourceId ? Number(resourceId) : null,
+      courseCode,
+      category,
+      message: message.trim(),
+    });
     if (result.ok) {
       setStatus("sent");
       setMessage("");
+      setResourceId("");
       setTimeout(() => {
         setOpen(false);
         setStatus("idle");
       }, 2000);
     } else {
+      setError(result.error ?? "Could not save report.");
       setStatus("error");
     }
   }
@@ -43,7 +65,7 @@ export function CourseReportSection({
           <div>
             <p className="font-medium text-brand-navy">Something look wrong?</p>
             <p className="mt-1 text-sm text-brand-muted">
-              Wrong file, broken link, or missing upload for {courseCode}.
+            Wrong file, broken link, missing upload, or general issue for {courseCode}.
             </p>
           </div>
           <button
@@ -58,12 +80,27 @@ export function CourseReportSection({
         <div className="space-y-3">
           <p className="font-medium text-brand-navy">Report an issue</p>
           <label className="block text-xs font-medium text-brand-muted">
-            Which file? (required — pick the closest match)
+            Type of issue
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value as IssueCategory)}
+              className="mt-1 w-full rounded-lg border border-brand-line bg-white px-3 py-2 text-sm text-brand-ink"
+            >
+              {ISSUE_TYPES.map((type) => (
+                <option key={type.value} value={type.value}>
+                  {type.label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="block text-xs font-medium text-brand-muted">
+            Which file? (optional)
             <select
               value={resourceId}
               onChange={(e) => setResourceId(e.target.value)}
               className="mt-1 w-full rounded-lg border border-brand-line bg-white px-3 py-2 text-sm text-brand-ink"
             >
+              <option value="">General course/site issue</option>
               {resources.map((resource) => (
                 <option key={resource.id} value={resource.id}>
                   {resource.name}
@@ -78,7 +115,7 @@ export function CourseReportSection({
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               rows={3}
-              placeholder="e.g. cheat sheet shows not uploaded but I have the PDF, wrong lecture match..."
+              placeholder="What should an admin fix? Add the page, file, or button if relevant."
               className="mt-1 w-full rounded-lg border border-brand-line bg-white px-3 py-2 text-sm"
             />
           </label>
@@ -103,7 +140,7 @@ export function CourseReportSection({
             </button>
             {status === "error" && (
               <span className="text-sm text-red-600">
-                Could not save — run resource-reports.sql in Supabase
+                {error ?? "Could not save report."}
               </span>
             )}
           </div>
