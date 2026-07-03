@@ -203,21 +203,26 @@ export default async function HomeDashboardPage() {
         <section className="rounded-xl border border-brand-line bg-brand-panel p-5 shadow-sm">
           <div className="mb-3 flex items-baseline justify-between gap-3">
             <div>
-              <p className="eyebrow">Today</p>
+              <p className="eyebrow">{schedule.heading}</p>
               <h2 className="mt-1 text-lg font-bold text-brand-navy">Canvas schedule</h2>
             </div>
           </div>
-          {schedule.length > 0 ? (
+          {schedule.events.length > 0 ? (
             <ul className="divide-y divide-brand-line">
-              {schedule.slice(0, 6).map((event) => (
-                <li key={`${event.time}-${event.title}`} className="flex gap-4 py-3 text-sm">
-                  <span className="w-24 shrink-0 font-semibold text-brand-navy">{event.time}</span>
+              {schedule.events.slice(0, 6).map((event) => (
+                <li
+                  key={`${event.dateLabel}-${event.time}-${event.title}`}
+                  className="flex gap-4 py-3 text-sm"
+                >
+                  <span className="w-32 shrink-0 font-semibold text-brand-navy">
+                    {event.dateLabel} · {event.time}
+                  </span>
                   <span className="text-brand-ink">{event.title}</span>
                 </li>
               ))}
             </ul>
           ) : (
-            <p className="text-sm text-brand-muted">No Canvas events found for today.</p>
+            <p className="text-sm text-brand-muted">No upcoming Canvas events found.</p>
           )}
         </section>
       )}

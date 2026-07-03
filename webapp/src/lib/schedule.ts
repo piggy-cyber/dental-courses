@@ -1,7 +1,16 @@
 // Reads today's events from a Canvas calendar feed (.ics URL).
 // The feed URL stays server-side; it is never sent to the browser.
 
-export type TodayEvent = { time: string; title: string };
+export type ScheduleEvent = {
+  dateLabel: string;
+  time: string;
+  title: string;
+};
+
+export type ScheduleResult = {
+  heading: "Today" | "Next up";
+  events: ScheduleEvent[];
+};
 
 function unfoldIcsLines(text: string): string[] {
   // ICS wraps long lines; continuation lines start with a space or tab.
@@ -23,7 +32,28 @@ function parseIcsDate(value: string): Date | null {
   return new Date(+y, +mo - 1, +d, +h, +mi, +s);
 }
 
-export async function getTodaysSchedule(feedUrl = process.env.CANVAS_ICS_URL): Promise<TodayEvent[] | null> {
+function dateLabelFor(start: Date) {
+  const todayFmt = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/New_York",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+  const labelFmt = new Intl.DateTimeFormat("en-US", {
+    timeZone: "America/New_York",
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+  });
+  const today = todayFmt.format(new Date());
+  const eventDay = todayFmt.format(start);
+  if (eventDay === today) return "Today";
+  return labelFmt.format(start);
+}
+
+export async function getTodaysSchedule(
+  feedUrl = process.env.CANVAS_ICS_URL
+): Promise<ScheduleResult | null> {
   if (!feedUrl) return null;
 
   try {
@@ -80,13 +110,39 @@ export async function getTodaysSchedule(feedUrl = process.env.CANVAS_ICS_URL): P
       day: "2-digit",
     });
 
-    return events
+    const sortedEvents = events
+      .slice()
+      .sort((a, b) => a.start.getTime() - b.start.getTime());
+    const todaysEvents = sortedEvents
       .filter((event) => dayFmt.format(event.start) === easternToday)
-      .sort((a, b) => a.start.getTime() - b.start.getTime())
       .map((event) => ({
+        dateLabel: "Today",
         time: event.allDay ? "All day" : timeFmt.format(event.start),
         title: event.title,
       }));
+
+    if (todaysEvents.length > 0) {
+      return { heading: "Today", events: todaysEvents };
+    }
+
+    const now = new Date();
+    const nextEvent = sortedEvents.find(
+      (event) => dayFmt.format(event.start) > easternToday || (!event.allDay && event.start >= now)
+    );
+    if (!nextEvent) {
+      return { heading: "Next up", events: [] };
+    }
+
+    return {
+      heading: "Next up",
+      events: [
+        {
+          dateLabel: dateLabelFor(nextEvent.start),
+          time: nextEvent.allDay ? "All day" : timeFmt.format(nextEvent.start),
+          title: nextEvent.title,
+        },
+      ],
+    };
   } catch {
     return null;
   }
