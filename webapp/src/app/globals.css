@@ -300,3 +300,122 @@ html[data-theme="dark"] .bg-white\/80,
 html[data-theme="dark"] .bg-white\/95 {
   background-color: var(--brand-panel-glass) !important;
 }
+
+/* --- Cockpit dashboard utilities --- */
+
+.cockpit-panel {
+  border: 1px solid var(--brand-line);
+  background: var(--brand-panel);
+  position: relative;
+}
+
+.cockpit-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 1px solid color-mix(in srgb, var(--brand-blue) 8%, transparent);
+  pointer-events: none;
+}
+
+.cockpit-gauge {
+  font-family: "SF Mono", "Fira Code", "JetBrains Mono", ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.cockpit-gauge-value {
+  font-family: "SF Mono", "Fira Code", "JetBrains Mono", ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  color: var(--brand-navy);
+  letter-spacing: -0.03em;
+}
+
+.cockpit-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid var(--brand-line);
+  background: var(--brand-panel);
+  padding: 0.6rem 1rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--brand-navy);
+  transition: border-color 150ms, background 150ms;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.cockpit-switch:hover {
+  border-color: var(--brand-blue);
+  background: var(--brand-soft);
+}
+
+.cockpit-switch-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--brand-teal);
+  flex-shrink: 0;
+  box-shadow: 0 0 4px color-mix(in srgb, var(--brand-teal) 50%, transparent);
+}
+
+.cockpit-switch-indicator-amber {
+  background: #d97706;
+  box-shadow: 0 0 4px color-mix(in srgb, #d97706 50%, transparent);
+}
+
+.cockpit-switch-indicator-blue {
+  background: var(--brand-blue);
+  box-shadow: 0 0 4px color-mix(in srgb, var(--brand-blue) 50%, transparent);
+}
+
+.cockpit-readout {
+  border: 1px solid var(--brand-line);
+  background: color-mix(in srgb, var(--brand-soft) 50%, var(--brand-panel));
+  padding: 0.5rem 0.75rem;
+}
+
+.cockpit-readout-label {
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--brand-muted);
+}
+
+.cockpit-section-bar {
+  border-bottom: 1px solid var(--brand-line);
+  background: var(--brand-soft);
+  padding: 0.4rem 0.75rem;
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--brand-muted);
+}
+
+.cockpit-toggle {
+  position: relative;
+  display: inline-flex;
+  border: 1px solid var(--brand-line);
+  background: var(--brand-soft);
+  overflow: hidden;
+}
+
+.cockpit-toggle button {
+  padding: 0.35rem 0.75rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--brand-muted);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: color 150ms, background 150ms;
+}
+
+.cockpit-toggle button[data-active="true"] {
+  background: var(--brand-panel);
+  color: var(--brand-navy);
+  box-shadow: inset 0 -2px 0 var(--brand-blue);
+}

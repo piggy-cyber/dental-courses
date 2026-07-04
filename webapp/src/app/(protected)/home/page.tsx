@@ -11,6 +11,10 @@ import {
   type ResourceCollectionSummary,
 } from "@/lib/resource-collections";
 import { UserAvatar } from "@/components/UserAvatar";
+import { StatGauges } from "@/components/StatGauges";
+import { WeatherInstrumentPanel } from "@/components/WeatherInstrumentPanel";
+import { CampusMapPanel } from "@/components/CampusMapPanel";
+import { QuickActionsPanel } from "@/components/QuickActionsPanel";
 import { SiteReportSection } from "@/components/SiteReportSection";
 
 export const dynamic = "force-dynamic";
@@ -39,15 +43,6 @@ type HomeMembership = {
   >[] | null;
   resource_collections?: ResourceCollectionSummary | ResourceCollectionSummary[] | null;
 };
-
-function StatCard({ label, value }: { label: string; value: string | number }) {
-  return (
-    <div className="border border-brand-line bg-brand-panel p-3">
-      <p className="text-xl font-bold text-brand-navy">{value}</p>
-      <p className="text-xs font-semibold uppercase text-brand-muted">{label}</p>
-    </div>
-  );
-}
 
 export default async function HomeDashboardPage() {
   const { profile } = await getSessionProfile();
@@ -112,219 +107,139 @@ export default async function HomeDashboardPage() {
   }
 
   return (
-    <div className="space-y-8">
-      <header className="grid gap-5 xl:grid-cols-[1fr_380px]">
-        <section className="app-hero p-6 sm:p-7">
-          <div className="flex flex-wrap items-start justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <UserAvatar
-                name={profile?.name}
-                email={profile?.email}
-                avatarUrl={profile?.avatar_url}
-                size="lg"
-                className="border border-brand-line"
-              />
-              <div>
-                <p className="eyebrow">{isAdminView ? "Admin desk" : "Student desk"}</p>
-                <h1 className="portal-title text-3xl font-bold sm:text-4xl">
-                  {displayName}
-                </h1>
-                <div className="mt-1 flex flex-wrap gap-2 text-xs">
-                  {handle && <span className="font-medium text-brand-muted">{handle}</span>}
-                  {visibleCollections.length > 0
-                    ? visibleCollections.map((collection) => (
-                        <span
-                          key={collection.id}
-                          className="border border-brand-line bg-brand-soft px-2 py-0.5 font-semibold text-brand-navy"
-                        >
-                          {collection.short_label}
-                        </span>
-                      ))
-                    : profile?.access_tiers?.map((tier) => (
-                        <span
-                          key={tier}
-                          className="border border-brand-line bg-brand-soft px-2 py-0.5 font-semibold text-brand-navy"
-                        >
-                          {tierLabel(tier)}
-                        </span>
-                      ))}
-                </div>
-              </div>
-            </div>
-            <Link
-              href="/profile"
-              className="border border-brand-line bg-brand-panel px-4 py-2 text-sm font-semibold text-brand-blue hover:border-brand-blue hover:bg-brand-soft hover:text-brand-navy"
-            >
-              Edit profile
-            </Link>
-          </div>
-
-          <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            <StatCard label="Courses" value={courseCount ?? 0} />
-            <StatCard label="Lectures" value={lectureCount ?? 0} />
-            <StatCard label="Videos" value={videoCount ?? 0} />
-            <StatCard label="Files online" value={fileCount ?? 0} />
-          </div>
-        </section>
-
-        <section className="app-card p-5">
-          <div className="flex items-start justify-between gap-4">
+    <div className="space-y-6">
+      {/* Identity strip + stat gauges */}
+      <header className="cockpit-panel">
+        <div className="flex flex-wrap items-center justify-between gap-4 p-4">
+          <div className="flex items-center gap-3">
+            <UserAvatar
+              name={profile?.name}
+              email={profile?.email}
+              avatarUrl={profile?.avatar_url}
+              size="lg"
+              className="border border-brand-line"
+            />
             <div>
-              <p className="eyebrow">Cleveland 44106</p>
-              <h2 className="mt-1 text-lg font-bold text-brand-navy">Campus weather</h2>
+              <p className="eyebrow">{isAdminView ? "Admin desk" : "Student desk"}</p>
+              <h1 className="portal-title text-2xl font-bold sm:text-3xl">
+                {displayName}
+              </h1>
+              <div className="mt-0.5 flex flex-wrap gap-1.5 text-xs">
+                {handle && <span className="font-medium text-brand-muted">{handle}</span>}
+                {visibleCollections.length > 0
+                  ? visibleCollections.map((collection) => (
+                      <span
+                        key={collection.id}
+                        className="border border-brand-line bg-brand-soft px-1.5 py-0.5 font-semibold text-brand-navy"
+                      >
+                        {collection.short_label}
+                      </span>
+                    ))
+                  : profile?.access_tiers?.map((tier) => (
+                      <span
+                        key={tier}
+                        className="border border-brand-line bg-brand-soft px-1.5 py-0.5 font-semibold text-brand-navy"
+                      >
+                        {tierLabel(tier)}
+                      </span>
+                    ))}
+              </div>
             </div>
-            {weather && (
-              <div className="text-right">
-                <p className="text-3xl font-bold text-brand-navy">{weather.temperature}°</p>
-                <p className="text-xs text-brand-muted">Feels {weather.feelsLike}°</p>
-              </div>
-            )}
           </div>
-          {weather ? (
-            <>
-              <div className="mt-4 grid grid-cols-3 gap-2 text-sm">
-                <div className="border border-brand-line bg-brand-soft p-3">
-                  <p className="font-semibold text-brand-navy">{weather.label}</p>
-                  <p className="text-xs text-brand-muted">Current</p>
-                </div>
-                <div className="border border-brand-line bg-brand-soft p-3">
-                  <p className="font-semibold text-brand-navy">
-                    {weather.high}° / {weather.low}°
-                  </p>
-                  <p className="text-xs text-brand-muted">High / low</p>
-                </div>
-                <div className="border border-brand-line bg-brand-soft p-3">
-                  <p className="font-semibold text-brand-navy">{weather.precipChancePct}%</p>
-                  <p className="text-xs text-brand-muted">Rain</p>
-                </div>
-              </div>
-              <div className="mt-4 grid grid-cols-7 gap-1.5">
-                {weather.weekly.map((day) => (
-                  <div
-                    key={day.date}
-                    className="border border-brand-line bg-brand-panel p-2 text-center"
-                  >
-                    <p className="text-xs font-semibold text-brand-navy">{day.weekday}</p>
-                    <p className="mt-1 text-sm font-bold text-brand-ink">{day.high}°</p>
-                    <p className="text-xs text-brand-muted">{day.low}°</p>
-                    <p className="mt-1 text-[11px] text-brand-muted">{day.precipChancePct}%</p>
-                  </div>
-                ))}
-              </div>
-            </>
-          ) : (
-            <p className="mt-4 text-sm text-brand-muted">Weather is temporarily unavailable.</p>
-          )}
-        </section>
-      </header>
-
-      <section className="grid gap-4 md:grid-cols-3">
-        <Link
-          href="/library"
-          className="app-card border-l-4 p-5 hover:border-l-brand-blue"
-        >
-          <p className="eyebrow">Study</p>
-          <h2 className="mt-1 font-bold text-brand-navy">Open your collections</h2>
-          <p className="mt-2 text-sm text-brand-muted">
-            {isAdminView
-              ? "Search all available course collections."
-              : "Search courses you have been granted."}
-          </p>
-        </Link>
-        <Link
-          href="/profile"
-          className="app-card border-l-4 p-5 hover:border-l-brand-blue"
-        >
-          <p className="eyebrow">Account</p>
-          <h2 className="mt-1 font-bold text-brand-navy">Profile and access</h2>
-          <p className="mt-2 text-sm text-brand-muted">Name, avatar, notes, and account info.</p>
-        </Link>
-        {isAdmin(profile) ? (
           <Link
-            href="/admin"
-            className="app-card border-l-4 p-5 hover:border-l-brand-blue"
+            href="/profile"
+            className="cockpit-switch"
           >
-            <p className="eyebrow text-brand-gold">Admin</p>
-            <h2 className="mt-1 font-bold text-brand-navy">Control center</h2>
-            <p className="mt-2 text-sm text-brand-muted">Accounts, roster, and operations.</p>
-          </Link>
-        ) : (
-          <Link
-            href="/about"
-            className="app-card border-l-4 p-5 hover:border-l-brand-blue"
-          >
-            <p className="eyebrow">About</p>
-            <h2 className="mt-1 font-bold text-brand-navy">What is this?</h2>
-            <p className="mt-2 text-sm text-brand-muted">How the library is organized.</p>
-          </Link>
-        )}
-      </section>
-
-      <section className="app-card p-5">
-        <div className="mb-3 flex flex-wrap items-baseline justify-between gap-3">
-          <div>
-            <p className="eyebrow">{hasCanvasFeed && schedule ? schedule.heading : "Canvas"}</p>
-            <h2 className="mt-1 text-lg font-bold text-brand-navy">Canvas calendar</h2>
-          </div>
-          <Link href="/profile" className="text-sm font-medium text-brand-blue hover:underline">
-            {hasCanvasFeed ? "Edit feed" : "Connect Canvas"}
+            <span className="cockpit-switch-indicator cockpit-switch-indicator-blue" />
+            Edit profile
           </Link>
         </div>
-        {hasCanvasFeed ? (
-          schedule ? (
-            schedule.events.length > 0 ? (
-              <ul className="divide-y divide-brand-line">
-                {schedule.events.slice(0, 6).map((event) => (
-                  <li
-                    key={`${event.dateLabel}-${event.time}-${event.title}`}
-                    className="flex gap-4 py-3 text-sm"
-                  >
-                    <span className="w-32 shrink-0 font-semibold text-brand-navy">
-                      {event.dateLabel} · {event.time}
-                    </span>
-                    <span className="text-brand-ink">{event.title}</span>
-                  </li>
-                ))}
-              </ul>
+        <StatGauges
+          gauges={[
+            { label: "Courses", value: courseCount ?? 0 },
+            { label: "Lectures", value: lectureCount ?? 0 },
+            { label: "Videos", value: videoCount ?? 0 },
+            { label: "Files", value: fileCount ?? 0 },
+          ]}
+        />
+      </header>
+
+      {/* Weather + Campus Map row */}
+      <div className="grid gap-4 lg:grid-cols-[3fr_2fr]">
+        <WeatherInstrumentPanel weather={weather} />
+        <CampusMapPanel />
+      </div>
+
+      {/* Canvas schedule readout */}
+      <section className="cockpit-panel">
+        <div className="cockpit-section-bar flex items-center justify-between">
+          <span>{hasCanvasFeed && schedule ? `Schedule \u00b7 ${schedule.heading}` : "Canvas Schedule"}</span>
+          <Link href="/profile" className="text-[10px] font-semibold text-brand-blue hover:underline uppercase">
+            {hasCanvasFeed ? "Edit feed" : "Connect"}
+          </Link>
+        </div>
+        <div className="p-4">
+          {hasCanvasFeed ? (
+            schedule ? (
+              schedule.events.length > 0 ? (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <tbody>
+                      {schedule.events.slice(0, 6).map((event) => (
+                        <tr
+                          key={`${event.dateLabel}-${event.time}-${event.title}`}
+                          className="border-b border-brand-line last:border-0"
+                        >
+                          <td className="cockpit-gauge whitespace-nowrap py-2 pr-4 text-xs font-semibold text-brand-navy">
+                            {event.dateLabel} &middot; {event.time}
+                          </td>
+                          <td className="py-2 text-brand-ink">{event.title}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <p className="text-sm text-brand-muted">No upcoming Canvas events found.</p>
+              )
             ) : (
-              <p className="text-sm text-brand-muted">No upcoming Canvas events found.</p>
+              <p className="text-sm text-brand-muted">
+                Canvas could not be read right now. Check the saved calendar feed in your profile.
+              </p>
             )
           ) : (
-            <p className="text-sm text-brand-muted">
-              Canvas could not be read right now. Check the saved calendar feed in your profile.
-            </p>
-          )
-        ) : (
-          <div className="border border-dashed border-brand-line bg-brand-panel p-4">
-            <div>
-              <p className="font-semibold text-brand-navy">Add your Canvas feed</p>
-              <p className="mt-1 text-sm text-brand-muted">
-                Save your Canvas calendar feed URL in your profile to show classes and deadlines
-                here.
-              </p>
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <p className="font-semibold text-brand-navy">Add your Canvas feed</p>
+                <p className="mt-1 text-sm text-brand-muted">
+                  Save your Canvas calendar feed URL in your profile to show classes and deadlines.
+                </p>
+              </div>
+              <Link
+                href="/profile"
+                className="cockpit-switch"
+              >
+                <span className="cockpit-switch-indicator cockpit-switch-indicator-amber" />
+                Open profile
+              </Link>
             </div>
-            <Link
-              href="/profile"
-              className="portal-button-primary mt-3 inline-flex px-4 py-2 text-sm font-semibold"
-            >
-              Open profile
-            </Link>
-          </div>
-        )}
+          )}
+        </div>
       </section>
 
+      {/* Quick actions */}
+      <QuickActionsPanel isAdmin={isAdminView} />
+
+      {/* Course collections */}
       {courseList.length > 0 && (
-        <section className="space-y-5">
-          <div className="flex flex-wrap items-baseline justify-between gap-3">
-            <div>
-              <p className="eyebrow">Courses</p>
-              <h2 className="mt-1 text-xl font-bold text-brand-navy">
-                {isAdminView ? "All course collections" : "Your course collections"}
-              </h2>
+        <section className="space-y-4">
+          <div className="cockpit-panel">
+            <div className="cockpit-section-bar flex items-center justify-between">
+              <span>{isAdminView ? "All Course Collections" : "Your Course Collections"}</span>
+              <Link href="/library" className="text-[10px] font-semibold text-brand-blue hover:underline uppercase">
+                Search library
+              </Link>
             </div>
-            <Link href="/library" className="text-sm font-medium text-brand-blue hover:underline">
-              Search library
-            </Link>
           </div>
 
           {visibleCollections.map((collection) => {
@@ -333,19 +248,19 @@ export default async function HomeDashboardPage() {
             return (
               <section
                 key={collection.id}
-                className="app-card overflow-hidden"
+                className="cockpit-panel overflow-hidden"
               >
-                <div className="portal-bar mb-0 flex flex-wrap items-start justify-between gap-3 p-3">
+                <div className="flex flex-wrap items-start justify-between gap-3 border-b border-brand-line bg-brand-soft p-3">
                   <div>
                     <p className="eyebrow">{collection.short_label}</p>
-                    <h3 className="mt-1 text-lg font-bold text-brand-navy">
+                    <h3 className="mt-1 font-bold text-brand-navy">
                       {collection.label}
                     </h3>
                     {collection.description && (
-                      <p className="mt-1 text-sm text-brand-muted">{collection.description}</p>
+                      <p className="mt-1 text-xs text-brand-muted">{collection.description}</p>
                     )}
                   </div>
-                  <span className="text-xs font-semibold text-brand-muted">
+                  <span className="cockpit-gauge text-xs text-brand-muted">
                     {collectionCourses.length} course{collectionCourses.length === 1 ? "" : "s"}
                   </span>
                 </div>
@@ -364,7 +279,7 @@ export default async function HomeDashboardPage() {
                     <tbody>
                       {collectionCourses.map((course) => (
                         <tr key={`${collection.id}-${course.code}`}>
-                          <td className="font-mono text-xs font-bold text-brand-navy">
+                          <td className="cockpit-gauge text-xs font-bold text-brand-navy">
                             {course.code}
                           </td>
                           <td>
@@ -393,32 +308,7 @@ export default async function HomeDashboardPage() {
         </section>
       )}
 
-      <section>
-        <div className="mb-4">
-          <p className="eyebrow">Useful links</p>
-          <h2 className="mt-1 text-lg font-bold text-brand-navy">Common tasks</h2>
-        </div>
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {[
-            { href: "/library", label: "Find a course", detail: "Browse or search" },
-            { href: "/profile", label: "Update profile", detail: "Avatar and bio" },
-            { href: "/about", label: "About the site", detail: "What is included" },
-            ...(isAdmin(profile)
-              ? [{ href: "/admin/roster", label: "Roster", detail: "Check sign-ins" }]
-              : []),
-          ].map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="app-card border-l-4 p-4 hover:border-l-brand-blue"
-            >
-              <p className="font-semibold text-brand-navy">{item.label}</p>
-              <p className="mt-1 text-sm text-brand-muted">{item.detail}</p>
-            </Link>
-          ))}
-        </div>
-      </section>
-
+      {/* Site report */}
       <SiteReportSection />
     </div>
   );
