@@ -1,0 +1,41 @@
+{
+  "collection": {
+    "id": "d2-2025-2026",
+    "label": "D2 2025-2026 Admin Preview",
+    "shortLabel": "D2 Admin Preview",
+    "description": "Admin-only preview collection used to verify D2 navigation before real D2 resources are imported.",
+    "sourceTier": "d2",
+    "sourceCohort": "d2-2025",
+    "defaultForTier": false,
+    "sortOrder": 20
+  },
+  "courses": [
+    {
+      "code": "D2QA 100",
+      "title": "D2 Resource Preview",
+      "semester": "Admin Preview",
+      "area": "D2 QA",
+      "sortOrder": 10
+    }
+  ],
+  "lectures": [
+    {
+      "id": "d2-2025-2026-d2qa-100-orientation",
+      "courseCode": "D2QA 100",
+      "title": "D2 Navigation Preview",
+      "date": "2026-07-04",
+      "transcript": "This admin-only preview lecture confirms that D2 resource collections can be imported, displayed, and opened without granting D2 access to students."
+    }
+  ],
+  "resources": [
+    {
+      "courseCode": "D2QA 100",
+      "name": "D2 admin preview placeholder.pdf",
+      "kind": "Document",
+      "ext": "PDF",
+      "section": "Admin Preview",
+      "useLabel": "Preview placeholder",
+      "isCanonicalSyllabus": false
+    }
+  ]
+}

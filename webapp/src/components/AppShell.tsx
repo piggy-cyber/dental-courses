@@ -86,6 +86,7 @@ export function AppShell({
   const displayName = profile.name ?? profile.email.split("@")[0] ?? "Student";
   const navLinks = adminMode ? ADMIN_LINKS : STUDENT_LINKS;
   const canOpenAdmin = profile.role === "owner";
+  const courseScopeLabel = canOpenAdmin ? "All available" : "Granted";
 
   return (
     <div className="app-shell-bg min-h-screen text-brand-ink">
@@ -93,7 +94,7 @@ export function AppShell({
         <div className="border-b border-brand-line px-4 py-4">
           <BrandMark />
           <p className="mt-2 text-[11px] leading-relaxed text-brand-muted">
-            Granted course resources, videos, transcripts, and files.
+            {courseScopeLabel} course resources, videos, transcripts, and files.
           </p>
           <div className="mt-3">
             <ThemeToggle compact />
@@ -170,7 +171,9 @@ export function AppShell({
               </div>
             ) : (
               <p className="border border-brand-line bg-brand-panel px-3 py-3 text-sm text-brand-muted">
-                No course collections are assigned yet.
+                {canOpenAdmin
+                  ? "No course collections are loaded yet."
+                  : "No course collections are assigned yet."}
               </p>
             )}
           </nav>

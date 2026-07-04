@@ -84,6 +84,7 @@ export default async function HomeDashboardPage() {
   ]);
 
   const displayName = profile?.name ?? profile?.email?.split("@")[0] ?? "Student";
+  const isAdminView = isAdmin(profile);
   const handle = profile?.username ? `@${profile.username}` : null;
   const hasCanvasFeed = Boolean(profile?.canvas_ics_url);
   const rawCourseList = ((courses as HomeMembership[] | null) ?? []).flatMap((membership) => {
@@ -124,7 +125,7 @@ export default async function HomeDashboardPage() {
                 className="border border-brand-line"
               />
               <div>
-                <p className="eyebrow">Student desk</p>
+                <p className="eyebrow">{isAdminView ? "Admin desk" : "Student desk"}</p>
                 <h1 className="portal-title text-3xl font-bold sm:text-4xl">
                   {displayName}
                 </h1>
@@ -224,7 +225,11 @@ export default async function HomeDashboardPage() {
         >
           <p className="eyebrow">Study</p>
           <h2 className="mt-1 font-bold text-brand-navy">Open your collections</h2>
-          <p className="mt-2 text-sm text-brand-muted">Search courses you have been granted.</p>
+          <p className="mt-2 text-sm text-brand-muted">
+            {isAdminView
+              ? "Search all available course collections."
+              : "Search courses you have been granted."}
+          </p>
         </Link>
         <Link
           href="/profile"
@@ -313,7 +318,9 @@ export default async function HomeDashboardPage() {
           <div className="flex flex-wrap items-baseline justify-between gap-3">
             <div>
               <p className="eyebrow">Courses</p>
-              <h2 className="mt-1 text-xl font-bold text-brand-navy">Your course collections</h2>
+              <h2 className="mt-1 text-xl font-bold text-brand-navy">
+                {isAdminView ? "All course collections" : "Your course collections"}
+              </h2>
             </div>
             <Link href="/library" className="text-sm font-medium text-brand-blue hover:underline">
               Search library
@@ -351,7 +358,7 @@ export default async function HomeDashboardPage() {
                         <th>Course</th>
                         <th className="w-40">Area</th>
                         <th className="w-32">Semester</th>
-                        {isAdmin(profile) && <th className="w-28">Tier</th>}
+                        {isAdminView && <th className="w-28">Tier</th>}
                       </tr>
                     </thead>
                     <tbody>
@@ -370,7 +377,7 @@ export default async function HomeDashboardPage() {
                           </td>
                           <td className="text-xs text-brand-muted">{course.area ?? "-"}</td>
                           <td className="text-xs text-brand-muted">{course.semester ?? "-"}</td>
-                          {isAdmin(profile) && (
+                          {isAdminView && (
                             <td className="text-xs text-brand-muted">
                               {tierLabel(course.library_tier)}
                             </td>

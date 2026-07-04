@@ -5,11 +5,13 @@ import {
   collectionFromRow,
   type ResourceCollectionSummary,
 } from "@/lib/resource-collections";
+import { isAdmin } from "@/lib/roles";
 
 export const dynamic = "force-dynamic";
 
 export default async function LibraryPage() {
   const { profile } = await getSessionProfile();
+  const isAdminView = isAdmin(profile);
   const supabase = await createClient();
   const query = supabase
     .from("course_collection_members")
@@ -79,12 +81,13 @@ export default async function LibraryPage() {
           Courses by collection
         </h1>
         <p className="mt-2 max-w-2xl text-brand-muted">
-          Pick a granted collection, then open the matching course set with its lectures,
-          videos, transcripts, and files.
+          {isAdminView
+            ? "Pick any available collection, then open the matching course set with its lectures, videos, transcripts, and files."
+            : "Pick a granted collection, then open the matching course set with its lectures, videos, transcripts, and files."}
         </p>
       </header>
 
-      <LibrarySearch courses={courseCards} />
+      <LibrarySearch courses={courseCards} isAdminView={isAdminView} />
     </div>
   );
 }

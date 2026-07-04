@@ -301,6 +301,48 @@ async function fetchRowsByCollection(supabase, table, columns, collectionId) {
   return rows;
 }
 
+async function fetchMembershipCourseCodes(supabase, collectionId) {
+  const rows = [];
+  for (let from = 0; ; from += 1000) {
+    const { data, error } = await supabase
+      .from("course_collection_members")
+      .select("course_code")
+      .eq("collection_id", collectionId)
+      .range(from, from + 999);
+    if (error) throw new Error(`course_collection_members read: ${error.message}`);
+    if (!data?.length) break;
+    rows.push(...data);
+    if (data.length < 1000) break;
+  }
+  return rows.map((row) => row.course_code);
+}
+
+async function countRows(supabase, table, column, value) {
+  const { count, error } = await supabase
+    .from(table)
+    .select("*", { count: "exact", head: true })
+    .eq(column, value);
+  if (error) throw new Error(`${table} count: ${error.message}`);
+  return count ?? 0;
+}
+
+async function deleteUnreferencedCourses(supabase, courseCodes) {
+  let removed = 0;
+  for (const courseCode of courseCodes) {
+    const [membershipCount, lectureCount, resourceCount] = await Promise.all([
+      countRows(supabase, "course_collection_members", "course_code", courseCode),
+      countRows(supabase, "lectures", "course_code", courseCode),
+      countRows(supabase, "resources", "course_code", courseCode),
+    ]);
+    if (membershipCount > 0 || lectureCount > 0 || resourceCount > 0) continue;
+
+    const { error } = await supabase.from("courses").delete().eq("code", courseCode);
+    if (error) throw new Error(`courses delete: ${error.message}`);
+    removed += 1;
+  }
+  return removed;
+}
+
 async function prepareCollectionRow(supabase, collection) {
   if (collection.sort_order !== null) return collection;
 
@@ -325,6 +367,10 @@ async function applyManifest(supabase, plan) {
     .from("resource_collections")
     .upsert(collection, { onConflict: "id" });
   if (collectionError) throw new Error(`resource_collections upsert: ${collectionError.message}`);
+
+  const previousCourseCodes = await fetchMembershipCourseCodes(supabase, plan.collection.id);
+  const incomingCourseCodes = new Set(plan.courses.map((course) => course.code));
+  const staleCourseCodes = previousCourseCodes.filter((code) => !incomingCourseCodes.has(code));
 
   const existingResources = await fetchRowsByCollection(
     supabase,
@@ -389,10 +435,12 @@ async function applyManifest(supabase, plan) {
   if (plan.lectures.length) await insertRows(supabase, "lectures", plan.lectures);
   if (plan.transcripts.length) await insertRows(supabase, "transcripts", plan.transcripts, 100);
   if (plan.resources.length) await insertRows(supabase, "resources", plan.resources);
+  const removedCourses = await deleteUnreferencedCourses(supabase, staleCourseCodes);
 
   return {
     newCourses: newCourses.length,
     reusedCourses: plan.courses.length - newCourses.length,
+    removedCourses,
     preservedStoragePaths: plan.resources.filter((row) => row.storage_path).length,
   };
 }
@@ -460,7 +508,7 @@ for (const plan of plans) {
     );
     console.log(
       `Courses: ${result.newCourses} new, ${result.reusedCourses} reused. ` +
-        `Storage links present: ${result.preservedStoragePaths}.`
+        `${result.removedCourses} stale removed. Storage links present: ${result.preservedStoragePaths}.`
     );
     console.log("Manual grants unchanged.");
   } catch (error) {

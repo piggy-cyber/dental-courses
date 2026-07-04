@@ -19,7 +19,13 @@ function courseHref(course: CourseCard) {
   return `/course/${encodeURIComponent(course.code)}?collection=${encodeURIComponent(course.collectionId)}`;
 }
 
-export function LibrarySearch({ courses }: { courses: CourseCard[] }) {
+export function LibrarySearch({
+  courses,
+  isAdminView = false,
+}: {
+  courses: CourseCard[];
+  isAdminView?: boolean;
+}) {
   const [query, setQuery] = useState("");
   const [collectionId, setCollectionId] = useState("all");
 
@@ -119,7 +125,7 @@ export function LibrarySearch({ courses }: { courses: CourseCard[] }) {
                     : "text-brand-blue hover:bg-brand-soft hover:text-brand-navy"
                 }`}
               >
-                All granted
+                {isAdminView ? "All available" : "All granted"}
               </button>
               {collections.map((collection) => (
                 <button
@@ -139,7 +145,8 @@ export function LibrarySearch({ courses }: { courses: CourseCard[] }) {
           </div>
         </div>
         <p className="mt-2 text-xs text-brand-muted">
-          Showing {filtered.length} of {courses.length} granted course entries.
+          Showing {filtered.length} of {courses.length}{" "}
+          {isAdminView ? "available" : "granted"} course entries.
         </p>
       </section>
 
