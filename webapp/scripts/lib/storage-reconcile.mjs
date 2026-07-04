@@ -40,8 +40,12 @@ export function sanitizePathSegment(segment) {
     });
 }
 
-export function canvasStorageKeyFromRelPath(relPath) {
-  return `library/${relPath.split(path.sep).map(sanitizePathSegment).join("/")}`;
+export function canvasStorageKeyFromRelPath(relPath, collectionId = null) {
+  const prefix =
+    collectionId && collectionId !== "d1-2025-2026"
+      ? `library/${sanitizePathSegment(collectionId)}`
+      : "library";
+  return `${prefix}/${relPath.split(path.sep).map(sanitizePathSegment).join("/")}`;
 }
 
 export async function fetchAllResources(supabase) {
@@ -50,7 +54,7 @@ export async function fetchAllResources(supabase) {
   for (let from = 0; ; from += pageSize) {
     const { data, error } = await supabase
       .from("resources")
-      .select("id, course_code, name, kind, section, storage_path")
+      .select("id, course_code, name, kind, section, storage_path, resource_collection_id")
       .range(from, from + pageSize - 1);
     if (error) return { data: null, error };
     if (!data?.length) break;
@@ -209,7 +213,7 @@ export function resolveLocalFile(resource, index, { searchShared = true } = {}) 
 }
 
 export async function linkExistingStorage(supabase, resources, options = {}) {
-  const { courseFilter = null, dryRun = false } = options;
+  const { collectionFilter = null, courseFilter = null, dryRun = false } = options;
 
   console.log("Scanning Supabase storage for existing files...");
   const storageKeys = await listAllStorageKeys(supabase);
@@ -222,6 +226,7 @@ export async function linkExistingStorage(supabase, resources, options = {}) {
   let notInStorage = 0;
 
   for (const resource of resources) {
+    if (collectionFilter && resource.resource_collection_id !== collectionFilter) continue;
     if (courseFilter && resource.course_code !== courseFilter) continue;
     if (resource.kind === "Local Media Source" || resource.kind === "Transcript") continue;
     if (resource.storage_path) {
@@ -247,8 +252,7 @@ export async function linkExistingStorage(supabase, resources, options = {}) {
     const { data: updated, error: updateError } = await supabase
       .from("resources")
       .update({ storage_path: key })
-      .eq("course_code", resource.course_code)
-      .eq("name", resource.name)
+      .eq("id", resource.id)
       .is("storage_path", null)
       .select("id");
     if (updateError) {
@@ -262,6 +266,7 @@ export async function linkExistingStorage(supabase, resources, options = {}) {
   console.log("");
   console.log(
     `Done. Linked ${linked}, already linked ${alreadyLinked}, not in storage ${notInStorage}` +
+      (collectionFilter ? ` (collection: ${collectionFilter})` : "") +
       (courseFilter ? ` (course: ${courseFilter})` : "") +
       "."
   );
@@ -288,18 +293,26 @@ export function findDuplicateResources(resources) {
 }
 
 export function buildReconcileReport(resources, storageKeys, localIndex, options = {}) {
-  const { courseFilter = null, maxMb = Number(process.env.UPLOAD_MAX_MB || 50) } = options;
+  const {
+    collectionFilter = null,
+    courseFilter = null,
+    maxMb = Number(process.env.UPLOAD_MAX_MB || 50),
+  } = options;
   const { byName: storageByName } = indexStorageByBasename(storageKeys);
 
-  const duplicates = findDuplicateResources(resources);
+  const scopedResources = resources.filter((resource) => {
+    if (collectionFilter && resource.resource_collection_id !== collectionFilter) return false;
+    if (courseFilter && resource.course_code !== courseFilter) return false;
+    return true;
+  });
+  const duplicates = findDuplicateResources(scopedResources);
   const byCourse = new Map();
   const needsUpload = [];
   const notFound = [];
   const oversized = [];
   const bucketUnlinked = [];
 
-  for (const resource of resources) {
-    if (courseFilter && resource.course_code !== courseFilter) continue;
+  for (const resource of scopedResources) {
     if (resource.kind === "Local Media Source" || resource.kind === "Transcript") continue;
 
     const summary = byCourse.get(resource.course_code) ?? {
@@ -331,7 +344,10 @@ export function buildReconcileReport(resources, storageKeys, localIndex, options
     const local = resolveLocalFile(resource, localIndex, { searchShared: true });
     if (local) {
       const sizeMb = local.sizeBytes / (1024 * 1024);
-      const proposedKey = canvasStorageKeyFromRelPath(local.relPath);
+      const proposedKey = canvasStorageKeyFromRelPath(
+        local.relPath,
+        resource.resource_collection_id
+      );
       const entry = {
         courseCode: resource.course_code,
         name: resource.name,
@@ -360,6 +376,7 @@ export function buildReconcileReport(resources, storageKeys, localIndex, options
 
   return {
     generatedAt: new Date().toISOString(),
+    collectionFilter,
     courseFilter,
     filesRoot: localIndex.filesRoot,
     byCourse: Object.fromEntries([...byCourse.entries()].sort()),
@@ -391,6 +408,7 @@ export function formatReportMarkdown(report) {
   lines.push("");
   lines.push(`Generated: ${report.generatedAt}`);
   lines.push(`Local root: \`${report.filesRoot}\``);
+  if (report.collectionFilter) lines.push(`Collection filter: ${report.collectionFilter}`);
   if (report.courseFilter) lines.push(`Course filter: ${report.courseFilter}`);
   lines.push("");
   lines.push("## Summary");

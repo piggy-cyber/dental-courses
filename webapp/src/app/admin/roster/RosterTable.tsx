@@ -77,13 +77,13 @@ export function RosterTable({ rows }: { rows: RosterRow[] }) {
   return (
     <div className="space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="inline-flex rounded-full border border-brand-line bg-brand-panel p-1 shadow-sm">
+        <div className="inline-flex border border-brand-line bg-brand-panel">
           {ACCESS_TIERS.map((tier) => (
             <button
               key={tier}
               type="button"
               onClick={() => switchTier(tier)}
-              className={`rounded-full px-4 py-1.5 text-sm font-semibold ${
+              className={`border-r border-brand-line px-4 py-1.5 text-sm font-semibold last:border-r-0 ${
                 activeTier === tier
                   ? "bg-brand-navy text-white"
                   : "text-brand-muted hover:text-brand-navy"
@@ -96,7 +96,7 @@ export function RosterTable({ rows }: { rows: RosterRow[] }) {
         <button
           type="button"
           onClick={exportCsv}
-          className="rounded-full border border-brand-line bg-white/70 px-4 py-2 text-sm font-semibold text-brand-navy hover:border-brand-blue hover:bg-white"
+          className="portal-button px-4 py-2 text-sm"
         >
           Export CSV
         </button>
@@ -109,19 +109,19 @@ export function RosterTable({ rows }: { rows: RosterRow[] }) {
             value={fullName}
             onChange={(event) => setFullName(event.target.value)}
             placeholder="Full name"
-            className="app-input rounded-xl px-3 py-2 text-sm"
+            className="app-input px-3 py-2 text-sm"
           />
           <input
             value={email}
             onChange={(event) => setEmail(event.target.value)}
             placeholder="Personal Gmail optional"
             type="email"
-            className="app-input rounded-xl px-3 py-2 text-sm"
+            className="app-input px-3 py-2 text-sm"
           />
           <select
             value={cohort}
             onChange={(event) => setCohort(event.target.value)}
-            className="app-input rounded-xl px-3 py-2 text-sm"
+            className="app-input px-3 py-2 text-sm"
           >
             {COHORT_OPTIONS.map((option) => (
               <option key={option} value={option}>
@@ -133,7 +133,7 @@ export function RosterTable({ rows }: { rows: RosterRow[] }) {
             type="button"
             onClick={submit}
             disabled={isPending}
-            className="rounded-full bg-brand-navy px-5 py-2 text-sm font-semibold text-white disabled:opacity-60"
+            className="portal-button-primary px-5 py-2 text-sm disabled:opacity-60"
           >
             Add
           </button>
@@ -148,28 +148,28 @@ export function RosterTable({ rows }: { rows: RosterRow[] }) {
       </div>
 
       <div className="app-card overflow-x-auto">
-        <table className="w-full min-w-[820px] text-left text-sm">
-          <thead className="border-b border-brand-line bg-brand-soft text-xs uppercase tracking-wide text-brand-muted">
+        <table className="portal-table w-full min-w-[820px] text-sm">
+          <thead>
             <tr>
-              <th className="px-4 py-3 font-semibold">Student</th>
-              <th className="px-4 py-3 font-semibold">Cohort</th>
-              <th className="px-4 py-3 font-semibold">Roster status</th>
-              <th className="px-4 py-3 font-semibold">Linked profile</th>
+              <th>Student</th>
+              <th>Cohort</th>
+              <th>Roster status</th>
+              <th>Linked profile</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-brand-line">
+          <tbody>
             {visibleRows.map((row) => {
               const unsigned = row.status === "expected" && !row.profile_id;
               return (
                 <tr key={row.id} className={unsigned ? "bg-amber-50/70" : undefined}>
-                  <td className="px-4 py-3">
+                  <td>
                     <p className="font-medium text-brand-ink">{row.full_name}</p>
                     <p className="text-xs text-brand-muted">{row.email ?? "No email on roster"}</p>
                   </td>
-                  <td className="px-4 py-3">{row.cohort.toUpperCase()}</td>
-                  <td className="px-4 py-3">
+                  <td>{row.cohort.toUpperCase()}</td>
+                  <td>
                     <span
-                      className={`rounded-full border px-3 py-1 text-xs font-semibold ${
+                      className={`border px-3 py-1 text-xs font-semibold ${
                         unsigned
                           ? "border-amber-200 bg-amber-50 text-amber-700"
                           : "border-emerald-200 bg-emerald-50 text-emerald-700"
@@ -178,7 +178,7 @@ export function RosterTable({ rows }: { rows: RosterRow[] }) {
                       {unsigned ? "not signed in" : row.status}
                     </span>
                   </td>
-                  <td className="px-4 py-3">
+                  <td>
                     {row.profile ? (
                       <Link
                         href={`/admin/accounts/${row.profile.id}`}
@@ -195,7 +195,7 @@ export function RosterTable({ rows }: { rows: RosterRow[] }) {
             })}
             {visibleRows.length === 0 && (
               <tr>
-                <td colSpan={4} className="px-4 py-8 text-center text-brand-muted">
+                <td colSpan={4} className="text-center text-brand-muted">
                   No roster rows for {tierLabel(activeTier)}.
                 </td>
               </tr>

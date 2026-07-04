@@ -36,7 +36,7 @@ function AccountStatusControls({
   return (
     <div className="flex flex-wrap items-center justify-end gap-2">
       <span
-        className={`rounded-full border px-3 py-1 text-xs font-semibold ${STATUS_STYLES[account.status]}`}
+        className={`border px-3 py-1 text-xs font-semibold ${STATUS_STYLES[account.status]}`}
       >
         {account.status}
       </span>
@@ -45,7 +45,7 @@ function AccountStatusControls({
           type="button"
           onClick={() => update("approved")}
           disabled={isPending}
-          className="rounded-full bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white disabled:opacity-60"
+          className="portal-button-primary px-3 py-1.5 text-xs font-semibold disabled:opacity-60"
         >
           Approve
         </button>
@@ -55,7 +55,7 @@ function AccountStatusControls({
           type="button"
           onClick={() => update("revoked")}
           disabled={isPending}
-          className="rounded-full border border-rose-200 px-3 py-1.5 text-xs font-semibold text-rose-600 disabled:opacity-60"
+          className="border border-rose-200 px-3 py-1.5 text-xs font-semibold text-rose-600 disabled:opacity-60"
         >
           Revoke
         </button>
@@ -108,18 +108,18 @@ export function AccountsTable({
 
   return (
     <div className="space-y-4">
-      <div className="app-card-muted grid gap-3 p-4 md:grid-cols-[1fr_auto_auto_auto]">
+      <div className="portal-bar grid gap-3 p-4 md:grid-cols-[1fr_auto_auto_auto]">
         <input
           type="search"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           placeholder="Search name, email, username..."
-          className="app-input min-w-0 rounded-xl px-3 py-2 text-sm"
+          className="app-input min-w-0 px-3 py-2 text-sm"
         />
         <select
           value={status}
           onChange={(event) => setStatus(event.target.value as "all" | Account["status"])}
-          className="app-input rounded-xl px-3 py-2 text-sm"
+          className="app-input px-3 py-2 text-sm"
         >
           <option value="all">All statuses</option>
           <option value="pending">Pending</option>
@@ -129,7 +129,7 @@ export function AccountsTable({
         <select
           value={tier}
           onChange={(event) => setTier(event.target.value)}
-          className="app-input rounded-xl px-3 py-2 text-sm"
+          className="app-input px-3 py-2 text-sm"
         >
           <option value="all">All tiers</option>
           {ACCESS_TIERS.map((item) => (
@@ -141,7 +141,7 @@ export function AccountsTable({
         <select
           value={cohort}
           onChange={(event) => setCohort(event.target.value)}
-          className="app-input rounded-xl px-3 py-2 text-sm"
+          className="app-input px-3 py-2 text-sm"
         >
           <option value="all">All cohorts</option>
           {cohorts.map((item) => (
@@ -157,20 +157,20 @@ export function AccountsTable({
       </p>
 
       <div className="app-card overflow-x-auto">
-        <table className="w-full min-w-[900px] text-left text-sm">
-          <thead className="border-b border-brand-line bg-brand-soft text-xs uppercase tracking-wide text-brand-muted">
+        <table className="portal-table w-full min-w-[900px] text-sm">
+          <thead>
             <tr>
-              <th className="px-4 py-3 font-semibold">Account</th>
-              <th className="px-4 py-3 font-semibold">Roster</th>
-              <th className="px-4 py-3 font-semibold">Tiers</th>
-              <th className="px-4 py-3 font-semibold">Joined</th>
-              <th className="px-4 py-3 text-right font-semibold">Control</th>
+              <th>Account</th>
+              <th>Roster</th>
+              <th>Tiers</th>
+              <th>Joined</th>
+              <th>Control</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-brand-line">
+          <tbody>
             {filtered.map((account) => (
               <tr key={account.id} className="align-top">
-                <td className="px-4 py-3">
+                <td>
                   <Link
                     href={`/admin/accounts/${account.id}`}
                     className="font-semibold text-brand-navy hover:underline"
@@ -185,7 +185,7 @@ export function AccountsTable({
                     <p className="mt-0.5 text-xs text-brand-muted">@{account.username}</p>
                   )}
                 </td>
-                <td className="px-4 py-3">
+                <td>
                   {account.roster ? (
                     <>
                       <p className="font-medium text-brand-ink">{account.roster.full_name}</p>
@@ -197,13 +197,13 @@ export function AccountsTable({
                     <span className="text-xs text-brand-muted">No roster match</span>
                   )}
                 </td>
-                <td className="px-4 py-3">
+                <td>
                   {account.access_tiers.length ? (
                     <div className="flex flex-wrap gap-1">
                       {account.access_tiers.map((item) => (
                         <span
                           key={item}
-                          className="rounded-full bg-brand-soft px-2 py-0.5 text-xs font-semibold text-brand-navy"
+                          className="border border-brand-line bg-brand-soft px-2 py-0.5 text-xs font-semibold text-brand-navy"
                         >
                           {tierLabel(item)}
                         </span>
@@ -213,10 +213,10 @@ export function AccountsTable({
                     <span className="text-xs text-brand-muted">None</span>
                   )}
                 </td>
-                <td className="px-4 py-3 text-xs text-brand-muted">
+                <td className="text-xs text-brand-muted">
                   {new Date(account.created_at).toLocaleDateString()}
                 </td>
-                <td className="px-4 py-3">
+                <td>
                   <AccountStatusControls
                     account={account}
                     isSelf={account.id === currentUserId}

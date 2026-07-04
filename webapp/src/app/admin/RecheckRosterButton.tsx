@@ -27,7 +27,7 @@ export function RecheckRosterButton() {
         type="button"
         onClick={run}
         disabled={isPending}
-        className="rounded-full bg-brand-navy px-4 py-2 text-sm font-semibold text-white disabled:opacity-60"
+        className="portal-button-primary px-4 py-2 text-sm disabled:opacity-60"
       >
         {isPending ? "Checking..." : "Recheck roster"}
       </button>

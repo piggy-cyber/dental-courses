@@ -56,7 +56,7 @@ export function TranscriptButton({
         <button
           onClick={load}
           disabled={loading}
-          className="rounded-full border border-brand-line bg-white/70 px-4 py-1.5 text-sm font-semibold text-brand-navy transition hover:border-brand-blue hover:bg-white disabled:opacity-60"
+          className="portal-button px-4 py-1.5 text-sm disabled:opacity-60"
         >
           {loading ? "Loading..." : open ? "Hide transcript" : "View transcript"}
         </button>
@@ -64,13 +64,13 @@ export function TranscriptButton({
           <>
             <button
               onClick={copy}
-              className="rounded-full border border-brand-line bg-white/70 px-4 py-1.5 text-sm font-semibold text-brand-navy transition hover:border-brand-blue hover:bg-white"
+              className="portal-button px-4 py-1.5 text-sm"
             >
               {copied ? "Copied" : "Copy"}
             </button>
             <button
               onClick={download}
-              className="rounded-full border border-brand-line bg-white/70 px-4 py-1.5 text-sm font-semibold text-brand-navy transition hover:border-brand-blue hover:bg-white"
+              className="portal-button px-4 py-1.5 text-sm"
             >
               Download .txt
             </button>
@@ -78,7 +78,7 @@ export function TranscriptButton({
         )}
       </div>
       {open && text && (
-        <pre className="mt-3 max-h-80 overflow-y-auto whitespace-pre-wrap rounded-xl border border-brand-line bg-white/80 p-4 text-xs leading-relaxed text-brand-muted">
+        <pre className="mt-3 max-h-80 overflow-y-auto whitespace-pre-wrap border border-brand-line bg-brand-panel p-4 text-xs leading-relaxed text-brand-muted">
           {text}
         </pre>
       )}

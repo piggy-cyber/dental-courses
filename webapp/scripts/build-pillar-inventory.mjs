@@ -1,7 +1,7 @@
 // Scans the cheat sheet hub and writes webapp/data/student-pillars.json.
 //
 // Usage: node scripts/build-pillar-inventory.mjs
-import { existsSync, readdirSync, statSync, writeFileSync } from "node:fs";
+import { existsSync, readdirSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";

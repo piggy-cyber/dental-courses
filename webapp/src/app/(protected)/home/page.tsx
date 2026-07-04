@@ -300,7 +300,7 @@ export default async function HomeDashboardPage() {
             </div>
             <Link
               href="/profile"
-              className="mt-3 inline-flex border border-brand-blue bg-brand-blue px-4 py-2 text-sm font-semibold text-white hover:opacity-90"
+              className="portal-button-primary mt-3 inline-flex px-4 py-2 text-sm font-semibold"
             >
               Open profile
             </Link>

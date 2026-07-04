@@ -42,7 +42,7 @@ export function TeamRow({
       <div>
         <p className="text-sm font-medium text-brand-ink">
           {member.name ?? member.email}
-          <span className="ml-2 rounded-full bg-brand-soft px-2 py-0.5 text-xs font-semibold text-brand-navy">
+          <span className="ml-2 border border-brand-line bg-brand-soft px-2 py-0.5 text-xs font-semibold text-brand-navy">
             {adminLabel(member.role)}
           </span>
           {isSelf && <span className="ml-2 text-xs text-brand-muted">(you)</span>}
@@ -56,7 +56,7 @@ export function TeamRow({
             <button
               onClick={promote}
               disabled={isPending || member.status !== "approved"}
-              className="rounded-full bg-brand-navy px-4 py-1.5 text-xs font-semibold text-white disabled:opacity-60"
+              className="portal-button-primary px-4 py-1.5 text-xs disabled:opacity-60"
             >
               Make admin
             </button>
@@ -64,7 +64,7 @@ export function TeamRow({
             <button
               onClick={demote}
               disabled={isPending}
-              className="rounded-full border border-rose-200 px-4 py-1.5 text-xs font-semibold text-rose-600 disabled:opacity-60"
+              className="border border-rose-200 px-4 py-1.5 text-xs font-semibold text-rose-600 disabled:opacity-60"
             >
               Remove admin
             </button>

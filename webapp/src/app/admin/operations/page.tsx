@@ -121,22 +121,22 @@ export default async function AdminOperationsPage() {
           Counts exclude Local Media Source rows (YouTube, not storage).
         </p>
         <div className="app-card overflow-hidden">
-          <table className="w-full text-left text-sm">
-            <thead className="border-b border-brand-line bg-brand-soft text-brand-muted">
+          <table className="portal-table w-full text-sm">
+            <thead>
               <tr>
-                <th className="px-4 py-2 font-semibold">Course</th>
-                <th className="px-4 py-2 font-semibold">Linked</th>
-                <th className="px-4 py-2 font-semibold">Total</th>
-                <th className="px-4 py-2 font-semibold">Gap</th>
+                <th>Course</th>
+                <th>Linked</th>
+                <th>Total</th>
+                <th>Gap</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-brand-line">
+            <tbody>
               {coverage.map((row) => (
                 <tr key={row.course_code}>
-                  <td className="px-4 py-2 font-medium">{row.course_code}</td>
-                  <td className="px-4 py-2">{row.linked}</td>
-                  <td className="px-4 py-2">{row.total}</td>
-                  <td className="px-4 py-2 text-amber-700">{row.total - row.linked}</td>
+                  <td className="font-medium">{row.course_code}</td>
+                  <td>{row.linked}</td>
+                  <td>{row.total}</td>
+                  <td className="text-amber-700">{row.total - row.linked}</td>
                 </tr>
               ))}
             </tbody>
@@ -152,12 +152,12 @@ export default async function AdminOperationsPage() {
               Student reports from course pages and the homepage. Open reports stay first.
             </p>
           </div>
-          <span className="rounded-full bg-brand-panel px-3 py-1 text-xs font-semibold text-brand-navy">
+          <span className="border border-brand-line bg-brand-panel px-3 py-1 text-xs font-semibold text-brand-navy">
             {openReports.length} open
           </span>
         </div>
         {problemReports?.length ? (
-          <ul className="mt-3 divide-y divide-brand-line overflow-hidden rounded-xl border border-brand-line bg-brand-panel">
+          <ul className="mt-3 divide-y divide-brand-line overflow-hidden border border-brand-line bg-brand-panel">
             {problemReports.map((row) => (
               <li key={row.id} className="px-3 py-2 text-sm">
                 <div className="flex flex-wrap items-start justify-between gap-3">
@@ -176,12 +176,12 @@ export default async function AdminOperationsPage() {
                     </p>
                   </div>
                   <span
-                    className={`rounded-full px-2 py-0.5 text-xs font-semibold ${
+                    className={`border px-2 py-0.5 text-xs font-semibold ${
                       row.status === "open"
-                        ? "bg-amber-50 text-amber-700"
+                        ? "border-amber-200 bg-amber-50 text-amber-700"
                         : row.status === "resolved"
-                          ? "bg-emerald-50 text-emerald-700"
-                          : "bg-brand-soft text-brand-muted"
+                          ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+                          : "border-brand-line bg-brand-soft text-brand-muted"
                     }`}
                   >
                     {row.status}
@@ -193,7 +193,7 @@ export default async function AdminOperationsPage() {
                   {new Date(row.created_at).toLocaleString()}
                 </p>
                 {row.admin_note && (
-                  <p className="mt-2 rounded-lg bg-brand-soft px-3 py-2 text-xs text-brand-ink">
+                  <p className="mt-2 border border-brand-line bg-brand-soft px-3 py-2 text-xs text-brand-ink">
                     <span className="font-semibold">Admin note: </span>
                     {row.admin_note}
                   </p>
@@ -215,7 +215,7 @@ export default async function AdminOperationsPage() {
         <p className="mt-1 text-sm text-brand-muted">
           Copy this CSV for payment tracking or outreach.
         </p>
-        <pre className="mt-3 max-h-48 overflow-auto rounded-xl border border-brand-line bg-brand-panel p-3 text-xs">
+        <pre className="mt-3 max-h-48 overflow-auto border border-brand-line bg-brand-panel p-3 text-xs">
           {csvRows || "No pending users"}
         </pre>
         <Link href="/admin/accounts" className="mt-3 inline-block text-sm text-brand-blue hover:underline">

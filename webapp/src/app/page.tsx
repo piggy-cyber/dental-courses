@@ -23,7 +23,7 @@ export default async function LoginHomePage({
 
   return (
     <main className="app-shell-bg min-h-screen">
-      <header className="border-b border-brand-line bg-brand-panel/90 px-6 py-3 backdrop-blur">
+      <header className="border-b border-brand-line bg-brand-panel px-6 py-3">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-3">
           <BrandMarkPublic />
           <div className="flex items-center gap-3">
@@ -39,12 +39,12 @@ export default async function LoginHomePage({
       </header>
 
       <div className="mx-auto grid max-w-6xl gap-8 px-6 py-10 lg:grid-cols-[1.08fr_0.92fr] lg:items-start">
-        <section className="app-hero rounded-2xl p-7 text-white shadow-[var(--brand-shadow)] sm:p-10">
-          <p className="eyebrow text-brand-gold">Health Education Campus · D1</p>
-          <h1 className="mt-3 max-w-2xl text-4xl font-bold tracking-tight text-white sm:text-5xl">
+        <section className="app-hero p-7 sm:p-10">
+          <p className="eyebrow">Health Education Campus · D1</p>
+          <h1 className="portal-title mt-3 max-w-2xl text-4xl font-bold sm:text-5xl">
             Course Library
           </h1>
-          <p className="mt-4 max-w-xl text-lg leading-relaxed text-white/70">
+          <p className="mt-4 max-w-xl text-lg leading-relaxed text-brand-muted">
             Use your personal Gmail, not your @case.edu address, to access approved
             lectures, videos, transcripts, and course files.
           </p>
@@ -55,9 +55,9 @@ export default async function LoginHomePage({
               ["Transcripts", "Searchable review"],
               ["Files", "Course resources"],
             ].map(([label, detail]) => (
-              <div key={label} className="rounded-xl border border-white/10 bg-white/10 p-4">
-                <p className="font-semibold text-white">{label}</p>
-                <p className="text-sm text-white/60">{detail}</p>
+              <div key={label} className="border border-brand-line bg-brand-soft p-4">
+                <p className="font-semibold text-brand-navy">{label}</p>
+                <p className="text-sm text-brand-muted">{detail}</p>
               </div>
             ))}
           </div>
@@ -66,18 +66,18 @@ export default async function LoginHomePage({
             {!profile ? (
               <>
                 <SignInPanel />
-                <p className="mt-4 text-sm text-white/70">
+                <p className="mt-4 text-sm text-brand-muted">
                   Roster students with a matching personal Gmail are approved automatically.
                 </p>
                 {params.auth_error && (
-                  <p className="mt-3 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800">
+                  <p className="mt-3 border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800">
                     Sign-in failed. Try the email link, or confirm Google is enabled
                     in Supabase.
                   </p>
                 )}
               </>
             ) : (
-              <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-4 text-left">
+              <div className="border border-amber-200 bg-amber-50 px-4 py-4 text-left">
                 <p className="font-medium text-amber-900">
                   {profile.status === "revoked"
                     ? "Your access is inactive."

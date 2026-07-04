@@ -34,7 +34,7 @@ export function ReportStatusControls({
         onChange={(e) => setNote(e.target.value)}
         rows={2}
         placeholder="Optional admin note"
-        className="app-input w-full rounded-xl px-3 py-2 text-xs"
+        className="app-input w-full px-3 py-2 text-xs"
       />
       <div className="flex flex-wrap items-center gap-2">
         {status !== "resolved" && (
@@ -42,7 +42,7 @@ export function ReportStatusControls({
             type="button"
             onClick={() => update("resolved")}
             disabled={isPending}
-            className="rounded-full bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white disabled:opacity-60"
+            className="portal-button-primary px-3 py-1.5 text-xs font-semibold disabled:opacity-60"
           >
             Mark resolved
           </button>
@@ -52,7 +52,7 @@ export function ReportStatusControls({
             type="button"
             onClick={() => update("dismissed")}
             disabled={isPending}
-            className="rounded-full border border-brand-line bg-white/70 px-3 py-1.5 text-xs font-semibold text-brand-muted disabled:opacity-60"
+            className="portal-button px-3 py-1.5 text-xs disabled:opacity-60"
           >
             Dismiss
           </button>
@@ -62,7 +62,7 @@ export function ReportStatusControls({
             type="button"
             onClick={() => update("open")}
             disabled={isPending}
-            className="rounded-full border border-amber-200 bg-white/70 px-3 py-1.5 text-xs font-semibold text-amber-700 disabled:opacity-60"
+            className="border border-amber-200 bg-brand-panel px-3 py-1.5 text-xs font-semibold text-amber-700 disabled:opacity-60"
           >
             Reopen
           </button>

@@ -72,7 +72,7 @@ export function PreviewCrashTest({
     : null;
 
   return (
-    <section className="rounded-xl border border-brand-line bg-brand-soft p-5">
+    <section className="border border-brand-line bg-brand-soft p-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h2 className="font-semibold text-brand-navy">Crash test</h2>
@@ -85,7 +85,7 @@ export function PreviewCrashTest({
           type="button"
           onClick={runCrashTest}
           disabled={running || resources.length === 0}
-          className="rounded-full border border-brand-navy bg-brand-navy px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
+          className="portal-button-primary px-4 py-2 text-sm disabled:opacity-50"
         >
           {running ? "Running…" : `Test ${resources.length} files`}
         </button>
@@ -101,7 +101,7 @@ export function PreviewCrashTest({
       )}
 
       {rows && (
-        <div className="mt-4 max-h-64 overflow-auto rounded-lg border border-brand-line bg-white">
+        <div className="mt-4 max-h-64 overflow-auto border border-brand-line bg-brand-panel">
           <table className="w-full text-left text-xs">
             <thead className="sticky top-0 bg-brand-soft text-brand-muted">
               <tr>

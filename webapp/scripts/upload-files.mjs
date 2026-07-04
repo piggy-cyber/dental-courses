@@ -12,6 +12,7 @@
 //         node scripts/upload-files.mjs --dry
 //         node scripts/upload-files.mjs --canvas
 //         node scripts/upload-files.mjs --link-storage --course "HEWB 130"
+//         node scripts/upload-files.mjs --canvas --collection d2-2025-2026
 //         node scripts/upload-files.mjs --canvas --compress
 import { existsSync, readdirSync } from "node:fs";
 import os from "node:os";
@@ -19,7 +20,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { createClient } from "@supabase/supabase-js";
 import { loadEnv } from "./lib/data.mjs";
-import { prepareUploadPayload, convertOfficeToPdf } from "./lib/compress-file.mjs";
+import { prepareUploadPayload } from "./lib/compress-file.mjs";
 import {
   DEFAULT_COURSE_FILES_DIR,
   canvasStorageKeyFromRelPath,
@@ -37,6 +38,7 @@ const includeCanvas = process.argv.includes("--canvas");
 const essentialsOnly = process.argv.includes("--essentials");
 const linkStorageOnly = process.argv.includes("--link-storage");
 const compressLarge = process.argv.includes("--compress");
+const collectionFilter = readFlagValue("collection")?.trim() ?? null;
 const courseFilter = readFlagValue("course")?.trim() ?? null;
 
 function readFlagValue(name) {
@@ -137,20 +139,10 @@ const CONTENT_TYPES = {
   ".apkg": "application/octet-stream",
 };
 
-function kindSegment(kind) {
-  const map = {
-    Slides: "slides",
-    Syllabus: "syllabus",
-    Document: "documents",
-    "Study Guide": "study-guides",
-    Flashcards: "flashcards",
-    Image: "images",
-    Other: "other",
-  };
-  return map[kind] ?? "other";
-}
-
 function pillarStorageKey(resource) {
+  if (resource.resource_collection_id && resource.resource_collection_id !== "d1-2025-2026") {
+    return null;
+  }
   const slug = resource.course_code.toLowerCase().replace(/[^a-z0-9]+/g, "-");
   const safeName = resource.name.replace(/[^a-zA-Z0-9._ -]/g, "_").replace(/\s+/g, " ");
   if (resource.kind === "Course Mastery Guide") {
@@ -163,8 +155,8 @@ function pillarStorageKey(resource) {
 }
 
 /** Mirror local folder layout: library/HWDP 131 - Heart.../subdir/file.pdf */
-function canvasStorageKey(relPath) {
-  return canvasStorageKeyFromRelPath(relPath);
+function canvasStorageKey(relPath, collectionId) {
+  return canvasStorageKeyFromRelPath(relPath, collectionId);
 }
 
 function scoreCandidate(resource, relPath) {
@@ -231,7 +223,7 @@ function resolveLocalPath(resource) {
 function storageKey(resource, localEntry) {
   const pillarKey = pillarStorageKey(resource);
   if (pillarKey) return pillarKey;
-  return canvasStorageKey(localEntry.relPath);
+  return canvasStorageKey(localEntry.relPath, resource.resource_collection_id);
 }
 
 const { data: resources, error } = await fetchAllResources(supabase);
@@ -239,11 +231,14 @@ if (error) {
   console.error(`Could not read resources table: ${error.message}`);
   process.exit(1);
 }
+if (collectionFilter) {
+  console.log(`Collection filter: ${collectionFilter}`);
+}
 if (courseFilter) {
   console.log(`Course filter: ${courseFilter}`);
 }
 if (linkStorageOnly) {
-  await linkExistingStorage(supabase, resources, { courseFilter, dryRun });
+  await linkExistingStorage(supabase, resources, { collectionFilter, courseFilter, dryRun });
   process.exit(0);
 }
 if (essentialsOnly) {
@@ -258,6 +253,7 @@ let compressed = 0;
 let skipped = 0;
 let missing = 0;
 let skippedYoutube = 0;
+let skippedOtherCollection = 0;
 let skippedOtherCourse = 0;
 let skippedNonEssential = 0;
 
@@ -284,6 +280,10 @@ const uploadQueue = resources
   );
 
 for (const resource of uploadQueue) {
+  if (collectionFilter && resource.resource_collection_id !== collectionFilter) {
+    skippedOtherCollection += 1;
+    continue;
+  }
   if (courseFilter && resource.course_code !== courseFilter) {
     skippedOtherCourse += 1;
     continue;
@@ -348,8 +348,7 @@ for (const resource of uploadQueue) {
   const { error: updateError } = await supabase
     .from("resources")
     .update({ storage_path: key })
-    .eq("course_code", resource.course_code)
-    .eq("name", resource.name)
+    .eq("id", resource.id)
     .is("storage_path", null);
   if (updateError) {
     console.warn(`Uploaded but could not link ${resource.name}: ${updateError.message}`);
@@ -377,6 +376,7 @@ console.log(
   `Done. Uploaded ${uploaded}` +
     (compressed ? ` (${compressed} compressed)` : "") +
     `, already linked ${skipped}, YouTube-only ${skippedYoutube}, no local match ${missing}` +
+    (collectionFilter ? `, skipped other collections ${skippedOtherCollection}` : "") +
     (courseFilter ? `, skipped other courses ${skippedOtherCourse}` : "") +
     (essentialsOnly ? `, skipped non-essential ${skippedNonEssential}` : "") +
     "."

@@ -232,6 +232,12 @@ export default async function AdminDashboardPage() {
             upload Canvas files
           </li>
           <li>
+            <code className="text-brand-ink">
+              node scripts/import-resource-manifest.mjs --file private-staging/resource-manifests/d2-2025-2026.json --dry
+            </code>{" "}
+            — preview a staged D2 resource collection import
+          </li>
+          <li>
             <code className="text-brand-ink">node scripts/make-admin.mjs email</code> — promote
             admin
           </li>

@@ -92,7 +92,7 @@ export function AccountDetailForm({
             <input
               value={name}
               onChange={(event) => setName(event.target.value)}
-              className="app-input mt-1 w-full rounded-xl px-3 py-2"
+              className="app-input mt-1 w-full px-3 py-2"
             />
           </label>
           <label className="block text-sm">
@@ -100,7 +100,7 @@ export function AccountDetailForm({
             <input
               value={username}
               onChange={(event) => setUsername(event.target.value)}
-              className="app-input mt-1 w-full rounded-xl px-3 py-2"
+              className="app-input mt-1 w-full px-3 py-2"
             />
           </label>
         </div>
@@ -111,7 +111,7 @@ export function AccountDetailForm({
             value={bio}
             onChange={(event) => setBio(event.target.value)}
             rows={3}
-            className="app-input mt-1 w-full rounded-xl px-3 py-2"
+            className="app-input mt-1 w-full px-3 py-2"
           />
         </label>
 
@@ -124,7 +124,7 @@ export function AccountDetailForm({
             {collections.map((collection) => (
               <label
                 key={collection.id}
-                className="flex items-start gap-3 rounded-xl border border-brand-line bg-white/60 px-3 py-3 text-sm"
+                className="flex items-start gap-3 border border-brand-line bg-brand-panel px-3 py-3 text-sm"
               >
                 <input
                   type="checkbox"
@@ -143,7 +143,7 @@ export function AccountDetailForm({
             ))}
           </div>
           {collections.length === 0 && (
-            <p className="mt-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800">
+            <p className="mt-2 border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800">
               No resource collections exist yet. Run the resource collection migration.
             </p>
           )}
@@ -158,7 +158,7 @@ export function AccountDetailForm({
             {ACCESS_TIERS.map((tier) => (
               <label
                 key={tier}
-              className="flex items-center gap-2 rounded-xl border border-brand-line bg-white/60 px-3 py-2 text-sm"
+              className="flex items-center gap-2 border border-brand-line bg-brand-panel px-3 py-2 text-sm"
               >
                 <input
                   type="checkbox"
@@ -177,12 +177,12 @@ export function AccountDetailForm({
             value={adminNote}
             onChange={(event) => setAdminNote(event.target.value)}
             rows={5}
-            className="app-input mt-1 w-full rounded-xl px-3 py-2"
+            className="app-input mt-1 w-full px-3 py-2"
           />
         </label>
 
         {account.access_note && (
-          <div className="rounded-xl border border-brand-line bg-brand-soft p-3 text-sm">
+          <div className="border border-brand-line bg-brand-soft p-3 text-sm">
             <p className="font-medium text-brand-navy">Student access note</p>
             <p className="mt-1 text-brand-ink">{account.access_note}</p>
           </div>
@@ -193,7 +193,7 @@ export function AccountDetailForm({
             type="button"
             onClick={save}
             disabled={isPending}
-            className="rounded-full bg-brand-navy px-5 py-2 text-sm font-semibold text-white disabled:opacity-60"
+            className="portal-button-primary px-5 py-2 text-sm disabled:opacity-60"
           >
             Save changes
           </button>
@@ -206,7 +206,7 @@ export function AccountDetailForm({
         <section className="app-card p-5">
           <p className="text-sm font-semibold text-brand-navy">Status</p>
           <span
-            className={`mt-3 inline-flex rounded-full border px-3 py-1 text-xs font-semibold ${STATUS_STYLES[account.status]}`}
+            className={`mt-3 inline-flex border px-3 py-1 text-xs font-semibold ${STATUS_STYLES[account.status]}`}
           >
             {account.status}
           </span>
@@ -215,7 +215,7 @@ export function AccountDetailForm({
               type="button"
               onClick={() => updateStatus("approved")}
               disabled={isPending || account.status === "approved"}
-              className="rounded-full bg-emerald-600 px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
+              className="portal-button-primary px-4 py-2 text-sm font-semibold disabled:opacity-50"
             >
               Approve
             </button>
@@ -223,7 +223,7 @@ export function AccountDetailForm({
               type="button"
               onClick={() => updateStatus("pending")}
               disabled={isPending || isSelf || account.status === "pending"}
-              className="rounded-full border border-amber-200 px-4 py-2 text-sm font-semibold text-amber-700 disabled:opacity-50"
+              className="border border-amber-200 px-4 py-2 text-sm font-semibold text-amber-700 disabled:opacity-50"
             >
               Set pending
             </button>
@@ -231,7 +231,7 @@ export function AccountDetailForm({
               type="button"
               onClick={() => updateStatus("revoked")}
               disabled={isPending || isSelf || account.status === "revoked"}
-              className="rounded-full border border-rose-200 px-4 py-2 text-sm font-semibold text-rose-600 disabled:opacity-50"
+              className="border border-rose-200 px-4 py-2 text-sm font-semibold text-rose-600 disabled:opacity-50"
             >
               Revoke
             </button>

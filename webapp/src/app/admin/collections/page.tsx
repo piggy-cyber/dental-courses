@@ -79,7 +79,7 @@ export default async function AdminCollectionsPage() {
         </div>
         <Link
           href="/admin/accounts"
-          className="rounded-full border border-brand-line bg-white/70 px-4 py-2 text-sm font-semibold text-brand-navy hover:border-brand-blue hover:bg-white"
+          className="portal-button px-4 py-2 text-sm"
         >
           Assign to accounts
         </Link>
@@ -88,42 +88,43 @@ export default async function AdminCollectionsPage() {
       <CollectionCreateForm />
 
       <section className="app-card overflow-hidden">
-        <table className="w-full text-left text-sm">
-          <thead className="border-b border-brand-line bg-brand-soft text-brand-muted">
+        <table className="portal-table w-full text-sm">
+          <thead>
             <tr>
-              <th className="px-4 py-3 font-semibold">Collection</th>
-              <th className="px-4 py-3 font-semibold">Source</th>
-              <th className="px-4 py-3 font-semibold">Courses</th>
-              <th className="px-4 py-3 font-semibold">Files</th>
-              <th className="px-4 py-3 font-semibold">Grants</th>
-              <th className="px-4 py-3 font-semibold">Default</th>
+              <th>Collection</th>
+              <th>Source</th>
+              <th>Courses</th>
+              <th>Files</th>
+              <th>Grants</th>
+              <th>Access</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-brand-line">
+          <tbody>
             {((collections as Collection[] | null) ?? []).map((collection) => (
               <tr key={collection.id}>
-                <td className="px-4 py-3">
+                <td>
                   <p className="font-semibold text-brand-navy">{collection.label}</p>
                   <p className="text-xs text-brand-muted">{collection.short_label}</p>
+                  <p className="font-mono text-xs text-brand-muted">{collection.id}</p>
                   {collection.description && (
                     <p className="mt-1 text-xs text-brand-muted">{collection.description}</p>
                   )}
                 </td>
-                <td className="px-4 py-3 text-brand-muted">
+                <td className="text-brand-muted">
                   {[collection.source_tier?.toUpperCase(), collection.source_cohort]
                     .filter(Boolean)
                     .join(" · ") || "Manual"}
                 </td>
-                <td className="px-4 py-3">{courseCounts.get(collection.id) ?? 0}</td>
-                <td className="px-4 py-3">{resourceCounts.get(collection.id) ?? 0}</td>
-                <td className="px-4 py-3">{grantCounts.get(collection.id) ?? 0}</td>
-                <td className="px-4 py-3">
+                <td>{courseCounts.get(collection.id) ?? 0}</td>
+                <td>{resourceCounts.get(collection.id) ?? 0}</td>
+                <td>{grantCounts.get(collection.id) ?? 0}</td>
+                <td>
                   {collection.default_for_tier ? (
-                    <span className="rounded-full bg-emerald-50 px-2 py-1 text-xs font-semibold text-emerald-700">
+                    <span className="border border-emerald-200 bg-emerald-50 px-2 py-1 text-xs font-semibold text-emerald-700">
                       Auto
                     </span>
                   ) : (
-                    <span className="rounded-full bg-brand-soft px-2 py-1 text-xs font-semibold text-brand-muted">
+                    <span className="border border-brand-line bg-brand-soft px-2 py-1 text-xs font-semibold text-brand-muted">
                       Manual
                     </span>
                   )}

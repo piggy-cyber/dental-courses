@@ -17,7 +17,7 @@ export default async function AboutPage() {
 
   return (
     <div className="app-shell-bg min-h-screen text-brand-ink">
-      <header className="sticky top-0 z-10 border-b border-brand-line bg-brand-panel/90 backdrop-blur">
+      <header className="sticky top-0 z-10 border-b border-brand-line bg-brand-panel">
         <div className="mx-auto flex max-w-4xl items-center justify-between gap-3 px-4 py-3">
           <BrandMarkPublic />
           <div className="flex items-center gap-3">
@@ -40,7 +40,7 @@ export default async function AboutPage() {
         <div className="mt-10">
           <Link
             href={backHref}
-            className="inline-flex rounded-full bg-brand-blue px-5 py-2.5 font-semibold text-white hover:opacity-90"
+            className="portal-button-primary px-5 py-2.5"
           >
             {backLabel}
           </Link>

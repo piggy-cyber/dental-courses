@@ -46,7 +46,7 @@ export function PreviewLabClient({
           id="preview-resource"
           value={selectedId}
           onChange={(e) => onSelect(Number(e.target.value))}
-          className="app-input mt-2 w-full rounded-xl px-3 py-2 text-sm"
+          className="app-input mt-2 w-full px-3 py-2 text-sm"
         >
           {resources.map((resource) => (
             <option key={resource.id} value={resource.id}>

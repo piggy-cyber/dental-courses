@@ -33,7 +33,7 @@ function PreviewFrame({ strategy, meta }: { strategy: PreviewStrategy; meta: Pre
       <iframe
         src={meta.signedUrl}
         title={meta.name}
-        className="h-[70vh] w-full rounded-xl border border-brand-line bg-white"
+        className="h-[70vh] w-full border border-brand-line bg-brand-panel"
       />
     );
   }
@@ -45,7 +45,7 @@ function PreviewFrame({ strategy, meta }: { strategy: PreviewStrategy; meta: Pre
         alt={meta.name}
         width={1200}
         height={900}
-        className="mx-auto max-h-[70vh] max-w-full rounded-xl border border-brand-line bg-white object-contain"
+        className="mx-auto max-h-[70vh] max-w-full border border-brand-line bg-brand-panel object-contain"
         unoptimized
       />
     );
@@ -61,7 +61,7 @@ function PreviewFrame({ strategy, meta }: { strategy: PreviewStrategy; meta: Pre
         <iframe
           src={officeEmbedUrl(meta.signedUrl)}
           title={meta.name}
-          className="h-[70vh] w-full rounded-xl border border-brand-line bg-white"
+          className="h-[70vh] w-full border border-brand-line bg-brand-panel"
         />
       </div>
     );
@@ -72,7 +72,7 @@ function PreviewFrame({ strategy, meta }: { strategy: PreviewStrategy; meta: Pre
       <video
         src={meta.signedUrl}
         controls
-        className="mx-auto max-h-[70vh] w-full rounded-xl border border-brand-line bg-black"
+        className="mx-auto max-h-[70vh] w-full border border-brand-line bg-black"
       >
         Your browser does not support video playback.
       </video>
@@ -84,7 +84,7 @@ function PreviewFrame({ strategy, meta }: { strategy: PreviewStrategy; meta: Pre
   }
 
   return (
-    <div className="rounded-xl border border-dashed border-brand-line bg-white px-6 py-12 text-center">
+    <div className="border border-dashed border-brand-line bg-brand-panel px-6 py-12 text-center">
       <p className="font-medium text-brand-navy">Preview not supported</p>
       <p className="mt-2 text-sm text-brand-muted">
         {upper || "This file type"} (e.g. APKG, ZIP) — download to open locally.
@@ -130,7 +130,7 @@ function TextPreview({ resourceId }: { resourceId: number | string }) {
   }
 
   return (
-    <pre className="max-h-[70vh] overflow-auto rounded-xl border border-brand-line bg-white p-4 text-xs leading-relaxed text-brand-ink">
+    <pre className="max-h-[70vh] overflow-auto border border-brand-line bg-brand-panel p-4 text-xs leading-relaxed text-brand-ink">
       {text}
     </pre>
   );
@@ -190,7 +190,7 @@ export function ResourcePreviewPanel({ resourceId }: { resourceId: number }) {
 
   if (error || !meta) {
     return (
-      <div className="rounded-xl border border-red-200 bg-red-50 p-6 text-sm text-red-800">
+      <div className="border border-red-200 bg-red-50 p-6 text-sm text-red-800">
         {error ?? "Preview unavailable"}
       </div>
     );
@@ -212,7 +212,7 @@ export function ResourcePreviewPanel({ resourceId }: { resourceId: number }) {
           href={`/api/resource/${resourceId}`}
           target="_blank"
           rel="noreferrer"
-          className="shrink-0 rounded-full border border-brand-line bg-white/70 px-4 py-2 text-sm font-semibold text-brand-blue transition hover:border-brand-blue hover:bg-white"
+          className="portal-button shrink-0 px-4 py-2 text-sm"
         >
           Download
         </a>

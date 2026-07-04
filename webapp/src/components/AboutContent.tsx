@@ -59,7 +59,7 @@ export function AboutContent({ compact = false }: AboutContentProps) {
           </p>
 
           <h2>Disclaimer</h2>
-          <p className="rounded-xl border border-brand-line bg-white/70 p-4 text-sm">
+          <p className="border border-brand-line bg-brand-panel p-4 text-sm">
             This is an independent, student-run resource. It is strictly not
             affiliated with, endorsed by, sponsored by, or representative of Case
             Western Reserve University or the School of Dental Medicine. All
@@ -86,7 +86,7 @@ export function AboutSummary() {
       <AboutContent compact />
       <Link
         href="/about"
-        className="mt-4 inline-flex text-sm font-semibold text-brand-blue hover:underline"
+        className="portal-link mt-4 inline-flex text-sm font-semibold"
       >
         Read the full about page →
       </Link>

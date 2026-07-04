@@ -26,7 +26,7 @@ export function ResourceFileActions({
           <button
             type="button"
             onClick={() => setPreviewOpen(true)}
-            className="rounded-full border border-brand-teal bg-brand-teal/10 px-3 py-1 text-xs font-semibold text-brand-teal hover:bg-brand-teal/20"
+            className="portal-button px-3 py-1 text-xs"
           >
             Preview
           </button>
@@ -35,7 +35,7 @@ export function ResourceFileActions({
           href={`/api/resource/${resource.id}`}
           target="_blank"
           rel="noreferrer"
-          className="rounded-full border border-brand-line bg-white/70 px-3 py-1 text-xs font-semibold text-brand-navy hover:border-brand-blue hover:bg-white"
+          className="portal-button px-3 py-1 text-xs"
         >
           Download
         </a>

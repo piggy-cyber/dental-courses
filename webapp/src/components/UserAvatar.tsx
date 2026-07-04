@@ -42,7 +42,7 @@ export function UserAvatar({
         alt={name ?? email ?? "Profile"}
         width={size === "lg" ? 80 : size === "md" ? 48 : 32}
         height={size === "lg" ? 80 : size === "md" ? 48 : 32}
-        className={`rounded-full object-cover ${sizeClass} ${className}`}
+        className={`border border-brand-line object-cover ${sizeClass} ${className}`}
         unoptimized
       />
     );
@@ -50,7 +50,7 @@ export function UserAvatar({
 
   return (
     <span
-      className={`inline-flex shrink-0 items-center justify-center rounded-full bg-brand-navy font-bold text-white ${sizeClass} ${className}`}
+      className={`inline-flex shrink-0 items-center justify-center border border-brand-line bg-brand-navy font-bold text-white ${sizeClass} ${className}`}
       aria-hidden="true"
     >
       {initials(name, email)}

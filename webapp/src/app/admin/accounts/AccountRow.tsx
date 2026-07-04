@@ -38,7 +38,7 @@ export function AccountRow({
         <p className="truncate text-sm font-medium text-brand-ink">
           {account.name ?? account.email}
           {account.role === "owner" && (
-            <span className="ml-2 rounded-full bg-brand-soft px-2 py-0.5 text-xs font-semibold text-brand-navy">
+            <span className="ml-2 border border-brand-line bg-brand-soft px-2 py-0.5 text-xs font-semibold text-brand-navy">
               {adminLabel(account.role)}
             </span>
           )}
@@ -48,7 +48,7 @@ export function AccountRow({
           {account.email} · joined {new Date(account.created_at).toLocaleDateString()}
         </p>
         {account.access_note && (
-          <p className="mt-2 rounded-lg bg-brand-soft px-3 py-2 text-xs text-brand-ink">
+          <p className="mt-2 border border-brand-line bg-brand-soft px-3 py-2 text-xs text-brand-ink">
             <span className="font-semibold">Request: </span>
             {account.access_note}
           </p>
@@ -58,7 +58,7 @@ export function AccountRow({
 
       <div className="flex items-center gap-2">
         <span
-          className={`rounded-full border px-3 py-1 text-xs font-semibold ${STATUS_STYLES[account.status]}`}
+          className={`border px-3 py-1 text-xs font-semibold ${STATUS_STYLES[account.status]}`}
         >
           {account.status}
         </span>
@@ -68,7 +68,7 @@ export function AccountRow({
               <button
                 onClick={() => update("approved")}
                 disabled={isPending}
-                className="rounded-full bg-emerald-600 px-4 py-1.5 text-xs font-semibold text-white transition hover:bg-emerald-700 disabled:opacity-60"
+                className="portal-button-primary px-4 py-1.5 text-xs font-semibold disabled:opacity-60"
               >
                 Approve
               </button>
@@ -77,7 +77,7 @@ export function AccountRow({
               <button
                 onClick={() => update("revoked")}
                 disabled={isPending}
-                className="rounded-full border border-rose-200 px-4 py-1.5 text-xs font-semibold text-rose-600 transition hover:bg-rose-50 disabled:opacity-60"
+                className="border border-rose-200 px-4 py-1.5 text-xs font-semibold text-rose-600 disabled:opacity-60"
               >
                 Revoke
               </button>

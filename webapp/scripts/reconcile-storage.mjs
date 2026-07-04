@@ -4,6 +4,7 @@
 // Usage:
 //   node scripts/reconcile-storage.mjs --link
 //   node scripts/reconcile-storage.mjs --link --course "HEWB 130"
+//   node scripts/reconcile-storage.mjs --link --collection d2-2025-2026
 //   node scripts/reconcile-storage.mjs --report
 //   node scripts/reconcile-storage.mjs --report --course "HWDP 131"
 import { mkdirSync, writeFileSync } from "node:fs";
@@ -29,12 +30,13 @@ const argv = process.argv.slice(2);
 const doLink = argv.includes("--link");
 const doReport = argv.includes("--report");
 const dryRun = argv.includes("--dry");
+const collectionFilter = readFlagValue(argv, "collection")?.trim() ?? null;
 const courseFilter = readFlagValue(argv, "course")?.trim() ?? null;
 
 if (!doLink && !doReport) {
   console.error(`Usage:
-  node scripts/reconcile-storage.mjs --link [--course "CODE"]
-  node scripts/reconcile-storage.mjs --report [--course "CODE"]`);
+  node scripts/reconcile-storage.mjs --link [--collection ID] [--course "CODE"]
+  node scripts/reconcile-storage.mjs --report [--collection ID] [--course "CODE"]`);
   process.exit(1);
 }
 
@@ -58,8 +60,9 @@ if (error) {
 }
 
 if (doLink) {
+  if (collectionFilter) console.log(`Collection filter: ${collectionFilter}`);
   if (courseFilter) console.log(`Course filter: ${courseFilter}`);
-  await linkExistingStorage(supabase, resources, { courseFilter, dryRun });
+  await linkExistingStorage(supabase, resources, { collectionFilter, courseFilter, dryRun });
 }
 
 if (doReport) {
@@ -79,6 +82,7 @@ if (doReport) {
   console.log(`Found ${storageKeys.length} storage objects`);
 
   const report = buildReconcileReport(freshResources, storageKeys, localIndex, {
+    collectionFilter,
     courseFilter,
   });
 

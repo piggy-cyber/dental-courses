@@ -39,14 +39,14 @@ export function AccessRequestForm({
         rows={3}
         maxLength={500}
         placeholder="e.g. D1 classmate, paid via Venmo on..."
-        className="w-full rounded-lg border border-amber-200 bg-white px-3 py-2 text-sm text-brand-ink"
+        className="w-full border border-amber-200 bg-brand-panel px-3 py-2 text-sm text-brand-ink"
       />
       {error && <p className="text-sm text-rose-700">{error}</p>}
       {message && <p className="text-sm text-emerald-700">{message}</p>}
       <button
         type="submit"
         disabled={isPending}
-        className="rounded-lg bg-amber-800 px-4 py-2 text-sm font-semibold text-white disabled:opacity-60"
+        className="portal-button-primary px-4 py-2 text-sm font-semibold disabled:opacity-60"
       >
         {isPending ? "Saving..." : "Save request note"}
       </button>

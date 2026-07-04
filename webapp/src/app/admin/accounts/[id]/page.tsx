@@ -116,7 +116,7 @@ export default async function AdminAccountDetailPage({
         </div>
         <Link
           href="/admin/roster"
-          className="rounded-full border border-brand-line bg-white/70 px-4 py-2 text-sm font-semibold text-brand-navy hover:border-brand-blue hover:bg-white"
+          className="portal-button px-4 py-2 text-sm"
         >
           Open roster
         </Link>

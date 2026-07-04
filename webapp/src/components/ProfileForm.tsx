@@ -180,12 +180,12 @@ export function ProfileForm({ profile }: { profile: ProfileFormData }) {
       </label>
 
       {error && (
-        <p className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800">
+        <p className="border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800">
           {error}
         </p>
       )}
       {message && (
-        <p className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-800">
+        <p className="border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-800">
           {message}
         </p>
       )}
@@ -193,7 +193,7 @@ export function ProfileForm({ profile }: { profile: ProfileFormData }) {
       <button
         type="submit"
         disabled={busy}
-        className="border border-brand-blue bg-brand-blue px-5 py-2.5 font-semibold text-white hover:opacity-90 disabled:opacity-60"
+        className="portal-button-primary px-5 py-2.5 font-semibold disabled:opacity-60"
       >
         {busy ? "Saving..." : "Save profile"}
       </button>

@@ -53,7 +53,7 @@ export function SignInPanel() {
 
   if (sent) {
     return (
-      <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-5 py-4 text-left">
+      <div className="border border-emerald-200 bg-emerald-50 px-5 py-4 text-left">
         <p className="font-medium text-emerald-900">Check your email</p>
         <p className="mt-1 text-sm text-emerald-800">
           We sent a sign-in link to <strong>{email}</strong>. Click it to
@@ -66,7 +66,7 @@ export function SignInPanel() {
   return (
     <div className="space-y-4 text-left">
       <form onSubmit={sendMagicLink} className="space-y-3">
-        <label className="block text-sm font-semibold text-white/80" htmlFor="email">
+        <label className="block text-sm font-semibold text-brand-navy" htmlFor="email">
           Personal Gmail sign-in
         </label>
         <input
@@ -76,12 +76,12 @@ export function SignInPanel() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="yourname@gmail.com"
-          className="w-full rounded-xl border border-white/20 bg-white/95 px-4 py-2.5 text-brand-ink outline-none focus:border-brand-gold focus:ring-2 focus:ring-brand-gold/25"
+          className="app-input w-full px-4 py-2.5"
         />
         <button
           type="submit"
           disabled={busy !== null}
-          className="w-full rounded-full bg-brand-gold px-4 py-2.5 font-semibold text-brand-sidebar hover:opacity-90 disabled:opacity-60"
+          className="portal-button-primary w-full px-4 py-2.5 disabled:opacity-60"
         >
           {busy === "email" ? "Sending link..." : "Email me a sign-in link"}
         </button>
@@ -89,10 +89,10 @@ export function SignInPanel() {
 
       <div className="relative py-1">
         <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-white/20" />
+          <div className="w-full border-t border-brand-line" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-transparent px-3 text-white/50">or</span>
+          <span className="bg-brand-panel px-3 text-brand-muted">or</span>
         </div>
       </div>
 
@@ -100,13 +100,13 @@ export function SignInPanel() {
         type="button"
         onClick={signInWithGoogle}
         disabled={busy !== null}
-        className="inline-flex w-full items-center justify-center gap-3 rounded-full border border-white/20 bg-white/10 px-4 py-2.5 font-semibold text-white hover:bg-white/20 disabled:opacity-60"
+        className="portal-button inline-flex w-full gap-3 px-4 py-2.5 disabled:opacity-60"
       >
         {busy === "google" ? "Opening Google..." : "Sign in with personal Gmail"}
       </button>
 
       {error && (
-        <p className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800">
+        <p className="border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800">
           {error}
         </p>
       )}

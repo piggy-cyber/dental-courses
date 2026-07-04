@@ -4,12 +4,12 @@ import { useState, useTransition } from "react";
 import { createResourceCollection } from "@/app/admin/actions";
 
 export function CollectionCreateForm() {
+  const [id, setId] = useState("");
   const [label, setLabel] = useState("");
   const [shortLabel, setShortLabel] = useState("");
   const [sourceTier, setSourceTier] = useState("");
   const [sourceCohort, setSourceCohort] = useState("");
   const [description, setDescription] = useState("");
-  const [defaultForTier, setDefaultForTier] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
@@ -20,19 +20,20 @@ export function CollectionCreateForm() {
     startTransition(async () => {
       try {
         await createResourceCollection({
+          id,
           label,
           shortLabel,
           sourceTier,
           sourceCohort,
           description,
-          defaultForTier,
+          defaultForTier: false,
         });
+        setId("");
         setLabel("");
         setShortLabel("");
         setSourceTier("");
         setSourceCohort("");
         setDescription("");
-        setDefaultForTier(false);
         setMessage("Collection created.");
       } catch (e) {
         setError(e instanceof Error ? e.message : "Could not create collection.");
@@ -52,12 +53,24 @@ export function CollectionCreateForm() {
 
       <div className="mt-4 grid gap-4 sm:grid-cols-2">
         <label className="block text-sm">
+          <span className="font-medium text-brand-navy">Collection ID</span>
+          <input
+            value={id}
+            onChange={(event) => setId(event.target.value.toLowerCase())}
+            placeholder="d2-2024-2025"
+            className="app-input mt-1 w-full px-3 py-2"
+          />
+          <span className="mt-1 block text-xs text-brand-muted">
+            Lowercase letters, numbers, and hyphens. Leave blank to generate from the name.
+          </span>
+        </label>
+        <label className="block text-sm">
           <span className="font-medium text-brand-navy">Collection name</span>
           <input
             value={label}
             onChange={(event) => setLabel(event.target.value)}
             placeholder="D2 2024-2025 Resources"
-            className="app-input mt-1 w-full rounded-xl px-3 py-2"
+            className="app-input mt-1 w-full px-3 py-2"
           />
         </label>
         <label className="block text-sm">
@@ -66,7 +79,7 @@ export function CollectionCreateForm() {
             value={shortLabel}
             onChange={(event) => setShortLabel(event.target.value)}
             placeholder="Prior D2 Resources"
-            className="app-input mt-1 w-full rounded-xl px-3 py-2"
+            className="app-input mt-1 w-full px-3 py-2"
           />
         </label>
         <label className="block text-sm">
@@ -74,7 +87,7 @@ export function CollectionCreateForm() {
           <select
             value={sourceTier}
             onChange={(event) => setSourceTier(event.target.value)}
-            className="app-input mt-1 w-full rounded-xl px-3 py-2"
+            className="app-input mt-1 w-full px-3 py-2"
           >
             <option value="">No tier</option>
             <option value="d1">D1</option>
@@ -89,7 +102,7 @@ export function CollectionCreateForm() {
             value={sourceCohort}
             onChange={(event) => setSourceCohort(event.target.value)}
             placeholder="d2-2024"
-            className="app-input mt-1 w-full rounded-xl px-3 py-2"
+            className="app-input mt-1 w-full px-3 py-2"
           />
         </label>
       </div>
@@ -101,31 +114,21 @@ export function CollectionCreateForm() {
           onChange={(event) => setDescription(event.target.value)}
           rows={3}
           placeholder="Resource bundle imported from last year's D2 class."
-          className="app-input mt-1 w-full rounded-xl px-3 py-2"
+          className="app-input mt-1 w-full px-3 py-2"
         />
       </label>
 
-      <label className="mt-4 flex items-start gap-3 rounded-xl border border-brand-line bg-white/60 p-3 text-sm">
-        <input
-          type="checkbox"
-          checked={defaultForTier}
-          onChange={(event) => setDefaultForTier(event.target.checked)}
-          className="mt-1"
-        />
-        <span>
-          <span className="font-medium text-brand-navy">Auto-grant to matching roster tier</span>
-          <span className="block text-brand-muted">
-            Leave off for prior-year bundles that should be manually assigned.
-          </span>
-        </span>
-      </label>
+      <p className="portal-notice mt-4 p-3 text-sm">
+        New collections are manual-grant by default. Assign them from an account detail page after
+        import.
+      </p>
 
       <div className="mt-4 flex flex-wrap items-center gap-3">
         <button
           type="button"
           onClick={submit}
           disabled={isPending}
-          className="rounded-full bg-brand-navy px-5 py-2 text-sm font-semibold text-white disabled:opacity-60"
+          className="portal-button-primary px-5 py-2 text-sm disabled:opacity-60"
         >
           {isPending ? "Creating..." : "Create collection"}
         </button>

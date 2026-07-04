@@ -210,6 +210,42 @@ select {
   color: var(--brand-teal);
 }
 
+.portal-button {
+  border: 1px solid var(--brand-line);
+  background: var(--brand-panel);
+  color: var(--brand-blue);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+.portal-button:hover {
+  border-color: var(--brand-blue);
+  background: var(--brand-soft);
+  color: var(--brand-navy);
+}
+
+.portal-button-primary {
+  border: 1px solid var(--brand-blue);
+  background: var(--brand-blue);
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+.portal-button-primary:hover {
+  opacity: 0.9;
+}
+
+.portal-notice {
+  border: 1px solid var(--brand-line);
+  background: var(--brand-soft);
+  color: var(--brand-ink);
+}
+
 .brand-tile {
   background: var(--brand-logo);
   color: var(--brand-logo-text);

@@ -17,7 +17,7 @@ function FileList({ files, label = "Lecture files" }: { files: CourseResource[];
       <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-brand-muted">
         {label}
       </p>
-      <ul className="divide-y divide-brand-line overflow-hidden rounded-xl border border-brand-line bg-white/80">
+      <ul className="divide-y divide-brand-line overflow-hidden border border-brand-line bg-brand-panel">
         {files.map((resource) => (
           <ResourceFileRow key={resource.id} resource={resource} />
         ))}
@@ -54,12 +54,12 @@ function LectureMeta({
   return (
     <div className="flex flex-wrap items-center gap-2 text-xs text-brand-muted">
       {lecture.synthetic && (
-        <span className="rounded-full bg-brand-teal/10 px-2 py-0.5 font-medium text-brand-teal">
+        <span className="border border-brand-line bg-brand-soft px-2 py-0.5 font-medium text-brand-teal">
           Slide-based
         </span>
       )}
       {showVideoBadge && embeddable && (
-        <span className="rounded-full bg-red-500/10 px-2 py-0.5 font-medium text-red-700">
+        <span className="border border-red-200 bg-red-50 px-2 py-0.5 font-medium text-red-700">
           Video
         </span>
       )}
@@ -91,14 +91,14 @@ function PartBlock({
     <div
       className={
         compact
-          ? "rounded-xl border border-brand-line bg-white/80 p-4"
-          : "rounded-xl border border-brand-line bg-white/80 p-4"
+          ? "border border-brand-line bg-brand-panel p-4"
+          : "border border-brand-line bg-brand-panel p-4"
       }
     >
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h4 className="text-sm font-semibold text-brand-navy">{partLabel}</h4>
         {embeddable && (
-          <span className="rounded-full bg-red-500/10 px-2 py-0.5 text-xs font-medium text-red-700">
+          <span className="border border-red-200 bg-red-50 px-2 py-0.5 text-xs font-medium text-red-700">
             Video
           </span>
         )}
@@ -130,12 +130,12 @@ function SeriesGroupCard({
       <div className="border-b border-brand-line bg-brand-soft/70 px-5 py-4">
         <div className="flex flex-wrap items-baseline justify-between gap-2">
           <h3 className="font-semibold text-brand-navy">
-            <span className="mr-2 inline-flex h-7 w-7 items-center justify-center rounded-full bg-brand-gold/20 text-sm font-bold text-brand-gold">
+            <span className="mr-2 inline-flex h-7 w-7 items-center justify-center border border-brand-line bg-brand-panel text-sm font-bold text-brand-gold">
               {index + 1}
             </span>
             {group.title}
           </h3>
-          <span className="rounded-full bg-brand-gold/10 px-2.5 py-0.5 text-xs font-medium text-brand-gold">
+          <span className="border border-brand-line bg-brand-panel px-2.5 py-0.5 text-xs font-medium text-brand-gold">
             {group.parts.length} parts · shared slides
           </span>
         </div>
@@ -144,7 +144,7 @@ function SeriesGroupCard({
         </p>
       </div>
       <div className="space-y-4 p-5">
-        <div className="rounded-xl border-2 border-brand-gold/30 bg-brand-gold/10 p-4">
+        <div className="border-2 border-brand-gold/30 bg-brand-gold/10 p-4">
           <p className="text-xs font-semibold uppercase tracking-wider text-brand-gold">
             Watch first · {leadPart.partLabel}
           </p>
@@ -199,7 +199,7 @@ function SessionGroupCard({
       <div className="border-b border-brand-line bg-brand-soft/70 px-5 py-4">
         <div className="flex flex-wrap items-baseline justify-between gap-2">
           <h3 className="font-semibold text-brand-navy">
-            <span className="mr-2 inline-flex h-7 w-7 items-center justify-center rounded-full bg-brand-blue/20 text-sm font-bold text-brand-blue">
+            <span className="mr-2 inline-flex h-7 w-7 items-center justify-center border border-brand-line bg-brand-panel text-sm font-bold text-brand-blue">
               {index + 1}
             </span>
             {lecture.lecture_date ? `${lecture.lecture_date} · Class session` : "Class session"}
@@ -210,7 +210,7 @@ function SessionGroupCard({
           {group.topics.map((topic) => (
             <span
               key={topic}
-              className="rounded-full border border-brand-line bg-white/80 px-2.5 py-1 text-xs font-medium text-brand-navy"
+              className="border border-brand-line bg-brand-panel px-2.5 py-1 text-xs font-medium text-brand-navy"
             >
               {topic}
             </span>
@@ -250,7 +250,7 @@ function SingleGroupCard({
       <div className="border-b border-brand-line bg-brand-soft/70 px-5 py-4">
         <div className="flex flex-wrap items-baseline justify-between gap-2">
           <h3 className="font-semibold text-brand-navy">
-            <span className="mr-2 inline-flex h-7 w-7 items-center justify-center rounded-full bg-brand-teal/10 text-sm font-bold text-brand-teal">
+            <span className="mr-2 inline-flex h-7 w-7 items-center justify-center border border-brand-line bg-brand-panel text-sm font-bold text-brand-teal">
               {index + 1}
             </span>
             {lecture.title}
@@ -369,7 +369,7 @@ export function CourseLectureSection({
       </div>
 
       {meta.length > 0 && (
-        <details className="mt-5 rounded-xl border border-dashed border-brand-line bg-brand-soft/50 p-4">
+        <details className="mt-5 border border-dashed border-brand-line bg-brand-soft/50 p-4">
           <summary className="cursor-pointer text-sm font-medium text-brand-muted">
             Transcript bundles ({meta.length}) — combined exports, not separate lectures
           </summary>

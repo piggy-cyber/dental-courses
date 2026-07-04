@@ -34,14 +34,14 @@ export function ResourcePreviewDrawer({
       <button
         type="button"
         aria-label="Close preview"
-        className="absolute inset-0 bg-brand-navy/40 backdrop-blur-sm"
+        className="absolute inset-0 bg-brand-navy/50"
         onClick={onClose}
       />
       <div
         role="dialog"
         aria-modal="true"
         aria-labelledby="preview-drawer-title"
-        className="relative z-10 flex max-h-[92vh] w-full max-w-4xl flex-col overflow-hidden rounded-t-2xl border border-brand-line bg-brand-paper shadow-2xl sm:rounded-2xl"
+        className="relative z-10 flex max-h-[92vh] w-full max-w-4xl flex-col overflow-hidden border border-brand-line bg-brand-paper"
       >
         <div className="flex items-center justify-between gap-3 border-b border-brand-line bg-brand-panel px-4 py-3">
           <div className="min-w-0">
@@ -55,7 +55,7 @@ export function ResourcePreviewDrawer({
           <button
             type="button"
             onClick={onClose}
-            className="shrink-0 rounded-full border border-brand-line px-3 py-1.5 text-sm font-medium text-brand-navy hover:bg-brand-soft"
+            className="portal-button shrink-0 px-3 py-1.5 text-sm"
           >
             Close
           </button>
