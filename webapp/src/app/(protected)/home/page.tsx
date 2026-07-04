@@ -42,9 +42,9 @@ type HomeMembership = {
 
 function StatCard({ label, value }: { label: string; value: string | number }) {
   return (
-    <div className="rounded-xl border border-white/10 bg-white/10 p-4">
-      <p className="text-2xl font-bold text-white">{value}</p>
-      <p className="text-sm text-white/60">{label}</p>
+    <div className="border border-brand-line bg-brand-panel p-3">
+      <p className="text-xl font-bold text-brand-navy">{value}</p>
+      <p className="text-xs font-semibold uppercase text-brand-muted">{label}</p>
     </div>
   );
 }
@@ -113,7 +113,7 @@ export default async function HomeDashboardPage() {
   return (
     <div className="space-y-8">
       <header className="grid gap-5 xl:grid-cols-[1fr_380px]">
-        <section className="app-hero rounded-2xl p-6 text-white shadow-[var(--brand-shadow)] sm:p-7">
+        <section className="app-hero p-6 sm:p-7">
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div className="flex items-center gap-4">
               <UserAvatar
@@ -121,20 +121,20 @@ export default async function HomeDashboardPage() {
                 email={profile?.email}
                 avatarUrl={profile?.avatar_url}
                 size="lg"
-                className="ring-4 ring-white/10"
+                className="border border-brand-line"
               />
               <div>
-                <p className="eyebrow text-brand-gold">Student desk</p>
-                <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                <p className="eyebrow">Student desk</p>
+                <h1 className="portal-title text-3xl font-bold sm:text-4xl">
                   {displayName}
                 </h1>
                 <div className="mt-1 flex flex-wrap gap-2 text-xs">
-                  {handle && <span className="font-medium text-white/70">{handle}</span>}
+                  {handle && <span className="font-medium text-brand-muted">{handle}</span>}
                   {visibleCollections.length > 0
                     ? visibleCollections.map((collection) => (
                         <span
                           key={collection.id}
-                          className="rounded-full bg-white/10 px-2 py-0.5 font-semibold text-white/90"
+                          className="border border-brand-line bg-brand-soft px-2 py-0.5 font-semibold text-brand-navy"
                         >
                           {collection.short_label}
                         </span>
@@ -142,7 +142,7 @@ export default async function HomeDashboardPage() {
                     : profile?.access_tiers?.map((tier) => (
                         <span
                           key={tier}
-                          className="rounded-full bg-white/10 px-2 py-0.5 font-semibold text-white/90"
+                          className="border border-brand-line bg-brand-soft px-2 py-0.5 font-semibold text-brand-navy"
                         >
                           {tierLabel(tier)}
                         </span>
@@ -152,7 +152,7 @@ export default async function HomeDashboardPage() {
             </div>
             <Link
               href="/profile"
-              className="rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white hover:bg-white/20"
+              className="border border-brand-line bg-brand-panel px-4 py-2 text-sm font-semibold text-brand-blue hover:border-brand-blue hover:bg-brand-soft hover:text-brand-navy"
             >
               Edit profile
             </Link>
@@ -182,17 +182,17 @@ export default async function HomeDashboardPage() {
           {weather ? (
             <>
               <div className="mt-4 grid grid-cols-3 gap-2 text-sm">
-                <div className="rounded-xl bg-brand-soft p-3">
+                <div className="border border-brand-line bg-brand-soft p-3">
                   <p className="font-semibold text-brand-navy">{weather.label}</p>
                   <p className="text-xs text-brand-muted">Current</p>
                 </div>
-                <div className="rounded-xl bg-brand-soft p-3">
+                <div className="border border-brand-line bg-brand-soft p-3">
                   <p className="font-semibold text-brand-navy">
                     {weather.high}° / {weather.low}°
                   </p>
                   <p className="text-xs text-brand-muted">High / low</p>
                 </div>
-                <div className="rounded-xl bg-brand-soft p-3">
+                <div className="border border-brand-line bg-brand-soft p-3">
                   <p className="font-semibold text-brand-navy">{weather.precipChancePct}%</p>
                   <p className="text-xs text-brand-muted">Rain</p>
                 </div>
@@ -201,7 +201,7 @@ export default async function HomeDashboardPage() {
                 {weather.weekly.map((day) => (
                   <div
                     key={day.date}
-                    className="rounded-xl border border-brand-line bg-white/60 p-2 text-center"
+                    className="border border-brand-line bg-brand-panel p-2 text-center"
                   >
                     <p className="text-xs font-semibold text-brand-navy">{day.weekday}</p>
                     <p className="mt-1 text-sm font-bold text-brand-ink">{day.high}°</p>
@@ -220,7 +220,7 @@ export default async function HomeDashboardPage() {
       <section className="grid gap-4 md:grid-cols-3">
         <Link
           href="/library"
-          className="app-card p-5 transition hover:-translate-y-0.5 hover:border-brand-teal"
+          className="app-card border-l-4 p-5 hover:border-l-brand-blue"
         >
           <p className="eyebrow">Study</p>
           <h2 className="mt-1 font-bold text-brand-navy">Open your collections</h2>
@@ -228,7 +228,7 @@ export default async function HomeDashboardPage() {
         </Link>
         <Link
           href="/profile"
-          className="app-card p-5 transition hover:-translate-y-0.5 hover:border-brand-teal"
+          className="app-card border-l-4 p-5 hover:border-l-brand-blue"
         >
           <p className="eyebrow">Account</p>
           <h2 className="mt-1 font-bold text-brand-navy">Profile and access</h2>
@@ -237,7 +237,7 @@ export default async function HomeDashboardPage() {
         {isAdmin(profile) ? (
           <Link
             href="/admin"
-            className="app-card p-5 transition hover:-translate-y-0.5 hover:border-brand-gold"
+            className="app-card border-l-4 p-5 hover:border-l-brand-blue"
           >
             <p className="eyebrow text-brand-gold">Admin</p>
             <h2 className="mt-1 font-bold text-brand-navy">Control center</h2>
@@ -246,7 +246,7 @@ export default async function HomeDashboardPage() {
         ) : (
           <Link
             href="/about"
-            className="app-card p-5 transition hover:-translate-y-0.5 hover:border-brand-teal"
+            className="app-card border-l-4 p-5 hover:border-l-brand-blue"
           >
             <p className="eyebrow">About</p>
             <h2 className="mt-1 font-bold text-brand-navy">What is this?</h2>
@@ -290,7 +290,7 @@ export default async function HomeDashboardPage() {
             </p>
           )
         ) : (
-          <div className="rounded-xl border border-dashed border-brand-line bg-white/60 p-4">
+          <div className="border border-dashed border-brand-line bg-brand-panel p-4">
             <div>
               <p className="font-semibold text-brand-navy">Add your Canvas feed</p>
               <p className="mt-1 text-sm text-brand-muted">
@@ -300,7 +300,7 @@ export default async function HomeDashboardPage() {
             </div>
             <Link
               href="/profile"
-              className="mt-3 inline-flex rounded-full bg-brand-blue px-4 py-2 text-sm font-semibold text-white hover:opacity-90"
+              className="mt-3 inline-flex border border-brand-blue bg-brand-blue px-4 py-2 text-sm font-semibold text-white hover:opacity-90"
             >
               Open profile
             </Link>
@@ -322,19 +322,13 @@ export default async function HomeDashboardPage() {
 
           {visibleCollections.map((collection) => {
             const collectionCourses = coursesByCollection.get(collection.id) ?? [];
-            const coursesBySemester = new Map<string, HomeCourseWithCollection[]>();
-            for (const course of collectionCourses) {
-              const key = course.semester ?? "Other";
-              if (!coursesBySemester.has(key)) coursesBySemester.set(key, []);
-              coursesBySemester.get(key)!.push(course);
-            }
 
             return (
               <section
                 key={collection.id}
-                className="app-card p-5"
+                className="app-card overflow-hidden"
               >
-                <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
+                <div className="portal-bar mb-0 flex flex-wrap items-start justify-between gap-3 p-3">
                   <div>
                     <p className="eyebrow">{collection.short_label}</p>
                     <h3 className="mt-1 text-lg font-bold text-brand-navy">
@@ -344,43 +338,47 @@ export default async function HomeDashboardPage() {
                       <p className="mt-1 text-sm text-brand-muted">{collection.description}</p>
                     )}
                   </div>
-                  <span className="rounded-full bg-brand-soft px-3 py-1 text-xs font-semibold text-brand-navy">
+                  <span className="text-xs font-semibold text-brand-muted">
                     {collectionCourses.length} course{collectionCourses.length === 1 ? "" : "s"}
                   </span>
                 </div>
 
-                <div className="space-y-4">
-                  {[...coursesBySemester.entries()].map(([semester, semesterCourses]) => (
-                    <div key={`${collection.id}-${semester}`}>
-                      <h4 className="mb-2 text-xs font-semibold uppercase tracking-wide text-brand-muted">
-                        {semester}
-                      </h4>
-                      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                        {semesterCourses.map((course) => (
-                          <Link
-                            key={`${collection.id}-${course.code}`}
-                            href={`/course/${encodeURIComponent(course.code)}?collection=${encodeURIComponent(collection.id)}`}
-                            className="rounded-xl border border-brand-line bg-white/75 p-4 transition hover:-translate-y-0.5 hover:border-brand-blue hover:bg-white hover:shadow-sm"
-                          >
-                            <div className="flex items-start justify-between gap-3">
-                              <p className="text-xs font-semibold uppercase text-brand-blue">
-                                {course.code}
-                              </p>
-                              {isAdmin(profile) && (
-                                <span className="rounded-full bg-brand-soft px-2 py-0.5 text-[11px] font-semibold text-brand-navy">
-                                  {tierLabel(course.library_tier)}
-                                </span>
-                              )}
-                            </div>
-                            <p className="mt-1 font-medium text-brand-ink">{course.title}</p>
-                            {course.area && (
-                              <p className="mt-1 text-xs text-brand-muted">{course.area}</p>
-                            )}
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
+                <div className="overflow-x-auto">
+                  <table className="portal-table min-w-[720px] text-sm">
+                    <thead>
+                      <tr>
+                        <th className="w-28">Code</th>
+                        <th>Course</th>
+                        <th className="w-40">Area</th>
+                        <th className="w-32">Semester</th>
+                        {isAdmin(profile) && <th className="w-28">Tier</th>}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {collectionCourses.map((course) => (
+                        <tr key={`${collection.id}-${course.code}`}>
+                          <td className="font-mono text-xs font-bold text-brand-navy">
+                            {course.code}
+                          </td>
+                          <td>
+                            <Link
+                              href={`/course/${encodeURIComponent(course.code)}?collection=${encodeURIComponent(collection.id)}`}
+                              className="portal-link font-semibold"
+                            >
+                              {course.title}
+                            </Link>
+                          </td>
+                          <td className="text-xs text-brand-muted">{course.area ?? "-"}</td>
+                          <td className="text-xs text-brand-muted">{course.semester ?? "-"}</td>
+                          {isAdmin(profile) && (
+                            <td className="text-xs text-brand-muted">
+                              {tierLabel(course.library_tier)}
+                            </td>
+                          )}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               </section>
             );
@@ -405,7 +403,7 @@ export default async function HomeDashboardPage() {
             <Link
               key={item.href}
               href={item.href}
-              className="app-card p-4 transition hover:-translate-y-0.5 hover:border-brand-teal"
+              className="app-card border-l-4 p-4 hover:border-l-brand-blue"
             >
               <p className="font-semibold text-brand-navy">{item.label}</p>
               <p className="mt-1 text-sm text-brand-muted">{item.detail}</p>

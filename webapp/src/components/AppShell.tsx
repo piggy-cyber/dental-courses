@@ -38,15 +38,6 @@ const ADMIN_LINKS = [
   { href: "/admin/operations", label: "Operations" },
 ];
 
-function initials(code: string) {
-  return code
-    .split(/\s+/)
-    .map((part) => part[0] ?? "")
-    .join("")
-    .slice(0, 3)
-    .toUpperCase();
-}
-
 function groupedCollections(courses: AppShellCourse[]) {
   const byId = new Map<
     string,
@@ -98,25 +89,27 @@ export function AppShell({
 
   return (
     <div className="app-shell-bg min-h-screen text-brand-ink">
-      <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col bg-brand-sidebar text-white sm:flex xl:w-72">
-        <div className="border-b border-white/10 px-5 py-5">
-          <BrandMark inverse />
-          <p className="mt-3 text-xs leading-relaxed text-white/60">
-            Organized course resources, videos, transcripts, and files for the
-            collections you have been granted.
+      <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col border-r border-brand-line bg-brand-sidebar text-brand-ink sm:flex xl:w-72">
+        <div className="border-b border-brand-line px-4 py-4">
+          <BrandMark />
+          <p className="mt-2 text-[11px] leading-relaxed text-brand-muted">
+            Granted course resources, videos, transcripts, and files.
           </p>
-          <div className="mt-4">
+          <div className="mt-3">
             <ThemeToggle compact />
           </div>
         </div>
 
-        <div className="sidebar-scroll flex-1 overflow-y-auto px-4 py-5">
-          <div className="space-y-1">
+        <div className="sidebar-scroll flex-1 overflow-y-auto">
+          <nav className="border-b border-brand-line p-3" aria-label="Primary">
+            <p className="mb-2 border-b border-brand-line bg-brand-soft px-2 py-1 text-[11px] font-bold uppercase text-brand-navy">
+              Navigation
+            </p>
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="flex items-center justify-between rounded-xl px-3 py-2 text-sm font-semibold text-white/80 transition hover:bg-white/10 hover:text-white"
+                className="block border-l-4 border-transparent px-2 py-1.5 text-sm font-semibold text-brand-blue hover:border-brand-blue hover:bg-brand-sidebar-soft hover:text-brand-navy"
               >
                 {link.label}
               </Link>
@@ -124,7 +117,7 @@ export function AppShell({
             {canOpenAdmin && !adminMode && (
               <Link
                 href="/admin"
-                className="mt-2 flex items-center justify-between rounded-xl border border-brand-gold/30 bg-brand-gold/10 px-3 py-2 text-sm font-semibold text-brand-gold transition hover:bg-brand-gold/20"
+                className="mt-1 block border-l-4 border-transparent px-2 py-1.5 text-sm font-semibold text-brand-blue hover:border-brand-blue hover:bg-brand-sidebar-soft hover:text-brand-navy"
               >
                 Admin portal
               </Link>
@@ -132,87 +125,73 @@ export function AppShell({
             {adminMode && (
               <Link
                 href="/home"
-                className="mt-2 flex items-center justify-between rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-white/80 transition hover:bg-white/10 hover:text-white"
+                className="mt-1 block border-l-4 border-transparent px-2 py-1.5 text-sm font-semibold text-brand-blue hover:border-brand-blue hover:bg-brand-sidebar-soft hover:text-brand-navy"
               >
                 Student library
               </Link>
             )}
-          </div>
+          </nav>
 
-          <div className="mt-8">
-            <div className="mb-3 flex items-center justify-between px-2">
-              <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-white/40">
-                Classes
+          <nav className="p-3" aria-label="Course tree">
+            <div className="mb-2 flex items-center justify-between border-b border-brand-line bg-brand-soft px-2 py-1">
+              <p className="text-[11px] font-bold uppercase text-brand-navy">
+                Course Tree
               </p>
-              <span className="rounded-full bg-white/10 px-2 py-0.5 text-[11px] font-semibold text-white/50">
+              <span className="text-[11px] font-semibold text-brand-muted">
                 {courses.length}
               </span>
             </div>
             {collections.length > 0 ? (
-              <div className="space-y-5">
+              <div className="space-y-3">
                 {collections.map((collection) => (
                   <section key={collection.id}>
-                    <p className="mb-2 truncate px-2 text-xs font-bold text-brand-gold">
-                      {collection.shortLabel}
-                    </p>
-                    <div className="space-y-1">
-                      {collection.courses.slice(0, 8).map((course) => (
-                        <Link
-                          key={`${collection.id}-${course.code}`}
-                          href={`/course/${encodeURIComponent(course.code)}?collection=${encodeURIComponent(collection.id)}`}
-                          className="group flex min-w-0 items-center gap-3 rounded-xl px-2.5 py-2 text-sm text-white/75 transition hover:bg-white/10 hover:text-white"
-                          title={`${course.code} - ${course.title}`}
-                        >
-                          <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/10 font-mono text-[11px] font-semibold text-white/70 group-hover:bg-brand-gold group-hover:text-brand-sidebar">
-                            {initials(course.code)}
-                          </span>
-                          <span className="min-w-0">
-                            <span className="block truncate font-semibold">
-                              {course.code}
-                            </span>
-                            <span className="block truncate text-xs text-white/50">
-                              {course.title}
-                            </span>
-                          </span>
-                        </Link>
-                      ))}
-                      {collection.courses.length > 8 && (
-                        <Link
-                          href="/library"
-                          className="ml-2 inline-flex text-xs font-semibold text-brand-gold hover:underline"
-                        >
-                          View all {collection.courses.length} courses
-                        </Link>
-                      )}
+                    <div className="border border-brand-line bg-brand-panel">
+                      <div className="flex items-center justify-between bg-brand-soft px-2 py-1 font-mono text-[11px] font-bold text-brand-navy">
+                        <span className="truncate">[-] {collection.shortLabel}</span>
+                        <span className="text-brand-muted">{collection.courses.length}</span>
+                      </div>
+                      <div>
+                        {collection.courses.map((course) => (
+                          <Link
+                            key={`${collection.id}-${course.code}`}
+                            href={`/course/${encodeURIComponent(course.code)}?collection=${encodeURIComponent(collection.id)}`}
+                            className="block border-l-4 border-transparent px-2 py-1.5 pl-4 text-xs leading-snug text-brand-blue hover:border-brand-blue hover:bg-brand-sidebar-soft hover:text-brand-navy"
+                            title={`${course.code} - ${course.title}`}
+                          >
+                            <span className="font-mono text-brand-muted">+-- </span>
+                            <span className="font-semibold">{course.code}</span>
+                            <span className="text-brand-muted"> - {course.title}</span>
+                          </Link>
+                        ))}
+                      </div>
                     </div>
                   </section>
                 ))}
               </div>
             ) : (
-              <p className="rounded-xl border border-white/10 bg-white/5 px-3 py-3 text-sm text-white/50">
+              <p className="border border-brand-line bg-brand-panel px-3 py-3 text-sm text-brand-muted">
                 No course collections are assigned yet.
               </p>
             )}
-          </div>
+          </nav>
         </div>
 
-        <div className="border-t border-white/10 px-4 py-4">
+        <div className="border-t border-brand-line bg-brand-soft px-3 py-3">
           <Link
             href="/profile"
-            className="flex min-w-0 items-center gap-3 rounded-xl px-2 py-2 transition hover:bg-white/10"
+            className="flex min-w-0 items-center gap-3 border-l-4 border-transparent px-2 py-2 hover:border-brand-blue hover:bg-brand-sidebar-soft"
           >
             <UserAvatar
               name={profile.name}
               email={profile.email}
               avatarUrl={profile.avatar_url}
               size="sm"
-              className="ring-2 ring-white/10"
             />
             <span className="min-w-0">
-              <span className="block truncate text-sm font-semibold text-white">
+              <span className="block truncate text-sm font-semibold text-brand-navy">
                 {displayName}
               </span>
-              <span className="block truncate text-xs text-white/50">
+              <span className="block truncate text-xs text-brand-muted">
                 {profile.username ? `@${profile.username}` : profile.email}
               </span>
             </span>
@@ -221,8 +200,8 @@ export function AppShell({
       </aside>
 
       <div className="sm:pl-64 xl:pl-72">
-        <header className="sticky top-0 z-20 border-b border-brand-line/80 bg-brand-panel/90 backdrop-blur-xl">
-          <div className="flex min-h-16 items-center justify-between gap-4 px-4 py-3 sm:px-6 xl:px-8">
+        <header className="sticky top-0 z-20 border-b border-brand-line bg-brand-panel">
+          <div className="flex min-h-14 items-center justify-between gap-4 px-4 py-2 sm:px-6 xl:px-8">
             <div className="flex min-w-0 items-center gap-3 sm:hidden">
               <BrandMark showWordmark={false} />
               <div className="min-w-0">
@@ -237,7 +216,7 @@ export function AppShell({
 
             <Link
               href="/library"
-              className="hidden min-w-0 max-w-xl flex-1 items-center rounded-full border border-brand-line bg-white/70 px-4 py-2 text-sm text-brand-muted shadow-sm transition hover:border-brand-blue hover:text-brand-navy md:flex"
+              className="hidden min-w-0 max-w-xl flex-1 items-center border border-brand-line bg-brand-panel px-3 py-1.5 text-sm text-brand-blue hover:border-brand-blue hover:bg-brand-soft hover:text-brand-navy md:flex"
             >
               Search courses, transcripts, videos, and files
             </Link>
@@ -246,20 +225,9 @@ export function AppShell({
               <div className="sm:hidden">
                 <ThemeToggle compact />
               </div>
-              <div className="hidden gap-1">
-                {STUDENT_LINKS.slice(0, 3).map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className="rounded-full px-3 py-1.5 text-sm font-semibold text-brand-muted hover:bg-brand-soft hover:text-brand-navy"
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-              </div>
               <Link
                 href="/profile"
-                className="flex items-center gap-2 rounded-full border border-brand-line bg-white/70 py-1 pl-1 pr-3 text-sm font-semibold text-brand-navy shadow-sm hover:border-brand-blue"
+                className="flex items-center gap-2 border border-brand-line bg-brand-panel py-1 pl-1 pr-3 text-sm font-semibold text-brand-blue hover:border-brand-blue hover:bg-brand-soft hover:text-brand-navy"
               >
                 <UserAvatar
                   name={profile.name}
@@ -272,7 +240,7 @@ export function AppShell({
                 </span>
               </Link>
               <form action="/auth/signout" method="post">
-                <button className="rounded-full px-3 py-2 text-sm font-semibold text-brand-muted hover:bg-brand-soft hover:text-brand-navy">
+                <button className="border border-brand-line bg-brand-panel px-3 py-2 text-sm font-semibold text-brand-blue hover:border-brand-blue hover:bg-brand-soft hover:text-brand-navy">
                   Sign out
                 </button>
               </form>
@@ -280,7 +248,7 @@ export function AppShell({
           </div>
         </header>
 
-        <main className="mx-auto max-w-7xl px-4 py-7 sm:px-6 xl:px-8">
+        <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 xl:px-8">
           {children}
         </main>
       </div>

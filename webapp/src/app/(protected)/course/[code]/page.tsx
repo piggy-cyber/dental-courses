@@ -54,9 +54,9 @@ type Course = {
 
 function StatChip({ label, value }: { label: string; value: string | number }) {
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/10 px-3 py-1 text-xs">
-      <span className="font-semibold text-white">{value}</span>
-      <span className="text-white/60">{label}</span>
+    <span className="inline-flex items-center gap-1.5 border border-brand-line bg-brand-panel px-3 py-1 text-xs">
+      <span className="font-semibold text-brand-navy">{value}</span>
+      <span className="text-brand-muted">{label}</span>
     </span>
   );
 }
@@ -219,16 +219,16 @@ export default async function CoursePage({
 
   return (
     <div className="space-y-10">
-      <header className="app-hero overflow-hidden rounded-2xl p-6 text-white shadow-[var(--brand-shadow)] sm:p-8">
+      <header className="app-hero overflow-hidden p-6 sm:p-8">
         <CourseBreadcrumb courseCode={course.code} courseTitle={course.title} />
         <div className="mt-4 flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p className="text-sm font-medium text-white/70">
+            <p className="text-sm font-medium text-brand-muted">
               {[collection?.short_label, course.semester].filter(Boolean).join(" · ")}
             </p>
-            <h1 className="mt-1 text-2xl font-bold tracking-tight sm:text-3xl">
+            <h1 className="portal-title mt-1 text-2xl font-bold sm:text-3xl">
               {course.code}
-              <span className="font-normal text-white/90"> · {course.title}</span>
+              <span className="font-normal text-brand-ink"> · {course.title}</span>
             </h1>
           </div>
         </div>
@@ -315,12 +315,12 @@ export default async function CoursePage({
       )}
 
       {archive.length > 0 && (
-        <details className="rounded-xl border border-dashed border-brand-line bg-brand-soft/50 p-4">
+        <details className="border border-dashed border-brand-line bg-brand-soft/50 p-4">
           <summary className="cursor-pointer text-sm font-medium text-brand-muted">
             Archived / survival-guide copies ({archive.length}) — likely duplicates from other
             courses or old class folders
           </summary>
-          <ul className="mt-3 divide-y divide-brand-line overflow-hidden rounded-xl border border-brand-line bg-white/80">
+          <ul className="mt-3 divide-y divide-brand-line overflow-hidden border border-brand-line bg-brand-panel">
             {archive.map((resource) => (
               <ResourceFileRow key={resource.id} resource={resource} />
             ))}

@@ -55,8 +55,8 @@ export function ThemeToggle({ compact = false }: { compact?: boolean }) {
   return (
     <div
       aria-label="Theme mode"
-      className={`inline-flex rounded-full border border-brand-line bg-brand-panel/80 p-1 shadow-sm ${
-        compact ? "scale-[0.92]" : ""
+      className={`inline-flex border border-brand-line bg-brand-panel ${
+        compact ? "text-[11px]" : ""
       }`}
       role="group"
     >
@@ -68,10 +68,10 @@ export function ThemeToggle({ compact = false }: { compact?: boolean }) {
             type="button"
             onClick={() => choose(item.value)}
             aria-pressed={active}
-            className={`rounded-full px-3 py-1 text-xs font-semibold transition ${
+            className={`border-r border-brand-line px-2.5 py-1 text-xs font-semibold last:border-r-0 ${
               active
                 ? "bg-brand-blue text-white"
-                : "text-brand-muted hover:bg-brand-soft hover:text-brand-navy"
+                : "bg-brand-panel text-brand-blue hover:bg-brand-soft hover:text-brand-navy"
             }`}
           >
             {item.label}

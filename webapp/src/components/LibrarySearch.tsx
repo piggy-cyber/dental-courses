@@ -15,6 +15,10 @@ export type CourseCard = {
   collectionSortOrder: number;
 };
 
+function courseHref(course: CourseCard) {
+  return `/course/${encodeURIComponent(course.code)}?collection=${encodeURIComponent(course.collectionId)}`;
+}
+
 export function LibrarySearch({ courses }: { courses: CourseCard[] }) {
   const [query, setQuery] = useState("");
   const [collectionId, setCollectionId] = useState("all");
@@ -24,7 +28,11 @@ export function LibrarySearch({ courses }: { courses: CourseCard[] }) {
       string,
       Pick<
         CourseCard,
-        "collectionId" | "collectionLabel" | "collectionShortLabel" | "collectionDescription" | "collectionSortOrder"
+        | "collectionId"
+        | "collectionLabel"
+        | "collectionShortLabel"
+        | "collectionDescription"
+        | "collectionSortOrder"
       > & { count: number }
     >();
     for (const course of courses) {
@@ -43,23 +51,32 @@ export function LibrarySearch({ courses }: { courses: CourseCard[] }) {
       }
     }
     return [...byId.values()].sort(
-      (a, b) => a.collectionSortOrder - b.collectionSortOrder || a.collectionLabel.localeCompare(b.collectionLabel)
+      (a, b) =>
+        a.collectionSortOrder - b.collectionSortOrder ||
+        a.collectionLabel.localeCompare(b.collectionLabel)
     );
   }, [courses]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return courses.filter((c) => {
-      if (collectionId !== "all" && c.collectionId !== collectionId) return false;
-      if (!q) return true;
-      return (
-        c.code.toLowerCase().includes(q) ||
-        c.title.toLowerCase().includes(q) ||
-        (c.area?.toLowerCase().includes(q) ?? false) ||
-        c.collectionLabel.toLowerCase().includes(q) ||
-        c.collectionShortLabel.toLowerCase().includes(q)
+    return courses
+      .filter((c) => {
+        if (collectionId !== "all" && c.collectionId !== collectionId) return false;
+        if (!q) return true;
+        return (
+          c.code.toLowerCase().includes(q) ||
+          c.title.toLowerCase().includes(q) ||
+          (c.area?.toLowerCase().includes(q) ?? false) ||
+          c.collectionLabel.toLowerCase().includes(q) ||
+          c.collectionShortLabel.toLowerCase().includes(q)
+        );
+      })
+      .sort(
+        (a, b) =>
+          a.collectionSortOrder - b.collectionSortOrder ||
+          (a.semester ?? "").localeCompare(b.semester ?? "") ||
+          a.code.localeCompare(b.code)
       );
-    });
   }, [courses, query, collectionId]);
 
   const byCollection = useMemo(() => {
@@ -73,114 +90,123 @@ export function LibrarySearch({ courses }: { courses: CourseCard[] }) {
   }, [filtered]);
 
   return (
-    <div className="space-y-10">
-      <div className="app-card-muted p-4">
-        {collections.length > 1 && (
-          <div className="mb-4 flex flex-wrap gap-2">
-            <button
-              type="button"
-              onClick={() => setCollectionId("all")}
-              className={`rounded-full border px-3 py-1.5 text-sm font-semibold transition ${
-                collectionId === "all"
-                  ? "border-brand-blue bg-brand-blue text-white"
-                  : "border-brand-line bg-brand-panel text-brand-navy hover:border-brand-blue hover:bg-white"
-              }`}
-            >
-              All granted
-            </button>
-            {collections.map((collection) => (
+    <div className="space-y-5">
+      <section className="portal-bar p-3">
+        <div className="flex flex-wrap items-end gap-3">
+          <label className="block min-w-0 flex-1">
+            <span className="mb-1 block text-xs font-bold uppercase text-brand-navy">
+              Search directory
+            </span>
+            <input
+              type="search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Course code, title, collection, or area"
+              className="app-input w-full px-3 py-2 text-sm"
+            />
+          </label>
+          <div>
+            <span className="mb-1 block text-xs font-bold uppercase text-brand-navy">
+              Collection
+            </span>
+            <div className="flex flex-wrap border border-brand-line bg-brand-panel">
               <button
-                key={collection.collectionId}
                 type="button"
-                onClick={() => setCollectionId(collection.collectionId)}
-                className={`rounded-full border px-3 py-1.5 text-sm font-semibold transition ${
-                  collectionId === collection.collectionId
-                    ? "border-brand-blue bg-brand-blue text-white"
-                    : "border-brand-line bg-brand-panel text-brand-navy hover:border-brand-blue hover:bg-white"
+                onClick={() => setCollectionId("all")}
+                className={`border-r border-brand-line px-3 py-2 text-xs font-semibold last:border-r-0 ${
+                  collectionId === "all"
+                    ? "bg-brand-blue text-white"
+                    : "text-brand-blue hover:bg-brand-soft hover:text-brand-navy"
                 }`}
               >
-                {collection.collectionShortLabel}
+                All granted
               </button>
-            ))}
+              {collections.map((collection) => (
+                <button
+                  key={collection.collectionId}
+                  type="button"
+                  onClick={() => setCollectionId(collection.collectionId)}
+                  className={`border-r border-brand-line px-3 py-2 text-xs font-semibold last:border-r-0 ${
+                    collectionId === collection.collectionId
+                      ? "bg-brand-blue text-white"
+                      : "text-brand-blue hover:bg-brand-soft hover:text-brand-navy"
+                  }`}
+                >
+                  {collection.collectionShortLabel}
+                </button>
+              ))}
+            </div>
           </div>
-        )}
-
-        <input
-          type="search"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search by course code, title, collection, or area..."
-          className="app-input w-full max-w-xl rounded-full px-4 py-2.5"
-        />
-        {query && (
-          <p className="mt-2 text-sm text-brand-muted">
-            {filtered.length} course{filtered.length === 1 ? "" : "s"} found
-          </p>
-        )}
-      </div>
+        </div>
+        <p className="mt-2 text-xs text-brand-muted">
+          Showing {filtered.length} of {courses.length} granted course entries.
+        </p>
+      </section>
 
       {filtered.length === 0 ? (
-        <p className="text-brand-muted">No courses match your search.</p>
+        <p className="border border-brand-line bg-brand-panel px-4 py-3 text-sm text-brand-muted">
+          No courses match your search.
+        </p>
       ) : (
         collections
           .filter((collection) => byCollection.has(collection.collectionId))
           .map((collection) => {
             const list = byCollection.get(collection.collectionId) ?? [];
-            const bySemester = new Map<string, CourseCard[]>();
-            for (const course of list) {
-              const key = course.semester ?? "Other";
-              if (!bySemester.has(key)) bySemester.set(key, []);
-              bySemester.get(key)!.push(course);
-            }
 
             return (
-              <section
-                key={collection.collectionId}
-                className="app-card p-5"
-              >
-                <div className="mb-5 flex flex-wrap items-start justify-between gap-3">
-                  <div>
-                    <p className="eyebrow">{collection.collectionShortLabel}</p>
-                    <h2 className="mt-1 text-xl font-bold text-brand-navy">
-                      {collection.collectionLabel}
-                    </h2>
-                    {collection.collectionDescription && (
-                      <p className="mt-1 text-sm text-brand-muted">
-                        {collection.collectionDescription}
-                      </p>
-                    )}
-                  </div>
-                  <span className="rounded-full bg-brand-soft px-3 py-1 text-xs font-semibold text-brand-navy">
-                    {list.length} course{list.length === 1 ? "" : "s"}
-                  </span>
-                </div>
-                <div className="space-y-5">
-                  {[...bySemester.entries()].map(([semester, semesterCourses]) => (
-                    <div key={`${collection.collectionId}-${semester}`}>
-                      <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-brand-muted">
-                        {semester}
-                      </h3>
-                      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                        {semesterCourses.map((course) => (
-                          <Link
-                            key={`${course.collectionId}-${course.code}`}
-                            href={`/course/${encodeURIComponent(course.code)}?collection=${encodeURIComponent(course.collectionId)}`}
-                            className="group rounded-xl border border-brand-line bg-white/75 p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-blue hover:bg-white hover:shadow-md"
-                          >
-                            <p className="text-xs font-semibold uppercase tracking-wider text-brand-blue">
-                              {course.code}
-                            </p>
-                            <h4 className="mt-1 font-semibold text-brand-ink group-hover:text-brand-navy">
-                              {course.title}
-                            </h4>
-                            {course.area && (
-                              <p className="mt-2 text-xs text-brand-muted">{course.area}</p>
-                            )}
-                          </Link>
-                        ))}
-                      </div>
+              <section key={collection.collectionId} className="app-card overflow-hidden">
+                <div className="portal-bar border-0 border-b border-brand-line px-3 py-2">
+                  <div className="flex flex-wrap items-baseline justify-between gap-3">
+                    <div>
+                      <p className="eyebrow">{collection.collectionShortLabel}</p>
+                      <h2 className="text-base font-bold text-brand-navy">
+                        {collection.collectionLabel}
+                      </h2>
                     </div>
-                  ))}
+                    <span className="text-xs font-semibold text-brand-muted">
+                      {list.length} course{list.length === 1 ? "" : "s"}
+                    </span>
+                  </div>
+                  {collection.collectionDescription && (
+                    <p className="mt-1 text-xs text-brand-muted">
+                      {collection.collectionDescription}
+                    </p>
+                  )}
+                </div>
+
+                <div className="overflow-x-auto">
+                  <table className="portal-table min-w-[760px] text-sm">
+                    <thead>
+                      <tr>
+                        <th className="w-28">Code</th>
+                        <th>Title</th>
+                        <th className="w-44">Area</th>
+                        <th className="w-32">Semester</th>
+                        <th className="w-32">Open</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {list.map((course) => (
+                        <tr key={`${course.collectionId}-${course.code}`}>
+                          <td className="font-mono text-xs font-bold text-brand-navy">
+                            {course.code}
+                          </td>
+                          <td>
+                            <Link href={courseHref(course)} className="portal-link font-semibold">
+                              {course.title}
+                            </Link>
+                          </td>
+                          <td className="text-xs text-brand-muted">{course.area ?? "-"}</td>
+                          <td className="text-xs text-brand-muted">{course.semester ?? "-"}</td>
+                          <td>
+                            <Link href={courseHref(course)} className="portal-link text-xs">
+                              course page
+                            </Link>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               </section>
             );

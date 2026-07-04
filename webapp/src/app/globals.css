@@ -2,26 +2,28 @@
 
 :root {
   color-scheme: light;
-  --brand-ink: #172033;
-  --brand-navy: #213659;
-  --brand-blue: #2f6f9f;
-  --brand-teal: #2f7f89;
-  --brand-gold: #6677d8;
-  --brand-paper: #f5f7fb;
-  --brand-panel: #fffdf8;
-  --brand-soft: #eaf0f7;
-  --brand-line: #d6deea;
-  --brand-muted: #657084;
-  --brand-sidebar: #172842;
-  --brand-sidebar-soft: #213855;
-  --brand-shadow: 0 18px 40px rgba(32, 48, 74, 0.1);
-  --brand-panel-glass: rgba(255, 253, 248, 0.78);
-  --brand-panel-strong: rgba(255, 253, 248, 0.94);
-  --brand-shell-top: rgba(255, 253, 248, 0.72);
-  --brand-shell-bottom: rgba(245, 247, 251, 0.98);
-  --brand-hero-start: #172842;
-  --brand-hero-mid: #223b5d;
-  --brand-hero-end: #2f7f89;
+  --brand-ink: #1f2933;
+  --brand-navy: #12345a;
+  --brand-blue: #064f8f;
+  --brand-teal: #006b77;
+  --brand-gold: #3b5f9e;
+  --brand-paper: #f2f0e8;
+  --brand-panel: #fffefa;
+  --brand-soft: #e7e5dc;
+  --brand-line: #b8bec8;
+  --brand-muted: #5f6b77;
+  --brand-sidebar: #f8f8f2;
+  --brand-sidebar-soft: #e3e7ee;
+  --brand-logo: #12345a;
+  --brand-logo-text: #ffffff;
+  --brand-shadow: none;
+  --brand-panel-glass: #fffefa;
+  --brand-panel-strong: #fffefa;
+  --brand-shell-top: #f2f0e8;
+  --brand-shell-bottom: #f2f0e8;
+  --brand-hero-start: #fffefa;
+  --brand-hero-mid: #fffefa;
+  --brand-hero-end: #fffefa;
 
   --background: var(--brand-paper);
   --foreground: var(--brand-ink);
@@ -29,26 +31,28 @@
 
 html[data-theme="dark"] {
   color-scheme: dark;
-  --brand-ink: #edf3fb;
-  --brand-navy: #f5f8fd;
-  --brand-blue: #83bfff;
-  --brand-teal: #69d6c7;
-  --brand-gold: #a8b5ff;
-  --brand-paper: #0f1726;
-  --brand-panel: #172033;
-  --brand-soft: #223049;
-  --brand-line: #34435e;
-  --brand-muted: #a8b4c7;
-  --brand-sidebar: #0d1828;
-  --brand-sidebar-soft: #14243a;
-  --brand-shadow: 0 18px 44px rgba(0, 0, 0, 0.34);
-  --brand-panel-glass: rgba(23, 32, 51, 0.78);
-  --brand-panel-strong: rgba(23, 32, 51, 0.94);
-  --brand-shell-top: rgba(15, 23, 38, 0.86);
-  --brand-shell-bottom: rgba(15, 23, 38, 0.98);
-  --brand-hero-start: #101c2f;
-  --brand-hero-mid: #1b3153;
-  --brand-hero-end: #215d71;
+  --brand-ink: #edf2f7;
+  --brand-navy: #f8fbff;
+  --brand-blue: #7cc7ff;
+  --brand-teal: #77d9e0;
+  --brand-gold: #9db8ff;
+  --brand-paper: #111827;
+  --brand-panel: #182232;
+  --brand-soft: #243246;
+  --brand-line: #435169;
+  --brand-muted: #b6c0cf;
+  --brand-sidebar: #151f2e;
+  --brand-sidebar-soft: #223049;
+  --brand-logo: #243246;
+  --brand-logo-text: #ffffff;
+  --brand-shadow: none;
+  --brand-panel-glass: #182232;
+  --brand-panel-strong: #182232;
+  --brand-shell-top: #111827;
+  --brand-shell-bottom: #111827;
+  --brand-hero-start: #182232;
+  --brand-hero-mid: #182232;
+  --brand-hero-end: #182232;
 
   --background: var(--brand-paper);
   --foreground: var(--brand-ink);
@@ -76,8 +80,8 @@ html[data-theme="dark"] {
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans-app), "Segoe UI", sans-serif;
-  font-size: 16px;
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  font-size: 14px;
   letter-spacing: 0;
 }
 
@@ -94,8 +98,8 @@ select {
 }
 
 .eyebrow {
-  color: var(--brand-teal);
-  font-size: 0.75rem;
+  color: var(--brand-blue);
+  font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -104,26 +108,24 @@ select {
 .app-card {
   border: 1px solid var(--brand-line);
   background: var(--brand-panel);
-  border-radius: 1rem;
+  border-radius: 2px;
   box-shadow: var(--brand-shadow);
 }
 
 .app-card-muted {
   border: 1px solid var(--brand-line);
   background: var(--brand-panel-glass);
-  border-radius: 1rem;
+  border-radius: 2px;
 }
 
 .app-shell-bg {
-  background:
-    linear-gradient(180deg, var(--brand-shell-top), var(--brand-shell-bottom)),
-    var(--brand-paper);
+  background: var(--brand-paper);
 }
 
 .app-hero {
-  background:
-    radial-gradient(circle at 78% 20%, color-mix(in srgb, var(--brand-teal) 30%, transparent), transparent 36%),
-    linear-gradient(135deg, var(--brand-hero-start), var(--brand-hero-mid) 55%, var(--brand-hero-end));
+  border: 1px solid var(--brand-line);
+  background: var(--brand-panel);
+  color: var(--brand-ink);
 }
 
 .app-input {
@@ -140,7 +142,7 @@ select {
 
 .sidebar-scroll {
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 253, 248, 0.25) transparent;
+  scrollbar-color: var(--brand-line) transparent;
 }
 
 .prose-brand h2 {
@@ -159,6 +161,99 @@ select {
 
 .prose-brand strong {
   color: var(--brand-ink);
+}
+
+.portal-title {
+  font-family: Georgia, "Times New Roman", serif;
+  color: var(--brand-navy);
+  letter-spacing: 0;
+}
+
+.portal-bar {
+  border: 1px solid var(--brand-line);
+  background: var(--brand-soft);
+}
+
+.portal-table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.portal-table th {
+  border: 1px solid var(--brand-line);
+  background: var(--brand-soft);
+  color: var(--brand-navy);
+  font-size: 0.72rem;
+  padding: 0.55rem 0.65rem;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.portal-table td {
+  border: 1px solid var(--brand-line);
+  background: var(--brand-panel);
+  padding: 0.55rem 0.65rem;
+  vertical-align: top;
+}
+
+.portal-table tbody tr:hover td {
+  background: var(--brand-sidebar-soft);
+}
+
+.portal-link {
+  color: var(--brand-blue);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.portal-link:hover {
+  color: var(--brand-teal);
+}
+
+.brand-tile {
+  background: var(--brand-logo);
+  color: var(--brand-logo-text);
+}
+
+.rounded-sm,
+.rounded-md,
+.rounded-lg,
+.rounded-xl,
+.rounded-2xl,
+.rounded-full {
+  border-radius: 2px !important;
+}
+
+.shadow-sm,
+.shadow-md,
+.shadow-lg,
+.shadow-xl,
+.shadow-\[var\(--brand-shadow\)\] {
+  box-shadow: none !important;
+}
+
+.hover\:-translate-y-0\.5:hover {
+  transform: none !important;
+}
+
+.app-hero .text-white,
+.app-hero .text-white\/50,
+.app-hero .text-white\/60,
+.app-hero .text-white\/70,
+.app-hero .text-white\/75,
+.app-hero .text-white\/80,
+.app-hero .text-white\/90 {
+  color: var(--brand-ink) !important;
+}
+
+html[data-theme="dark"] .text-white,
+html[data-theme="dark"] .text-white\/50,
+html[data-theme="dark"] .text-white\/60,
+html[data-theme="dark"] .text-white\/70,
+html[data-theme="dark"] .text-white\/75,
+html[data-theme="dark"] .text-white\/80,
+html[data-theme="dark"] .text-white\/90 {
+  color: var(--brand-ink) !important;
 }
 
 html[data-theme="dark"] .bg-white,

@@ -134,7 +134,7 @@ export function ProfileForm({ profile }: { profile: ProfileFormData }) {
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Rick Ahn"
-            className="app-input mt-1 w-full rounded-xl px-3 py-2"
+            className="app-input mt-1 w-full px-3 py-2"
           />
         </label>
         <label className="block">
@@ -143,7 +143,7 @@ export function ProfileForm({ profile }: { profile: ProfileFormData }) {
             value={username}
             onChange={(e) => setUsername(e.target.value.toLowerCase())}
             placeholder="rickahn"
-            className="app-input mt-1 w-full rounded-xl px-3 py-2"
+            className="app-input mt-1 w-full px-3 py-2"
           />
           <span className="mt-1 block text-xs text-brand-muted">
             Lowercase, 3–24 chars. Shown as @{username || "username"}.
@@ -159,7 +159,7 @@ export function ProfileForm({ profile }: { profile: ProfileFormData }) {
           rows={4}
           maxLength={280}
           placeholder="D1 · Case Western · interested in..."
-          className="app-input mt-1 w-full rounded-xl px-3 py-2"
+          className="app-input mt-1 w-full px-3 py-2"
         />
         <span className="mt-1 block text-xs text-brand-muted">{bio.length}/280</span>
       </label>
@@ -171,7 +171,7 @@ export function ProfileForm({ profile }: { profile: ProfileFormData }) {
           value={canvasUrl}
           onChange={(e) => setCanvasUrl(e.target.value)}
           placeholder="https://canvas.case.edu/feeds/calendars/user_...ics"
-          className="app-input mt-1 w-full rounded-xl px-3 py-2"
+          className="app-input mt-1 w-full px-3 py-2"
         />
         <span className="mt-1 block text-xs text-brand-muted">
           Use the Canvas calendar feed URL ending in .ics. It is saved to your profile and shown
@@ -193,7 +193,7 @@ export function ProfileForm({ profile }: { profile: ProfileFormData }) {
       <button
         type="submit"
         disabled={busy}
-        className="rounded-full bg-brand-blue px-5 py-2.5 font-semibold text-white hover:opacity-90 disabled:opacity-60"
+        className="border border-brand-blue bg-brand-blue px-5 py-2.5 font-semibold text-white hover:opacity-90 disabled:opacity-60"
       >
         {busy ? "Saving..." : "Save profile"}
       </button>

@@ -15,15 +15,15 @@ export function BrandMark({
     <Link href="/home" className={`inline-flex items-center gap-2.5 ${className}`}>
       <span
         aria-hidden="true"
-        className={`inline-flex h-9 w-9 items-center justify-center rounded-lg text-xs font-extrabold tracking-tight ${
-          inverse ? "bg-brand-gold text-brand-sidebar" : "bg-brand-sidebar text-white"
+        className={`inline-flex h-8 w-8 items-center justify-center border border-brand-line text-xs font-extrabold tracking-tight ${
+          inverse ? "bg-brand-gold text-brand-sidebar" : "brand-tile"
         }`}
       >
         D1
       </span>
       {showWordmark && (
         <span
-          className={`text-lg font-bold ${
+          className={`text-base font-bold ${
             inverse ? "text-white" : "text-brand-navy"
           }`}
         >
@@ -39,11 +39,11 @@ export function BrandMarkPublic({ className = "" }: { className?: string }) {
     <Link href="/" className={`inline-flex items-center gap-2.5 ${className}`}>
       <span
         aria-hidden="true"
-        className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-brand-sidebar text-xs font-extrabold tracking-tight text-white"
+        className="brand-tile inline-flex h-8 w-8 items-center justify-center border border-brand-line text-xs font-extrabold tracking-tight"
       >
         D1
       </span>
-      <span className="text-lg font-bold text-brand-navy">Course Library</span>
+      <span className="text-base font-bold text-brand-navy">Course Library</span>
     </Link>
   );
 }
