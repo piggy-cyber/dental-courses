@@ -1,3 +1,8 @@
 private-staging/
 assets/js/youtube-videos.private.js
 assets/js/transcript-content.private.js
+.vercel
+.env*
+automation/.venv/
+automation/logs/
+webapp/.tools/

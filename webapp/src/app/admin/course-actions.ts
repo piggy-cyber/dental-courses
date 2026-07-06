@@ -19,6 +19,9 @@ import {
 } from "@/lib/course-templates";
 import {
   assignTargetToFields,
+  INBOX_ROLE_ID,
+  INBOX_SECTION,
+  INBOX_USE_LABEL,
   isInboxResource,
   type AssignTarget,
 } from "@/lib/resource-kinds";
@@ -665,13 +668,68 @@ export async function finalizeUploadBatchNotify(
       .maybeSingle(),
   ]);
 
-  await notifyCourseContentBatch({
+  const result = await notifyCourseContentBatch({
     courseCode,
     courseTitle: course?.title ?? courseCode,
     fileCount,
     collectionId,
     collectionLabel: collection?.label ?? null,
   });
+
+  // Marker event: lets inbox-clearing logic count assignments since the last post.
+  if (result.ok) {
+    await logContentEvent(admin, {
+      courseCode,
+      collectionId,
+      action: "groupme_notify",
+      summary: `Announced ${fileCount} file(s) to GroupMe`,
+      actorId: null,
+    });
+  }
+}
+
+/**
+ * Inbox assignments announce once per batch: only when the last inbox file is
+ * assigned, with the count of assignments since the previous announcement.
+ */
+async function notifyIfInboxCleared(
+  admin: ReturnType<typeof createAdminClient>,
+  courseCode: string,
+  collectionId: string
+) {
+  const { count: remaining } = await admin
+    .from("resources")
+    .select("*", { count: "exact", head: true })
+    .eq("course_code", courseCode)
+    .eq("resource_collection_id", collectionId)
+    .or(
+      `resource_role.eq.${INBOX_ROLE_ID},section.eq.${INBOX_SECTION},use_label.eq.${INBOX_USE_LABEL}`
+    );
+
+  if ((remaining ?? 0) > 0) return;
+
+  const { data: lastNotify } = await admin
+    .from("content_events")
+    .select("created_at")
+    .eq("course_code", courseCode)
+    .eq("collection_id", collectionId)
+    .eq("action", "groupme_notify")
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  let assignedQuery = admin
+    .from("content_events")
+    .select("*", { count: "exact", head: true })
+    .eq("course_code", courseCode)
+    .eq("collection_id", collectionId)
+    .eq("action", "resource_assign");
+  if (lastNotify?.created_at) {
+    assignedQuery = assignedQuery.gt("created_at", lastNotify.created_at);
+  }
+  const { count: assigned } = await assignedQuery;
+
+  await finalizeUploadBatchNotify(courseCode, collectionId, Math.max(1, assigned ?? 1));
 }
 
 export async function listResourceCollections() {
@@ -1046,7 +1104,7 @@ export async function assignResourceToSlot(
   revalidateCoursePaths(courseCode);
 
   if (existing && isInboxResource(existing)) {
-    await finalizeUploadBatchNotify(courseCode, collectionId, 1);
+    await notifyIfInboxCleared(admin, courseCode, collectionId);
   }
 }
 
