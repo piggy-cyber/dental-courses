@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { fetchGroupMeGroups } from "@/lib/groupme";
 
 type ProfileUpdate = {
   name?: string | null;
@@ -67,4 +68,30 @@ function validateCanvasCalendarUrl(value: string) {
   }
 
   return null;
+}
+
+export async function testGroupMeConnection(): Promise<
+  { ok: true; groupCount: number } | { ok: false; error: string }
+> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: "Not signed in." };
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("groupme_access_token")
+    .eq("id", user.id)
+    .single();
+
+  const token = profile?.groupme_access_token;
+  if (!token) return { ok: false, error: "GroupMe is not connected." };
+
+  try {
+    const groups = await fetchGroupMeGroups(token);
+    return { ok: true, groupCount: groups.length };
+  } catch {
+    return { ok: false, error: "Could not reach GroupMe. Try reconnecting." };
+  }
 }

@@ -1,10 +1,16 @@
 import { createClient } from "@/lib/supabase/server";
+import { getGroupMeClientId } from "@/lib/groupme";
 import { ProfileForm } from "@/components/ProfileForm";
+import { GroupMeConnectCard } from "@/components/GroupMeConnectCard";
 import { notFound } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
-export default async function ProfilePage() {
+export default async function ProfilePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ groupme?: string; reason?: string }>;
+}) {
   const supabase = await createClient();
   const {
     data: { user },
@@ -13,11 +19,23 @@ export default async function ProfilePage() {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("id, email, name, username, bio, avatar_url, canvas_ics_url")
+    .select(
+      "id, email, name, username, bio, avatar_url, canvas_ics_url, groupme_connected_at"
+    )
     .eq("id", user.id)
     .single();
 
   if (!profile) notFound();
+
+  const params = await searchParams;
+  const banner =
+    params.groupme === "connected"
+      ? "connected"
+      : params.groupme === "disconnected"
+        ? "disconnected"
+        : params.groupme === "error"
+          ? "error"
+          : undefined;
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
@@ -30,6 +48,14 @@ export default async function ProfilePage() {
           Update how you appear in the library. Email comes from your sign-in provider.
         </p>
       </header>
+
+      <GroupMeConnectCard
+        connected={Boolean(profile.groupme_connected_at)}
+        connectedAt={profile.groupme_connected_at}
+        configured={Boolean(getGroupMeClientId())}
+        banner={banner}
+        errorReason={params.reason ?? null}
+      />
 
       <div className="app-card p-6">
         <ProfileForm profile={profile} />
