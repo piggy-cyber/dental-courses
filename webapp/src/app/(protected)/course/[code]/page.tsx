@@ -1,5 +1,8 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { getSessionProfile } from "@/lib/access";
+import { isAdmin } from "@/lib/roles";
 import { CourseBreadcrumb } from "@/components/CourseBreadcrumb";
 import { CourseReportSection } from "@/components/CourseReportSection";
 import {
@@ -72,6 +75,8 @@ export default async function CoursePage({
   const { collection: requestedCollectionId } = await searchParams;
   const courseCode = decodeURIComponent(code);
   const supabase = await createClient();
+  const { profile } = await getSessionProfile();
+  const isAdminView = isAdmin(profile);
 
   let membershipQuery = supabase
     .from("course_collection_members")
@@ -230,6 +235,14 @@ export default async function CoursePage({
               {course.code}
               <span className="font-normal text-brand-ink"> · {course.title}</span>
             </h1>
+            {isAdminView && (
+              <Link
+                href={`/admin/courses/${encodeURIComponent(course.code)}?collection=${encodeURIComponent(resourceCollectionId)}`}
+                className="mt-2 inline-flex text-sm font-semibold text-brand-blue hover:underline"
+              >
+                Manage course
+              </Link>
+            )}
           </div>
         </div>
         <div className="mt-5 flex flex-wrap gap-2">

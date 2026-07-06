@@ -34,10 +34,29 @@ const WEATHER_LABELS: Record<number, string> = {
   99: "Thunderstorm with heavy hail",
 };
 
+export type WeatherMood = "clear" | "cloudy" | "rain" | "snow" | "storm" | "fog";
+
+export function weatherMood(code: number): WeatherMood {
+  if (code === 0 || code === 1) return "clear";
+  if (code === 2 || code === 3) return "cloudy";
+  if (code === 45 || code === 48) return "fog";
+  if (code >= 71 && code <= 77) return "snow";
+  if (code >= 85 && code <= 86) return "snow";
+  if (code >= 95) return "storm";
+  if (code >= 51) return "rain";
+  return "cloudy";
+}
+
+export function weatherLabel(code: number): string {
+  return WEATHER_LABELS[code] ?? "—";
+}
+
 export type CampusWeather = {
   temperature: number;
   feelsLike: number;
   label: string;
+  weatherCode: number;
+  mood: WeatherMood;
   windMph: number;
   high: number;
   low: number;
@@ -49,6 +68,8 @@ export type DailyCampusWeather = {
   date: string;
   weekday: string;
   label: string;
+  weatherCode: number;
+  mood: WeatherMood;
   high: number;
   low: number;
   precipChancePct: number;
@@ -70,20 +91,29 @@ export async function getCampusWeather(): Promise<CampusWeather | null> {
       weekday: "short",
     });
     const weekly: DailyCampusWeather[] = (data.daily.time ?? []).map(
-      (date: string, index: number) => ({
-        date,
-        weekday: weekday.format(new Date(`${date}T12:00:00-04:00`)),
-        label: WEATHER_LABELS[data.daily.weather_code[index]] ?? "—",
-        high: Math.round(data.daily.temperature_2m_max[index]),
-        low: Math.round(data.daily.temperature_2m_min[index]),
-        precipChancePct: data.daily.precipitation_probability_max[index] ?? 0,
-      })
+      (date: string, index: number) => {
+        const code = data.daily.weather_code[index] as number;
+        return {
+          date,
+          weekday: weekday.format(new Date(`${date}T12:00:00-04:00`)),
+          label: weatherLabel(code),
+          weatherCode: code,
+          mood: weatherMood(code),
+          high: Math.round(data.daily.temperature_2m_max[index]),
+          low: Math.round(data.daily.temperature_2m_min[index]),
+          precipChancePct: data.daily.precipitation_probability_max[index] ?? 0,
+        };
+      }
     );
+
+    const currentCode = data.current.weather_code as number;
 
     return {
       temperature: Math.round(data.current.temperature_2m),
       feelsLike: Math.round(data.current.apparent_temperature),
-      label: WEATHER_LABELS[data.current.weather_code] ?? "—",
+      label: weatherLabel(currentCode),
+      weatherCode: currentCode,
+      mood: weatherMood(currentCode),
       windMph: Math.round(data.current.wind_speed_10m),
       high: Math.round(data.daily.temperature_2m_max[0]),
       low: Math.round(data.daily.temperature_2m_min[0]),

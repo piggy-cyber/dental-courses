@@ -304,6 +304,7 @@ function revalidateAdminPaths(accountId?: string) {
   revalidatePath("/admin/roster");
   revalidatePath("/admin/team");
   revalidatePath("/admin/operations");
+  revalidatePath("/admin/courses");
   revalidatePath("/library");
   revalidatePath("/owner");
 }

@@ -116,6 +116,11 @@ export default async function AdminDashboardPage() {
       detail: `${collectionCount ?? 0} resource set${collectionCount === 1 ? "" : "s"}.`,
     },
     {
+      href: "/admin/courses",
+      label: "Courses",
+      detail: "Edit metadata, lectures, files, and transcripts.",
+    },
+    {
       href: "/admin/operations",
       label: "Operations",
       detail: "Upload coverage and exports.",

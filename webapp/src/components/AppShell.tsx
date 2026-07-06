@@ -35,6 +35,7 @@ const ADMIN_LINKS = [
   { href: "/admin/roster", label: "Roster" },
   { href: "/admin/team", label: "Team" },
   { href: "/admin/collections", label: "Collections" },
+  { href: "/admin/courses", label: "Courses" },
   { href: "/admin/operations", label: "Operations" },
 ];
 
