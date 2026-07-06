@@ -10,6 +10,14 @@ export function getGroupMeClientId(): string | null {
   return process.env.NEXT_PUBLIC_GROUPME_CLIENT_ID?.trim() || null;
 }
 
+export function getGroupMeBotId(): string | null {
+  return process.env.GROUPME_BOT_ID?.trim() || null;
+}
+
+export function getGroupMeBotLabel(): string | null {
+  return process.env.GROUPME_BOT_LABEL?.trim() || null;
+}
+
 export function getGroupMeAuthorizeUrl(clientId: string, state?: string): string {
   const url = new URL(GROUPME_OAUTH);
   url.searchParams.set("client_id", clientId);

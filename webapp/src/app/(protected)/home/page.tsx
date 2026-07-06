@@ -15,7 +15,9 @@ import { StatGauges } from "@/components/StatGauges";
 import { WeatherInstrumentPanel } from "@/components/WeatherInstrumentPanel";
 import { CampusMapPanel } from "@/components/CampusMapPanel";
 import { QuickActionsPanel } from "@/components/QuickActionsPanel";
+import { MaintenanceShortcutPanel } from "@/components/MaintenanceShortcutPanel";
 import { SiteReportSection } from "@/components/SiteReportSection";
+import { getGroupMeBotId, getGroupMeBotLabel } from "@/lib/groupme";
 
 export const dynamic = "force-dynamic";
 
@@ -229,6 +231,12 @@ export default async function HomeDashboardPage() {
 
       {/* Quick actions */}
       <QuickActionsPanel isAdmin={isAdminView} />
+
+      <MaintenanceShortcutPanel
+        reporterName={displayName}
+        groupMeBotConfigured={Boolean(getGroupMeBotId())}
+        groupMeBotLabel={getGroupMeBotLabel()}
+      />
 
       {/* Course collections */}
       {courseList.length > 0 && (
