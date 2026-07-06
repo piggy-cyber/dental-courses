@@ -5,7 +5,7 @@ export async function uploadCourseFiles(input: {
   resourceId?: number;
   inbox?: boolean;
   onProgress?: (pct: number) => void;
-}): Promise<{ ok: boolean; uploaded: number; errors: string[] }> {
+}): Promise<{ ok: boolean; uploaded: number; resourceIds: number[]; errors: string[] }> {
   const form = new FormData();
   form.set("courseCode", input.courseCode);
   form.set("collectionId", input.collectionId);
@@ -30,6 +30,7 @@ export async function uploadCourseFiles(input: {
   return {
     ok: Boolean(body.ok),
     uploaded: body.uploaded ?? 0,
+    resourceIds: body.resourceIds ?? [],
     errors: body.errors ?? (body.error ? [body.error] : []),
   };
 }

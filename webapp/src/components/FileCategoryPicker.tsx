@@ -7,17 +7,20 @@ import {
   type EssentialSlot,
   type SupplementalCategory,
 } from "@/lib/resource-kinds";
+import { ESSENTIAL_ROLES, LECTURE_ROLES, SUPPLEMENTAL_ROLES } from "@/lib/resource-taxonomy";
 
 type LectureOption = { id: string; title: string };
+type SectionOption = { id: string; label: string };
 
 type Props = {
   value: string;
   onChange: (target: AssignTarget) => void;
   lectures: LectureOption[];
+  sections?: SectionOption[];
   disabled?: boolean;
 };
 
-export function FileCategoryPicker({ value, onChange, lectures, disabled }: Props) {
+export function FileCategoryPicker({ value, onChange, lectures, sections, disabled }: Props) {
   function parseValue(raw: string): void {
     if (!raw) return;
     if (raw.startsWith("essential:")) {
@@ -34,47 +37,63 @@ export function FileCategoryPicker({ value, onChange, lectures, disabled }: Prop
       return;
     }
     if (raw.startsWith("supplemental:")) {
+      const [, category, sectionId] = raw.split(":");
       onChange({
         type: "supplemental",
-        category: raw.replace("supplemental:", "") as SupplementalCategory,
+        category: category as SupplementalCategory,
+        sectionId: sectionId || undefined,
       });
     }
   }
 
+  const customSections = (sections ?? []).filter((s) => s.label !== "Lectures");
+
   return (
     <select
-      className="app-input text-sm"
+      className="app-input mt-1 w-full text-sm"
       value={value}
       disabled={disabled}
       onChange={(e) => parseValue(e.target.value)}
     >
       <option value="">Assign to…</option>
       <optgroup label="Essentials">
-        {(Object.keys(ESSENTIAL_SLOT_LABELS) as EssentialSlot[]).map((slot) => (
-          <option key={slot} value={`essential:${slot}`}>
-            {ESSENTIAL_SLOT_LABELS[slot]}
-          </option>
-        ))}
+        {ESSENTIAL_ROLES.map((role) => {
+          const slot = role.id.replace("essential_", "") as EssentialSlot;
+          return (
+            <option key={role.id} value={`essential:${slot}`}>
+              {ESSENTIAL_SLOT_LABELS[slot]}
+            </option>
+          );
+        })}
       </optgroup>
       <optgroup label="Lectures">
-        {lectures.flatMap((lecture) => [
-          <option key={`${lecture.id}-slides`} value={`lecture:${lecture.id}:slides`}>
-            {lecture.title} · Slides
-          </option>,
-          <option key={`${lecture.id}-transcript`} value={`lecture:${lecture.id}:transcript_file`}>
-            {lecture.title} · Transcript file
-          </option>,
-          <option key={`${lecture.id}-other`} value={`lecture:${lecture.id}:other`}>
-            {lecture.title} · Other file
-          </option>,
-        ])}
+        {lectures.flatMap((lecture) =>
+          LECTURE_ROLES.map((role) => {
+            const roleKey = role.id.replace("lecture_", "") as "slides" | "transcript_file" | "other";
+            return (
+              <option key={`${lecture.id}-${role.id}`} value={`lecture:${lecture.id}:${roleKey}`}>
+                {lecture.title} · {role.label}
+              </option>
+            );
+          })
+        )}
       </optgroup>
       <optgroup label="Labs and extras">
-        {(Object.keys(SUPPLEMENTAL_LABELS) as SupplementalCategory[]).map((cat) => (
-          <option key={cat} value={`supplemental:${cat}`}>
-            {SUPPLEMENTAL_LABELS[cat]}
-          </option>
-        ))}
+        {SUPPLEMENTAL_ROLES.flatMap((role) => {
+          const cat = role.id.replace("supplemental_", "") as SupplementalCategory;
+          if (customSections.length === 0) {
+            return (
+              <option key={role.id} value={`supplemental:${cat}`}>
+                {SUPPLEMENTAL_LABELS[cat]}
+              </option>
+            );
+          }
+          return customSections.map((section) => (
+            <option key={`${role.id}-${section.id}`} value={`supplemental:${cat}:${section.id}`}>
+              {section.label} · {SUPPLEMENTAL_LABELS[cat]}
+            </option>
+          ));
+        })}
       </optgroup>
     </select>
   );

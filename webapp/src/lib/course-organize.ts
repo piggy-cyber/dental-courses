@@ -35,6 +35,9 @@ export type CourseResource = {
   size_mb?: number | null;
   storage_path: string | null;
   is_canonical_syllabus: boolean;
+  lecture_id?: string | null;
+  resource_role?: string | null;
+  section_id?: string | null;
 };
 
 export type CourseEssentials = {
@@ -143,7 +146,7 @@ export function relatedResourcesForLecture(
   explicitFiles: LectureFileRef[],
   pool: CourseResource[],
   sourceResources: { name: string; kind?: string; ext?: string; section?: string }[],
-  options: { lectureIndex?: number } = {}
+  options: { lectureIndex?: number; lectureId?: string } = {}
 ) {
   const seen = new Set<string>();
   const linked: CourseResource[] = [];
@@ -153,6 +156,21 @@ export function relatedResourcesForLecture(
     seen.add(resource.name);
     linked.push(resource);
   };
+
+  if (options.lectureId) {
+    for (const resource of pool) {
+      if (resource.lecture_id === options.lectureId) {
+        add(resource);
+      }
+    }
+    if (linked.length > 0) {
+      return linked.sort((a, b) => {
+        const rank = (KIND_RANK[a.kind ?? ""] ?? 99) - (KIND_RANK[b.kind ?? ""] ?? 99);
+        if (rank !== 0) return rank;
+        return a.name.localeCompare(b.name, undefined, { numeric: true });
+      });
+    }
+  }
 
   for (const file of explicitFiles) {
     add(dbResourceByName(pool, file.name));

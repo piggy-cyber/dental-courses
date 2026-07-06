@@ -41,6 +41,12 @@ export type CourseEditorData = {
     label: string;
     short_label: string;
   };
+  sections: Array<{
+    id: string;
+    label: string;
+    section_type: string;
+    sort_order: number;
+  }>;
   lectures: Array<{
     id: string;
     title: string;
@@ -62,6 +68,10 @@ export type CourseEditorData = {
     size_mb: number | null;
     storage_path: string | null;
     is_canonical_syllabus: boolean;
+    resource_role: string | null;
+    lecture_id: string | null;
+    section_id: string | null;
+    sort_order: number;
   }>;
   events: Array<{
     id: number;
@@ -101,6 +111,47 @@ function revalidateCoursePaths(courseCode: string, collectionId: string) {
   revalidatePath("/library");
 }
 
+function sectionSlug(label: string) {
+  return label
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "")
+    .slice(0, 40);
+}
+
+async function ensureDefaultCourseSections(
+  admin: ReturnType<typeof createAdminClient>,
+  courseCode: string,
+  collectionId: string
+) {
+  const { count } = await admin
+    .from("course_sections")
+    .select("*", { count: "exact", head: true })
+    .eq("course_code", courseCode)
+    .eq("resource_collection_id", collectionId);
+
+  if ((count ?? 0) > 0) return;
+
+  const defaults = [
+    { label: "Lectures", section_type: "lectures", sort_order: 10 },
+    { label: "Labs and extras", section_type: "labs", sort_order: 20 },
+    { label: "Archive", section_type: "archive", sort_order: 90 },
+  ];
+
+  const slug = courseSlug(courseCode);
+  const rows = defaults.map((row) => ({
+    id: `${collectionId}-${slug}-section-${sectionSlug(row.label)}`,
+    course_code: courseCode,
+    resource_collection_id: collectionId,
+    label: row.label,
+    section_type: row.section_type,
+    sort_order: row.sort_order,
+  }));
+
+  const { error } = await admin.from("course_sections").insert(rows);
+  if (error) throw new Error(error.message);
+}
+
 export async function getCourseEditorData(
   courseCode: string,
   collectionId: string
@@ -125,7 +176,9 @@ export async function getCourseEditorData(
     : membership.resource_collections;
   if (!course || !collection) return null;
 
-  const [{ data: lectures }, { data: resources }, { data: transcripts }, eventsResult] =
+  await ensureDefaultCourseSections(admin, courseCode, collectionId);
+
+  const [{ data: lectures }, { data: resources }, { data: transcripts }, { data: sections }, eventsResult] =
     await Promise.all([
       admin
         .from("lectures")
@@ -138,12 +191,19 @@ export async function getCourseEditorData(
       admin
         .from("resources")
         .select(
-          "id, name, kind, ext, section, use_label, size_mb, storage_path, is_canonical_syllabus"
+          "id, name, kind, ext, section, use_label, size_mb, storage_path, is_canonical_syllabus, resource_role, lecture_id, section_id, sort_order"
         )
         .eq("course_code", courseCode)
         .eq("resource_collection_id", collectionId)
+        .order("sort_order")
         .order("name"),
       admin.from("transcripts").select("lecture_id, content"),
+      admin
+        .from("course_sections")
+        .select("id, label, section_type, sort_order")
+        .eq("course_code", courseCode)
+        .eq("resource_collection_id", collectionId)
+        .order("sort_order"),
       admin
         .from("content_events")
         .select("id, action, summary, created_at, actor_id")
@@ -165,6 +225,7 @@ export async function getCourseEditorData(
   return {
     course: course as CourseEditorData["course"],
     collection: collection as CourseEditorData["collection"],
+    sections: (sections ?? []) as CourseEditorData["sections"],
     lectures: (lectures ?? []).map((lecture) => ({
       ...lecture,
       transcript: transcriptByLecture.get(lecture.id) ?? null,
@@ -377,6 +438,9 @@ export async function createResource(
     section?: string | null;
     use_label?: string | null;
     is_canonical_syllabus?: boolean;
+    resource_role?: string | null;
+    lecture_id?: string | null;
+    section_id?: string | null;
   },
   actorId?: string | null
 ) {
@@ -409,6 +473,9 @@ export async function createResource(
       section: fields.section?.trim() || null,
       use_label: fields.use_label?.trim() || null,
       is_canonical_syllabus: Boolean(fields.is_canonical_syllabus),
+      resource_role: fields.resource_role?.trim() || null,
+      lecture_id: fields.lecture_id ?? null,
+      section_id: fields.section_id ?? null,
     })
     .select("id")
     .single();
@@ -437,12 +504,15 @@ export async function updateResource(
     section?: string | null;
     use_label?: string | null;
     is_canonical_syllabus?: boolean;
+    resource_role?: string | null;
+    lecture_id?: string | null;
+    section_id?: string | null;
   }
 ) {
   const { userId } = await requireAdminProfile();
   const admin = createAdminClient();
 
-  const update: Record<string, unknown> = {};
+  const update: Record<string, unknown> = { updated_at: new Date().toISOString() };
   if (fields.name !== undefined) {
     const name = fields.name.trim();
     if (!name) throw new Error("Resource name is required.");
@@ -455,6 +525,9 @@ export async function updateResource(
   if (fields.is_canonical_syllabus !== undefined) {
     update.is_canonical_syllabus = fields.is_canonical_syllabus;
   }
+  if (fields.resource_role !== undefined) update.resource_role = fields.resource_role?.trim() || null;
+  if (fields.lecture_id !== undefined) update.lecture_id = fields.lecture_id || null;
+  if (fields.section_id !== undefined) update.section_id = fields.section_id || null;
 
   const { error } = await admin
     .from("resources")
@@ -810,12 +883,15 @@ export async function createCourseFromTemplate(input: {
       section: essential.kind,
       use_label: `essential-${essential.slot}-placeholder`,
       is_canonical_syllabus: essential.isCanonicalSyllabus,
+      resource_role: `essential_${essential.slot}`,
     }));
 
   if (essentialRows.length) {
     const { error: resourceError } = await admin.from("resources").insert(essentialRows);
     if (resourceError) throw new Error(resourceError.message);
   }
+
+  await ensureDefaultCourseSections(admin, code, input.collectionId);
 
   await logContentEvent(admin, {
     courseCode: code,
@@ -930,7 +1006,7 @@ export async function assignResourceToSlot(
 
   const { data: existing } = await admin
     .from("resources")
-    .select("section, use_label")
+    .select("section, use_label, resource_role")
     .eq("id", resourceId)
     .eq("course_code", courseCode)
     .eq("resource_collection_id", collectionId)
@@ -945,6 +1021,10 @@ export async function assignResourceToSlot(
       section: fields.section,
       use_label: fields.use_label,
       is_canonical_syllabus: fields.is_canonical_syllabus,
+      resource_role: fields.resource_role,
+      lecture_id: fields.lecture_id,
+      section_id: fields.section_id,
+      updated_at: new Date().toISOString(),
     })
     .eq("id", resourceId)
     .eq("course_code", courseCode)
@@ -990,6 +1070,151 @@ export async function reorderLectures(
     collectionId,
     action: "lecture_reorder",
     summary: `Reordered ${orderedLectureIds.length} lectures`,
+    actorId: userId,
+  });
+
+  revalidateCoursePaths(courseCode, collectionId);
+}
+
+export async function createCourseSection(
+  courseCode: string,
+  collectionId: string,
+  label: string
+) {
+  const { userId } = await requireAdminProfile();
+  const admin = createAdminClient();
+  const trimmed = label.trim();
+  if (!trimmed) throw new Error("Section label is required.");
+
+  const id = `${collectionId}-${courseSlug(courseCode)}-section-${sectionSlug(trimmed)}-${randomUUID().slice(0, 6)}`;
+
+  const { count } = await admin
+    .from("course_sections")
+    .select("*", { count: "exact", head: true })
+    .eq("course_code", courseCode)
+    .eq("resource_collection_id", collectionId);
+
+  const { error } = await admin.from("course_sections").insert({
+    id,
+    course_code: courseCode,
+    resource_collection_id: collectionId,
+    label: trimmed,
+    section_type: "custom",
+    sort_order: ((count ?? 0) + 1) * 10,
+  });
+
+  if (error) throw new Error(error.message);
+
+  await logContentEvent(admin, {
+    courseCode,
+    collectionId,
+    action: "section_create",
+    summary: `Added section: ${trimmed}`,
+    actorId: userId,
+  });
+
+  revalidateCoursePaths(courseCode, collectionId);
+  return id;
+}
+
+export async function updateCourseSection(
+  courseCode: string,
+  collectionId: string,
+  sectionId: string,
+  fields: { label: string }
+) {
+  const { userId } = await requireAdminProfile();
+  const admin = createAdminClient();
+  const label = fields.label.trim();
+  if (!label) throw new Error("Section label is required.");
+
+  const { error } = await admin
+    .from("course_sections")
+    .update({ label })
+    .eq("id", sectionId)
+    .eq("course_code", courseCode)
+    .eq("resource_collection_id", collectionId);
+
+  if (error) throw new Error(error.message);
+
+  await logContentEvent(admin, {
+    courseCode,
+    collectionId,
+    action: "section_edit",
+    summary: `Renamed section to ${label}`,
+    actorId: userId,
+  });
+
+  revalidateCoursePaths(courseCode, collectionId);
+}
+
+export async function deleteCourseSection(
+  courseCode: string,
+  collectionId: string,
+  sectionId: string
+) {
+  const { userId } = await requireAdminProfile();
+  const admin = createAdminClient();
+
+  const { data: section } = await admin
+    .from("course_sections")
+    .select("section_type, label")
+    .eq("id", sectionId)
+    .maybeSingle();
+
+  if (!section) throw new Error("Section not found.");
+  if (section.section_type !== "custom") {
+    throw new Error("Only custom sections can be deleted.");
+  }
+
+  await admin
+    .from("resources")
+    .update({ section_id: null })
+    .eq("section_id", sectionId);
+
+  const { error } = await admin
+    .from("course_sections")
+    .delete()
+    .eq("id", sectionId)
+    .eq("course_code", courseCode)
+    .eq("resource_collection_id", collectionId);
+
+  if (error) throw new Error(error.message);
+
+  await logContentEvent(admin, {
+    courseCode,
+    collectionId,
+    action: "section_delete",
+    summary: `Deleted section: ${section.label}`,
+    actorId: userId,
+  });
+
+  revalidateCoursePaths(courseCode, collectionId);
+}
+
+export async function reorderCourseSections(
+  courseCode: string,
+  collectionId: string,
+  orderedSectionIds: string[]
+) {
+  const { userId } = await requireAdminProfile();
+  const admin = createAdminClient();
+
+  for (let i = 0; i < orderedSectionIds.length; i++) {
+    const { error } = await admin
+      .from("course_sections")
+      .update({ sort_order: (i + 1) * 10 })
+      .eq("id", orderedSectionIds[i])
+      .eq("course_code", courseCode)
+      .eq("resource_collection_id", collectionId);
+    if (error) throw new Error(error.message);
+  }
+
+  await logContentEvent(admin, {
+    courseCode,
+    collectionId,
+    action: "section_reorder",
+    summary: `Reordered ${orderedSectionIds.length} sections`,
     actorId: userId,
   });
 

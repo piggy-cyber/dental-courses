@@ -133,7 +133,9 @@ export default async function CoursePage({
         .order("sort_order"),
       supabase
         .from("resources")
-        .select("id, name, kind, ext, section, use_label, size_mb, storage_path, is_canonical_syllabus")
+        .select(
+          "id, name, kind, ext, section, use_label, size_mb, storage_path, is_canonical_syllabus, lecture_id, resource_role, section_id"
+        )
         .eq("course_code", courseCode)
         .eq("resource_collection_id", resourceCollectionId)
         .order("name"),
@@ -171,7 +173,7 @@ export default async function CoursePage({
       source?.lectureFiles ?? [],
       pool,
       sourceResources,
-      { lectureIndex: lectureIndexById.get(lecture.id) }
+      { lectureIndex: lectureIndexById.get(lecture.id), lectureId: lecture.id }
     );
     for (const file of files) linkedNames.add(file.name);
     return { lecture, files };

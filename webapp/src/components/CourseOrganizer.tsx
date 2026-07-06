@@ -13,6 +13,8 @@ import {
   updateLecture,
 } from "@/app/admin/course-actions";
 import { CourseInboxPanel } from "@/components/CourseInboxPanel";
+import { CourseSectionEditor } from "@/components/CourseSectionEditor";
+import { CourseUploadBar } from "@/components/CourseUploadBar";
 import { uploadCourseFiles } from "@/lib/course-upload-client";
 import {
   ESSENTIAL_SLOT_LABELS,
@@ -47,15 +49,17 @@ export function CourseOrganizer({ initial }: Props) {
     (r) =>
       !isInboxResource(r) &&
       !essentialSlotForResource(r) &&
+      !r.lecture_id &&
       !r.use_label?.includes("-slides") &&
       !r.use_label?.includes("-transcript-file") &&
-      !r.use_label?.endsWith("-placeholder")
+      !r.use_label?.endsWith("-placeholder") &&
+      !r.resource_role?.startsWith("lecture_")
   );
 
   const lectureResources = (lectureId: string) =>
     data.resources.filter(
       (r) =>
-        r.use_label?.startsWith(`${lectureId}-`) &&
+        (r.lecture_id === lectureId || r.use_label?.startsWith(`${lectureId}-`)) &&
         !isInboxResource(r)
     );
 
@@ -152,7 +156,16 @@ export function CourseOrganizer({ initial }: Props) {
         </div>
       )}
 
-      <CourseInboxPanel data={data} />
+      <CourseUploadBar
+        data={data}
+        onMessage={setMessage}
+        onError={setError}
+        onProgress={setUploadProgress}
+      />
+
+      <CourseInboxPanel data={data} onMessage={setMessage} onError={setError} />
+
+      <CourseSectionEditor data={data} onMessage={setMessage} onError={setError} />
 
       <section className="app-card overflow-hidden">
         <div className="portal-bar border-0 border-b border-brand-line px-3 py-2">
@@ -316,7 +329,10 @@ export function CourseOrganizer({ initial }: Props) {
               >
                 <div>
                   <p className="font-medium text-brand-ink">{resource.name}</p>
-                  <p className="text-xs text-brand-muted">{resource.kind}</p>
+                  <p className="text-xs text-brand-muted">
+                    {resource.kind}
+                    {resource.section ? ` · ${resource.section}` : ""}
+                  </p>
                 </div>
                 <button
                   type="button"
