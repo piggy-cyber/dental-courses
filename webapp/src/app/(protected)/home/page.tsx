@@ -17,7 +17,7 @@ import { CampusMapPanel } from "@/components/CampusMapPanel";
 import { QuickActionsPanel } from "@/components/QuickActionsPanel";
 import { MaintenanceShortcutPanel } from "@/components/MaintenanceShortcutPanel";
 import { SiteReportSection } from "@/components/SiteReportSection";
-import { getGroupMeBotId } from "@/lib/groupme";
+import { getGroupMeBotId, getGroupMeBotLabel } from "@/lib/groupme";
 
 export const dynamic = "force-dynamic";
 
@@ -235,6 +235,7 @@ export default async function HomeDashboardPage() {
       <MaintenanceShortcutPanel
         reporterName={displayName}
         groupMeBotConfigured={Boolean(getGroupMeBotId())}
+        groupMeBotLabel={getGroupMeBotLabel()}
       />
 
       {/* Course collections */}

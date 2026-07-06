@@ -15,9 +15,14 @@ import { notifyMaintenanceGroupMe } from "@/app/(protected)/home/actions";
 type Props = {
   reporterName: string;
   groupMeBotConfigured: boolean;
+  groupMeBotLabel: string | null;
 };
 
-export function MaintenanceShortcutPanel({ reporterName, groupMeBotConfigured }: Props) {
+export function MaintenanceShortcutPanel({
+  reporterName,
+  groupMeBotConfigured,
+  groupMeBotLabel,
+}: Props) {
   const [building, setBuilding] = useState<string>(MAINTENANCE_BUILDINGS[0].label);
   const [department, setDepartment] = useState<string>(MAINTENANCE_DEPARTMENTS[0].label);
   const [room, setRoom] = useState("124");
@@ -65,7 +70,11 @@ export function MaintenanceShortcutPanel({ reporterName, groupMeBotConfigured }:
     });
     setBusy(false);
     if (result.ok) {
-      setStatus("Posted to your class GroupMe.");
+      setStatus(
+        groupMeBotLabel
+          ? `Posted to GroupMe (${groupMeBotLabel}).`
+          : "Posted to GroupMe."
+      );
     } else {
       setError(result.error);
     }
@@ -185,6 +194,9 @@ export function MaintenanceShortcutPanel({ reporterName, groupMeBotConfigured }:
           <a href={`tel:${CBRE_PHONE.replace(/-/g, "")}`} className="text-brand-blue hover:underline">
             {CBRE_PHONE}
           </a>
+          {groupMeBotConfigured && groupMeBotLabel && (
+            <> · GroupMe posts go to: <strong className="text-brand-navy">{groupMeBotLabel}</strong></>
+          )}
           {!groupMeBotConfigured && (
             <> · GroupMe bot not configured yet — create a bot and add GROUPME_BOT_ID in Vercel.</>
           )}
