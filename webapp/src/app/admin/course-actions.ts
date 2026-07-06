@@ -19,8 +19,6 @@ import {
 } from "@/lib/course-templates";
 import {
   assignTargetToFields,
-  INBOX_SECTION,
-  INBOX_USE_LABEL,
   isInboxResource,
   type AssignTarget,
 } from "@/lib/resource-kinds";
@@ -102,7 +100,7 @@ async function logContentEvent(
   if (error) console.error("content_events insert failed:", error.message);
 }
 
-function revalidateCoursePaths(courseCode: string, collectionId: string) {
+function revalidateCoursePaths(courseCode: string) {
   const encoded = encodeURIComponent(courseCode);
   revalidatePath(`/course/${encoded}`);
   revalidatePath(`/admin/courses/${encoded}`);
@@ -178,12 +176,12 @@ export async function getCourseEditorData(
 
   await ensureDefaultCourseSections(admin, courseCode, collectionId);
 
-  const [{ data: lectures }, { data: resources }, { data: transcripts }, { data: sections }, eventsResult] =
+  const [{ data: lectures }, { data: resources }, { data: sections }, eventsResult] =
     await Promise.all([
       admin
         .from("lectures")
         .select(
-          "id, title, lecture_date, transcript_source, youtube_id, youtube_visibility, synthetic, sort_order"
+          "id, title, lecture_date, transcript_source, youtube_id, youtube_visibility, synthetic, sort_order, transcripts(content)"
         )
         .eq("course_code", courseCode)
         .eq("resource_collection_id", collectionId)
@@ -197,7 +195,6 @@ export async function getCourseEditorData(
         .eq("resource_collection_id", collectionId)
         .order("sort_order")
         .order("name"),
-      admin.from("transcripts").select("lecture_id, content"),
       admin
         .from("course_sections")
         .select("id, label, section_type, sort_order")
@@ -215,21 +212,16 @@ export async function getCourseEditorData(
 
   const events = eventsResult.error ? [] : ((eventsResult.data ?? []) as CourseEditorData["events"]);
 
-  const transcriptByLecture = new Map(
-    (transcripts ?? []).map((row: { lecture_id: string; content: string }) => [
-      row.lecture_id,
-      row.content,
-    ])
-  );
-
   return {
     course: course as CourseEditorData["course"],
     collection: collection as CourseEditorData["collection"],
     sections: (sections ?? []) as CourseEditorData["sections"],
-    lectures: (lectures ?? []).map((lecture) => ({
-      ...lecture,
-      transcript: transcriptByLecture.get(lecture.id) ?? null,
-    })),
+    lectures: (lectures ?? []).map(({ transcripts, ...lecture }) => {
+      // transcripts.lecture_id is the table's primary key, so PostgREST returns
+      // the embed as a single object (or null); handle the array shape defensively.
+      const row = Array.isArray(transcripts) ? transcripts[0] : transcripts;
+      return { ...lecture, transcript: row?.content ?? null };
+    }),
     resources: (resources ?? []) as CourseEditorData["resources"],
     events,
   };
@@ -273,7 +265,7 @@ export async function updateCourseMetadata(
     actorId: userId,
   });
 
-  revalidateCoursePaths(courseCode, collectionId);
+  revalidateCoursePaths(courseCode);
 }
 
 export async function createLecture(
@@ -315,7 +307,7 @@ export async function createLecture(
     actorId: userId,
   });
 
-  revalidateCoursePaths(courseCode, collectionId);
+  revalidateCoursePaths(courseCode);
   return id;
 }
 
@@ -363,7 +355,7 @@ export async function updateLecture(
     actorId: userId,
   });
 
-  revalidateCoursePaths(courseCode, collectionId);
+  revalidateCoursePaths(courseCode);
 }
 
 export async function deleteLecture(
@@ -391,7 +383,7 @@ export async function deleteLecture(
     actorId: userId,
   });
 
-  revalidateCoursePaths(courseCode, collectionId);
+  revalidateCoursePaths(courseCode);
 }
 
 export async function saveTranscript(
@@ -426,7 +418,7 @@ export async function saveTranscript(
     actorId: userId,
   });
 
-  revalidateCoursePaths(courseCode, collectionId);
+  revalidateCoursePaths(courseCode);
 }
 
 export async function createResource(
@@ -490,7 +482,7 @@ export async function createResource(
     actorId: userId,
   });
 
-  revalidateCoursePaths(courseCode, collectionId);
+  revalidateCoursePaths(courseCode);
   return data.id as number;
 }
 
@@ -546,7 +538,7 @@ export async function updateResource(
     actorId: userId,
   });
 
-  revalidateCoursePaths(courseCode, collectionId);
+  revalidateCoursePaths(courseCode);
 }
 
 export async function deleteResource(
@@ -593,7 +585,7 @@ export async function deleteResource(
     actorId: userId,
   });
 
-  revalidateCoursePaths(courseCode, collectionId);
+  revalidateCoursePaths(courseCode);
 }
 
 export async function uploadCourseResourceFile(
@@ -647,7 +639,7 @@ export async function uploadCourseResourceFile(
     actorId,
   });
 
-  revalidateCoursePaths(courseCode, collectionId);
+  revalidateCoursePaths(courseCode);
   return { storagePath };
 }
 
@@ -659,18 +651,19 @@ export async function finalizeUploadBatchNotify(
   if (fileCount <= 0) return;
 
   const admin = createAdminClient();
-  const { data: course } = await admin
-    .from("courses")
-    .select("title")
-    .eq("code", courseCode)
-    .eq("resource_collection_id", collectionId)
-    .maybeSingle();
-
-  const { data: collection } = await admin
-    .from("resource_collections")
-    .select("label")
-    .eq("id", collectionId)
-    .maybeSingle();
+  const [{ data: course }, { data: collection }] = await Promise.all([
+    admin
+      .from("courses")
+      .select("title")
+      .eq("code", courseCode)
+      .eq("resource_collection_id", collectionId)
+      .maybeSingle(),
+    admin
+      .from("resource_collections")
+      .select("label")
+      .eq("id", collectionId)
+      .maybeSingle(),
+  ]);
 
   await notifyCourseContentBatch({
     courseCode,
@@ -721,6 +714,28 @@ export async function listCoursesForAdmin(): Promise<CourseListRow[]> {
 
   if (error) throw new Error(error.message);
 
+  // Two bulk queries instead of two queries per course.
+  const [{ data: allLectures }, { data: allResources }] = await Promise.all([
+    admin.from("lectures").select("course_code, resource_collection_id"),
+    admin.from("resources").select("course_code, resource_collection_id, storage_path, kind"),
+  ]);
+
+  const lectureCounts = new Map<string, number>();
+  for (const lecture of allLectures ?? []) {
+    const key = `${lecture.course_code}::${lecture.resource_collection_id}`;
+    lectureCounts.set(key, (lectureCounts.get(key) ?? 0) + 1);
+  }
+
+  const fileCounts = new Map<string, { online: number; total: number }>();
+  for (const resource of allResources ?? []) {
+    if (resource.kind === "Local Media Source") continue;
+    const key = `${resource.course_code}::${resource.resource_collection_id}`;
+    const entry = fileCounts.get(key) ?? { online: 0, total: 0 };
+    entry.total += 1;
+    if (resource.storage_path) entry.online += 1;
+    fileCounts.set(key, entry);
+  }
+
   const rows: CourseListRow[] = [];
   for (const row of memberships ?? []) {
     const course = Array.isArray(row.courses) ? row.courses[0] : row.courses;
@@ -729,21 +744,8 @@ export async function listCoursesForAdmin(): Promise<CourseListRow[]> {
       : row.resource_collections;
     if (!course || !collection) continue;
 
-    const [{ count: lectureCount }, { data: resources }] = await Promise.all([
-      admin
-        .from("lectures")
-        .select("*", { count: "exact", head: true })
-        .eq("course_code", course.code)
-        .eq("resource_collection_id", collection.id),
-      admin
-        .from("resources")
-        .select("storage_path, kind, section, use_label")
-        .eq("course_code", course.code)
-        .eq("resource_collection_id", collection.id),
-    ]);
-
-    const fileResources = (resources ?? []).filter((r) => r.kind !== "Local Media Source");
-    const filesOnline = fileResources.filter((r) => r.storage_path).length;
+    const key = `${course.code}::${collection.id}`;
+    const files = fileCounts.get(key) ?? { online: 0, total: 0 };
 
     rows.push({
       course_code: row.course_code,
@@ -755,9 +757,9 @@ export async function listCoursesForAdmin(): Promise<CourseListRow[]> {
       area: course.area,
       collection_label: collection.label,
       collection_short_label: collection.short_label,
-      lecture_count: lectureCount ?? 0,
-      files_online: filesOnline,
-      files_total: fileResources.length,
+      lecture_count: lectureCounts.get(key) ?? 0,
+      files_online: files.online,
+      files_total: files.total,
     });
   }
 
@@ -901,7 +903,7 @@ export async function createCourseFromTemplate(input: {
     actorId: userId,
   });
 
-  revalidateCoursePaths(code, input.collectionId);
+  revalidateCoursePaths(code);
   return { courseCode: code, collectionId: input.collectionId };
 }
 
@@ -951,20 +953,21 @@ export async function deleteCourse(courseCode: string, collectionId: string) {
     .eq("course_code", courseCode)
     .eq("collection_id", collectionId);
 
-  const { count: otherMemberships } = await admin
-    .from("course_collection_members")
-    .select("*", { count: "exact", head: true })
-    .eq("course_code", courseCode);
-
-  const { count: otherLectures } = await admin
-    .from("lectures")
-    .select("*", { count: "exact", head: true })
-    .eq("course_code", courseCode);
-
-  const { count: otherResources } = await admin
-    .from("resources")
-    .select("*", { count: "exact", head: true })
-    .eq("course_code", courseCode);
+  const [{ count: otherMemberships }, { count: otherLectures }, { count: otherResources }] =
+    await Promise.all([
+      admin
+        .from("course_collection_members")
+        .select("*", { count: "exact", head: true })
+        .eq("course_code", courseCode),
+      admin
+        .from("lectures")
+        .select("*", { count: "exact", head: true })
+        .eq("course_code", courseCode),
+      admin
+        .from("resources")
+        .select("*", { count: "exact", head: true })
+        .eq("course_code", courseCode),
+    ]);
 
   if (
     (otherMemberships ?? 0) === 0 &&
@@ -982,7 +985,7 @@ export async function deleteCourse(courseCode: string, collectionId: string) {
     actorId: userId,
   });
 
-  revalidateCoursePaths(courseCode, collectionId);
+  revalidateCoursePaths(courseCode);
 }
 
 export async function assignResourceToSlot(
@@ -1040,7 +1043,7 @@ export async function assignResourceToSlot(
     actorId: userId,
   });
 
-  revalidateCoursePaths(courseCode, collectionId);
+  revalidateCoursePaths(courseCode);
 
   if (existing && isInboxResource(existing)) {
     await finalizeUploadBatchNotify(courseCode, collectionId, 1);
@@ -1055,15 +1058,18 @@ export async function reorderLectures(
   const { userId } = await requireAdminProfile();
   const admin = createAdminClient();
 
-  for (let i = 0; i < orderedLectureIds.length; i++) {
-    const { error } = await admin
-      .from("lectures")
-      .update({ sort_order: (i + 1) * 10 })
-      .eq("id", orderedLectureIds[i])
-      .eq("course_code", courseCode)
-      .eq("resource_collection_id", collectionId);
-    if (error) throw new Error(error.message);
-  }
+  const results = await Promise.all(
+    orderedLectureIds.map((lectureId, index) =>
+      admin
+        .from("lectures")
+        .update({ sort_order: (index + 1) * 10 })
+        .eq("id", lectureId)
+        .eq("course_code", courseCode)
+        .eq("resource_collection_id", collectionId)
+    )
+  );
+  const failed = results.find((result) => result.error);
+  if (failed?.error) throw new Error(failed.error.message);
 
   await logContentEvent(admin, {
     courseCode,
@@ -1073,7 +1079,7 @@ export async function reorderLectures(
     actorId: userId,
   });
 
-  revalidateCoursePaths(courseCode, collectionId);
+  revalidateCoursePaths(courseCode);
 }
 
 export async function createCourseSection(
@@ -1113,7 +1119,7 @@ export async function createCourseSection(
     actorId: userId,
   });
 
-  revalidateCoursePaths(courseCode, collectionId);
+  revalidateCoursePaths(courseCode);
   return id;
 }
 
@@ -1145,7 +1151,7 @@ export async function updateCourseSection(
     actorId: userId,
   });
 
-  revalidateCoursePaths(courseCode, collectionId);
+  revalidateCoursePaths(courseCode);
 }
 
 export async function deleteCourseSection(
@@ -1189,7 +1195,7 @@ export async function deleteCourseSection(
     actorId: userId,
   });
 
-  revalidateCoursePaths(courseCode, collectionId);
+  revalidateCoursePaths(courseCode);
 }
 
 export async function reorderCourseSections(
@@ -1200,15 +1206,18 @@ export async function reorderCourseSections(
   const { userId } = await requireAdminProfile();
   const admin = createAdminClient();
 
-  for (let i = 0; i < orderedSectionIds.length; i++) {
-    const { error } = await admin
-      .from("course_sections")
-      .update({ sort_order: (i + 1) * 10 })
-      .eq("id", orderedSectionIds[i])
-      .eq("course_code", courseCode)
-      .eq("resource_collection_id", collectionId);
-    if (error) throw new Error(error.message);
-  }
+  const results = await Promise.all(
+    orderedSectionIds.map((sectionId, index) =>
+      admin
+        .from("course_sections")
+        .update({ sort_order: (index + 1) * 10 })
+        .eq("id", sectionId)
+        .eq("course_code", courseCode)
+        .eq("resource_collection_id", collectionId)
+    )
+  );
+  const failed = results.find((result) => result.error);
+  if (failed?.error) throw new Error(failed.error.message);
 
   await logContentEvent(admin, {
     courseCode,
@@ -1218,7 +1227,7 @@ export async function reorderCourseSections(
     actorId: userId,
   });
 
-  revalidateCoursePaths(courseCode, collectionId);
+  revalidateCoursePaths(courseCode);
 }
 
 function guessContentType(fileName: string): string {

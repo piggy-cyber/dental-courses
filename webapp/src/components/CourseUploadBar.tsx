@@ -32,21 +32,26 @@ export function CourseUploadBar({ data, onMessage, onError, onProgress }: Props)
     onMessage?.(null);
     onProgress?.(0);
 
-    const result = await uploadCourseFiles({
-      courseCode: data.course.code,
-      collectionId: data.collection.id,
-      files: [...files],
-      inbox: true,
-      onProgress: onProgress,
-    });
+    try {
+      const result = await uploadCourseFiles({
+        courseCode: data.course.code,
+        collectionId: data.collection.id,
+        files: [...files],
+        inbox: true,
+        onProgress: onProgress,
+      });
 
-    onProgress?.(null);
-    if (!result.ok) {
-      onError?.(result.errors.join(" ") || "Upload failed.");
-      return;
+      if (!result.ok) {
+        onError?.(result.errors.join(" ") || "Upload failed.");
+        return;
+      }
+      onMessage?.(`Uploaded ${result.uploaded} file(s) to inbox. Assign each one below.`);
+      router.refresh();
+    } catch (err) {
+      onError?.(err instanceof Error ? err.message : "Upload failed.");
+    } finally {
+      onProgress?.(null);
     }
-    onMessage?.(`Uploaded ${result.uploaded} file(s) to inbox. Assign each one below.`);
-    router.refresh();
   }
 
   function uploadSingle() {

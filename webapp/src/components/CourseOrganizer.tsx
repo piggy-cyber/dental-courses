@@ -30,7 +30,9 @@ type Props = {
 
 export function CourseOrganizer({ initial }: Props) {
   const router = useRouter();
-  const [data] = useState(initial);
+  // Render straight from props so router.refresh() shows fresh server data;
+  // useState(initial) would pin the snapshot from first mount.
+  const data = initial;
   const [pending, startTransition] = useTransition();
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -81,20 +83,25 @@ export function CourseOrganizer({ initial }: Props) {
     if (!files?.[0]) return;
     setUploadProgress(0);
     setError(null);
-    const result = await uploadCourseFiles({
-      courseCode: data.course.code,
-      collectionId: data.collection.id,
-      files: [files[0]],
-      resourceId,
-      onProgress: setUploadProgress,
-    });
-    setUploadProgress(null);
-    if (!result.ok) {
-      setError(result.errors.join(" ") || "Upload failed.");
-      return;
+    try {
+      const result = await uploadCourseFiles({
+        courseCode: data.course.code,
+        collectionId: data.collection.id,
+        files: [files[0]],
+        resourceId,
+        onProgress: setUploadProgress,
+      });
+      if (!result.ok) {
+        setError(result.errors.join(" ") || "Upload failed.");
+        return;
+      }
+      setMessage("File uploaded.");
+      router.refresh();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Upload failed.");
+    } finally {
+      setUploadProgress(null);
     }
-    setMessage("File uploaded.");
-    router.refresh();
   }
 
   function moveLecture(index: number, direction: -1 | 1) {
@@ -198,7 +205,9 @@ export function CourseOrganizer({ initial }: Props) {
           </button>
         </div>
         <ul className="divide-y divide-brand-line">
-          {data.lectures.map((lecture, index) => (
+          {data.lectures.map((lecture, index) => {
+            const linkedFiles = lectureResources(lecture.id);
+            return (
             <li key={lecture.id} className="space-y-3 p-4">
               <form
                 className="grid gap-3 sm:grid-cols-2"
@@ -274,9 +283,9 @@ export function CourseOrganizer({ initial }: Props) {
 
               <div className="rounded border border-brand-line bg-brand-soft/40 p-3">
                 <p className="text-xs font-semibold uppercase text-brand-muted">Linked files</p>
-                {lectureResources(lecture.id).length > 0 ? (
+                {linkedFiles.length > 0 ? (
                   <ul className="mt-2 space-y-1 text-sm text-brand-ink">
-                    {lectureResources(lecture.id).map((r) => (
+                    {linkedFiles.map((r) => (
                       <li key={r.id}>{r.name}</li>
                     ))}
                   </ul>
@@ -309,7 +318,8 @@ export function CourseOrganizer({ initial }: Props) {
                 />
               </label>
             </li>
-          ))}
+            );
+          })}
           {data.lectures.length === 0 && (
             <li className="p-4 text-sm text-brand-muted">No lectures yet. Add one above.</li>
           )}

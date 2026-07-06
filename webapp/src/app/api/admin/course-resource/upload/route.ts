@@ -28,20 +28,14 @@ export async function POST(request: Request) {
   const maxBytes = getUploadMaxBytes();
   const actorId = actor.kind === "admin" ? actor.userId : null;
 
-  const entries = [...form.entries()].filter(([key]) => key === "file" || key.startsWith("file"));
-  const fileEntries = entries.length
-    ? entries
-    : form.get("file")
-      ? [["file", form.get("file")] as [string, FormDataEntryValue]]
-      : [];
-
   const resourceIdRaw = form.get("resourceId");
   const inbox = form.get("inbox") === "1";
   const uploaded: string[] = [];
   const resourceIds: number[] = [];
   const errors: string[] = [];
 
-  const files = fileEntries
+  const files = [...form.entries()]
+    .filter(([key]) => key === "file" || key.startsWith("file"))
     .map(([, value]) => value)
     .filter((value): value is File => value instanceof File);
 
