@@ -6,6 +6,7 @@ import {
   finalizeUploadBatchNotify,
   uploadCourseResourceFile,
 } from "@/app/admin/course-actions";
+import { INBOX_SECTION, INBOX_USE_LABEL } from "@/lib/resource-kinds";
 
 export async function POST(request: Request) {
   const actor = await authorizeCourseUpload(request);
@@ -35,6 +36,7 @@ export async function POST(request: Request) {
       : [];
 
   const resourceIdRaw = form.get("resourceId");
+  const inbox = form.get("inbox") === "1";
   const uploaded: string[] = [];
   const errors: string[] = [];
 
@@ -59,7 +61,11 @@ export async function POST(request: Request) {
         resourceId = await createResource(
           courseCode,
           collectionId,
-          { name: file.name },
+          {
+            name: file.name,
+            section: inbox ? INBOX_SECTION : null,
+            use_label: inbox ? INBOX_USE_LABEL : null,
+          },
           actorId
         );
       }
@@ -79,7 +85,7 @@ export async function POST(request: Request) {
     }
   }
 
-  if (uploaded.length > 0) {
+  if (uploaded.length > 0 && !inbox) {
     await finalizeUploadBatchNotify(courseCode, collectionId, uploaded.length);
   }
 

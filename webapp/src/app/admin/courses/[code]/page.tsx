@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireAdminProfile } from "@/app/admin/actions";
 import { getCourseEditorData } from "@/app/admin/course-actions";
-import { CourseEditor } from "@/components/CourseEditor";
+import { CourseOrganizer } from "@/components/CourseOrganizer";
 
 export const dynamic = "force-dynamic";
 
@@ -59,7 +59,7 @@ export default async function AdminCourseEditorPage({
         </div>
       </header>
 
-      <CourseEditor initial={data} />
+      <CourseOrganizer initial={data} />
     </div>
   );
 }

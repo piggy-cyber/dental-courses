@@ -12,6 +12,18 @@ import {
   fileExtension,
 } from "@/lib/course-storage";
 import { notifyCourseContentBatch } from "@/lib/course-notify";
+import {
+  getCourseTemplate,
+  lectureSlotTitle,
+  placeholderResourceName,
+} from "@/lib/course-templates";
+import {
+  assignTargetToFields,
+  INBOX_SECTION,
+  INBOX_USE_LABEL,
+  isInboxResource,
+  type AssignTarget,
+} from "@/lib/resource-kinds";
 import type { AccessTier } from "@/lib/tiers";
 
 export type CourseEditorData = {
@@ -374,6 +386,18 @@ export async function createResource(
   const name = fields.name.trim();
   if (!name) throw new Error("Resource name is required.");
 
+  const { data: duplicate } = await admin
+    .from("resources")
+    .select("id")
+    .eq("course_code", courseCode)
+    .eq("resource_collection_id", collectionId)
+    .eq("name", name)
+    .maybeSingle();
+
+  if (duplicate) {
+    throw new Error(`A file named "${name}" already exists in this course.`);
+  }
+
   const { data, error } = await admin
     .from("resources")
     .insert({
@@ -582,6 +606,394 @@ export async function finalizeUploadBatchNotify(
     collectionId,
     collectionLabel: collection?.label ?? null,
   });
+}
+
+export async function listResourceCollections() {
+  await requireAdminProfile();
+  const admin = createAdminClient();
+  const { data, error } = await admin
+    .from("resource_collections")
+    .select("id, label, short_label")
+    .eq("is_active", true)
+    .order("sort_order");
+  if (error) throw new Error(error.message);
+  return data ?? [];
+}
+
+export type CourseListRow = {
+  course_code: string;
+  collection_id: string;
+  sort_order: number;
+  code: string;
+  title: string;
+  semester: string | null;
+  area: string | null;
+  collection_label: string;
+  collection_short_label: string;
+  lecture_count: number;
+  files_online: number;
+  files_total: number;
+};
+
+export async function listCoursesForAdmin(): Promise<CourseListRow[]> {
+  await requireAdminProfile();
+  const admin = createAdminClient();
+
+  const { data: memberships, error } = await admin
+    .from("course_collection_members")
+    .select(
+      "course_code, collection_id, sort_order, courses(code, title, semester, area), resource_collections(id, label, short_label)"
+    )
+    .order("sort_order");
+
+  if (error) throw new Error(error.message);
+
+  const rows: CourseListRow[] = [];
+  for (const row of memberships ?? []) {
+    const course = Array.isArray(row.courses) ? row.courses[0] : row.courses;
+    const collection = Array.isArray(row.resource_collections)
+      ? row.resource_collections[0]
+      : row.resource_collections;
+    if (!course || !collection) continue;
+
+    const [{ count: lectureCount }, { data: resources }] = await Promise.all([
+      admin
+        .from("lectures")
+        .select("*", { count: "exact", head: true })
+        .eq("course_code", course.code)
+        .eq("resource_collection_id", collection.id),
+      admin
+        .from("resources")
+        .select("storage_path, kind, section, use_label")
+        .eq("course_code", course.code)
+        .eq("resource_collection_id", collection.id),
+    ]);
+
+    const fileResources = (resources ?? []).filter((r) => r.kind !== "Local Media Source");
+    const filesOnline = fileResources.filter((r) => r.storage_path).length;
+
+    rows.push({
+      course_code: row.course_code,
+      collection_id: collection.id,
+      sort_order: row.sort_order,
+      code: course.code,
+      title: course.title,
+      semester: course.semester,
+      area: course.area,
+      collection_label: collection.label,
+      collection_short_label: collection.short_label,
+      lecture_count: lectureCount ?? 0,
+      files_online: filesOnline,
+      files_total: fileResources.length,
+    });
+  }
+
+  return rows;
+}
+
+export async function createCourseFromTemplate(input: {
+  collectionId: string;
+  templateId: string;
+  code: string;
+  title: string;
+  semester?: string | null;
+  area?: string | null;
+  libraryTier?: AccessTier;
+  lectureCount?: number;
+  includeCompanion?: boolean;
+}): Promise<{ courseCode: string; collectionId: string }> {
+  const { userId } = await requireAdminProfile();
+  const admin = createAdminClient();
+
+  const template = getCourseTemplate(input.templateId);
+  if (!template) throw new Error("Unknown course template.");
+
+  const code = input.code.trim();
+  const title = input.title.trim();
+  if (!code) throw new Error("Course code is required.");
+  if (!title) throw new Error("Course title is required.");
+
+  const lectureCount = Math.min(
+    template.maxLectureCount,
+    Math.max(template.minLectureCount, input.lectureCount ?? template.defaultLectureCount)
+  );
+
+  const { data: existingMember } = await admin
+    .from("course_collection_members")
+    .select("course_code")
+    .eq("collection_id", input.collectionId)
+    .eq("course_code", code)
+    .maybeSingle();
+
+  if (existingMember) {
+    throw new Error(`Course ${code} already exists in this collection.`);
+  }
+
+  const { data: collection } = await admin
+    .from("resource_collections")
+    .select("id, source_tier")
+    .eq("id", input.collectionId)
+    .maybeSingle();
+
+  if (!collection) throw new Error("Collection not found.");
+
+  const { data: existingCourse } = await admin
+    .from("courses")
+    .select("code")
+    .eq("code", code)
+    .maybeSingle();
+
+  const tier = input.libraryTier ?? (collection.source_tier as AccessTier) ?? "d1";
+
+  const { count: memberCount } = await admin
+    .from("course_collection_members")
+    .select("*", { count: "exact", head: true })
+    .eq("collection_id", input.collectionId);
+
+  if (!existingCourse) {
+    const { error: courseError } = await admin.from("courses").insert({
+      code,
+      title,
+      semester: input.semester?.trim() || null,
+      area: input.area?.trim() || null,
+      sort_order: ((memberCount ?? 0) + 1) * 10,
+      library_tier: tier,
+      resource_collection_id: input.collectionId,
+    });
+    if (courseError) throw new Error(courseError.message);
+  } else {
+    const { error: courseError } = await admin
+      .from("courses")
+      .update({
+        title,
+        semester: input.semester?.trim() || null,
+        area: input.area?.trim() || null,
+        library_tier: tier,
+      })
+      .eq("code", code);
+    if (courseError) throw new Error(courseError.message);
+  }
+
+  const { error: memberError } = await admin.from("course_collection_members").insert({
+    collection_id: input.collectionId,
+    course_code: code,
+    sort_order: ((memberCount ?? 0) + 1) * 10,
+    display_semester: input.semester?.trim() || null,
+    display_area: input.area?.trim() || null,
+  });
+  if (memberError) throw new Error(memberError.message);
+
+  const lectureRows = Array.from({ length: lectureCount }, (_, index) => {
+    const n = index + 1;
+    const lectureTitle = lectureSlotTitle(n);
+    return {
+      id: `${input.collectionId}-${courseSlug(code)}-lec-${n}`,
+      course_code: code,
+      resource_collection_id: input.collectionId,
+      title: lectureTitle,
+      sort_order: n * 10,
+      synthetic: false,
+    };
+  });
+
+  const { error: lectureError } = await admin.from("lectures").insert(lectureRows);
+  if (lectureError) throw new Error(lectureError.message);
+
+  const essentialRows = template.essentials
+    .filter((e) => !e.optional || input.includeCompanion)
+    .map((essential) => ({
+      course_code: code,
+      resource_collection_id: input.collectionId,
+      name: placeholderResourceName(essential.slot),
+      kind: essential.kind,
+      ext: "PDF",
+      section: essential.kind,
+      use_label: `essential-${essential.slot}-placeholder`,
+      is_canonical_syllabus: essential.isCanonicalSyllabus,
+    }));
+
+  if (essentialRows.length) {
+    const { error: resourceError } = await admin.from("resources").insert(essentialRows);
+    if (resourceError) throw new Error(resourceError.message);
+  }
+
+  await logContentEvent(admin, {
+    courseCode: code,
+    collectionId: input.collectionId,
+    action: "course_create",
+    summary: `Created course ${code} from ${template.label} (${lectureCount} lectures)`,
+    actorId: userId,
+  });
+
+  revalidateCoursePaths(code, input.collectionId);
+  return { courseCode: code, collectionId: input.collectionId };
+}
+
+export async function deleteCourse(courseCode: string, collectionId: string) {
+  const { userId } = await requireAdminProfile();
+  const admin = createAdminClient();
+
+  const { data: resources } = await admin
+    .from("resources")
+    .select("id, storage_path")
+    .eq("course_code", courseCode)
+    .eq("resource_collection_id", collectionId);
+
+  const storagePaths = (resources ?? [])
+    .map((r) => r.storage_path)
+    .filter((p): p is string => Boolean(p));
+
+  if (storagePaths.length) {
+    await admin.storage.from(BUCKET).remove(storagePaths);
+  }
+
+  await admin
+    .from("resources")
+    .delete()
+    .eq("course_code", courseCode)
+    .eq("resource_collection_id", collectionId);
+
+  const { data: lectures } = await admin
+    .from("lectures")
+    .select("id")
+    .eq("course_code", courseCode)
+    .eq("resource_collection_id", collectionId);
+
+  const lectureIds = (lectures ?? []).map((l) => l.id);
+  if (lectureIds.length) {
+    await admin.from("transcripts").delete().in("lecture_id", lectureIds);
+    await admin
+      .from("lectures")
+      .delete()
+      .eq("course_code", courseCode)
+      .eq("resource_collection_id", collectionId);
+  }
+
+  await admin
+    .from("course_collection_members")
+    .delete()
+    .eq("course_code", courseCode)
+    .eq("collection_id", collectionId);
+
+  const { count: otherMemberships } = await admin
+    .from("course_collection_members")
+    .select("*", { count: "exact", head: true })
+    .eq("course_code", courseCode);
+
+  const { count: otherLectures } = await admin
+    .from("lectures")
+    .select("*", { count: "exact", head: true })
+    .eq("course_code", courseCode);
+
+  const { count: otherResources } = await admin
+    .from("resources")
+    .select("*", { count: "exact", head: true })
+    .eq("course_code", courseCode);
+
+  if (
+    (otherMemberships ?? 0) === 0 &&
+    (otherLectures ?? 0) === 0 &&
+    (otherResources ?? 0) === 0
+  ) {
+    await admin.from("courses").delete().eq("code", courseCode);
+  }
+
+  await logContentEvent(admin, {
+    courseCode,
+    collectionId,
+    action: "course_delete",
+    summary: `Deleted course ${courseCode} from collection`,
+    actorId: userId,
+  });
+
+  revalidateCoursePaths(courseCode, collectionId);
+}
+
+export async function assignResourceToSlot(
+  courseCode: string,
+  collectionId: string,
+  resourceId: number,
+  target: AssignTarget
+) {
+  const { userId } = await requireAdminProfile();
+  const admin = createAdminClient();
+
+  let lectureTitle: string | undefined;
+  if (target.type === "lecture") {
+    const { data: lecture } = await admin
+      .from("lectures")
+      .select("title")
+      .eq("id", target.lectureId)
+      .maybeSingle();
+    lectureTitle = lecture?.title;
+  }
+
+  const { data: existing } = await admin
+    .from("resources")
+    .select("section, use_label")
+    .eq("id", resourceId)
+    .eq("course_code", courseCode)
+    .eq("resource_collection_id", collectionId)
+    .maybeSingle();
+
+  const fields = assignTargetToFields(target, lectureTitle);
+
+  const { error } = await admin
+    .from("resources")
+    .update({
+      kind: fields.kind,
+      section: fields.section,
+      use_label: fields.use_label,
+      is_canonical_syllabus: fields.is_canonical_syllabus,
+    })
+    .eq("id", resourceId)
+    .eq("course_code", courseCode)
+    .eq("resource_collection_id", collectionId);
+
+  if (error) throw new Error(error.message);
+
+  await logContentEvent(admin, {
+    courseCode,
+    collectionId,
+    action: "resource_assign",
+    summary: `Assigned resource #${resourceId} to ${fields.section}`,
+    actorId: userId,
+  });
+
+  revalidateCoursePaths(courseCode, collectionId);
+
+  if (existing && isInboxResource(existing)) {
+    await finalizeUploadBatchNotify(courseCode, collectionId, 1);
+  }
+}
+
+export async function reorderLectures(
+  courseCode: string,
+  collectionId: string,
+  orderedLectureIds: string[]
+) {
+  const { userId } = await requireAdminProfile();
+  const admin = createAdminClient();
+
+  for (let i = 0; i < orderedLectureIds.length; i++) {
+    const { error } = await admin
+      .from("lectures")
+      .update({ sort_order: (i + 1) * 10 })
+      .eq("id", orderedLectureIds[i])
+      .eq("course_code", courseCode)
+      .eq("resource_collection_id", collectionId);
+    if (error) throw new Error(error.message);
+  }
+
+  await logContentEvent(admin, {
+    courseCode,
+    collectionId,
+    action: "lecture_reorder",
+    summary: `Reordered ${orderedLectureIds.length} lectures`,
+    actorId: userId,
+  });
+
+  revalidateCoursePaths(courseCode, collectionId);
 }
 
 function guessContentType(fileName: string): string {
