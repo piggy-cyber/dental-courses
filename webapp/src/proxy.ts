@@ -36,8 +36,11 @@ export async function proxy(request: NextRequest) {
 
   const path = request.nextUrl.pathname;
   const isPublic = path === "/" || path === "/about" || path.startsWith("/auth");
+  // Bot uploads authenticate with a Bearer API key inside the route handler,
+  // not a session cookie, so let them through to be authorized there.
+  const isBotApi = path.startsWith("/api/admin/course-resource");
 
-  if (!user && !isPublic) {
+  if (!user && !isPublic && !isBotApi) {
     const url = request.nextUrl.clone();
     url.pathname = "/";
     return NextResponse.redirect(url);
