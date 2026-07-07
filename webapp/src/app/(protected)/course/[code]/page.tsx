@@ -211,6 +211,7 @@ export default async function CoursePage({
       !archive.some((item) => item.id === resource.id)
   );
 
+  const hasLectures = lectureList.length > 0;
   const organized = groupLecturesForDisplay(lecturesWithFiles);
   const hasModules = organized.moduleGroups.length > 0;
   const hasClass = organized.classGroups.length > 0;
@@ -248,26 +249,32 @@ export default async function CoursePage({
           </div>
         </div>
         <div className="mt-5 flex flex-wrap gap-2">
-          <StatChip label="lectures" value={lectureList.length} />
-          <StatChip label="transcripts" value={transcriptCount} />
-          <StatChip label="videos" value={videoCount + supplementalVideoCount} />
+          {hasLectures && (
+            <>
+              <StatChip label="lectures" value={lectureList.length} />
+              <StatChip label="transcripts" value={transcriptCount} />
+              <StatChip label="videos" value={videoCount + supplementalVideoCount} />
+            </>
+          )}
           <StatChip label="files online" value={`${uploadedFileCount}/${activeFileCount}`} />
         </div>
       </header>
 
       <CourseEssentialsPanel essentials={essentials} />
 
-      <section className="space-y-5">
-        <div>
-          <p className="eyebrow">Lecture path</p>
-          <h2 className="mt-1 text-xl font-bold text-brand-navy">Lectures</h2>
-          <p className="mt-1 text-sm text-brand-muted">{lectureBlurb}</p>
-        </div>
-        <CourseLectureSection
-          lecturesWithFiles={lecturesWithFiles}
-          hasTranscript={hasTranscript}
-        />
-      </section>
+      {hasLectures && (
+        <section className="space-y-5">
+          <div>
+            <p className="eyebrow">Lecture path</p>
+            <h2 className="mt-1 text-xl font-bold text-brand-navy">Lectures</h2>
+            <p className="mt-1 text-sm text-brand-muted">{lectureBlurb}</p>
+          </div>
+          <CourseLectureSection
+            lecturesWithFiles={lecturesWithFiles}
+            hasTranscript={hasTranscript}
+          />
+        </section>
+      )}
 
       {mediaResources.length > 0 && (
         <section className="space-y-4">
@@ -305,11 +312,14 @@ export default async function CoursePage({
       {supplemental.length > 0 && (
         <section className="space-y-4">
           <div>
-            <p className="eyebrow">Beyond lectures</p>
-            <h2 className="mt-1 text-xl font-bold text-brand-navy">Labs, flashcards & extras</h2>
+            <p className="eyebrow">{hasLectures ? "Beyond lectures" : "Library"}</p>
+            <h2 className="mt-1 text-xl font-bold text-brand-navy">
+              {hasLectures ? "Labs, flashcards & extras" : "Downloads"}
+            </h2>
             <p className="mt-1 text-sm text-brand-muted">
-              {supplemental.length} files not tied to a specific lecture — lab guides, Anki decks,
-              and reference material.
+              {hasLectures
+                ? `${supplemental.length} files not tied to a specific lecture — lab guides, Anki decks, and reference material.`
+                : `${supplemental.length} files — download and open on your device.`}
             </p>
           </div>
           {[...supplementalByKind.entries()]
