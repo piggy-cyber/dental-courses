@@ -122,11 +122,19 @@ function ToothButton({
       style={style}
       data-tooth-button
       data-code={tooth.code}
-      aria-label={toothAriaLabel(tooth)}
+      aria-label={`${toothAriaLabel(tooth)}${isHighlighted ? ", highlighted target" : ""}`}
+      aria-current={isHighlighted ? "true" : undefined}
       aria-pressed={isSelected}
       disabled={disabled}
       onClick={() => onSelect(tooth)}
-      onKeyDown={onKeyDown}
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          onSelect(tooth);
+          return;
+        }
+        onKeyDown(event);
+      }}
     >
       <Crown tooth={tooth} template={template} />
       <span className={`${styles.toothLabel} ${labelsVisible ? styles.labelVisible : ""}`}>
@@ -171,9 +179,14 @@ export function ToothArch({
 
   function focusTooth(code: string) {
     window.requestAnimationFrame(() => {
-      rootRef.current
-        ?.querySelector<HTMLButtonElement>(`button[data-tooth-button][data-code="${code}"]`)
-        ?.focus();
+      window.requestAnimationFrame(() => {
+        const matchingButtons = Array.from(
+          rootRef.current?.querySelectorAll<HTMLButtonElement>(
+            `button[data-tooth-button][data-code="${code}"]`,
+          ) ?? [],
+        );
+        matchingButtons.find((button) => button.offsetParent !== null)?.focus();
+      });
     });
   }
 

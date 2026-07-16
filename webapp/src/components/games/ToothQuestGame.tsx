@@ -156,8 +156,8 @@ function createQuestion(dentition: Dentition, mode: Mode, previousCode?: string)
       prompt: "Code the adjacent supernumerary tooth",
       instruction:
         dentition === "permanent"
-          ? "Type the highlighted tooth's number plus 50."
-          : "Type the highlighted tooth's letter followed by S.",
+          ? `Highlighted: ${qualifiedName(tooth)}. Type its number plus 50.`
+          : `Highlighted: ${qualifiedName(tooth)}. Type its letter followed by S.`,
       expectedAnswer: tooth.supernumeraryCode,
       answerMode: "input",
     };
