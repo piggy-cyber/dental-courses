@@ -1,0 +1,1178 @@
+{
+  "schemaVersion": 1,
+  "records": [
+    {
+      "id": "permanent-maxillary-first-molar",
+      "toothName": "Maxillary permanent first molars",
+      "toothNumber": "3 / 14",
+      "toothType": "molar",
+      "dentitionType": "permanent",
+      "arch": "maxillary",
+      "eruptionRange": {
+        "min": 6,
+        "max": 7
+      },
+      "ageUnit": "years",
+      "sequenceRank": 1,
+      "sequenceBand": "early",
+      "explanation": "The maxillary first permanent molars belong at the front of the permanent eruption timeline, within the 6-7 year band.",
+      "commonConfusion": "They erupt behind the primary molars and do not replace a primary tooth.",
+      "sourceRefs": [
+        {
+          "courseCode": "HEWB 130",
+          "sourceName": "LECTURE 10- Eruption and Shedding of Teeth 2024 - Canvas.pdf",
+          "locator": "page 32, permanent maxillary eruption diagram"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.pdf",
+          "locator": "pages 4-5, Universal permanent and primary tooth designations"
+        }
+      ],
+      "evidenceStatus": "course-verified",
+      "timelineSet": "permanent"
+    },
+    {
+      "id": "permanent-maxillary-central-incisor",
+      "toothName": "Maxillary permanent central incisors",
+      "toothNumber": "8 / 9",
+      "toothType": "incisor",
+      "dentitionType": "permanent",
+      "arch": "maxillary",
+      "eruptionRange": {
+        "min": 7,
+        "max": 8
+      },
+      "ageUnit": "years",
+      "sequenceRank": 2,
+      "sequenceBand": "early",
+      "explanation": "The maxillary central incisors follow the earliest molar band and are shown at 7-8 years.",
+      "commonConfusion": "Do not place them with the mandibular centrals, whose course range begins earlier.",
+      "sourceRefs": [
+        {
+          "courseCode": "HEWB 130",
+          "sourceName": "LECTURE 10- Eruption and Shedding of Teeth 2024 - Canvas.pdf",
+          "locator": "page 32, permanent maxillary eruption diagram"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.pdf",
+          "locator": "pages 4-5, Universal permanent and primary tooth designations"
+        }
+      ],
+      "evidenceStatus": "course-verified",
+      "timelineSet": "permanent"
+    },
+    {
+      "id": "permanent-maxillary-lateral-incisor",
+      "toothName": "Maxillary permanent lateral incisors",
+      "toothNumber": "7 / 10",
+      "toothType": "incisor",
+      "dentitionType": "permanent",
+      "arch": "maxillary",
+      "eruptionRange": {
+        "min": 8,
+        "max": 9
+      },
+      "ageUnit": "years",
+      "sequenceRank": 3,
+      "sequenceBand": "early",
+      "explanation": "The maxillary lateral incisors occupy the 8-9 year band, after the maxillary central incisors.",
+      "commonConfusion": "The mandibular lateral range is earlier, so arch matters.",
+      "sourceRefs": [
+        {
+          "courseCode": "HEWB 130",
+          "sourceName": "LECTURE 10- Eruption and Shedding of Teeth 2024 - Canvas.pdf",
+          "locator": "page 32, permanent maxillary eruption diagram"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.pdf",
+          "locator": "pages 4-5, Universal permanent and primary tooth designations"
+        }
+      ],
+      "evidenceStatus": "course-verified",
+      "timelineSet": "permanent"
+    },
+    {
+      "id": "permanent-maxillary-first-premolar",
+      "toothName": "Maxillary permanent first premolars",
+      "toothNumber": "5 / 12",
+      "toothType": "premolar",
+      "dentitionType": "permanent",
+      "arch": "maxillary",
+      "eruptionRange": {
+        "min": 10,
+        "max": 11
+      },
+      "ageUnit": "years",
+      "sequenceRank": 4,
+      "sequenceBand": "middle",
+      "explanation": "The maxillary first premolars are shown in the 10-11 year band.",
+      "commonConfusion": "The HEWB diagram shows 10-11 years, a DA REVIEW slide gives age 9, and a broader guide supports 9-11; this row is withheld from scored play pending a canonical schedule.",
+      "sourceRefs": [
+        {
+          "courseCode": "HEWB 130",
+          "sourceName": "LECTURE 10- Eruption and Shedding of Teeth 2024 - Canvas.pdf",
+          "locator": "page 32, permanent maxillary eruption diagram"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.pdf",
+          "locator": "pages 4-5, Universal permanent and primary tooth designations"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "DA REVIEW trj 2024 for canvas.ppt",
+          "locator": "slide 29, permanent first-premolar eruption age"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.pdf",
+          "locator": "pages 4-5, permanent eruption chronology range"
+        }
+      ],
+      "evidenceStatus": "needs-review",
+      "timelineSet": "permanent"
+    },
+    {
+      "id": "permanent-maxillary-second-premolar",
+      "toothName": "Maxillary permanent second premolars",
+      "toothNumber": "4 / 13",
+      "toothType": "premolar",
+      "dentitionType": "permanent",
+      "arch": "maxillary",
+      "eruptionRange": {
+        "min": 10,
+        "max": 12
+      },
+      "ageUnit": "years",
+      "sequenceRank": 4,
+      "sequenceBand": "middle",
+      "explanation": "The 10-12 year range overlaps both the first premolars and the canine band.",
+      "commonConfusion": "A single fixed rank would overstate precision; use the range when judging ties.",
+      "sourceRefs": [
+        {
+          "courseCode": "HEWB 130",
+          "sourceName": "LECTURE 10- Eruption and Shedding of Teeth 2024 - Canvas.pdf",
+          "locator": "page 32, permanent maxillary eruption diagram"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.pdf",
+          "locator": "pages 4-5, Universal permanent and primary tooth designations"
+        }
+      ],
+      "evidenceStatus": "course-verified",
+      "timelineSet": "permanent"
+    },
+    {
+      "id": "permanent-maxillary-canine",
+      "toothName": "Maxillary permanent canines",
+      "toothNumber": "6 / 11",
+      "toothType": "canine",
+      "dentitionType": "permanent",
+      "arch": "maxillary",
+      "eruptionRange": {
+        "min": 11,
+        "max": 12
+      },
+      "ageUnit": "years",
+      "sequenceRank": 5,
+      "sequenceBand": "middle",
+      "explanation": "The maxillary canine is a later mixed-dentition event, shown at 11-12 years.",
+      "commonConfusion": "It is later than the mandibular canine range in this course diagram.",
+      "sourceRefs": [
+        {
+          "courseCode": "HEWB 130",
+          "sourceName": "LECTURE 10- Eruption and Shedding of Teeth 2024 - Canvas.pdf",
+          "locator": "page 32, permanent maxillary eruption diagram"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.pdf",
+          "locator": "pages 4-5, Universal permanent and primary tooth designations"
+        }
+      ],
+      "evidenceStatus": "course-verified",
+      "timelineSet": "permanent"
+    },
+    {
+      "id": "permanent-maxillary-second-molar",
+      "toothName": "Maxillary permanent second molars",
+      "toothNumber": "2 / 15",
+      "toothType": "molar",
+      "dentitionType": "permanent",
+      "arch": "maxillary",
+      "eruptionRange": {
+        "min": 12,
+        "max": 13
+      },
+      "ageUnit": "years",
+      "sequenceRank": 6,
+      "sequenceBand": "late",
+      "explanation": "The maxillary second molars follow the main mixed-dentition cluster at 12-13 years.",
+      "commonConfusion": "Do not swap them with first molars, which belong to the earliest permanent band.",
+      "sourceRefs": [
+        {
+          "courseCode": "HEWB 130",
+          "sourceName": "LECTURE 10- Eruption and Shedding of Teeth 2024 - Canvas.pdf",
+          "locator": "page 32, permanent maxillary eruption diagram"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.pdf",
+          "locator": "pages 4-5, Universal permanent and primary tooth designations"
+        }
+      ],
+      "evidenceStatus": "course-verified",
+      "timelineSet": "permanent"
+    },
+    {
+      "id": "permanent-maxillary-third-molar",
+      "toothName": "Maxillary permanent third molars",
+      "toothNumber": "1 / 16",
+      "toothType": "molar",
+      "dentitionType": "permanent",
+      "arch": "maxillary",
+      "eruptionRange": {
+        "min": 17,
+        "max": 25
+      },
+      "ageUnit": "years",
+      "sequenceRank": 7,
+      "sequenceBand": "third-molar",
+      "explanation": "The course diagram shows a typical 17-21 year band, while the lecture transcript explicitly extends possible eruption through age 25.",
+      "commonConfusion": "Treat 17-21 as the displayed typical band and 22-25 as an accepted extension, not a categorically wrong placement.",
+      "sourceRefs": [
+        {
+          "courseCode": "HEWB 130",
+          "sourceName": "LECTURE 10- Eruption and Shedding of Teeth 2024 - Canvas.pdf",
+          "locator": "page 32, permanent maxillary eruption diagram"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.pdf",
+          "locator": "pages 4-5, Universal permanent and primary tooth designations"
+        },
+        {
+          "courseCode": "HEWB 130",
+          "sourceName": "HEWB 130 - TMJ and Eruption.txt",
+          "locator": "transcript sequence discussion, third molars from 17 up to 25 years"
+        }
+      ],
+      "evidenceStatus": "course-verified",
+      "timelineSet": "permanent",
+      "typicalRange": {
+        "min": 17,
+        "max": 21
+      }
+    },
+    {
+      "id": "permanent-mandibular-first-molar",
+      "toothName": "Mandibular permanent first molars",
+      "toothNumber": "19 / 30",
+      "toothType": "molar",
+      "dentitionType": "permanent",
+      "arch": "mandibular",
+      "eruptionRange": {
+        "min": 6,
+        "max": 7
+      },
+      "ageUnit": "years",
+      "sequenceRank": 1,
+      "sequenceBand": "early",
+      "explanation": "The mandibular first molars are among the earliest permanent teeth, in the 6-7 year band.",
+      "commonConfusion": "They appear behind the primary teeth, so families may mistake them for another primary molar.",
+      "sourceRefs": [
+        {
+          "courseCode": "HEWB 130",
+          "sourceName": "LECTURE 10- Eruption and Shedding of Teeth 2024 - Canvas.pdf",
+          "locator": "page 32, permanent mandibular eruption diagram"
+        },
+        {
+          "courseCode": "HEWB 130",
+          "sourceName": "HEWB 130 - TMJ and Eruption.txt",
+          "locator": "transcript sequence discussion beginning 'the first teeth ... permanent lower molars'"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.pdf",
+          "locator": "pages 4-5, Universal permanent and primary tooth designations"
+        }
+      ],
+      "evidenceStatus": "course-verified",
+      "timelineSet": "permanent"
+    },
+    {
+      "id": "permanent-mandibular-central-incisor",
+      "toothName": "Mandibular permanent central incisors",
+      "toothNumber": "24 / 25",
+      "toothType": "incisor",
+      "dentitionType": "permanent",
+      "arch": "mandibular",
+      "eruptionRange": {
+        "min": 6,
+        "max": 7
+      },
+      "ageUnit": "years",
+      "sequenceRank": 1,
+      "sequenceBand": "early",
+      "explanation": "The mandibular central incisors share the 6-7 year band with the first permanent molars.",
+      "commonConfusion": "The overlapping range creates a valid tie; do not force one of these groups to be universally first.",
+      "sourceRefs": [
+        {
+          "courseCode": "HEWB 130",
+          "sourceName": "LECTURE 10- Eruption and Shedding of Teeth 2024 - Canvas.pdf",
+          "locator": "page 32, permanent mandibular eruption diagram"
+        },
+        {
+          "courseCode": "HEWB 130",
+          "sourceName": "HEWB 130 - TMJ and Eruption.txt",
+          "locator": "transcript sequence discussion, lower central incisors after first molars"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.pdf",
+          "locator": "pages 4-5, Universal permanent and primary tooth designations"
+        }
+      ],
+      "evidenceStatus": "course-verified",
+      "timelineSet": "permanent"
+    },
+    {
+      "id": "permanent-mandibular-lateral-incisor",
+      "toothName": "Mandibular permanent lateral incisors",
+      "toothNumber": "23 / 26",
+      "toothType": "incisor",
+      "dentitionType": "permanent",
+      "arch": "mandibular",
+      "eruptionRange": {
+        "min": 7,
+        "max": 8
+      },
+      "ageUnit": "years",
+      "sequenceRank": 2,
+      "sequenceBand": "early",
+      "explanation": "The mandibular lateral incisors follow the earliest 6-7 year groups and are shown at 7-8 years.",
+      "commonConfusion": "They precede the maxillary lateral incisor range by about one course band.",
+      "sourceRefs": [
+        {
+          "courseCode": "HEWB 130",
+          "sourceName": "LECTURE 10- Eruption and Shedding of Teeth 2024 - Canvas.pdf",
+          "locator": "page 32, permanent mandibular eruption diagram"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.pdf",
+          "locator": "pages 4-5, Universal permanent and primary tooth designations"
+        }
+      ],
+      "evidenceStatus": "course-verified",
+      "timelineSet": "permanent"
+    },
+    {
+      "id": "permanent-mandibular-canine",
+      "toothName": "Mandibular permanent canines",
+      "toothNumber": "22 / 27",
+      "toothType": "canine",
+      "dentitionType": "permanent",
+      "arch": "mandibular",
+      "eruptionRange": {
+        "min": 9,
+        "max": 10
+      },
+      "ageUnit": "years",
+      "sequenceRank": 3,
+      "sequenceBand": "middle",
+      "explanation": "The mandibular canine begins the middle sequence in the 9-10 year band.",
+      "commonConfusion": "The maxillary canine is later in the course diagram at 11-12 years.",
+      "sourceRefs": [
+        {
+          "courseCode": "HEWB 130",
+          "sourceName": "LECTURE 10- Eruption and Shedding of Teeth 2024 - Canvas.pdf",
+          "locator": "page 32, permanent mandibular eruption diagram"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.pdf",
+          "locator": "pages 4-5, Universal permanent and primary tooth designations"
+        }
+      ],
+      "evidenceStatus": "course-verified",
+      "timelineSet": "permanent"
+    },
+    {
+      "id": "permanent-mandibular-first-premolar",
+      "toothName": "Mandibular permanent first premolars",
+      "toothNumber": "21 / 28",
+      "toothType": "premolar",
+      "dentitionType": "permanent",
+      "arch": "mandibular",
+      "eruptionRange": {
+        "min": 10,
+        "max": 12
+      },
+      "ageUnit": "years",
+      "sequenceRank": 4,
+      "sequenceBand": "middle",
+      "explanation": "The mandibular first premolar range spans 10-12 years.",
+      "commonConfusion": "Its broad range overlaps the second premolar and second molar bands.",
+      "sourceRefs": [
+        {
+          "courseCode": "HEWB 130",
+          "sourceName": "LECTURE 10- Eruption and Shedding of Teeth 2024 - Canvas.pdf",
+          "locator": "page 32, permanent mandibular eruption diagram"
+        },
+        {
+          "courseCode": "HEWB 130",
+          "sourceName": "HEWB 130 - TMJ and Eruption.txt",
+          "locator": "transcript sequence discussion, premolars around 10-12 years"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.pdf",
+          "locator": "pages 4-5, Universal permanent and primary tooth designations"
+        }
+      ],
+      "evidenceStatus": "course-verified",
+      "timelineSet": "permanent"
+    },
+    {
+      "id": "permanent-mandibular-second-premolar",
+      "toothName": "Mandibular permanent second premolars",
+      "toothNumber": "20 / 29",
+      "toothType": "premolar",
+      "dentitionType": "permanent",
+      "arch": "mandibular",
+      "eruptionRange": {
+        "min": 11,
+        "max": 12
+      },
+      "ageUnit": "years",
+      "sequenceRank": 5,
+      "sequenceBand": "middle",
+      "explanation": "The mandibular second premolars are shown at 11-12 years.",
+      "commonConfusion": "Overlap with first premolars means adjacent reversal can be a valid tie.",
+      "sourceRefs": [
+        {
+          "courseCode": "HEWB 130",
+          "sourceName": "LECTURE 10- Eruption and Shedding of Teeth 2024 - Canvas.pdf",
+          "locator": "page 32, permanent mandibular eruption diagram"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.pdf",
+          "locator": "pages 4-5, Universal permanent and primary tooth designations"
+        }
+      ],
+      "evidenceStatus": "course-verified",
+      "timelineSet": "permanent"
+    },
+    {
+      "id": "permanent-mandibular-second-molar",
+      "toothName": "Mandibular permanent second molars",
+      "toothNumber": "18 / 31",
+      "toothType": "molar",
+      "dentitionType": "permanent",
+      "arch": "mandibular",
+      "eruptionRange": {
+        "min": 11,
+        "max": 13
+      },
+      "ageUnit": "years",
+      "sequenceRank": 5,
+      "sequenceBand": "late",
+      "explanation": "The mandibular second molars occupy a broad 11-13 year range.",
+      "commonConfusion": "Their range overlaps both mandibular premolar bands, so the timeline accepts ties.",
+      "sourceRefs": [
+        {
+          "courseCode": "HEWB 130",
+          "sourceName": "LECTURE 10- Eruption and Shedding of Teeth 2024 - Canvas.pdf",
+          "locator": "page 32, permanent mandibular eruption diagram"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.pdf",
+          "locator": "pages 4-5, Universal permanent and primary tooth designations"
+        }
+      ],
+      "evidenceStatus": "course-verified",
+      "timelineSet": "permanent"
+    },
+    {
+      "id": "permanent-mandibular-third-molar",
+      "toothName": "Mandibular permanent third molars",
+      "toothNumber": "17 / 32",
+      "toothType": "molar",
+      "dentitionType": "permanent",
+      "arch": "mandibular",
+      "eruptionRange": {
+        "min": 17,
+        "max": 25
+      },
+      "ageUnit": "years",
+      "sequenceRank": 6,
+      "sequenceBand": "third-molar",
+      "explanation": "The course diagram shows a typical 17-21 year band, while the lecture transcript explicitly extends possible eruption through age 25.",
+      "commonConfusion": "Treat 17-21 as the displayed typical band and 22-25 as an accepted extension, not a categorically wrong placement.",
+      "sourceRefs": [
+        {
+          "courseCode": "HEWB 130",
+          "sourceName": "LECTURE 10- Eruption and Shedding of Teeth 2024 - Canvas.pdf",
+          "locator": "page 32, permanent mandibular eruption diagram"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.pdf",
+          "locator": "pages 4-5, Universal permanent and primary tooth designations"
+        },
+        {
+          "courseCode": "HEWB 130",
+          "sourceName": "HEWB 130 - TMJ and Eruption.txt",
+          "locator": "transcript sequence discussion, third molars from 17 up to 25 years"
+        }
+      ],
+      "evidenceStatus": "course-verified",
+      "timelineSet": "permanent",
+      "typicalRange": {
+        "min": 17,
+        "max": 21
+      }
+    },
+    {
+      "id": "primary-mandibular-central-incisor",
+      "toothName": "Mandibular primary central incisors",
+      "toothNumber": "O / P",
+      "toothType": "incisor",
+      "dentitionType": "primary",
+      "arch": "mandibular",
+      "eruptionRange": {
+        "min": 6,
+        "max": 10
+      },
+      "ageUnit": "months",
+      "sequenceRank": 1,
+      "sequenceBand": "early",
+      "explanation": "The mandibular primary central incisors start the primary timeline at 6-10 months.",
+      "commonConfusion": "Their course range overlaps the maxillary central range; lower is earlier, not universally isolated.",
+      "sourceRefs": [
+        {
+          "courseCode": "HEWB 130",
+          "sourceName": "LECTURE 10- Eruption and Shedding of Teeth 2024 - Canvas.pdf",
+          "locator": "page 31, primary mandibular eruption table"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.pdf",
+          "locator": "pages 4-5, Universal permanent and primary tooth designations"
+        }
+      ],
+      "evidenceStatus": "course-verified",
+      "timelineSet": "primary"
+    },
+    {
+      "id": "primary-maxillary-central-incisor",
+      "toothName": "Maxillary primary central incisors",
+      "toothNumber": "E / F",
+      "toothType": "incisor",
+      "dentitionType": "primary",
+      "arch": "maxillary",
+      "eruptionRange": {
+        "min": 8,
+        "max": 12
+      },
+      "ageUnit": "months",
+      "sequenceRank": 2,
+      "sequenceBand": "early",
+      "explanation": "The maxillary primary central incisors are shown at 8-12 months.",
+      "commonConfusion": "They begin later than the mandibular centrals but their ranges overlap. A REHE 151 review table gives a conflicting single-month value, so this row is withheld from scored play.",
+      "sourceRefs": [
+        {
+          "courseCode": "HEWB 130",
+          "sourceName": "LECTURE 10- Eruption and Shedding of Teeth 2024 - Canvas.pdf",
+          "locator": "page 31, primary maxillary eruption table"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.pdf",
+          "locator": "pages 4-5, Universal permanent and primary tooth designations"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "Deciduouscomprehensivereview2024.pdf",
+          "locator": "page 38, primary dentition eruption-age table"
+        }
+      ],
+      "evidenceStatus": "needs-review",
+      "timelineSet": "primary"
+    },
+    {
+      "id": "primary-maxillary-lateral-incisor",
+      "toothName": "Maxillary primary lateral incisors",
+      "toothNumber": "D / G",
+      "toothType": "incisor",
+      "dentitionType": "primary",
+      "arch": "maxillary",
+      "eruptionRange": {
+        "min": 9,
+        "max": 13
+      },
+      "ageUnit": "months",
+      "sequenceRank": 3,
+      "sequenceBand": "early",
+      "explanation": "The maxillary primary lateral incisors occupy the 9-13 month range.",
+      "commonConfusion": "They can overlap both central-incisor ranges, so strict single-file ordering is false precision.",
+      "sourceRefs": [
+        {
+          "courseCode": "HEWB 130",
+          "sourceName": "LECTURE 10- Eruption and Shedding of Teeth 2024 - Canvas.pdf",
+          "locator": "page 31, primary maxillary eruption table"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.pdf",
+          "locator": "pages 4-5, Universal permanent and primary tooth designations"
+        }
+      ],
+      "evidenceStatus": "course-verified",
+      "timelineSet": "primary"
+    },
+    {
+      "id": "primary-mandibular-lateral-incisor",
+      "toothName": "Mandibular primary lateral incisors",
+      "toothNumber": "N / Q",
+      "toothType": "incisor",
+      "dentitionType": "primary",
+      "arch": "mandibular",
+      "eruptionRange": {
+        "min": 10,
+        "max": 16
+      },
+      "ageUnit": "months",
+      "sequenceRank": 3,
+      "sequenceBand": "early",
+      "explanation": "The mandibular primary lateral incisor range spans 10-16 months.",
+      "commonConfusion": "Its wide range overlaps several upper anterior events. A REHE 151 review table gives a conflicting single-month value, so this row is withheld from scored play.",
+      "sourceRefs": [
+        {
+          "courseCode": "HEWB 130",
+          "sourceName": "LECTURE 10- Eruption and Shedding of Teeth 2024 - Canvas.pdf",
+          "locator": "page 31, primary mandibular eruption table"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.pdf",
+          "locator": "pages 4-5, Universal permanent and primary tooth designations"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "Deciduouscomprehensivereview2024.pdf",
+          "locator": "page 38, primary dentition eruption-age table"
+        }
+      ],
+      "evidenceStatus": "needs-review",
+      "timelineSet": "primary"
+    },
+    {
+      "id": "primary-maxillary-first-molar",
+      "toothName": "Maxillary primary first molars",
+      "toothNumber": "B / I",
+      "toothType": "molar",
+      "dentitionType": "primary",
+      "arch": "maxillary",
+      "eruptionRange": {
+        "min": 13,
+        "max": 19
+      },
+      "ageUnit": "months",
+      "sequenceRank": 4,
+      "sequenceBand": "middle",
+      "explanation": "The maxillary primary first molars are shown at 13-19 months, before the second molars.",
+      "commonConfusion": "First molars usually precede canines in the primary sequence even though their ranges overlap.",
+      "sourceRefs": [
+        {
+          "courseCode": "HEWB 130",
+          "sourceName": "LECTURE 10- Eruption and Shedding of Teeth 2024 - Canvas.pdf",
+          "locator": "page 31, primary maxillary eruption table"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.pdf",
+          "locator": "pages 4-5, Universal permanent and primary tooth designations"
+        }
+      ],
+      "evidenceStatus": "course-verified",
+      "timelineSet": "primary"
+    },
+    {
+      "id": "primary-mandibular-first-molar",
+      "toothName": "Mandibular primary first molars",
+      "toothNumber": "L / S",
+      "toothType": "molar",
+      "dentitionType": "primary",
+      "arch": "mandibular",
+      "eruptionRange": {
+        "min": 14,
+        "max": 18
+      },
+      "ageUnit": "months",
+      "sequenceRank": 4,
+      "sequenceBand": "middle",
+      "explanation": "The mandibular primary first molars occupy the 14-18 month band.",
+      "commonConfusion": "Their band overlaps the canine ranges; the game accepts overlap-aware ties. A REHE 151 review table gives a conflicting single-month value, so this row is withheld from scored play.",
+      "sourceRefs": [
+        {
+          "courseCode": "HEWB 130",
+          "sourceName": "LECTURE 10- Eruption and Shedding of Teeth 2024 - Canvas.pdf",
+          "locator": "page 31, primary mandibular eruption table"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.pdf",
+          "locator": "pages 4-5, Universal permanent and primary tooth designations"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "Deciduouscomprehensivereview2024.pdf",
+          "locator": "page 38, primary dentition eruption-age table"
+        }
+      ],
+      "evidenceStatus": "needs-review",
+      "timelineSet": "primary"
+    },
+    {
+      "id": "primary-maxillary-canine",
+      "toothName": "Maxillary primary canines",
+      "toothNumber": "C / H",
+      "toothType": "canine",
+      "dentitionType": "primary",
+      "arch": "maxillary",
+      "eruptionRange": {
+        "min": 16,
+        "max": 22
+      },
+      "ageUnit": "months",
+      "sequenceRank": 5,
+      "sequenceBand": "middle",
+      "explanation": "The maxillary primary canines are shown at 16-22 months.",
+      "commonConfusion": "Canines generally sit between the first- and second-molar phases, with range overlap.",
+      "sourceRefs": [
+        {
+          "courseCode": "HEWB 130",
+          "sourceName": "LECTURE 10- Eruption and Shedding of Teeth 2024 - Canvas.pdf",
+          "locator": "page 31, primary maxillary eruption table"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.pdf",
+          "locator": "pages 4-5, Universal permanent and primary tooth designations"
+        }
+      ],
+      "evidenceStatus": "course-verified",
+      "timelineSet": "primary"
+    },
+    {
+      "id": "primary-mandibular-canine",
+      "toothName": "Mandibular primary canines",
+      "toothNumber": "M / R",
+      "toothType": "canine",
+      "dentitionType": "primary",
+      "arch": "mandibular",
+      "eruptionRange": {
+        "min": 17,
+        "max": 23
+      },
+      "ageUnit": "months",
+      "sequenceRank": 5,
+      "sequenceBand": "middle",
+      "explanation": "The mandibular primary canines span 17-23 months in the course table.",
+      "commonConfusion": "Their upper limit reaches the beginning of the mandibular second-molar range. A REHE 151 review table gives a conflicting single-month value, so this row is withheld from scored play.",
+      "sourceRefs": [
+        {
+          "courseCode": "HEWB 130",
+          "sourceName": "LECTURE 10- Eruption and Shedding of Teeth 2024 - Canvas.pdf",
+          "locator": "page 31, primary mandibular eruption table"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.pdf",
+          "locator": "pages 4-5, Universal permanent and primary tooth designations"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "Deciduouscomprehensivereview2024.pdf",
+          "locator": "page 38, primary dentition eruption-age table"
+        }
+      ],
+      "evidenceStatus": "needs-review",
+      "timelineSet": "primary"
+    },
+    {
+      "id": "primary-mandibular-second-molar",
+      "toothName": "Mandibular primary second molars",
+      "toothNumber": "K / T",
+      "toothType": "molar",
+      "dentitionType": "primary",
+      "arch": "mandibular",
+      "eruptionRange": {
+        "min": 23,
+        "max": 31
+      },
+      "ageUnit": "months",
+      "sequenceRank": 6,
+      "sequenceBand": "late",
+      "explanation": "The mandibular primary second molars form a late primary band at 23-31 months.",
+      "commonConfusion": "They are late primary teeth, not the early permanent first molars. A REHE 151 review table gives a conflicting single-month value, so this row is withheld from scored play.",
+      "sourceRefs": [
+        {
+          "courseCode": "HEWB 130",
+          "sourceName": "LECTURE 10- Eruption and Shedding of Teeth 2024 - Canvas.pdf",
+          "locator": "page 31, primary mandibular eruption table"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.pdf",
+          "locator": "pages 4-5, Universal permanent and primary tooth designations"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "Deciduouscomprehensivereview2024.pdf",
+          "locator": "page 38, primary dentition eruption-age table"
+        }
+      ],
+      "evidenceStatus": "needs-review",
+      "timelineSet": "primary"
+    },
+    {
+      "id": "primary-maxillary-second-molar",
+      "toothName": "Maxillary primary second molars",
+      "toothNumber": "A / J",
+      "toothType": "molar",
+      "dentitionType": "primary",
+      "arch": "maxillary",
+      "eruptionRange": {
+        "min": 25,
+        "max": 33
+      },
+      "ageUnit": "months",
+      "sequenceRank": 6,
+      "sequenceBand": "late",
+      "explanation": "The maxillary primary second molars close the primary timeline at 25-33 months.",
+      "commonConfusion": "The lower second-molar range begins earlier, but the two ranges overlap substantially. A REHE 151 review table gives a conflicting single-month value, so this row is withheld from scored play.",
+      "sourceRefs": [
+        {
+          "courseCode": "HEWB 130",
+          "sourceName": "LECTURE 10- Eruption and Shedding of Teeth 2024 - Canvas.pdf",
+          "locator": "page 31, primary maxillary eruption table"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.pdf",
+          "locator": "pages 4-5, Universal permanent and primary tooth designations"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "Deciduouscomprehensivereview2024.pdf",
+          "locator": "page 38, primary dentition eruption-age table"
+        }
+      ],
+      "evidenceStatus": "needs-review",
+      "timelineSet": "primary"
+    },
+    {
+      "id": "mixed-mandibular-first-molar",
+      "toothName": "Mandibular first permanent molars in mixed dentition",
+      "toothNumber": "19 / 30",
+      "toothType": "molar",
+      "dentitionType": "mixed",
+      "arch": "mandibular",
+      "eruptionRange": {
+        "min": 6,
+        "max": 7
+      },
+      "ageUnit": "years",
+      "sequenceRank": 1,
+      "sequenceBand": "early-mixed",
+      "explanation": "The lower first permanent molars open the mixed-dentition sequence in the 6-7 year band.",
+      "commonConfusion": "They erupt behind the primary molars and do not replace a primary tooth.",
+      "sourceRefs": [
+        {
+          "courseCode": "HEWB 130",
+          "sourceName": "LECTURE 10- Eruption and Shedding of Teeth 2024 - Canvas.pdf",
+          "locator": "page 32, permanent mandibular eruption diagram"
+        },
+        {
+          "courseCode": "HEWB 130",
+          "sourceName": "HEWB 130 - TMJ and Eruption.txt",
+          "locator": "transcript mixed-sequence discussion, first permanent lower molars"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.pdf",
+          "locator": "pages 4-5, Universal permanent and primary tooth designations"
+        }
+      ],
+      "evidenceStatus": "course-verified",
+      "timelineSet": "mixed"
+    },
+    {
+      "id": "mixed-mandibular-central-incisor",
+      "toothName": "Mandibular permanent central incisors in mixed dentition",
+      "toothNumber": "24 / 25",
+      "toothType": "incisor",
+      "dentitionType": "mixed",
+      "arch": "mandibular",
+      "eruptionRange": {
+        "min": 6,
+        "max": 7
+      },
+      "ageUnit": "years",
+      "sequenceRank": 1,
+      "sequenceBand": "early-mixed",
+      "explanation": "The lower central incisors share the 6-7 year band with the first permanent molars.",
+      "commonConfusion": "The overlap is a valid tie even though the lecture discusses first molars before central incisors.",
+      "sourceRefs": [
+        {
+          "courseCode": "HEWB 130",
+          "sourceName": "LECTURE 10- Eruption and Shedding of Teeth 2024 - Canvas.pdf",
+          "locator": "page 32, permanent mandibular eruption diagram"
+        },
+        {
+          "courseCode": "HEWB 130",
+          "sourceName": "HEWB 130 - TMJ and Eruption.txt",
+          "locator": "transcript mixed-sequence discussion, lower central incisors after first molars"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.pdf",
+          "locator": "pages 4-5, Universal permanent and primary tooth designations"
+        }
+      ],
+      "evidenceStatus": "course-verified",
+      "timelineSet": "mixed"
+    },
+    {
+      "id": "mixed-maxillary-first-molar",
+      "toothName": "Maxillary first permanent molars in mixed dentition",
+      "toothNumber": "3 / 14",
+      "toothType": "molar",
+      "dentitionType": "mixed",
+      "arch": "maxillary",
+      "eruptionRange": {
+        "min": 6,
+        "max": 7
+      },
+      "ageUnit": "years",
+      "sequenceRank": 1,
+      "sequenceBand": "early-mixed",
+      "explanation": "The upper first permanent molars also occupy the initial 6-7 year mixed-dentition band.",
+      "commonConfusion": "Both arches enter the early molar band, so arch does not force a strict order here.",
+      "sourceRefs": [
+        {
+          "courseCode": "HEWB 130",
+          "sourceName": "LECTURE 10- Eruption and Shedding of Teeth 2024 - Canvas.pdf",
+          "locator": "page 32, permanent maxillary eruption diagram"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.pdf",
+          "locator": "pages 4-5, Universal permanent and primary tooth designations"
+        }
+      ],
+      "evidenceStatus": "course-verified",
+      "timelineSet": "mixed"
+    },
+    {
+      "id": "mixed-maxillary-central-incisor",
+      "toothName": "Maxillary permanent central incisors in mixed dentition",
+      "toothNumber": "8 / 9",
+      "toothType": "incisor",
+      "dentitionType": "mixed",
+      "arch": "maxillary",
+      "eruptionRange": {
+        "min": 7,
+        "max": 8
+      },
+      "ageUnit": "years",
+      "sequenceRank": 2,
+      "sequenceBand": "early-mixed",
+      "explanation": "The upper central incisors follow in the 7-8 year band.",
+      "commonConfusion": "Their range overlaps the lower lateral incisors, so either may be a valid neighbor.",
+      "sourceRefs": [
+        {
+          "courseCode": "HEWB 130",
+          "sourceName": "LECTURE 10- Eruption and Shedding of Teeth 2024 - Canvas.pdf",
+          "locator": "page 32, permanent maxillary eruption diagram"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.pdf",
+          "locator": "pages 4-5, Universal permanent and primary tooth designations"
+        }
+      ],
+      "evidenceStatus": "course-verified",
+      "timelineSet": "mixed"
+    },
+    {
+      "id": "mixed-mandibular-lateral-incisor",
+      "toothName": "Mandibular permanent lateral incisors in mixed dentition",
+      "toothNumber": "23 / 26",
+      "toothType": "incisor",
+      "dentitionType": "mixed",
+      "arch": "mandibular",
+      "eruptionRange": {
+        "min": 7,
+        "max": 8
+      },
+      "ageUnit": "years",
+      "sequenceRank": 2,
+      "sequenceBand": "transitional-mixed",
+      "explanation": "The lower lateral incisors occupy the 7-8 year transition band.",
+      "commonConfusion": "They are earlier than the upper lateral incisors but tie the upper central range.",
+      "sourceRefs": [
+        {
+          "courseCode": "HEWB 130",
+          "sourceName": "LECTURE 10- Eruption and Shedding of Teeth 2024 - Canvas.pdf",
+          "locator": "page 32, permanent mandibular eruption diagram"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.pdf",
+          "locator": "pages 4-5, Universal permanent and primary tooth designations"
+        }
+      ],
+      "evidenceStatus": "course-verified",
+      "timelineSet": "mixed"
+    },
+    {
+      "id": "mixed-maxillary-lateral-incisor",
+      "toothName": "Maxillary permanent lateral incisors in mixed dentition",
+      "toothNumber": "7 / 10",
+      "toothType": "incisor",
+      "dentitionType": "mixed",
+      "arch": "maxillary",
+      "eruptionRange": {
+        "min": 8,
+        "max": 9
+      },
+      "ageUnit": "years",
+      "sequenceRank": 3,
+      "sequenceBand": "transitional-mixed",
+      "explanation": "The upper lateral incisors move the sequence into the 8-9 year band.",
+      "commonConfusion": "Do not merge this with the earlier 7-8 year lower lateral range.",
+      "sourceRefs": [
+        {
+          "courseCode": "HEWB 130",
+          "sourceName": "LECTURE 10- Eruption and Shedding of Teeth 2024 - Canvas.pdf",
+          "locator": "page 32, permanent maxillary eruption diagram"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.pdf",
+          "locator": "pages 4-5, Universal permanent and primary tooth designations"
+        }
+      ],
+      "evidenceStatus": "course-verified",
+      "timelineSet": "mixed"
+    },
+    {
+      "id": "mixed-mandibular-canine",
+      "toothName": "Mandibular permanent canines in mixed dentition",
+      "toothNumber": "22 / 27",
+      "toothType": "canine",
+      "dentitionType": "mixed",
+      "arch": "mandibular",
+      "eruptionRange": {
+        "min": 9,
+        "max": 10
+      },
+      "ageUnit": "years",
+      "sequenceRank": 4,
+      "sequenceBand": "late-mixed",
+      "explanation": "The lower canines begin the late mixed-dentition cluster at 9-10 years.",
+      "commonConfusion": "The upper canines are later, so canine timing is arch-dependent.",
+      "sourceRefs": [
+        {
+          "courseCode": "HEWB 130",
+          "sourceName": "LECTURE 10- Eruption and Shedding of Teeth 2024 - Canvas.pdf",
+          "locator": "page 32, permanent mandibular eruption diagram"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.pdf",
+          "locator": "pages 4-5, Universal permanent and primary tooth designations"
+        }
+      ],
+      "evidenceStatus": "course-verified",
+      "timelineSet": "mixed"
+    },
+    {
+      "id": "mixed-mandibular-first-premolar",
+      "toothName": "Mandibular first premolars in mixed dentition",
+      "toothNumber": "21 / 28",
+      "toothType": "premolar",
+      "dentitionType": "mixed",
+      "arch": "mandibular",
+      "eruptionRange": {
+        "min": 10,
+        "max": 12
+      },
+      "ageUnit": "years",
+      "sequenceRank": 5,
+      "sequenceBand": "late-mixed",
+      "explanation": "The lower first premolars belong to the broad 10-12 year late mixed-dentition window.",
+      "commonConfusion": "The broad window overlaps neighboring late mixed events, so ties are expected.",
+      "sourceRefs": [
+        {
+          "courseCode": "HEWB 130",
+          "sourceName": "LECTURE 10- Eruption and Shedding of Teeth 2024 - Canvas.pdf",
+          "locator": "page 32, permanent mandibular eruption diagram"
+        },
+        {
+          "courseCode": "HEWB 130",
+          "sourceName": "HEWB 130 - TMJ and Eruption.txt",
+          "locator": "transcript mixed-sequence discussion, premolars around 10-12 years"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.pdf",
+          "locator": "pages 4-5, Universal permanent and primary tooth designations"
+        }
+      ],
+      "evidenceStatus": "course-verified",
+      "timelineSet": "mixed"
+    },
+    {
+      "id": "mixed-maxillary-canine",
+      "toothName": "Maxillary permanent canines in mixed dentition",
+      "toothNumber": "6 / 11",
+      "toothType": "canine",
+      "dentitionType": "mixed",
+      "arch": "maxillary",
+      "eruptionRange": {
+        "min": 11,
+        "max": 12
+      },
+      "ageUnit": "years",
+      "sequenceRank": 6,
+      "sequenceBand": "late-mixed",
+      "explanation": "The upper canines sit in the 11-12 year late mixed-dentition band.",
+      "commonConfusion": "They are later than the lower canines and overlap the premolar window.",
+      "sourceRefs": [
+        {
+          "courseCode": "HEWB 130",
+          "sourceName": "LECTURE 10- Eruption and Shedding of Teeth 2024 - Canvas.pdf",
+          "locator": "page 32, permanent maxillary eruption diagram"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.pdf",
+          "locator": "pages 4-5, Universal permanent and primary tooth designations"
+        }
+      ],
+      "evidenceStatus": "course-verified",
+      "timelineSet": "mixed"
+    }
+  ]
+}
