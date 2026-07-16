@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { requireAdminProfile } from "@/app/admin/actions";
 import { createClient } from "@/lib/supabase/server";
+import { collectionVintageLabel } from "@/lib/cohorts";
 import { CollectionCreateForm } from "./CollectionCreateForm";
 
 export const dynamic = "force-dynamic";
@@ -13,6 +14,10 @@ type Collection = {
   source_tier: string | null;
   source_cohort: string | null;
   default_for_tier: boolean;
+  graduation_year: number | null;
+  curriculum_year: number | null;
+  academic_year_start: number | null;
+  cumulative_access: boolean;
   is_active: boolean;
   sort_order: number;
 };
@@ -42,7 +47,7 @@ export default async function AdminCollectionsPage() {
       supabase
         .from("resource_collections")
         .select(
-          "id, label, short_label, description, source_tier, source_cohort, default_for_tier, is_active, sort_order"
+          "id, label, short_label, description, source_tier, source_cohort, default_for_tier, graduation_year, curriculum_year, academic_year_start, cumulative_access, is_active, sort_order"
         )
         .order("sort_order")
         .order("label"),
@@ -73,8 +78,8 @@ export default async function AdminCollectionsPage() {
           <p className="eyebrow text-brand-gold">Admin</p>
           <h1 className="mt-1 text-2xl font-bold text-brand-navy">Resource collections</h1>
           <p className="mt-1 max-w-2xl text-brand-muted">
-            Collections are the bundles students see on their homepage and library. A student can
-            receive multiple collections, such as their D1 year plus prior D2 resources.
+            Every class resource set keeps a permanent class, D-year, and academic-year label.
+            Cumulative sets stay available as that class advances.
           </p>
         </div>
         <Link
@@ -92,7 +97,7 @@ export default async function AdminCollectionsPage() {
           <thead>
             <tr>
               <th>Collection</th>
-              <th>Source</th>
+              <th>Permanent vintage</th>
               <th>Courses</th>
               <th>Files</th>
               <th>Grants</th>
@@ -111,17 +116,15 @@ export default async function AdminCollectionsPage() {
                   )}
                 </td>
                 <td className="text-brand-muted">
-                  {[collection.source_tier?.toUpperCase(), collection.source_cohort]
-                    .filter(Boolean)
-                    .join(" · ") || "Manual"}
+                  {collectionVintageLabel(collection)}
                 </td>
                 <td>{courseCounts.get(collection.id) ?? 0}</td>
                 <td>{resourceCounts.get(collection.id) ?? 0}</td>
                 <td>{grantCounts.get(collection.id) ?? 0}</td>
                 <td>
-                  {collection.default_for_tier ? (
+                  {collection.cumulative_access ? (
                     <span className="border border-emerald-200 bg-emerald-50 px-2 py-1 text-xs font-semibold text-emerald-700">
-                      Auto
+                      Cumulative
                     </span>
                   ) : (
                     <span className="border border-brand-line bg-brand-soft px-2 py-1 text-xs font-semibold text-brand-muted">

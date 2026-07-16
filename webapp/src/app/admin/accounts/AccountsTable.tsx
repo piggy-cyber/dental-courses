@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useMemo, useState, useTransition } from "react";
 import { setAccountStatus } from "@/app/admin/actions";
-import { ACCESS_TIERS, tierLabel } from "@/lib/tiers";
+import { classLabel, cohortStandingLabel } from "@/lib/cohorts";
 import type { Account } from "./page";
 
 const STATUS_STYLES: Record<Account["status"], string> = {
@@ -22,8 +22,9 @@ function AccountStatusControls({
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const canApprove =
-    account.roster?.status !== "withdrawn" &&
-    account.roster?.email?.toLowerCase() === account.email.toLowerCase();
+    account.roster?.access_approved === true &&
+    account.roster.status !== "withdrawn" &&
+    account.roster.email?.toLowerCase() === account.email.toLowerCase();
 
   function update(status: Account["status"]) {
     setError(null);
@@ -48,7 +49,7 @@ function AccountStatusControls({
           type="button"
           onClick={() => update("approved")}
           disabled={isPending || !canApprove}
-          title={canApprove ? "Approve student" : "Exact active roster email required"}
+          title={canApprove ? "Approve student" : "Allowed roster link required"}
           className="portal-button-primary px-3 py-1.5 text-xs font-semibold disabled:opacity-60"
         >
           Approve
@@ -68,10 +69,12 @@ function AccountStatusControls({
         href={`/admin/accounts/${account.id}`}
         className="portal-button px-3 py-1.5 text-xs font-semibold"
       >
-        Manage access
+        Manage account
       </Link>
       {!canApprove && account.status !== "approved" && (
-        <p className="basis-full text-right text-xs text-amber-800">Roster email required</p>
+        <p className="basis-full text-right text-xs text-amber-800">
+          Link an allowed roster student first
+        </p>
       )}
       {error && <p className="basis-full text-right text-xs text-rose-600">{error}</p>}
     </div>
@@ -87,13 +90,17 @@ export function AccountsTable({
 }) {
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState<"all" | Account["status"]>("all");
-  const [tier, setTier] = useState("all");
-  const [cohort, setCohort] = useState("all");
+  const [graduationYear, setGraduationYear] = useState("all");
 
-  const cohorts = useMemo(
+  const graduationYears = useMemo(
     () =>
-      [...new Set(accounts.map((account) => account.roster?.cohort).filter(Boolean) as string[])]
-        .sort((a, b) => a.localeCompare(b)),
+      [
+        ...new Set(
+          accounts
+            .map((account) => account.roster?.graduation_year)
+            .filter((year): year is number => Boolean(year))
+        ),
+      ].sort((a, b) => a - b),
     [accounts]
   );
 
@@ -105,7 +112,8 @@ export function AccountsTable({
         account.email,
         account.username,
         account.roster?.full_name,
-        account.roster?.cohort,
+        account.roster?.graduation_year,
+        account.council_title,
       ]
         .filter(Boolean)
         .join(" ")
@@ -113,20 +121,24 @@ export function AccountsTable({
 
       if (q && !searchText.includes(q)) return false;
       if (status !== "all" && account.status !== status) return false;
-      if (tier !== "all" && !account.access_tiers.includes(tier)) return false;
-      if (cohort !== "all" && account.roster?.cohort !== cohort) return false;
+      if (
+        graduationYear !== "all" &&
+        account.roster?.graduation_year !== Number(graduationYear)
+      ) {
+        return false;
+      }
       return true;
     });
-  }, [accounts, cohort, query, status, tier]);
+  }, [accounts, graduationYear, query, status]);
 
   return (
     <div className="space-y-4">
-      <div className="portal-bar grid gap-3 p-4 md:grid-cols-[1fr_auto_auto_auto]">
+      <div className="portal-bar grid gap-3 p-4 md:grid-cols-[1fr_auto_auto]">
         <input
           type="search"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
-          placeholder="Search name, email, username..."
+          placeholder="Search name, email, class, or council role..."
           className="app-input min-w-0 px-3 py-2 text-sm"
         />
         <select
@@ -140,26 +152,14 @@ export function AccountsTable({
           <option value="revoked">Revoked</option>
         </select>
         <select
-          value={tier}
-          onChange={(event) => setTier(event.target.value)}
+          value={graduationYear}
+          onChange={(event) => setGraduationYear(event.target.value)}
           className="app-input px-3 py-2 text-sm"
         >
-          <option value="all">All tiers</option>
-          {ACCESS_TIERS.map((item) => (
-            <option key={item} value={item}>
-              {tierLabel(item)}
-            </option>
-          ))}
-        </select>
-        <select
-          value={cohort}
-          onChange={(event) => setCohort(event.target.value)}
-          className="app-input px-3 py-2 text-sm"
-        >
-          <option value="all">All cohorts</option>
-          {cohorts.map((item) => (
-            <option key={item} value={item}>
-              {item.toUpperCase()}
+          <option value="all">All classes</option>
+          {graduationYears.map((year) => (
+            <option key={year} value={year}>
+              {classLabel(year)}
             </option>
           ))}
         </select>
@@ -170,13 +170,13 @@ export function AccountsTable({
       </p>
 
       <div className="app-card overflow-x-auto">
-        <table className="portal-table w-full min-w-[900px] text-sm">
+        <table className="portal-table w-full min-w-[1050px] text-sm">
           <thead>
             <tr>
               <th>Account</th>
-              <th>Roster</th>
+              <th>Class / standing</th>
+              <th>Council role</th>
               <th>Library access</th>
-              <th>Joined</th>
               <th>Control</th>
             </tr>
           </thead>
@@ -194,40 +194,48 @@ export function AccountsTable({
                     <span className="ml-2 text-xs text-brand-muted">(you)</span>
                   )}
                   <p className="mt-0.5 text-xs text-brand-muted">{account.email}</p>
-                  {account.username && (
-                    <p className="mt-0.5 text-xs text-brand-muted">@{account.username}</p>
-                  )}
+                  <p className="mt-0.5 text-xs text-brand-muted">
+                    Joined {new Date(account.created_at).toLocaleDateString()}
+                  </p>
                 </td>
                 <td>
                   {account.roster ? (
                     <>
-                      <p className="font-medium text-brand-ink">{account.roster.full_name}</p>
-                      <p className="text-xs text-brand-muted">
-                        {account.roster.cohort.toUpperCase()} · {account.roster.status}
+                      <p className="font-medium text-brand-ink">
+                        {cohortStandingLabel(account.roster.graduation_year)}
                       </p>
+                      <p className="text-xs text-brand-muted">{account.roster.full_name}</p>
                     </>
                   ) : (
-                    <span className="text-xs text-brand-muted">No roster match</span>
+                    <span className="text-xs text-brand-muted">No roster link</span>
                   )}
                 </td>
                 <td>
-                  {account.access_tiers.length ? (
-                    <div className="flex flex-wrap gap-1">
-                      {account.access_tiers.map((item) => (
+                  <p className="font-medium text-brand-ink">
+                    {account.council_title ??
+                      (account.role === "owner" ? "Full administrator" : "Student")}
+                  </p>
+                  {account.admin_permissions.length > 0 && (
+                    <p className="text-xs text-brand-muted">
+                      {account.admin_permissions.length} delegated responsibilities
+                    </p>
+                  )}
+                </td>
+                <td>
+                  {account.libraryCollections.length ? (
+                    <div className="flex max-w-sm flex-wrap gap-1">
+                      {account.libraryCollections.map((collection) => (
                         <span
-                          key={item}
+                          key={collection.id}
                           className="border border-brand-line bg-brand-soft px-2 py-0.5 text-xs font-semibold text-brand-navy"
                         >
-                          {tierLabel(item)}
+                          {collection.short_label}
                         </span>
                       ))}
                     </div>
                   ) : (
                     <span className="text-xs text-brand-muted">None</span>
                   )}
-                </td>
-                <td className="text-xs text-brand-muted">
-                  {new Date(account.created_at).toLocaleDateString()}
                 </td>
                 <td>
                   <AccountStatusControls
@@ -237,6 +245,13 @@ export function AccountsTable({
                 </td>
               </tr>
             ))}
+            {filtered.length === 0 && (
+              <tr>
+                <td colSpan={5} className="text-center text-brand-muted">
+                  No accounts match these filters.
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
