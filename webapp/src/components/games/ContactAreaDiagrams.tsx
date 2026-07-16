@@ -120,14 +120,19 @@ const OCCLUSAL_OUTLINES = {
 } as const;
 
 function zoneLabel(zone: ContactZone) {
-  return zone
-    .replace("mesial-", "Mesial ")
-    .replace("distal-", "Distal ")
-    .replace("incisal-occlusal", "incisal or occlusal third")
-    .replace("middle", "middle third")
-    .replace("cervical", "cervical third")
-    .replace("facial-third", "Facial or buccal third")
-    .replace("lingual-third", "Lingual third");
+  if (zone === "facial-third") return "Facial or buccal third";
+  if (zone === "facial-aspect-middle-third") return "Facial aspect of the middle third";
+  if (zone === "facial-to-central-groove") return "Facial area extending toward the central groove";
+  if (zone === "middle-third") return "Middle third";
+  if (zone === "lingual-third") return "Lingual third";
+
+  const surface = zone.startsWith("mesial-") ? "Mesial" : "Distal";
+  if (zone.endsWith("middle-junction")) {
+    return `${surface} incisal or occlusal-middle junction`;
+  }
+  if (zone.endsWith("incisal-occlusal")) return `${surface} incisal or occlusal third`;
+  if (zone.endsWith("middle")) return `${surface} middle third`;
+  return `${surface} cervical third`;
 }
 
 export function ContactToothDiagram({
@@ -143,18 +148,37 @@ export function ContactToothDiagram({
   const clipId = `contact-zone-${useId().replaceAll(":", "")}`;
   const family = crownFamily(record);
   const outline = axis === "incisocervical" ? FACIAL_OUTLINES[family] : OCCLUSAL_OUTLINES[family];
-  const zones: Array<{ id: ContactZone; d: string }> =
-    axis === "incisocervical"
-      ? [
-          { id: `${surface}-incisal-occlusal`, d: "M70 42 H450 V143 H70 Z" },
-          { id: `${surface}-middle`, d: "M70 143 H450 V234 H70 Z" },
-          { id: `${surface}-cervical`, d: "M70 234 H450 V338 H70 Z" },
-        ]
-      : [
-          { id: "facial-third", d: "M66 38 H454 V142 H66 Z" },
-          { id: "middle-third", d: "M66 142 H454 V238 H66 Z" },
-          { id: "lingual-third", d: "M66 238 H454 V338 H66 Z" },
-        ];
+  let zones: Array<{ id: ContactZone; d: string }>;
+  if (axis === "incisocervical") {
+    zones = [
+      { id: `${surface}-incisal-occlusal`, d: "M70 42 H450 V132 H70 Z" },
+      {
+        id: `${surface}-incisal-occlusal-middle-junction`,
+        d: "M70 132 H450 V154 H70 Z",
+      },
+      { id: `${surface}-middle`, d: "M70 154 H450 V234 H70 Z" },
+      { id: `${surface}-cervical`, d: "M70 234 H450 V338 H70 Z" },
+    ];
+  } else if (acceptedZones.includes("facial-to-central-groove")) {
+    zones = [
+      { id: "facial-to-central-groove", d: "M66 38 H454 V190 H66 Z" },
+      { id: "middle-third", d: "M66 190 H454 V238 H66 Z" },
+      { id: "lingual-third", d: "M66 238 H454 V338 H66 Z" },
+    ];
+  } else if (acceptedZones.includes("facial-aspect-middle-third")) {
+    zones = [
+      { id: "facial-third", d: "M66 38 H454 V142 H66 Z" },
+      { id: "facial-aspect-middle-third", d: "M66 142 H454 V180 H66 Z" },
+      { id: "middle-third", d: "M66 180 H454 V238 H66 Z" },
+      { id: "lingual-third", d: "M66 238 H454 V338 H66 Z" },
+    ];
+  } else {
+    zones = [
+      { id: "facial-third", d: "M66 38 H454 V142 H66 Z" },
+      { id: "middle-third", d: "M66 142 H454 V238 H66 Z" },
+      { id: "lingual-third", d: "M66 238 H454 V338 H66 Z" },
+    ];
+  }
 
   function activate(zone: ContactZone) {
     if (!disabled) onSelect?.(zone);

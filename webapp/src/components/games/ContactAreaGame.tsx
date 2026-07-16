@@ -27,7 +27,7 @@ const contactCatalog = contactAreaJson as unknown as ContactAreaCatalog;
 const toothCatalog = toothCatalogJson as ToothCatalog;
 const PENDING_ROUND_KEY = "fourth-canal:contact-area:pending-round";
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-const CONTACT_MASTERY_PATTERN = /^contact-area\|(maxillary|mandibular)\|(anterior|posterior)\|(mesial|distal)\|(incisal-occlusal|middle|cervical|junction|facial|lingual|relationship|height|terminal)$/;
+const CONTACT_MASTERY_PATTERN = /^contact-area\|(maxillary|mandibular)\|(anterior|posterior)\|(mesial|distal)\|(incisal-occlusal|middle|cervical|junction|facial|facial-aspect-middle|facial-to-central-groove|lingual|relationship|height|terminal)$/;
 
 type Mode = "study" | "challenge";
 type Phase = "idle" | "playing" | "review";
@@ -105,6 +105,8 @@ function titleCase(value: string) {
     middle: "Middle third",
     cervical: "Cervical third",
     facial: "Facial / buccal third",
+    "facial-aspect-middle": "Facial aspect of middle third",
+    "facial-to-central-groove": "Facial to central groove",
     lingual: "Lingual third",
     relationship: "Adjacent relationship",
     height: "Contact-height comparison",
