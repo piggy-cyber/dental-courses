@@ -13,18 +13,26 @@ export type ContactLocation =
 
 export type BuccolingualLocation =
   | "facial-third"
-  | "facial-middle-junction"
+  | "facial-aspect-middle-third"
+  | "facial-to-central-groove"
   | "middle-third";
 
 export type IncisocervicalZone =
   | "mesial-incisal-occlusal"
+  | "mesial-incisal-occlusal-middle-junction"
   | "mesial-middle"
   | "mesial-cervical"
   | "distal-incisal-occlusal"
+  | "distal-incisal-occlusal-middle-junction"
   | "distal-middle"
   | "distal-cervical";
 
-export type FacioLingualZone = "facial-third" | "middle-third" | "lingual-third";
+export type FacioLingualZone =
+  | "facial-third"
+  | "facial-aspect-middle-third"
+  | "facial-to-central-groove"
+  | "middle-third"
+  | "lingual-third";
 
 export type ContactZone = IncisocervicalZone | FacioLingualZone;
 

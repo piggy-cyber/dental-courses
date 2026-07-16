@@ -16,7 +16,7 @@ const toothCatalog = toothCatalogJson as ToothCatalog;
 const validToothCodes = new Set<string>(
   toothCatalog.teeth.flatMap((tooth) => [tooth.code, tooth.supernumeraryCode]),
 );
-const CONTACT_MASTERY_PATTERN = /^contact-area\|(maxillary|mandibular)\|(anterior|posterior)\|(mesial|distal)\|(incisal-occlusal|middle|cervical|junction|facial|lingual|relationship|height|terminal)$/;
+const CONTACT_MASTERY_PATTERN = /^contact-area\|(maxillary|mandibular)\|(anterior|posterior)\|(mesial|distal)\|(incisal-occlusal|middle|cervical|junction|facial|facial-aspect-middle|facial-to-central-groove|lingual|relationship|height|terminal)$/;
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 function isBoundedInteger(value: unknown, minimum: number, maximum: number) {

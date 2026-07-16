@@ -39,10 +39,13 @@ export function formatContactLocation(location: ContactLocation | null) {
 
 export function formatBuccolingualLocation(location: BuccolingualLocation | null) {
   if (!location) return "Not mapped";
-  return location
-    .replace("facial-middle-junction", "Facial-middle junction")
-    .replace("facial-third", "Facial third")
-    .replace("middle-third", "Middle third");
+  const labels: Record<BuccolingualLocation, string> = {
+    "facial-third": "Facial third",
+    "facial-aspect-middle-third": "Facial aspect of the middle third",
+    "facial-to-central-groove": "Facial area extending toward the central groove",
+    "middle-third": "Middle third",
+  };
+  return labels[location];
 }
 
 function regionForLocation(location: ContactLocation) {
@@ -52,7 +55,8 @@ function regionForLocation(location: ContactLocation) {
 }
 
 function regionForBuccolingual(location: BuccolingualLocation) {
-  if (location.includes("junction")) return "junction";
+  if (location === "facial-aspect-middle-third") return "facial-aspect-middle";
+  if (location === "facial-to-central-groove") return "facial-to-central-groove";
   if (location.startsWith("facial")) return "facial";
   return "middle";
 }
@@ -147,7 +151,7 @@ export function buildContactQuestionBank(
           kind: "mark-contact",
           record,
           prompt: `Mark the ${surface} contact height on #${record.toothNumber}.`,
-          instruction: "Select a generous crown region. Junction answers accept either adjoining third.",
+          instruction: "Select the course-mapped crown region. Junction contacts use the narrow boundary band.",
           surface,
           axis: "incisocervical",
           choices: [],
@@ -167,7 +171,7 @@ export function buildContactQuestionBank(
           kind: "mark-faciolingual",
           record,
           prompt: `Where is #${record.toothNumber}'s ${surface} contact faciolingually?`,
-          instruction: "Tap the facial/buccal, middle, or lingual third on the occlusal view.",
+          instruction: "Select the course-mapped facial/buccal-to-lingual region on the occlusal view.",
           surface,
           axis: "faciolingual",
           choices: [],
