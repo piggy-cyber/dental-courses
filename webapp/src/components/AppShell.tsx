@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import type { Profile } from "@/lib/access";
 import { BrandMark } from "@/components/BrandMark";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { ActiveNavLink, LivingCanalIndicator } from "@/components/SiteNavigation";
 import { UserAvatar } from "@/components/UserAvatar";
 import {
   canOpenAdmin,
@@ -30,7 +30,7 @@ type AppShellProps = {
 };
 
 const STUDENT_LINKS = [
-  { href: "/home", label: "Home" },
+  { href: "/home", label: "Today" },
   { href: "/library", label: "Courses" },
   { href: "/contacts", label: "Contacts" },
   { href: "/grade-calculator", label: "Grade Calculator" },
@@ -71,7 +71,6 @@ function groupedCollections(courses: AppShellCourse[]) {
       existing.courses.push(course);
       continue;
     }
-
     byId.set(course.collectionId, {
       id: course.collectionId,
       label: course.collectionLabel,
@@ -91,12 +90,17 @@ function groupedCollections(courses: AppShellCourse[]) {
     .sort((a, b) => a.sortOrder - b.sortOrder || a.label.localeCompare(b.label));
 }
 
-export function AppShell({
-  profile,
-  courses,
-  adminMode = false,
-  children,
-}: AppShellProps) {
+function NavigationLinks({ links }: { links: Array<{ href: string; label: string }> }) {
+  return (
+    <>
+      {links.map((link) => (
+        <ActiveNavLink key={link.href} href={link.href}>{link.label}</ActiveNavLink>
+      ))}
+    </>
+  );
+}
+
+export function AppShell({ profile, courses, adminMode = false, children }: AppShellProps) {
   const collections = groupedCollections(courses);
   const displayName = profile.name ?? profile.email.split("@")[0] ?? "Student";
   const adminLinks = ADMIN_LINKS.filter((link) => {
@@ -106,174 +110,99 @@ export function AppShell({
   const navLinks = adminMode ? adminLinks : STUDENT_LINKS;
   const mayOpenAdmin = canOpenAdmin(profile);
   const managesCourseData = canViewAllCourseData(profile);
-  const courseScopeLabel = managesCourseData ? "Administrative" : "Granted";
+  const courseScopeLabel = managesCourseData ? "Administrative" : "Your";
 
   return (
-    <div className="app-shell-bg min-h-screen text-brand-ink">
-      <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col border-r border-brand-line bg-brand-sidebar text-brand-ink sm:flex xl:w-72">
-        <div className="border-b border-brand-line px-4 py-4">
-          <BrandMark />
-          <p className="mt-2 text-[11px] leading-relaxed text-brand-muted">
-            {courseScopeLabel} course resources, videos, transcripts, and files.
-          </p>
-          <div className="mt-3">
-            <ThemeToggle compact />
+    <div className="fc-site fc-shell text-brand-ink">
+      <aside className="fc-rail">
+        <div className="fc-rail-inner">
+          <div className="fc-rail-brand">
+            <BrandMark />
+            <p>{courseScopeLabel} lectures, transcripts, guides, and course files.</p>
+            <LivingCanalIndicator />
           </div>
-        </div>
 
-        <div className="sidebar-scroll flex-1 overflow-y-auto">
-          <nav className="border-b border-brand-line p-3" aria-label="Primary">
-            <p className="mb-2 border-b border-brand-line bg-brand-soft px-2 py-1 text-[11px] font-bold uppercase text-brand-navy">
-              Navigation
-            </p>
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="block border-l-4 border-transparent px-2 py-1.5 text-sm font-semibold text-brand-blue hover:border-brand-blue hover:bg-brand-sidebar-soft hover:text-brand-navy"
-              >
-                {link.label}
-              </Link>
-            ))}
-            {mayOpenAdmin && !adminMode && (
-              <Link
-                href="/admin"
-                className="mt-1 block border-l-4 border-transparent px-2 py-1.5 text-sm font-semibold text-brand-blue hover:border-brand-blue hover:bg-brand-sidebar-soft hover:text-brand-navy"
-              >
-                Admin portal
-              </Link>
-            )}
-            {adminMode && (
-              <Link
-                href="/home"
-                className="mt-1 block border-l-4 border-transparent px-2 py-1.5 text-sm font-semibold text-brand-blue hover:border-brand-blue hover:bg-brand-sidebar-soft hover:text-brand-navy"
-              >
-                Student library
-              </Link>
-            )}
-          </nav>
+          <div className="fc-rail-scroll sidebar-scroll">
+            <nav className="fc-primary-nav" aria-label="Primary navigation">
+              <p className="fc-nav-label">{adminMode ? "Administration" : "Workspace"}</p>
+              <NavigationLinks links={navLinks} />
+              {mayOpenAdmin && !adminMode && <ActiveNavLink href="/admin">Admin portal</ActiveNavLink>}
+              {adminMode && <ActiveNavLink href="/home">Student workspace</ActiveNavLink>}
+            </nav>
 
-          <nav className="p-3" aria-label="Course tree">
-            <div className="mb-2 flex items-center justify-between border-b border-brand-line bg-brand-soft px-2 py-1">
-              <p className="text-[11px] font-bold uppercase text-brand-navy">
-                Course Tree
-              </p>
-              <span className="text-[11px] font-semibold text-brand-muted">
-                {courses.length}
-              </span>
-            </div>
-            {collections.length > 0 ? (
-              <div className="space-y-3">
-                {collections.map((collection) => (
-                  <section key={collection.id}>
-                    <div className="border border-brand-line bg-brand-panel">
-                      <div className="flex items-center justify-between bg-brand-soft px-2 py-1 font-mono text-[11px] font-bold text-brand-navy">
-                        <span className="truncate">[-] {collection.shortLabel}</span>
-                        <span className="text-brand-muted">{collection.courses.length}</span>
-                      </div>
-                      <div>
+            <nav className="fc-course-tree" aria-label="Course tree">
+              <div className="fc-tree-heading">
+                <p>Course index</p>
+                <span>{courses.length}</span>
+              </div>
+              {collections.length > 0 ? (
+                <div className="fc-tree-groups">
+                  {collections.map((collection) => (
+                    <section key={collection.id}>
+                      <div className="fc-tree-collection">
+                        <div><span>{collection.shortLabel}</span><small>{collection.courses.length}</small></div>
                         {collection.courses.map((course) => (
                           <Link
                             key={`${collection.id}-${course.code}`}
                             href={`/course/${encodeURIComponent(course.code)}?collection=${encodeURIComponent(collection.id)}`}
-                            className="block border-l-4 border-transparent px-2 py-1.5 pl-4 text-xs leading-snug text-brand-blue hover:border-brand-blue hover:bg-brand-sidebar-soft hover:text-brand-navy"
-                            title={`${course.code} - ${course.title}`}
+                            className="fc-course-link"
+                            title={`${course.code} — ${course.title}`}
                           >
-                            <span className="font-mono text-brand-muted">+-- </span>
-                            <span className="font-semibold">{course.code}</span>
-                            <span className="text-brand-muted"> - {course.title}</span>
+                            <span>{course.code}</span>
+                            <small>{course.title}</small>
+                            <i aria-hidden="true">→</i>
                           </Link>
                         ))}
                       </div>
-                    </div>
-                  </section>
-                ))}
-              </div>
-            ) : (
-              <p className="border border-brand-line bg-brand-panel px-3 py-3 text-sm text-brand-muted">
-                {managesCourseData
-                  ? "No course collections are loaded yet."
-                  : "No course collections are assigned yet."}
-              </p>
-            )}
-          </nav>
-        </div>
+                    </section>
+                  ))}
+                </div>
+              ) : (
+                <p className="fc-tree-empty">
+                  {managesCourseData ? "No course collections are loaded yet." : "No course collections are assigned yet."}
+                </p>
+              )}
+            </nav>
+          </div>
 
-        <div className="border-t border-brand-line bg-brand-soft px-3 py-3">
-          <Link
-            href="/profile"
-            className="flex min-w-0 items-center gap-3 border-l-4 border-transparent px-2 py-2 hover:border-brand-blue hover:bg-brand-sidebar-soft"
-          >
-            <UserAvatar
-              name={profile.name}
-              email={profile.email}
-              avatarUrl={profile.avatar_url}
-              size="sm"
-            />
-            <span className="min-w-0">
-              <span className="block truncate text-sm font-semibold text-brand-navy">
-                {displayName}
-              </span>
-              <span className="block truncate text-xs text-brand-muted">
-                {profile.username ? `@${profile.username}` : profile.email}
-              </span>
-            </span>
+          <Link href="/profile" className="fc-profile-chip">
+            <UserAvatar name={profile.name} email={profile.email} avatarUrl={profile.avatar_url} size="sm" />
+            <span><b>{displayName}</b><small>{profile.username ? `@${profile.username}` : profile.email}</small></span>
+            <i aria-hidden="true">→</i>
           </Link>
         </div>
       </aside>
 
-      <div className="sm:pl-64 xl:pl-72">
-        <header className="sticky top-0 z-20 border-b border-brand-line bg-brand-panel">
-          <div className="flex min-h-14 items-center justify-between gap-4 px-4 py-2 sm:px-6 xl:px-8">
-            <div className="flex min-w-0 items-center gap-3 sm:hidden">
-              <BrandMark showWordmark={false} />
-              <div className="min-w-0">
-                <p className="truncate text-sm font-bold text-brand-navy">
-                  Fourth Canal
-                </p>
-                <p className="truncate text-xs text-brand-muted">
-                  {adminMode ? "Admin portal" : "Student library"}
-                </p>
-              </div>
-            </div>
-
-            <Link
-              href="/library"
-              className="hidden min-w-0 max-w-xl flex-1 items-center border border-brand-line bg-brand-panel px-3 py-1.5 text-sm text-brand-blue hover:border-brand-blue hover:bg-brand-soft hover:text-brand-navy md:flex"
-            >
-              Search courses, transcripts, videos, and files
+      <div className="fc-shell-main">
+        <header className="fc-topbar">
+          <div className="fc-mobile-brand"><BrandMark /></div>
+          <Link href="/library" className="fc-search-entry">
+            <span aria-hidden="true">⌕</span>
+            <span><b>Find study material</b><small>Search courses, lectures, transcripts, and files</small></span>
+            <i aria-hidden="true">→</i>
+          </Link>
+          <div className="fc-topbar-actions">
+            <Link href="/profile" className="fc-topbar-profile">
+              <UserAvatar name={profile.name} email={profile.email} avatarUrl={profile.avatar_url} size="sm" />
+              <span>{profile.username ? `@${profile.username}` : "Profile"}</span>
             </Link>
-
-            <div className="flex shrink-0 items-center gap-2">
-              <div className="sm:hidden">
-                <ThemeToggle compact />
-              </div>
-              <Link
-                href="/profile"
-                className="flex items-center gap-2 border border-brand-line bg-brand-panel py-1 pl-1 pr-3 text-sm font-semibold text-brand-blue hover:border-brand-blue hover:bg-brand-soft hover:text-brand-navy"
-              >
-                <UserAvatar
-                  name={profile.name}
-                  email={profile.email}
-                  avatarUrl={profile.avatar_url}
-                  size="sm"
-                />
-                <span className="hidden sm:inline">
-                  {profile.username ? `@${profile.username}` : "Profile"}
-                </span>
-              </Link>
-              <form action="/auth/signout" method="post">
-                <button className="border border-brand-line bg-brand-panel px-3 py-2 text-sm font-semibold text-brand-blue hover:border-brand-blue hover:bg-brand-soft hover:text-brand-navy">
-                  Sign out
-                </button>
-              </form>
-            </div>
+            <form action="/auth/signout" method="post">
+              <button className="fc-signout-button">Sign out</button>
+            </form>
           </div>
+
+          <details className="fc-mobile-menu">
+            <summary>Menu</summary>
+            <nav aria-label="Mobile navigation">
+              <NavigationLinks links={navLinks} />
+              {mayOpenAdmin && !adminMode && <ActiveNavLink href="/admin">Admin portal</ActiveNavLink>}
+              {adminMode && <ActiveNavLink href="/home">Student workspace</ActiveNavLink>}
+              <ActiveNavLink href="/library">Search library</ActiveNavLink>
+            </nav>
+          </details>
         </header>
 
-        <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 xl:px-8">
-          {children}
-        </main>
+        <main className="fc-main">{children}</main>
       </div>
     </div>
   );

@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getGroupMeClientId } from "@/lib/groupme";
 import { ProfileForm } from "@/components/ProfileForm";
 import { GroupMeConnectCard } from "@/components/GroupMeConnectCard";
+import { AppearanceSettings } from "@/components/AppearanceSettings";
 import { notFound } from "next/navigation";
 
 export const dynamic = "force-dynamic";
@@ -56,6 +57,8 @@ export default async function ProfilePage({
         banner={banner}
         errorReason={params.reason ?? null}
       />
+
+      <AppearanceSettings />
 
       <div className="app-card p-6">
         <ProfileForm profile={profile} />

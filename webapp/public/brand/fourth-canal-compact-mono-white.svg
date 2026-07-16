@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 340" role="img" aria-labelledby="title desc">
+  <title id="title">Fourth Canal compact monochrome white mark</title>
+  <desc id="desc">Four anatomical canal strands; the fourth is differentiated by an open contour.</desc>
+  <g fill="#F2EDE2">
+    <path d="M35 8C22 56 25 104 20 151c-5 51 5 104 10 181 4-75 14-126 11-179C38 104 49 56 35 8Z"/>
+    <path d="M68 4C55 57 62 103 56 150c-6 49 5 105 9 186 5-80 15-134 10-185C71 103 82 54 68 4Z"/>
+    <path d="M101 8C87 54 93 100 87 146c-6 53 5 108 8 187 6-79 16-132 11-185-4-47 9-92-5-140Z"/>
+  </g>
+  <path fill="none" stroke="#F2EDE2" stroke-width="7" stroke-linejoin="round" d="M135 18c-14 42-7 88-13 136-6 52 5 101 5 174 8-75 18-121 14-169-4-49 9-94-6-141Z"/>
+</svg>

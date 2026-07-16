@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 240" role="img" aria-labelledby="title desc">
+  <title id="title">Fourth Canal horizontal wordmark for dark backgrounds</title>
+  <desc id="desc">Four anatomical canal strands beside the Fourth Canal wordmark.</desc>
+  <g transform="translate(40 20) scale(.56)">
+    <path fill="#F2EDE2" d="M35 8C22 56 25 104 20 151c-5 51 5 104 10 181 4-75 14-126 11-179C38 104 49 56 35 8Z"/>
+    <path fill="#F2EDE2" d="M68 4C55 57 62 103 56 150c-6 49 5 105 9 186 5-80 15-134 10-185C71 103 82 54 68 4Z"/>
+    <path fill="#F2EDE2" d="M101 8C87 54 93 100 87 146c-6 53 5 108 8 187 6-79 16-132 11-185-4-47 9-92-5-140Z"/>
+    <path fill="#B35A2E" d="M135 16c-14 43-7 89-13 137-6 52 5 101 5 177 8-77 18-123 14-171-4-50 9-96-6-143Z"/>
+  </g>
+  <text x="170" y="146" fill="#F2EDE2" font-family="Bodoni 72, Didot, Georgia, serif" font-size="112" font-weight="400" letter-spacing=".5">Fourth Canal</text>
+  <text x="176" y="187" fill="#F2EDE2" font-family="Avenir Next, Avenir, Helvetica, Arial, sans-serif" font-size="16" font-weight="500" letter-spacing="7">DENTAL EDUCATION</text>
+  <path d="M176 207h62" stroke="#B35A2E" stroke-width="2"/>
+</svg>

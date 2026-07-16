@@ -12,9 +12,9 @@ const MODES: { value: ThemeMode; label: string }[] = [
 ];
 
 function storedMode(): ThemeMode {
-  if (typeof window === "undefined") return "system";
+  if (typeof window === "undefined") return "light";
   const saved = localStorage.getItem(STORAGE_KEY);
-  return saved === "light" || saved === "dark" || saved === "system" ? saved : "system";
+  return saved === "light" || saved === "dark" || saved === "system" ? saved : "light";
 }
 
 function resolvedTheme(mode: ThemeMode) {
@@ -70,7 +70,7 @@ export function ThemeToggle({ compact = false }: { compact?: boolean }) {
             aria-pressed={active}
             className={`border-r border-brand-line px-2.5 py-1 text-xs font-semibold last:border-r-0 ${
               active
-                ? "bg-brand-blue text-white"
+                ? "fc-theme-toggle-active"
                 : "bg-brand-panel text-brand-blue hover:bg-brand-soft hover:text-brand-navy"
             }`}
           >

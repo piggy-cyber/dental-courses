@@ -219,9 +219,9 @@
 @keyframes chamberArrive { from { opacity: 0; transform: translate(-50%, -20px) scale(.96); } to { opacity: 1; transform: translate(-50%, 0) scale(1); } }
 @keyframes videoScan { from { transform: translateY(-100%); } to { transform: translateY(100%); } }
 
-.previewRoot[data-motion="reduced"] *, .previewRoot[data-motion="reduced"] *::before, .previewRoot[data-motion="reduced"] *::after { animation-duration: .35s !important; animation-iteration-count: 1 !important; }
-.previewRoot[data-motion="reduced"] .pointerGlow { display: none; }
-.previewRoot[data-motion="reduced"] .blinds { grid-template-columns: 1fr; }.previewRoot[data-motion="reduced"] .blinds > span { display: none; }.previewRoot[data-motion="reduced"] .blinds > span:first-child { display: block; animation-name: fadeBlind; }
+.previewRoot[data-motion="less"] *, .previewRoot[data-motion="less"] *::before, .previewRoot[data-motion="less"] *::after { animation-duration: .35s !important; animation-iteration-count: 1 !important; }
+.previewRoot[data-motion="less"] .pointerGlow { display: none; }
+.previewRoot[data-motion="less"] .blinds { grid-template-columns: 1fr; }.previewRoot[data-motion="less"] .blinds > span { display: none; }.previewRoot[data-motion="less"] .blinds > span:first-child { display: block; animation-name: fadeBlind; }
 .previewRoot[data-motion="off"] *, .previewRoot[data-motion="off"] *::before, .previewRoot[data-motion="off"] *::after { animation: none !important; transition-duration: 0s !important; scroll-behavior: auto !important; }
 .previewRoot[data-motion="off"] .pointerGlow { display: none; }
 @keyframes fadeBlind { 0%,100% { opacity: 0; transform: none; } 45%,55% { opacity: 1; transform: none; } }
@@ -918,8 +918,8 @@
 .transitionMark strong b { color: #087f80; }
 .transitionMark small { color: #425b61; font: 600 .55rem var(--font-mono-app), monospace; letter-spacing: .12em; text-transform: uppercase; }
 
-.previewRoot[data-ready="true"][data-motion="cinematic"] [data-reveal]:not([data-revealed="true"]),
-.previewRoot[data-ready="true"][data-motion="reduced"] [data-reveal]:not([data-revealed="true"]) {
+.previewRoot[data-ready="true"][data-motion="full"] [data-reveal]:not([data-revealed="true"]),
+.previewRoot[data-ready="true"][data-motion="less"] [data-reveal]:not([data-revealed="true"]) {
   opacity: 0;
   transform: translateY(18px);
 }
@@ -928,11 +928,11 @@
   transition: opacity .7s ease, transform .8s cubic-bezier(.2, .75, .2, 1);
 }
 
-.previewRoot[data-motion="reduced"] [data-reveal] { transition-duration: .25s; }
+.previewRoot[data-motion="less"] [data-reveal] { transition-duration: .25s; }
 .previewRoot[data-motion="off"] .scrollStrands > span:nth-child(4) i { height: 100%; }
-.previewRoot[data-motion="reduced"] .toothScene,
+.previewRoot[data-motion="less"] .toothScene,
 .previewRoot[data-motion="off"] .toothScene,
-.previewRoot[data-motion="reduced"] .prismVeil,
+.previewRoot[data-motion="less"] .prismVeil,
 .previewRoot[data-motion="off"] .prismVeil { transform: none; }
 
 @keyframes prismGridDrift {
@@ -1003,3 +1003,44 @@
   .previewFooter nav { gap: .55rem .8rem; }
   .transitionMark .transitionCanals { transform: scale(.82); }
 }
+
+/* Approved Atlas Strands brand layer */
+.previewRoot {
+  --pearl: #fcfaf5;
+  --ink: #0f1e3a;
+  --cyan: #b35a2e;
+  --mint: #e9e1d4;
+  --violet: #a86c4a;
+  --pink: #c78360;
+  --line: #c8bdac;
+  --muted: #675f57;
+  background: #f2ede2;
+  font-family: var(--font-fc-sans), sans-serif;
+}
+
+.brandButton {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  grid-template-columns: none;
+  width: 100%;
+  height: auto;
+  min-height: 58px;
+  padding: .4rem .2rem;
+  border: 0;
+  border-bottom: 1px solid #c8bdac;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  transform: none;
+}
+
+.previewBrand { width: 100%; height: auto; object-fit: contain; object-position: left center; }
+.transitionBrand { width: min(300px, 68vw); height: auto; }
+.transitionMark small { color: #d9d0c3; }
+.blinds > span { background: #0f1e3a; }
+.scrollStrands > span:nth-child(4) i { background: #b35a2e; }
+.microLabel { color: #9f4c25; }
+.enamelButton { background: #0f1e3a; border-color: #0f1e3a; color: #f2ede2; }
+.enamelButton:hover { background: #172c52; }
+.pointerGlow { background: radial-gradient(circle, rgba(179,90,46,.09), transparent 68%); }

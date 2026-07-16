@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 340" role="img" aria-labelledby="title desc">
+  <title id="title">Fourth Canal compact color mark</title>
+  <desc id="desc">Four anatomical canal strands; the fourth is oxidized copper.</desc>
+  <g>
+    <path fill="#0F1E3A" d="M35 8C22 56 25 104 20 151c-5 51 5 104 10 181 4-75 14-126 11-179C38 104 49 56 35 8Z"/>
+    <path fill="#0F1E3A" d="M68 4C55 57 62 103 56 150c-6 49 5 105 9 186 5-80 15-134 10-185C71 103 82 54 68 4Z"/>
+    <path fill="#0F1E3A" d="M101 8C87 54 93 100 87 146c-6 53 5 108 8 187 6-79 16-132 11-185-4-47 9-92-5-140Z"/>
+    <path fill="#B35A2E" d="M135 16c-14 43-7 89-13 137-6 52 5 101 5 177 8-77 18-123 14-171-4-50 9-96-6-143Z"/>
+  </g>
+  <g fill="none" stroke="#F2EDE2" stroke-width="1.65" stroke-linecap="round" opacity=".9">
+    <path d="M32 34c-5 42-2 79-5 119-3 45 3 93 5 144"/>
+    <path d="M37 55c-2 34-2 65-3 98-1 39 2 80 1 119"/>
+    <path d="M65 31c-4 42 1 78-3 120-3 44 3 92 4 145"/>
+    <path d="M70 53c-2 35 1 66-1 99-2 40 2 79 1 120"/>
+    <path d="M98 34c-4 40 0 77-4 115-4 45 2 94 3 146"/>
+    <path d="M103 53c-2 34 1 65-1 96-2 40 2 81 0 121"/>
+    <path d="M132 42c-4 38 0 75-4 113-4 43 2 88 2 137"/>
+    <path d="M137 60c-2 31 1 62-1 96-2 36 1 73-1 109"/>
+  </g>
+</svg>

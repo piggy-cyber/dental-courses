@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { SignInPanel } from "@/components/SignInPanel";
 import { BrandMarkPublic } from "@/components/BrandMark";
-import { ThemeToggle } from "@/components/ThemeToggle";
-import { AboutSummary } from "@/components/AboutContent";
 import { AccessRequestForm } from "@/components/AccessRequestForm";
 import { getSessionProfile } from "@/lib/access";
 
@@ -14,6 +13,12 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
+const STUDY_LAYERS = [
+  ["01", "Lectures", "Recordings and transcripts stay paired."],
+  ["02", "Course files", "Slides, syllabi, and guides stay in context."],
+  ["03", "Student tools", "Contacts, planning, and course utilities."],
+] as const;
+
 export default async function LoginHomePage({
   searchParams,
 }: {
@@ -22,93 +27,86 @@ export default async function LoginHomePage({
   const { profile } = await getSessionProfile();
   const params = await searchParams;
 
-  if (profile?.status === "approved") {
-    redirect("/home");
-  }
+  if (profile?.status === "approved") redirect("/home");
 
   return (
-    <main className="app-shell-bg min-h-screen">
-      <header className="border-b border-brand-line bg-brand-panel px-6 py-3">
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-3">
-          <BrandMarkPublic />
-          <div className="flex items-center gap-3">
-            <ThemeToggle compact />
-            <Link
-              href="/about"
-              className="text-sm font-medium text-brand-muted hover:text-brand-navy"
-            >
-              About
-            </Link>
-          </div>
-        </div>
+    <main className="fc-site fc-public-page" data-integrated-footer="false">
+      <header className="fc-public-header">
+        <BrandMarkPublic />
+        <nav aria-label="Public navigation">
+          <Link href="/about">Our story</Link>
+          <Link href="/legal">Privacy and terms</Link>
+        </nav>
       </header>
 
-      <div className="mx-auto grid max-w-6xl gap-8 px-6 py-10 lg:grid-cols-[1.08fr_0.92fr] lg:items-start">
-        <section className="app-hero p-7 sm:p-10">
-          <p className="eyebrow">Independent cohort study workspace</p>
-          <h1 className="portal-title mt-3 max-w-2xl text-4xl font-bold sm:text-5xl">
-            Fourth Canal
-          </h1>
-          <p className="mt-4 max-w-xl text-lg leading-relaxed text-brand-muted">
-            One private place for approved lectures, transcripts, study guides,
-            and course files—organized for your cohort.
+      <section className="fc-public-hero" data-fc-reveal>
+        <div className="fc-public-copy">
+          <p className="eyebrow">Independent dental education workspace</p>
+          <h1>The study layer dental school was missing.</h1>
+          <p className="fc-public-lead">
+            Lectures, transcripts, Course Mastery Guides, class tools, and course files—connected in one private place built for how dental students actually study.
           </p>
 
-          <div className="mt-8 grid gap-3 sm:grid-cols-3">
-            {[
-              ["Videos", "Lecture recordings"],
-              ["Transcripts", "Searchable review"],
-              ["Files", "Course resources"],
-            ].map(([label, detail]) => (
-              <div key={label} className="border border-brand-line bg-brand-soft p-4">
-                <p className="font-semibold text-brand-navy">{label}</p>
-                <p className="text-sm text-brand-muted">{detail}</p>
-              </div>
+          <div className="fc-public-layers">
+            {STUDY_LAYERS.map(([number, title, detail]) => (
+              <article key={number}>
+                <span>{number}</span>
+                <div><h2>{title}</h2><p>{detail}</p></div>
+              </article>
             ))}
           </div>
+        </div>
 
-          <div className="mt-8">
+        <div className="fc-public-visual" aria-label="Microscopy-inspired Fourth Canal brand image">
+          <Image
+            src="/brand/fourth-canal-hero-brand-image.png"
+            alt="Enamel microscopy field with four anatomical canal strands"
+            fill
+            priority
+            sizes="(max-width: 900px) 100vw, 48vw"
+          />
+          <div className="fc-public-visual-label">
+            <span>ANATOMICAL ATLAS / 04</span>
+            <b>The fourth strand is the signal.</b>
+          </div>
+        </div>
+
+        <aside className="fc-signin-card" aria-labelledby="signin-title">
+          <p className="eyebrow">Private student access</p>
+          <h2 id="signin-title">Open your workspace.</h2>
+          <p>Use the Google account connected to your cohort access.</p>
+
+          <div className="fc-signin-action">
             {!profile ? (
               <>
                 <SignInPanel />
-                <p className="mt-4 text-sm text-brand-muted">
-                  Access is limited to approved Google accounts. Roster matches are
-                  approved automatically.
-                </p>
                 {params.auth_error && (
-                  <p className="mt-3 border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800">
-                    Google sign-in failed. Try again or ask the site operator to
-                    confirm your approved account.
+                  <p className="fc-auth-error">
+                    Google sign-in failed. Try again or ask the site operator to confirm your approved account.
                   </p>
                 )}
               </>
             ) : (
-              <div className="border border-amber-200 bg-amber-50 px-4 py-4 text-left">
-                <p className="font-medium text-amber-900">
-                  {profile.status === "revoked"
-                    ? "Your access is inactive."
-                    : "Waiting for owner approval."}
-                </p>
-                <p className="mt-1 text-sm text-amber-800">{profile.email}</p>
-                <p className="mt-2 text-sm text-amber-800">
+              <div className="fc-pending-access">
+                <strong>{profile.status === "revoked" ? "Your access is inactive." : "Your account is waiting for approval."}</strong>
+                <span>{profile.email}</span>
+                <p>
                   {profile.status === "revoked"
                     ? "Contact an admin if you think this is a mistake."
-                    : "Roster students with a matching email are approved automatically. Other accounts stay pending for manual review."}
+                    : "Roster matches are approved automatically. Other accounts are reviewed by a student administrator."}
                 </p>
-                {profile.status === "pending" && (
-                  <AccessRequestForm initialNote={profile.access_note} />
-                )}
-                <form action="/auth/signout" method="post" className="mt-3">
-                  <button className="text-sm text-amber-900 underline">Sign out</button>
-                </form>
+                {profile.status === "pending" && <AccessRequestForm initialNote={profile.access_note} />}
+                <form action="/auth/signout" method="post"><button>Sign out</button></form>
               </div>
             )}
           </div>
-        </section>
 
-        <AboutSummary />
-      </div>
-
+          <div className="fc-signin-note">
+            <span className="fc-mini-canals" aria-hidden="true"><i /><i /><i /><i /></span>
+            <p>Independent and student-run. Official course and clinical guidance always controls.</p>
+          </div>
+        </aside>
+      </section>
     </main>
   );
 }

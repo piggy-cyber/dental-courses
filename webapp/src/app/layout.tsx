@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
-import { IBM_Plex_Mono, Source_Sans_3 } from "next/font/google";
+import { Bodoni_Moda, IBM_Plex_Mono, Inter, Source_Sans_3 } from "next/font/google";
 import { LegalFooter } from "@/components/LegalFooter";
+import { SiteRouteEffects } from "@/components/SiteRouteEffects";
 import "./globals.css";
 
 const sourceSans = Source_Sans_3({
@@ -13,6 +14,18 @@ const plexMono = IBM_Plex_Mono({
   variable: "--font-mono-app",
   subsets: ["latin"],
   weight: ["400", "500", "600"],
+  display: "swap",
+});
+
+const brandSans = Inter({
+  variable: "--font-fc-sans",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const brandDisplay = Bodoni_Moda({
+  variable: "--font-fc-display",
+  subsets: ["latin"],
   display: "swap",
 });
 
@@ -33,12 +46,14 @@ export const metadata: Metadata = {
     title: "Fourth Canal",
     description:
       "A private, independent cohort workspace for lectures, transcripts, study guides, and course files.",
+    images: ["/brand/fourth-canal-social-preview.png"],
   },
   twitter: {
     card: "summary_large_image",
     title: "Fourth Canal",
     description:
       "A private, independent cohort workspace for lectures, transcripts, study guides, and course files.",
+    images: ["/brand/fourth-canal-social-preview.png"],
   },
   robots: {
     index: false,
@@ -53,7 +68,7 @@ const themeScript = `
 (() => {
   try {
     const key = "d1-theme-mode";
-    const saved = localStorage.getItem(key) || "system";
+    const saved = localStorage.getItem(key) || "light";
     const mode = saved === "light" || saved === "dark" || saved === "system" ? saved : "system";
     const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
     const theme = mode === "system" ? (prefersDark ? "dark" : "light") : mode;
@@ -74,11 +89,12 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${sourceSans.variable} ${plexMono.variable} h-full antialiased`}
+      className={`${sourceSans.variable} ${plexMono.variable} ${brandSans.variable} ${brandDisplay.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <SiteRouteEffects />
         {children}
         <LegalFooter />
       </body>

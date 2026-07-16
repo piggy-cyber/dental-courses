@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { BrandMarkPublic } from "@/components/BrandMark";
-import { ThemeToggle } from "@/components/ThemeToggle";
 import { getSessionProfile } from "@/lib/access";
 
 export const metadata: Metadata = {
@@ -26,12 +25,11 @@ export default async function LegalPage() {
   const backLabel = profile?.status === "approved" ? "Back to dashboard" : "Back to sign in";
 
   return (
-    <div className="app-shell-bg min-h-screen text-brand-ink">
+    <div className="fc-site app-shell-bg min-h-screen text-brand-ink">
       <header className="sticky top-0 z-10 border-b border-brand-line bg-brand-panel">
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-3">
           <BrandMarkPublic />
           <div className="flex items-center gap-3">
-            <ThemeToggle compact />
             <Link href={backHref} className="text-sm font-medium text-brand-muted hover:text-brand-navy">
               {backLabel}
             </Link>

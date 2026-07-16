@@ -1,5 +1,7 @@
 import Link from "next/link";
+import Image from "next/image";
 import { getSessionProfile } from "@/lib/access";
+import { BrandMarkPublic } from "@/components/BrandMark";
 import styles from "./AboutPage.module.css";
 
 export const metadata = {
@@ -32,31 +34,20 @@ const PRINCIPLES = [
   },
 ] as const;
 
-function CanalWordmark() {
-  return (
-    <span className={styles.wordmark} aria-label="Fourth Canal">
-      <span className={styles.wordmarkCanals} aria-hidden="true">
-        <i /><i /><i /><i />
-      </span>
-      <span><strong>FOURTH</strong> CANAL</span>
-    </span>
-  );
-}
-
 export default async function AboutPage() {
   const { profile } = await getSessionProfile();
   const backHref = profile?.status === "approved" ? "/home" : "/";
   const backLabel = profile?.status === "approved" ? "Open my courses" : "Back to sign in";
 
   return (
-    <div className={styles.aboutPage} data-integrated-footer="true">
+    <div className={`${styles.aboutPage} fc-site`} data-integrated-footer="true">
       <div className={styles.microscopyField} aria-hidden="true" />
 
       <header className={styles.header}>
-        <Link href="/" className={styles.brandLink}>
-          <CanalWordmark />
-          <small>Dental study library</small>
-        </Link>
+        <div className={styles.brandLink}>
+          <BrandMarkPublic />
+          <small>Dental education</small>
+        </div>
         <Link href={backHref} className={styles.headerAction}>
           {backLabel} <span aria-hidden="true">→</span>
         </Link>
@@ -87,10 +78,15 @@ export default async function AboutPage() {
               <b>04 / 04</b>
             </div>
             <div className={styles.enamelSlice}>
+              <Image
+                src="/brand/fourth-canal-hero-brand-image.png"
+                alt="Enamel microscopy field with four anatomical canal strands"
+                fill
+                priority
+                sizes="(max-width: 900px) 100vw, 44vw"
+                className={styles.brandImage}
+              />
               <div className={styles.prismBands} aria-hidden="true" />
-              <span className={styles.specimenCanals} aria-hidden="true">
-                <i /><i /><i /><i />
-              </span>
               <p><strong>The canal that is easiest to miss</strong><small>is the one worth learning to see.</small></p>
             </div>
             <div className={styles.specimenFooter}>
@@ -149,7 +145,7 @@ export default async function AboutPage() {
 
       <footer className={styles.footer}>
         <div>
-          <CanalWordmark />
+          <BrandMarkPublic />
           <p>Independent student-run study support. Official course and clinical guidance always controls.</p>
         </div>
         <nav aria-label="Legal and site information">

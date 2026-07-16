@@ -1,19 +1,19 @@
 .aboutPage {
-  --porcelain: #fcfdfb;
-  --warm-enamel: #f5f1e8;
-  --sea-glass: #ddf4ef;
-  --fourth: #19b9b6;
-  --teal: #0b8788;
-  --ink: #17323a;
-  --muted: #5c7279;
-  --line: #c6d4d2;
+  --porcelain: #fcfaf5;
+  --warm-enamel: #f2ede2;
+  --sea-glass: #e9e1d4;
+  --fourth: #b35a2e;
+  --teal: #9f4c25;
+  --ink: #0f1e3a;
+  --muted: #675f57;
+  --line: #c8bdac;
   position: relative;
   min-height: 100dvh;
   flex: 1;
   overflow: clip;
   color: var(--ink);
-  background: linear-gradient(180deg, #fbfdfb 0%, #eef7f4 50%, #f8f4ec 100%);
-  font-family: var(--font-sans-app), Arial, sans-serif;
+  background: linear-gradient(180deg, #fcfaf5 0%, #f2ede2 52%, #eee5d8 100%);
+  font-family: var(--font-fc-sans), Arial, sans-serif;
   isolation: isolate;
 }
 
@@ -34,7 +34,7 @@
   opacity: .7;
   background:
     repeating-linear-gradient(108deg, transparent 0 32px, rgba(23, 50, 58, .028) 33px 34px),
-    radial-gradient(circle at 82% 18%, rgba(25, 185, 182, .13), transparent 28%),
+    radial-gradient(circle at 82% 18%, rgba(179, 90, 46, .1), transparent 28%),
     linear-gradient(90deg, rgba(255, 255, 255, .62), transparent 62%);
 }
 
@@ -47,7 +47,7 @@
   height: 76vh;
   opacity: .58;
   background:
-    repeating-linear-gradient(102deg, rgba(25, 185, 182, .14) 0 1px, transparent 1px 19px),
+    repeating-linear-gradient(102deg, rgba(179, 90, 46, .11) 0 1px, transparent 1px 19px),
     repeating-linear-gradient(78deg, rgba(23, 50, 58, .06) 0 1px, transparent 1px 31px);
   clip-path: polygon(24% 0, 100% 0, 83% 100%, 0 86%);
   mask-image: linear-gradient(120deg, transparent 3%, black 36%, transparent 96%);
@@ -65,7 +65,7 @@
   gap: 2rem;
   padding: .85rem clamp(1rem, 4vw, 4rem);
   border-bottom: 1px solid rgba(198, 212, 210, .82);
-  background: rgba(252, 253, 251, .9);
+  background: rgba(252, 250, 245, .92);
   backdrop-filter: blur(18px) saturate(110%);
 }
 
@@ -76,6 +76,8 @@
   color: var(--ink);
   text-decoration: none;
 }
+
+.brandLink :global(.fc-brand-horizontal) { height: 46px; }
 
 .brandLink > small {
   padding-left: 1rem;
@@ -138,8 +140,8 @@
 .hero h1 span { display: block; color: var(--teal); font-weight: 720; }
 .lead { max-width: 690px; margin: 2rem 0 0; color: #3f5960; font-size: clamp(1rem, 1.55vw, 1.35rem); line-height: 1.65; }
 .heroActions { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 2.1rem; }
-.primaryAction { border: 1px solid #087879; color: #fff; background: var(--teal); box-shadow: 0 8px 18px rgba(23, 50, 58, .12); }
-.primaryAction:hover { transform: translateY(-2px); background: #087879; }
+.primaryAction { border: 1px solid #0f1e3a; color: #f2ede2; background: #0f1e3a; box-shadow: 0 8px 18px rgba(15, 30, 58, .12); }
+.primaryAction:hover { transform: translateY(-2px); background: #172c52; }
 .secondaryAction { border: 1px solid var(--line); color: var(--ink); background: rgba(252, 253, 251, .82); }
 
 .specimen {
@@ -179,17 +181,17 @@
   display: grid;
   place-items: center;
   overflow: hidden;
-  background:
-    linear-gradient(128deg, rgba(255, 255, 255, .95), rgba(221, 244, 239, .68)),
-    var(--porcelain);
+  background: #0f1e3a;
 }
+
+.brandImage { object-fit: cover; object-position: center; }
 
 .prismBands {
   position: absolute;
   inset: -20%;
   opacity: .82;
   background:
-    repeating-linear-gradient(109deg, transparent 0 20px, rgba(11, 135, 136, .1) 21px 22px),
+    repeating-linear-gradient(109deg, transparent 0 20px, rgba(179, 90, 46, .12) 21px 22px),
     repeating-linear-gradient(71deg, transparent 0 32px, rgba(23, 50, 58, .05) 33px 34px),
     radial-gradient(circle at 50% 45%, rgba(255, 255, 255, .8), transparent 44%);
   transform: translate3d(-2%, 0, 0);
@@ -234,6 +236,8 @@
   padding-left: .8rem;
   border-left: 3px solid var(--fourth);
 }
+.enamelSlice > p { color: #f2ede2; text-shadow: 0 1px 12px rgba(15,30,58,.55); }
+.enamelSlice > p small { color: #ded5c8; }
 .enamelSlice > p strong,
 .enamelSlice > p small { display: block; }
 .enamelSlice > p strong { font-size: .78rem; }

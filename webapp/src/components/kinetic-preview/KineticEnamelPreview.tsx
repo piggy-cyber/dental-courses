@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
 import styles from "./KineticEnamelPreview.module.css";
 
-type MotionMode = "cinematic" | "reduced" | "off";
+type MotionMode = "full" | "less" | "off";
 type PreviewView = "dashboard" | "course";
 
 const FLOW_ITEMS = [
@@ -35,7 +36,7 @@ const SEARCH_ITEMS = [
 
 export function KineticEnamelPreview() {
   const rootRef = useRef<HTMLDivElement>(null);
-  const [motionMode, setMotionMode] = useState<MotionMode>("cinematic");
+  const [motionMode, setMotionMode] = useState<MotionMode>("full");
   const [activeView, setActiveView] = useState<PreviewView>("dashboard");
   const [activeSection, setActiveSection] = useState("Today");
   const [transitioning, setTransitioning] = useState(false);
@@ -50,19 +51,25 @@ export function KineticEnamelPreview() {
   useEffect(() => {
     const frame = window.requestAnimationFrame(() => {
       const saved = window.localStorage.getItem("fourth-canal-motion");
-      if (saved === "cinematic" || saved === "reduced" || saved === "off") {
+      if (saved === "full" || saved === "less" || saved === "off") {
         setMotionMode(saved);
         return;
       }
+      if (saved === "cinematic" || saved === "reduced") {
+        const migrated = saved === "cinematic" ? "full" : "less";
+        window.localStorage.setItem("fourth-canal-motion", migrated);
+        setMotionMode(migrated);
+        return;
+      }
       if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-        setMotionMode("reduced");
+        setMotionMode("less");
       }
     });
     return () => window.cancelAnimationFrame(frame);
   }, []);
 
   useEffect(() => {
-    if (motionMode !== "cinematic") return;
+    if (motionMode !== "full") return;
     const timer = window.setInterval(() => {
       setToolIndex((current) => (current + 1) % TOOLS.length);
     }, 4300);
@@ -83,7 +90,7 @@ export function KineticEnamelPreview() {
       root.style.setProperty("--scroll-progress", motionMode === "off" ? "1" : progress.toFixed(4));
       root.style.setProperty(
         "--parallax-y",
-        motionMode === "cinematic" ? `${Math.round(progress * -14)}px` : "0px",
+        motionMode === "full" ? `${Math.round(progress * -14)}px` : "0px",
       );
       const targetY = window.innerHeight * .34;
       const closestSection = sections.reduce<HTMLElement | null>((closest, section) => {
@@ -149,7 +156,7 @@ export function KineticEnamelPreview() {
   }, [searchQuery]);
 
   function movePointer(event: React.PointerEvent<HTMLDivElement>) {
-    if (motionMode !== "cinematic" || !rootRef.current) return;
+    if (motionMode !== "full" || !rootRef.current) return;
     const rect = rootRef.current.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
@@ -172,8 +179,8 @@ export function KineticEnamelPreview() {
       return;
     }
     setTransitioning(true);
-    window.setTimeout(commitView, motionMode === "reduced" ? 150 : 480);
-    window.setTimeout(() => setTransitioning(false), motionMode === "reduced" ? 360 : 1180);
+    window.setTimeout(commitView, motionMode === "less" ? 150 : 480);
+    window.setTimeout(() => setTransitioning(false), motionMode === "less" ? 360 : 1180);
   }
 
   function selectMotionMode(mode: MotionMode) {
@@ -204,7 +211,7 @@ export function KineticEnamelPreview() {
   return (
     <div
       ref={rootRef}
-      className={styles.previewRoot}
+      className={`${styles.previewRoot} fc-site`}
       data-motion={motionMode}
       data-integrated-footer="true"
       onPointerMove={movePointer}
@@ -222,8 +229,13 @@ export function KineticEnamelPreview() {
             <span key={index} style={{ "--blind-index": index } as React.CSSProperties} />
           ))}
           <div className={styles.transitionMark}>
-            <span className={styles.transitionCanals}><i /><i /><i /><i /></span>
-            <strong><b>FOURTH</b> CANAL</strong>
+            <Image
+              src="/brand/fourth-canal-horizontal-on-dark-outlined.svg"
+              alt=""
+              width={300}
+              height={66}
+              className={styles.transitionBrand}
+            />
             <small>{activeView === "dashboard" ? "Opening course" : "Returning home"}</small>
           </div>
         </div>
@@ -231,13 +243,13 @@ export function KineticEnamelPreview() {
 
       <aside className={styles.livingRail} aria-label="Preview navigation">
         <button className={styles.brandButton} onClick={() => changeView("dashboard")} aria-label="Fourth Canal home">
-          <span className={styles.canalMark} aria-hidden="true">
-            <i /><i /><i /><i />
-          </span>
-          <span className={styles.brandWords}>
-            <b><strong>FOURTH</strong> CANAL</b>
-            <small>Dental study library</small>
-          </span>
+          <Image
+            src="/brand/fourth-canal-horizontal-on-light-outlined.svg"
+            alt=""
+            width={220}
+            height={48}
+            className={styles.previewBrand}
+          />
         </button>
         <nav>
           <button className={activeView === "dashboard" ? styles.navActive : ""} onClick={() => changeView("dashboard")} aria-current={activeView === "dashboard" ? "page" : undefined}>
@@ -269,14 +281,14 @@ export function KineticEnamelPreview() {
               <span aria-hidden="true">⌕</span> Search Fourth Canal
             </button>
             <div className={styles.motionControl} aria-label="Motion level">
-              {(["cinematic", "reduced", "off"] as MotionMode[]).map((mode) => (
+              {(["full", "less", "off"] as MotionMode[]).map((mode) => (
                 <button
                   key={mode}
                   className={motionMode === mode ? styles.motionActive : ""}
                   onClick={() => selectMotionMode(mode)}
                   aria-pressed={motionMode === mode}
                 >
-                  {mode === "cinematic" ? "Full motion" : mode === "reduced" ? "Less motion" : "No motion"}
+                  {mode === "full" ? "Full motion" : mode === "less" ? "Less motion" : "No motion"}
                 </button>
               ))}
             </div>

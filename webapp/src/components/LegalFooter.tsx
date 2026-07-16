@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const LEGAL_LINKS = [
   { href: "/legal#privacy", label: "Privacy" },
@@ -9,16 +12,25 @@ const LEGAL_LINKS = [
 ] as const;
 
 export function LegalFooter() {
+  const pathname = usePathname();
+  const isGame = pathname === "/games" || pathname.startsWith("/games/");
   return (
-    <footer className="site-legal-footer border-t border-brand-line bg-brand-panel text-brand-muted">
+    <footer className={`${isGame ? "" : "fc-site"} site-legal-footer border-t border-brand-line bg-brand-panel text-brand-muted`}>
       <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-6 sm:px-6 lg:px-8">
-        <p className="max-w-5xl text-xs leading-relaxed">
-          Independent student-run study tool. Not affiliated with, endorsed by,
-          sponsored by, or representative of Case Western Reserve University or
-          its School of Dental Medicine. AI-assisted and student-created material
-          may be incomplete or inaccurate. Official university communications,
-          syllabi, Canvas, faculty instructions, and clinical guidance control.
-        </p>
+        {isGame ? (
+          <p className="max-w-5xl text-xs leading-relaxed">
+            Independent student-run study tool. Not affiliated with, endorsed by,
+            sponsored by, or representative of Case Western Reserve University or
+            its School of Dental Medicine. AI-assisted and student-created material
+            may be incomplete or inaccurate. Official university communications,
+            syllabi, Canvas, faculty instructions, and clinical guidance control.
+          </p>
+        ) : (
+          <p className="max-w-5xl text-xs leading-relaxed">
+            Independent student-run study support. Official university, course, faculty,
+            and clinical guidance always controls.
+          </p>
+        )}
 
         <div className="flex flex-col gap-3 border-t border-brand-line pt-4 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-xs">© 2026 Fourth Canal · Private academic use only.</p>
