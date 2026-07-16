@@ -1,4 +1,5 @@
 import { requireAdminProfile } from "@/app/admin/actions";
+import { hasAdminPermission } from "@/lib/admin-permissions";
 import { createClient } from "@/lib/supabase/server";
 import { RosterTable } from "./RosterTable";
 
@@ -26,7 +27,8 @@ export type RosterRow = {
 };
 
 export default async function AdminRosterPage() {
-  await requireAdminProfile("roster.manage");
+  const { profile } = await requireAdminProfile("roster.manage");
+  const canManageAccounts = hasAdminPermission(profile, "accounts.manage");
   const supabase = await createClient();
   const { data: rosterRows } = await supabase
     .from("student_roster")
@@ -70,7 +72,7 @@ export default async function AdminRosterPage() {
         </p>
       </header>
 
-      <RosterTable rows={rows} />
+      <RosterTable rows={rows} canManageAccounts={canManageAccounts} />
     </div>
   );
 }

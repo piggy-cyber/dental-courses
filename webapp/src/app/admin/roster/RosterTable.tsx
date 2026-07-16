@@ -11,7 +11,13 @@ function csvValue(value: string | null | undefined) {
   return /[",\n]/.test(text) ? `"${text.replaceAll('"', '""')}"` : text;
 }
 
-export function RosterTable({ rows }: { rows: RosterRow[] }) {
+export function RosterTable({
+  rows,
+  canManageAccounts,
+}: {
+  rows: RosterRow[];
+  canManageAccounts: boolean;
+}) {
   const classYears = useMemo(
     () => [...new Set([2029, ...rows.map((row) => row.graduation_year)])].sort((a, b) => a - b),
     [rows]
@@ -164,6 +170,43 @@ export function RosterTable({ rows }: { rows: RosterRow[] }) {
         {error && <p className="mt-2 text-sm text-rose-600">{error}</p>}
       </section>
 
+      <section className="app-card p-4">
+        <h2 className="font-semibold text-brand-navy">How student access works</h2>
+        <ol className="mt-3 grid gap-3 text-sm md:grid-cols-3">
+          <li className="border border-brand-line bg-brand-soft p-3">
+            <p className="font-semibold text-brand-navy">1. Allow the student</p>
+            <p className="mt-1 text-brand-muted">
+              Check Allow access only after confirming the official roster name.
+            </p>
+          </li>
+          <li className="border border-brand-line bg-brand-soft p-3">
+            <p className="font-semibold text-brand-navy">2. Student signs in</p>
+            <p className="mt-1 text-brand-muted">
+              Their Google account stays outside the library until an authorized officer links it.
+            </p>
+          </li>
+          <li className="border border-brand-line bg-brand-soft p-3">
+            <p className="font-semibold text-brand-navy">3. Link the correct account</p>
+            <p className="mt-1 text-brand-muted">
+              {canManageAccounts ? (
+                <>
+                  Open{" "}
+                  <Link
+                    href="/admin/accounts"
+                    className="font-semibold text-brand-blue hover:underline"
+                  >
+                    Accounts
+                  </Link>
+                  , choose the Google account, then select this roster student.
+                </>
+              ) : (
+                "The President, Vice President, or Membership Chair completes the account link."
+              )}
+            </p>
+          </li>
+        </ol>
+      </section>
+
       <div className="flex flex-wrap items-center gap-3 text-sm text-brand-muted">
         <span>{visibleRows.length} roster rows</span>
         <span>{allowedCount} allowed</span>
@@ -226,9 +269,19 @@ export function RosterTable({ rows }: { rows: RosterRow[] }) {
                         <p className="text-xs text-brand-muted">{row.profile.email}</p>
                       </>
                     ) : (
-                      <span className="text-brand-muted">
-                        {row.access_approved ? "Waiting to be linked" : "Not linked"}
-                      </span>
+                      <div>
+                        <span className="text-brand-muted">
+                          {row.access_approved ? "Waiting to be linked" : "Not linked"}
+                        </span>
+                        {row.access_approved && canManageAccounts && (
+                          <Link
+                            href="/admin/accounts"
+                            className="mt-1 block text-xs font-semibold text-brand-blue hover:underline"
+                          >
+                            Open Accounts to link →
+                          </Link>
+                        )}
+                      </div>
                     )}
                   </td>
                 </tr>
