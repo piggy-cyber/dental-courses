@@ -1,0 +1,590 @@
+{
+  "schemaVersion": 1,
+  "questions": [
+    {
+      "id": "max-incisors-crown-outline",
+      "featureType": "crown-shape",
+      "toothA": {
+        "id": "max-central-incisor",
+        "label": "Maxillary central incisor",
+        "universal": "#8 / #9",
+        "family": "Maxillary incisors",
+        "visualId": "max-central-incisor"
+      },
+      "toothB": {
+        "id": "max-lateral-incisor",
+        "label": "Maxillary lateral incisor",
+        "universal": "#7 / #10",
+        "family": "Maxillary incisors",
+        "visualId": "max-lateral-incisor"
+      },
+      "prompt": "Which tooth is the broader, squarer anterior reference with the sharper mesioincisal corner?",
+      "choices": [
+        { "id": "A", "label": "Tooth A — maxillary central incisor" },
+        { "id": "B", "label": "Tooth B — maxillary lateral incisor" }
+      ],
+      "correctChoice": "A",
+      "explanation": "The maxillary central incisor is the widest anterior crown and typically keeps a sharper mesioincisal corner. The lateral is the reduced, rounder, more variable neighbor.",
+      "distractorExplanation": "The maxillary lateral incisor is smaller and rounder, especially at the distal corner; its variability makes it a poor choice for the broad, square reference form.",
+      "comparisonRows": [
+        { "label": "Crown shape", "toothA": "Broad, relatively square crown; sharp mesioincisal corner", "toothB": "Smaller, rounder crown; distal corner especially rounded" },
+        { "label": "Lingual anatomy", "toothA": "Moderate fossa and ridges; cingulum commonly distal", "toothB": "Deeper or more expressed lingual form; cingulum more centered" },
+        { "label": "Root pattern", "toothA": "Single conical root; mesial surface may be flat or depressed", "toothB": "Single, more slender root; mesial depression may be present" },
+        { "label": "Ridge/groove clue", "toothA": "Moderate marginal ridges around one lingual fossa", "toothB": "More variable lingual pits or grooves may occur" },
+        { "label": "Arch clue", "toothA": "Broad anterior anchor nearest the midline", "toothB": "Reduced, rounder neighbor between central and canine" },
+        { "label": "Clinical identification clue", "toothA": "Use crown width plus the sharp mesioincisal corner", "toothB": "Use smaller size, rounded corners, and variability" }
+      ],
+      "commonTrap": "Do not identify the lateral from roundness alone; confirm its smaller crown and stronger lingual variability.",
+      "sourceRefs": [
+        { "courseCode": "REHE 151", "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.pdf", "locator": "pages 6–8, maxillary incisor comparison" },
+        { "courseCode": "REHE 151", "sourceName": "REHE 151 Dental Anatomy and Occlusion Textbook Companion.pdf", "locator": "pages 7–8, Incisor Identification Table" },
+        { "courseCode": "REHE 151", "sourceName": "REHE 151 - max ci recording.txt", "locator": "transcript 6:43–10:23" },
+        { "courseCode": "REHE 151", "sourceName": "REHE 151 - max li 8 31 2021.txt", "locator": "transcript 1:14–3:41" }
+      ],
+      "evidenceStatus": "course-verified"
+    },
+    {
+      "id": "max-incisors-lingual-form",
+      "featureType": "lingual-anatomy",
+      "toothA": {
+        "id": "max-central-incisor",
+        "label": "Maxillary central incisor",
+        "universal": "#8 / #9",
+        "family": "Maxillary incisors",
+        "visualId": "max-central-incisor"
+      },
+      "toothB": {
+        "id": "max-lateral-incisor",
+        "label": "Maxillary lateral incisor",
+        "universal": "#7 / #10",
+        "family": "Maxillary incisors",
+        "visualId": "max-lateral-incisor"
+      },
+      "prompt": "Which tooth more commonly combines a centered cingulum with deeper, more variable lingual anatomy?",
+      "choices": [
+        { "id": "A", "label": "Tooth A — maxillary central incisor" },
+        { "id": "B", "label": "Tooth B — maxillary lateral incisor" }
+      ],
+      "correctChoice": "B",
+      "explanation": "The maxillary lateral incisor typically has a more centered cingulum and more pronounced or variable lingual form than the central, including possible pits and grooves.",
+      "distractorExplanation": "The maxillary central usually has moderate lingual anatomy and a cingulum that trends distal rather than centered.",
+      "comparisonRows": [
+        { "label": "Crown shape", "toothA": "Broad, relatively square crown; sharp mesioincisal corner", "toothB": "Smaller, rounder crown; distal corner especially rounded" },
+        { "label": "Lingual anatomy", "toothA": "Moderate fossa and ridges; cingulum commonly distal", "toothB": "Deeper or more expressed lingual form; cingulum more centered" },
+        { "label": "Root pattern", "toothA": "Single conical root; mesial surface may be flat or depressed", "toothB": "Single, more slender root; mesial depression may be present" },
+        { "label": "Ridge/groove clue", "toothA": "Moderate marginal ridges around one lingual fossa", "toothB": "More variable lingual pits or grooves may occur" },
+        { "label": "Arch clue", "toothA": "Broad anterior anchor nearest the midline", "toothB": "Reduced, rounder neighbor between central and canine" },
+        { "label": "Clinical identification clue", "toothA": "Use crown width plus the sharp mesioincisal corner", "toothB": "Use smaller size, rounded corners, and variability" }
+      ],
+      "commonTrap": "A maxillary lateral can be highly variable. Treat a pit or groove as supporting evidence, not a required feature.",
+      "sourceRefs": [
+        { "courseCode": "REHE 151", "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.pdf", "locator": "pages 6 and 8, lingual comparison" },
+        { "courseCode": "REHE 151", "sourceName": "REHE 151 - max ci recording.txt", "locator": "transcript 10:23–12:33" },
+        { "courseCode": "REHE 151", "sourceName": "REHE 151 - max li 8 31 2021.txt", "locator": "transcript 4:23–5:27" },
+        { "courseCode": "REHE 151", "sourceName": "additional terminology 2023 A.pptx", "locator": "slides 9–12, contact and incisal-view terminology" }
+      ],
+      "evidenceStatus": "course-verified"
+    },
+    {
+      "id": "mand-incisors-symmetry",
+      "featureType": "symmetry",
+      "toothA": {
+        "id": "mand-central-incisor",
+        "label": "Mandibular central incisor",
+        "universal": "#24 / #25",
+        "family": "Mandibular incisors",
+        "visualId": "mand-central-incisor"
+      },
+      "toothB": {
+        "id": "mand-lateral-incisor",
+        "label": "Mandibular lateral incisor",
+        "universal": "#23 / #26",
+        "family": "Mandibular incisors",
+        "visualId": "mand-lateral-incisor"
+      },
+      "prompt": "Which tooth is the smallest permanent tooth and the more bilaterally symmetrical member of this pair?",
+      "choices": [
+        { "id": "A", "label": "Tooth A — mandibular central incisor" },
+        { "id": "B", "label": "Tooth B — mandibular lateral incisor" }
+      ],
+      "correctChoice": "A",
+      "explanation": "The mandibular central incisor is the smallest permanent tooth and is notably symmetrical from facial, lingual, and incisal views.",
+      "distractorExplanation": "The mandibular lateral is slightly larger and loses bilateral symmetry as its distal incisal edge twists to follow the arch.",
+      "comparisonRows": [
+        { "label": "Crown shape", "toothA": "Narrowest crown; straight incisal edge and sharp corners", "toothB": "Slightly larger; distal corner and incisal edge are less regular" },
+        { "label": "Lingual anatomy", "toothA": "Very shallow fossa; indistinct ridges; centered cingulum", "toothB": "Shallow fossa; cingulum commonly distal" },
+        { "label": "Root pattern", "toothA": "Single root with mesial and usually deeper distal depression", "toothB": "Similar single-root depression pattern; root alone is a weak separator" },
+        { "label": "Ridge/groove clue", "toothA": "Least pronounced incisor marginal ridges", "toothB": "Mesial marginal ridge commonly longer than distal" },
+        { "label": "Arch clue", "toothA": "Straight edge bisects the crown", "toothB": "Distal twist follows the curvature of the arch" },
+        { "label": "Clinical identification clue", "toothA": "Small size plus bilateral symmetry", "toothB": "Slightly larger crown plus distal twist" }
+      ],
+      "commonTrap": "Both teeth have weak lingual anatomy. Symmetry and distal twist are more reliable than fossa depth.",
+      "sourceRefs": [
+        { "courseCode": "REHE 151", "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.pdf", "locator": "pages 6–8, mandibular incisor comparison" },
+        { "courseCode": "REHE 151", "sourceName": "REHE 151 Dental Anatomy and Occlusion Textbook Companion.pdf", "locator": "pages 7–8, Incisor Identification Table" },
+        { "courseCode": "REHE 151", "sourceName": "REHE 151 - mand ci 9 2 21final.txt", "locator": "transcript 1:45–4:02 and 6:20–7:46" }
+      ],
+      "evidenceStatus": "course-verified"
+    },
+    {
+      "id": "mand-incisors-arch-twist",
+      "featureType": "arch-clue",
+      "toothA": {
+        "id": "mand-central-incisor",
+        "label": "Mandibular central incisor",
+        "universal": "#24 / #25",
+        "family": "Mandibular incisors",
+        "visualId": "mand-central-incisor"
+      },
+      "toothB": {
+        "id": "mand-lateral-incisor",
+        "label": "Mandibular lateral incisor",
+        "universal": "#23 / #26",
+        "family": "Mandibular incisors",
+        "visualId": "mand-lateral-incisor"
+      },
+      "prompt": "Which tooth uses a distal incisal twist as the reliable clue that it follows the dental arch?",
+      "choices": [
+        { "id": "A", "label": "Tooth A — mandibular central incisor" },
+        { "id": "B", "label": "Tooth B — mandibular lateral incisor" }
+      ],
+      "correctChoice": "B",
+      "explanation": "The mandibular lateral incisor twists distally from the incisal view. That asymmetry is the fastest separator from the central incisor.",
+      "distractorExplanation": "The mandibular central keeps a straighter incisal edge and much stronger bilateral symmetry; it does not supply the characteristic distal arch twist.",
+      "comparisonRows": [
+        { "label": "Crown shape", "toothA": "Narrowest crown; straight incisal edge and sharp corners", "toothB": "Slightly larger; distal corner and incisal edge are less regular" },
+        { "label": "Lingual anatomy", "toothA": "Very shallow fossa; indistinct ridges; centered cingulum", "toothB": "Shallow fossa; cingulum commonly distal" },
+        { "label": "Root pattern", "toothA": "Single root with mesial and usually deeper distal depression", "toothB": "Similar single-root depression pattern; root alone is a weak separator" },
+        { "label": "Ridge/groove clue", "toothA": "Least pronounced incisor marginal ridges", "toothB": "Mesial marginal ridge commonly longer than distal" },
+        { "label": "Arch clue", "toothA": "Straight edge bisects the crown", "toothB": "Distal twist follows the curvature of the arch" },
+        { "label": "Clinical identification clue", "toothA": "Small size plus bilateral symmetry", "toothB": "Slightly larger crown plus distal twist" }
+      ],
+      "commonTrap": "Wear can obscure identification clues generally. Confirm the distal twist with the distally positioned cingulum and slightly larger crown instead of relying on one edge alone.",
+      "sourceRefs": [
+        { "courseCode": "REHE 151", "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.pdf", "locator": "pages 7–8, mandibular central-versus-lateral progression" },
+        { "courseCode": "REHE 151", "sourceName": "REHE 151 Dental Anatomy and Occlusion Textbook Companion.pdf", "locator": "page 6, identification decision-tree warning about wear obscuring morphology clues" },
+        { "courseCode": "REHE 151", "sourceName": "REHE 151 - mand li 9 2 21.txt", "locator": "transcript 0:00–3:45" },
+        { "courseCode": "REHE 151", "sourceName": "additional terminology 2023 A.pptx", "locator": "slides 9–12, facial and incisal viewing terminology" }
+      ],
+      "evidenceStatus": "course-verified"
+    },
+    {
+      "id": "canines-lingual-ridges",
+      "featureType": "lingual-anatomy",
+      "toothA": {
+        "id": "max-canine",
+        "label": "Maxillary canine",
+        "universal": "#6 / #11",
+        "family": "Canines",
+        "visualId": "max-canine"
+      },
+      "toothB": {
+        "id": "mand-canine",
+        "label": "Mandibular canine",
+        "universal": "#22 / #27",
+        "family": "Canines",
+        "visualId": "mand-canine"
+      },
+      "prompt": "Which canine has the stronger lingual ridge, two clearer fossae, and the larger centered cingulum?",
+      "choices": [
+        { "id": "A", "label": "Tooth A — maxillary canine" },
+        { "id": "B", "label": "Tooth B — mandibular canine" }
+      ],
+      "correctChoice": "A",
+      "explanation": "The maxillary canine is the bulkier canine with a prominent lingual ridge, two fossae, and a larger centered cingulum.",
+      "distractorExplanation": "The mandibular canine has shallower lingual anatomy and a smaller cingulum that may sit distal to center.",
+      "comparisonRows": [
+        { "label": "Crown shape", "toothA": "Bulkier diamond form with a characteristic distal pinch", "toothB": "Longer, narrower crown with less facial bulk" },
+        { "label": "Lingual anatomy", "toothA": "Prominent lingual ridge, two fossae, large centered cingulum", "toothB": "Shallower fossae, weaker ridge, smaller distal or central cingulum" },
+        { "label": "Root pattern", "toothA": "Very long, thick single-root expectation", "toothB": "Long root; anterior tooth most likely to show two roots or canals" },
+        { "label": "Ridge/groove clue", "toothA": "Prominent facial ridge with depressions on each side", "toothB": "Facial and lingual ridges less pronounced" },
+        { "label": "Arch clue", "toothA": "Cusp tip sits more facial to the root axis", "toothB": "Cusp tip sits more lingual; distal arm follows arch form" },
+        { "label": "Clinical identification clue", "toothA": "Canine eminence, bulk, and distal pinch", "toothB": "Slender crown plus possible two-root or two-canal variation" }
+      ],
+      "commonTrap": "Do not call every pointed tooth a maxillary canine. Check ridge strength, cingulum size, and cusp-tip position.",
+      "sourceRefs": [
+        { "courseCode": "REHE 151", "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.pdf", "locator": "pages 8–9, Canines comparison" },
+        { "courseCode": "REHE 151", "sourceName": "REHE 151 Dental Anatomy and Occlusion Textbook Companion.pdf", "locator": "pages 8–9, Canine Recognition Table" },
+        { "courseCode": "REHE 151", "sourceName": "da 3 Max C 2024.ppt", "locator": "slides 16–25" },
+        { "courseCode": "REHE 151", "sourceName": "da 3 Mand C 2024.ppt", "locator": "slides 8–15" }
+      ],
+      "evidenceStatus": "course-verified"
+    },
+    {
+      "id": "canines-root-variation",
+      "featureType": "root-pattern",
+      "toothA": {
+        "id": "max-canine",
+        "label": "Maxillary canine",
+        "universal": "#6 / #11",
+        "family": "Canines",
+        "visualId": "max-canine"
+      },
+      "toothB": {
+        "id": "mand-canine",
+        "label": "Mandibular canine",
+        "universal": "#22 / #27",
+        "family": "Canines",
+        "visualId": "mand-canine"
+      },
+      "prompt": "Which canine should raise the stronger possibility of two roots or two canals rather than a guaranteed single canal?",
+      "choices": [
+        { "id": "A", "label": "Tooth A — maxillary canine" },
+        { "id": "B", "label": "Tooth B — mandibular canine" }
+      ],
+      "correctChoice": "B",
+      "explanation": "The mandibular canine is taught as the anterior tooth most likely to show two roots or two canals. That is a variation cue, not an absolute anatomy claim.",
+      "distractorExplanation": "The maxillary canine is the classic long, thick, stable root landmark; it is not the stronger two-root or two-canal variation cue in this comparison.",
+      "comparisonRows": [
+        { "label": "Crown shape", "toothA": "Bulkier diamond form with a characteristic distal pinch", "toothB": "Longer, narrower crown with less facial bulk" },
+        { "label": "Lingual anatomy", "toothA": "Prominent lingual ridge, two fossae, large centered cingulum", "toothB": "Shallower fossae, weaker ridge, smaller distal or central cingulum" },
+        { "label": "Root pattern", "toothA": "Very long, thick single-root expectation", "toothB": "Long root; anterior tooth most likely to show two roots or canals" },
+        { "label": "Ridge/groove clue", "toothA": "Prominent facial ridge with depressions on each side", "toothB": "Facial and lingual ridges less pronounced" },
+        { "label": "Arch clue", "toothA": "Cusp tip sits more facial to the root axis", "toothB": "Cusp tip sits more lingual; distal arm follows arch form" },
+        { "label": "Clinical identification clue", "toothA": "Canine eminence, bulk, and distal pinch", "toothB": "Slender crown plus possible two-root or two-canal variation" }
+      ],
+      "commonTrap": "“Most likely anterior tooth” does not mean “usually two-rooted.” Preserve the possibility language.",
+      "sourceRefs": [
+        { "courseCode": "REHE 151", "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.pdf", "locator": "page 8, mandibular canine proximal/root row" },
+        { "courseCode": "REHE 151", "sourceName": "REHE 151 Dental Anatomy and Occlusion Textbook Companion.pdf", "locator": "pages 8–9, mandibular canine root variation" },
+        { "courseCode": "REHE 151", "sourceName": "da 3 Mand C 2024.ppt", "locator": "slides 11–16" }
+      ],
+      "evidenceStatus": "course-verified"
+    },
+    {
+      "id": "max-premolars-root-pattern",
+      "featureType": "root-pattern",
+      "toothA": {
+        "id": "max-first-premolar",
+        "label": "Maxillary first premolar",
+        "universal": "#5 / #12",
+        "family": "Maxillary premolars",
+        "visualId": "max-first-premolar"
+      },
+      "toothB": {
+        "id": "max-second-premolar",
+        "label": "Maxillary second premolar",
+        "universal": "#4 / #13",
+        "family": "Maxillary premolars",
+        "visualId": "max-second-premolar"
+      },
+      "prompt": "Which premolar is the stronger match for the common facial-lingual two-root variant and a pronounced mesial crown-root depression?",
+      "choices": [
+        { "id": "A", "label": "Tooth A — maxillary first premolar" },
+        { "id": "B", "label": "Tooth B — maxillary second premolar" }
+      ],
+      "correctChoice": "A",
+      "explanation": "The course deck reports two roots in 61% of maxillary first premolars (one root in 38% and three roots in 1%). Its common two-root variant is oriented facial-lingual, and the pronounced mesial coronal/root depression remains a key clue.",
+      "distractorExplanation": "The maxillary second premolar more commonly has one root and does not carry the first premolar’s defining mesial crown-root depression pattern.",
+      "comparisonRows": [
+        { "label": "Crown shape", "toothA": "Sharper, angular tapered hexagon", "toothB": "Rounder, more even oval or rectangular form" },
+        { "label": "Lingual anatomy", "toothA": "Lingual cusp is shorter; crown tapers more lingually", "toothB": "Lingual cusp closer to facial cusp height; less lingual taper" },
+        { "label": "Root pattern", "toothA": "Common F/L two-root variant (61%); one root 38%, three roots 1%", "toothB": "Usually one root; distal depression is more typical" },
+        { "label": "Ridge/groove clue", "toothA": "Classic mesial marginal groove and longer central groove", "toothB": "Shorter central groove with more supplemental grooves" },
+        { "label": "Arch clue", "toothA": "More angular and asymmetric first premolar", "toothB": "More balanced, rounded second premolar" },
+        { "label": "Clinical identification clue", "toothA": "Mesial crown-root depression plus bifurcation tendency", "toothB": "One-root tendency plus rounded, wrinkled occlusal table" }
+      ],
+      "commonTrap": "Root count and canal count are related but not interchangeable; use “commonly” and confirm both separately.",
+      "sourceRefs": [
+        { "courseCode": "REHE 151", "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.pdf", "locator": "pages 6–7 and 9, maxillary premolars" },
+        { "courseCode": "REHE 151", "sourceName": "REHE 151 Dental Anatomy and Occlusion Textbook Companion.pdf", "locator": "pages 10–11 and 16, root depression exception" },
+        { "courseCode": "REHE 151", "sourceName": "da 5 Max PM1 2024.ppt", "locator": "slides 12–16 and 22" },
+        { "courseCode": "REHE 151", "sourceName": "da 5 Max PM2 2024.ppt", "locator": "slides 22–29" }
+      ],
+      "evidenceStatus": "course-verified"
+    },
+    {
+      "id": "max-premolars-groove-pattern",
+      "featureType": "ridge-groove",
+      "toothA": {
+        "id": "max-first-premolar",
+        "label": "Maxillary first premolar",
+        "universal": "#5 / #12",
+        "family": "Maxillary premolars",
+        "visualId": "max-first-premolar"
+      },
+      "toothB": {
+        "id": "max-second-premolar",
+        "label": "Maxillary second premolar",
+        "universal": "#4 / #13",
+        "family": "Maxillary premolars",
+        "visualId": "max-second-premolar"
+      },
+      "prompt": "Which tooth is the more rounded, even premolar with a shorter central groove and more supplemental grooves?",
+      "choices": [
+        { "id": "A", "label": "Tooth A — maxillary first premolar" },
+        { "id": "B", "label": "Tooth B — maxillary second premolar" }
+      ],
+      "correctChoice": "B",
+      "explanation": "The maxillary second premolar is the more balanced, rounded tooth and commonly shows a shorter central groove with a more wrinkled supplemental-groove pattern.",
+      "distractorExplanation": "The maxillary first premolar is more angular and is better recognized by its longer central groove, classic mesial marginal groove, and mesial depression.",
+      "comparisonRows": [
+        { "label": "Crown shape", "toothA": "Sharper, angular tapered hexagon", "toothB": "Rounder, more even oval or rectangular form" },
+        { "label": "Lingual anatomy", "toothA": "Lingual cusp is shorter; crown tapers more lingually", "toothB": "Lingual cusp closer to facial cusp height; less lingual taper" },
+        { "label": "Root pattern", "toothA": "Commonly two roots or two canals; mesial depression is the key exception", "toothB": "Usually one root; distal depression is more typical" },
+        { "label": "Ridge/groove clue", "toothA": "Classic mesial marginal groove and longer central groove", "toothB": "Shorter central groove with more supplemental grooves" },
+        { "label": "Arch clue", "toothA": "More angular and asymmetric first premolar", "toothB": "More balanced, rounded second premolar" },
+        { "label": "Clinical identification clue", "toothA": "Mesial crown-root depression plus bifurcation tendency", "toothB": "One-root tendency plus rounded, wrinkled occlusal table" }
+      ],
+      "commonTrap": "Do not use one groove alone. Confirm the second premolar with its shorter central groove, supplemental grooves, rounded outline, and one-root tendency.",
+      "sourceRefs": [
+        { "courseCode": "REHE 151", "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.pdf", "locator": "pages 7 and 9, maxillary premolar comparison" },
+        { "courseCode": "REHE 151", "sourceName": "REHE 151 Dental Anatomy and Occlusion Textbook Companion.pdf", "locator": "pages 10–11, Premolar Comparison Table" },
+        { "courseCode": "REHE 151", "sourceName": "da 5 Max PM1 2024.ppt", "locator": "slides 19–22" },
+        { "courseCode": "REHE 151", "sourceName": "da 5 Max PM2 2024.ppt", "locator": "slides 6–7 and 34 onward, occlusal comparison" }
+      ],
+      "evidenceStatus": "needs-review"
+    },
+    {
+      "id": "mand-premolars-groove-pattern",
+      "featureType": "ridge-groove",
+      "toothA": {
+        "id": "mand-first-premolar",
+        "label": "Mandibular first premolar",
+        "universal": "#21 / #28",
+        "family": "Mandibular premolars",
+        "visualId": "mand-first-premolar"
+      },
+      "toothB": {
+        "id": "mand-second-premolar",
+        "label": "Mandibular second premolar",
+        "universal": "#20 / #29",
+        "family": "Mandibular premolars",
+        "visualId": "mand-second-premolar"
+      },
+      "prompt": "Which premolar is the classic no-central-groove tooth with a dominant transverse ridge and tiny lingual cusp?",
+      "choices": [
+        { "id": "A", "label": "Tooth A — mandibular first premolar" },
+        { "id": "B", "label": "Tooth B — mandibular second premolar" }
+      ],
+      "correctChoice": "A",
+      "explanation": "The mandibular first premolar is dominated by the facial cusp and a strong transverse ridge; its classic occlusal pattern lacks a central groove and may show an ML groove.",
+      "distractorExplanation": "The mandibular second premolar has a more functional lingual cusp system and commonly uses H/U grooves in the two-cusp type or a Y pattern in the three-cusp type.",
+      "comparisonRows": [
+        { "label": "Crown shape", "toothA": "Diamond outline with triangular occlusal table", "toothB": "Ovoid two-cusp or squarer three-cusp outline" },
+        { "label": "Lingual anatomy", "toothA": "Tiny pointed, often nonfunctional lingual cusp", "toothB": "Larger functional lingual cusp or ML and DL cusps" },
+        { "label": "Root pattern", "toothA": "Usually one root; furcation can occur; distal depression common", "toothB": "Usually one root and canal; distal depression remains common" },
+        { "label": "Ridge/groove clue", "toothA": "Strong transverse ridge, no central groove, ML groove may occur", "toothB": "H/U groove in two-cusp type or Y groove in three-cusp type" },
+        { "label": "Arch clue", "toothA": "Canine-like transition tooth with strong lingual tilt", "toothB": "More molar-like tooth with broader functional table" },
+        { "label": "Clinical identification clue", "toothA": "Tiny lingual cusp plus transverse ridge", "toothB": "Functional lingual cusp system plus recognizable groove pattern" }
+      ],
+      "commonTrap": "Do not mistake the mandibular first premolar’s separate pits for a short central groove; the transverse ridge interrupts that path.",
+      "sourceRefs": [
+        { "courseCode": "REHE 151", "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.pdf", "locator": "pages 6–7 and 9, mandibular premolars" },
+        { "courseCode": "REHE 151", "sourceName": "REHE 151 Dental Anatomy and Occlusion Textbook Companion.pdf", "locator": "pages 10–11, mandibular premolar decision tree" },
+        { "courseCode": "REHE 151", "sourceName": "da 5 Mand PM1 2021 9 2 a.ppt", "locator": "slides 15–21 and 29–34" },
+        { "courseCode": "REHE 151", "sourceName": "da 5 Mand PM 2 2021 9 23 a.ppt", "locator": "slides 7–11 and 21–28" }
+      ],
+      "evidenceStatus": "course-verified"
+    },
+    {
+      "id": "mand-premolars-crown-transition",
+      "featureType": "crown-shape",
+      "toothA": {
+        "id": "mand-first-premolar",
+        "label": "Mandibular first premolar",
+        "universal": "#21 / #28",
+        "family": "Mandibular premolars",
+        "visualId": "mand-first-premolar"
+      },
+      "toothB": {
+        "id": "mand-second-premolar",
+        "label": "Mandibular second premolar",
+        "universal": "#20 / #29",
+        "family": "Mandibular premolars",
+        "visualId": "mand-second-premolar"
+      },
+      "prompt": "Which tooth is more likely to look molar-like because its lingual cusp system is larger and may split into two cusps?",
+      "choices": [
+        { "id": "A", "label": "Tooth A — mandibular first premolar" },
+        { "id": "B", "label": "Tooth B — mandibular second premolar" }
+      ],
+      "correctChoice": "B",
+      "explanation": "The mandibular second premolar has the broader, more functional occlusal table and may have a three-cusp form with separate mesiolingual and distolingual cusps.",
+      "distractorExplanation": "The mandibular first premolar is the canine-like transition tooth; its dominant facial cusp and tiny lingual cusp keep the table narrow and asymmetric.",
+      "comparisonRows": [
+        { "label": "Crown shape", "toothA": "Diamond outline with triangular occlusal table", "toothB": "Ovoid two-cusp or squarer three-cusp outline" },
+        { "label": "Lingual anatomy", "toothA": "Tiny pointed, often nonfunctional lingual cusp", "toothB": "Larger functional lingual cusp or ML and DL cusps" },
+        { "label": "Root pattern", "toothA": "Usually one root; furcation can occur; distal depression common", "toothB": "Usually one root and canal; distal depression remains common" },
+        { "label": "Ridge/groove clue", "toothA": "Strong transverse ridge, no central groove, ML groove may occur", "toothB": "H/U groove in two-cusp type or Y groove in three-cusp type" },
+        { "label": "Arch clue", "toothA": "Canine-like transition tooth with strong lingual tilt", "toothB": "More molar-like tooth with broader functional table" },
+        { "label": "Clinical identification clue", "toothA": "Tiny lingual cusp plus transverse ridge", "toothB": "Functional lingual cusp system plus recognizable groove pattern" }
+      ],
+      "commonTrap": "The three-cusp second premolar is a common form, not the only form. The two-cusp type remains valid and uses H or U groove patterns.",
+      "sourceRefs": [
+        { "courseCode": "REHE 151", "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.pdf", "locator": "pages 6–7 and 9, first-to-second premolar progression" },
+        { "courseCode": "REHE 151", "sourceName": "REHE 151 Dental Anatomy and Occlusion Textbook Companion.pdf", "locator": "pages 10–11, two-cusp and three-cusp forms" },
+        { "courseCode": "REHE 151", "sourceName": "da 5 Mand PM 2 2021 9 23 a.ppt", "locator": "slides 7–11 and 21–28" }
+      ],
+      "evidenceStatus": "course-verified"
+    },
+    {
+      "id": "max-molars-distal-reduction",
+      "featureType": "crown-shape",
+      "toothA": {
+        "id": "max-first-molar",
+        "label": "Maxillary first molar",
+        "universal": "#3 / #14",
+        "family": "Maxillary molars",
+        "visualId": "max-first-molar"
+      },
+      "toothB": {
+        "id": "max-second-molar",
+        "label": "Maxillary second molar",
+        "universal": "#2 / #15",
+        "family": "Maxillary molars",
+        "visualId": "max-second-molar"
+      },
+      "prompt": "Which molar more commonly shows reduced distolingual anatomy and may become a three-cusp, heart-shaped tooth?",
+      "choices": [
+        { "id": "A", "label": "Tooth A — maxillary first molar" },
+        { "id": "B", "label": "Tooth B — maxillary second molar" }
+      ],
+      "correctChoice": "B",
+      "explanation": "The maxillary second molar commonly reduces the distolingual cusp and talon; when that cusp is absent, the crown can take a three-cusp heart shape.",
+      "distractorExplanation": "The maxillary first molar is the larger reference molar with a fuller talon, four major cusps, and a stronger oblique ridge.",
+      "comparisonRows": [
+        { "label": "Crown shape", "toothA": "Large rhomboid with full trigon and talon", "toothB": "Smaller twisted rhomboid or heart form when three-cusped" },
+        { "label": "Lingual anatomy", "toothA": "Full ML and DL cusps; Carabelli may be present on ML and is variable", "toothB": "DL cusp may be reduced or absent; Carabelli less likely" },
+        { "label": "Root pattern", "toothA": "Three roots with broader separation", "toothB": "Three roots that are closer and more parallel or swept distally" },
+        { "label": "Ridge/groove clue", "toothA": "Strong ML-to-DB oblique ridge", "toothB": "Oblique ridge retained in four-cusp form but altered with talon reduction" },
+        { "label": "Arch clue", "toothA": "First-molar reference with full distal-lingual anatomy", "toothB": "Distal progression simplifies the talon and narrows root spread" },
+        { "label": "Clinical identification clue", "toothA": "Full talon and strong oblique ridge; variable Carabelli may support", "toothB": "Reduced DL cusp plus converging roots" }
+      ],
+      "commonTrap": "A four-cusp maxillary second molar can still look rhomboid. Use size, talon reduction, and root convergence together.",
+      "sourceRefs": [
+        { "courseCode": "REHE 151", "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.pdf", "locator": "pages 6–7 and 9, maxillary molar progression" },
+        { "courseCode": "REHE 151", "sourceName": "REHE 151 Dental Anatomy and Occlusion Textbook Companion.pdf", "locator": "pages 11–12, Maxillary Molar Atlas Table" },
+        { "courseCode": "REHE 151", "sourceName": "da 6 Max M1 2024.ppt", "locator": "slides 26–30" },
+        { "courseCode": "REHE 151", "sourceName": "da 6 Max M2 M3 2020.ppt", "locator": "slides 2 and 20–24" }
+      ],
+      "evidenceStatus": "course-verified"
+    },
+    {
+      "id": "max-molars-root-spacing",
+      "featureType": "root-pattern",
+      "toothA": {
+        "id": "max-first-molar",
+        "label": "Maxillary first molar",
+        "universal": "#3 / #14",
+        "family": "Maxillary molars",
+        "visualId": "max-first-molar"
+      },
+      "toothB": {
+        "id": "max-second-molar",
+        "label": "Maxillary second molar",
+        "universal": "#2 / #15",
+        "family": "Maxillary molars",
+        "visualId": "max-second-molar"
+      },
+      "prompt": "Which molar is the stronger match for three roots that sit closer together and sweep more parallel?",
+      "choices": [
+        { "id": "A", "label": "Tooth A — maxillary first molar" },
+        { "id": "B", "label": "Tooth B — maxillary second molar" }
+      ],
+      "correctChoice": "B",
+      "explanation": "Both teeth use the maxillary three-root plan, but the second molar’s roots are typically closer together and more parallel, with a longer root trunk.",
+      "distractorExplanation": "The first molar’s three roots are more widely spread and support its fuller crown form; root convergence is the second-molar clue.",
+      "comparisonRows": [
+        { "label": "Crown shape", "toothA": "Large rhomboid with full trigon and talon", "toothB": "Smaller twisted rhomboid or heart form when three-cusped" },
+        { "label": "Lingual anatomy", "toothA": "Full ML and DL cusps; Carabelli may be present on ML and is variable", "toothB": "DL cusp may be reduced or absent; Carabelli less likely" },
+        { "label": "Root pattern", "toothA": "Three roots with broader separation", "toothB": "Three roots that are closer and more parallel or swept distally" },
+        { "label": "Ridge/groove clue", "toothA": "Strong ML-to-DB oblique ridge", "toothB": "Oblique ridge retained in four-cusp form but altered with talon reduction" },
+        { "label": "Arch clue", "toothA": "First-molar reference with full distal-lingual anatomy", "toothB": "Distal progression simplifies the talon and narrows root spread" },
+        { "label": "Clinical identification clue", "toothA": "Full talon and strong oblique ridge; variable Carabelli may support", "toothB": "Reduced DL cusp plus converging roots" }
+      ],
+      "commonTrap": "Do not use root count alone; both are commonly three-rooted. Root spacing and talon form do the separating.",
+      "sourceRefs": [
+        { "courseCode": "REHE 151", "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.pdf", "locator": "pages 6–7 and 9, root-spacing comparison" },
+        { "courseCode": "REHE 151", "sourceName": "REHE 151 Dental Anatomy and Occlusion Textbook Companion.pdf", "locator": "pages 11–12, root comparison" },
+        { "courseCode": "REHE 151", "sourceName": "da 6 Max M1 2024.ppt", "locator": "slides 3–7" },
+        { "courseCode": "REHE 151", "sourceName": "da 6 Max M2 M3 2020.ppt", "locator": "slides 3–5 and 11" }
+      ],
+      "evidenceStatus": "course-verified"
+    },
+    {
+      "id": "mand-molars-groove-map",
+      "featureType": "ridge-groove",
+      "toothA": {
+        "id": "mand-first-molar",
+        "label": "Mandibular first molar",
+        "universal": "#19 / #30",
+        "family": "Mandibular molars",
+        "visualId": "mand-first-molar"
+      },
+      "toothB": {
+        "id": "mand-second-molar",
+        "label": "Mandibular second molar",
+        "universal": "#18 / #31",
+        "family": "Mandibular molars",
+        "visualId": "mand-second-molar"
+      },
+      "prompt": "Which tooth is the classic four-cusp, rectangular mandibular molar with a plus-shaped groove pattern?",
+      "choices": [
+        { "id": "A", "label": "Tooth A — mandibular first molar" },
+        { "id": "B", "label": "Tooth B — mandibular second molar" }
+      ],
+      "correctChoice": "B",
+      "explanation": "The mandibular second molar is the regular four-cusp tooth with a rectangular outline and plus-shaped groove system.",
+      "distractorExplanation": "The mandibular first molar is usually pentagonal with five cusps and a Y-pattern groove system created in part by its distal cusp.",
+      "comparisonRows": [
+        { "label": "Crown shape", "toothA": "Pentagonal, longest mesiodistal crown, usually five cusps", "toothB": "More regular rectangular crown with four cusps" },
+        { "label": "Lingual anatomy", "toothA": "ML and DL cusps with stronger lingual taper; distal cusp may show", "toothB": "ML and DL cusps align in a more regular four-cusp plan" },
+        { "label": "Root pattern", "toothA": "Two roots with wide separation and shorter trunk", "toothB": "Two roots closer together and more parallel" },
+        { "label": "Ridge/groove clue", "toothA": "Y-pattern groove system", "toothB": "Plus-pattern groove system with two transverse ridges" },
+        { "label": "Arch clue", "toothA": "First molar carries the distal cusp and greatest MD width", "toothB": "Second molar simplifies into a symmetric four-cusp block" },
+        { "label": "Clinical identification clue", "toothA": "Five cusps plus Y pattern and broad root spread", "toothB": "Four cusps plus pattern and close parallel roots" }
+      ],
+      "commonTrap": "Cusp count can vary. Confirm the groove pattern, outline, and root spacing before naming the tooth.",
+      "sourceRefs": [
+        { "courseCode": "REHE 151", "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.pdf", "locator": "pages 6–7 and 10, mandibular molars" },
+        { "courseCode": "REHE 151", "sourceName": "REHE 151 Dental Anatomy and Occlusion Textbook Companion.pdf", "locator": "pages 13–14, Mandibular Molar Atlas Table" },
+        { "courseCode": "REHE 151", "sourceName": "da 7 Maand M1 2020.ppt", "locator": "slides 4–6 and 16–17" },
+        { "courseCode": "REHE 151", "sourceName": "da 7 Maand M2 M3 2020 9 22 2020.ppt", "locator": "slides 4 and 17–18" }
+      ],
+      "evidenceStatus": "course-verified"
+    },
+    {
+      "id": "mand-molars-clinical-id",
+      "featureType": "clinical-identification",
+      "toothA": {
+        "id": "mand-first-molar",
+        "label": "Mandibular first molar",
+        "universal": "#19 / #30",
+        "family": "Mandibular molars",
+        "visualId": "mand-first-molar"
+      },
+      "toothB": {
+        "id": "mand-second-molar",
+        "label": "Mandibular second molar",
+        "universal": "#18 / #31",
+        "family": "Mandibular molars",
+        "visualId": "mand-second-molar"
+      },
+      "prompt": "Which tooth is identified most reliably by the combined bundle of five cusps, Y grooves, and widely separated roots?",
+      "choices": [
+        { "id": "A", "label": "Tooth A — mandibular first molar" },
+        { "id": "B", "label": "Tooth B — mandibular second molar" }
+      ],
+      "correctChoice": "A",
+      "explanation": "The mandibular first molar’s strongest identification bundle is five cusps, a pentagonal outline with a Y groove pattern, and two widely separated roots.",
+      "distractorExplanation": "The mandibular second molar is the more symmetric four-cusp, rectangular, plus-pattern tooth, and its roots lie closer together.",
+      "comparisonRows": [
+        { "label": "Crown shape", "toothA": "Pentagonal, longest mesiodistal crown, usually five cusps", "toothB": "More regular rectangular crown with four cusps" },
+        { "label": "Lingual anatomy", "toothA": "ML and DL cusps with stronger lingual taper; distal cusp may show", "toothB": "ML and DL cusps align in a more regular four-cusp plan" },
+        { "label": "Root pattern", "toothA": "Two roots with wide separation and shorter trunk", "toothB": "Two roots closer together and more parallel" },
+        { "label": "Ridge/groove clue", "toothA": "Y-pattern groove system", "toothB": "Plus-pattern groove system with two transverse ridges" },
+        { "label": "Arch clue", "toothA": "First molar carries the distal cusp and greatest MD width", "toothB": "Second molar simplifies into a symmetric four-cusp block" },
+        { "label": "Clinical identification clue", "toothA": "Five cusps plus Y pattern and broad root spread", "toothB": "Four cusps plus pattern and close parallel roots" }
+      ],
+      "commonTrap": "A mandibular first molar can vary to four or six cusps. The identification bundle is stronger than cusp count by itself.",
+      "sourceRefs": [
+        { "courseCode": "REHE 151", "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.pdf", "locator": "pages 7 and 10, mandibular first-versus-second molar" },
+        { "courseCode": "REHE 151", "sourceName": "REHE 151 Dental Anatomy and Occlusion Textbook Companion.pdf", "locator": "pages 13–14, groove and root reading" },
+        { "courseCode": "REHE 151", "sourceName": "da 7 Maand M1 2020.ppt", "locator": "slides 4–7 and 16–22" },
+        { "courseCode": "REHE 151", "sourceName": "da 7 Maand M2 M3 2020 9 22 2020.ppt", "locator": "slides 4–6 and 17–18" }
+      ],
+      "evidenceStatus": "course-verified"
+    }
+  ]
+}

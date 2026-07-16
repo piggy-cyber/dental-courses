@@ -2,8 +2,13 @@
 
 import { revalidatePath } from "next/cache";
 import toothCatalogJson from "@/data/games/tooth-data.json";
+import toothComparisonJson from "@/data/games/tooth-comparison-data.json";
 import { getSessionProfile } from "@/lib/access";
 import { createClient } from "@/lib/supabase/server";
+import {
+  getToothComparisonMasteryKey,
+  type ToothComparisonDataset,
+} from "@/lib/games/tooth-comparison-types";
 import {
   GAME_IDS,
   progressFromRow,
@@ -15,6 +20,10 @@ import type { ToothCatalog } from "@/lib/games/tooth-types";
 const toothCatalog = toothCatalogJson as ToothCatalog;
 const validToothCodes = new Set<string>(
   toothCatalog.teeth.flatMap((tooth) => [tooth.code, tooth.supernumeraryCode]),
+);
+const toothComparisonDataset = toothComparisonJson as ToothComparisonDataset;
+const validComparisonKeys = new Set<string>(
+  toothComparisonDataset.questions.map(getToothComparisonMasteryKey),
 );
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
@@ -48,8 +57,10 @@ function validateRound(input: GameRoundResult): string | null {
 
   let masteryCorrect = 0;
   let masteryAttempts = 0;
+  const validMasteryKeys =
+    input.gameId === "tooth-quest" ? validToothCodes : validComparisonKeys;
   for (const [code, entry] of Object.entries(input.masteryDelta)) {
-    if (!validToothCodes.has(code)) return "That tooth code is not recognized.";
+    if (!validMasteryKeys.has(code)) return "That mastery key is not recognized.";
     if (
       !entry ||
       typeof entry !== "object" ||
@@ -100,6 +111,6 @@ export async function saveGameRound(input: GameRoundResult): Promise<SaveGameRou
   }
 
   revalidatePath("/games");
-  revalidatePath("/games/tooth-quest");
+  revalidatePath(`/games/${input.gameId}`);
   return { ok: true, progress: progressFromRow(row as Record<string, unknown>) };
 }

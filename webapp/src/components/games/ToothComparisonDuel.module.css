@@ -1,0 +1,1264 @@
+.page {
+  width: min(1440px, 100%);
+  margin: 0 auto;
+  padding: clamp(1rem, 3vw, 2.6rem);
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 320px);
+  align-items: end;
+  gap: clamp(1.25rem, 4vw, 4rem);
+  margin-bottom: 1.4rem;
+}
+
+.eyebrow,
+.controlLabel,
+.readyCopy > p,
+.questionHeading > span,
+.feedbackSummary article > span,
+.comparisonHeading span,
+.reviewHero p,
+.weakAreaPanel > span {
+  color: var(--arcade-cyan);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.hero h1 {
+  max-width: 850px;
+  margin-top: 0.35rem;
+  color: var(--arcade-enamel);
+  font-size: clamp(2rem, 6vw, 4.8rem);
+  font-weight: 820;
+  letter-spacing: -0.055em;
+  line-height: 0.95;
+}
+
+.heroCopy {
+  max-width: 760px;
+  margin-top: 0.9rem;
+  color: var(--arcade-muted);
+  font-size: clamp(0.88rem, 1.5vw, 1rem);
+  line-height: 1.6;
+}
+
+.heroLinks {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem 1rem;
+  margin-top: 1rem;
+  font-family: var(--font-mono-app), monospace;
+  font-size: 0.68rem;
+}
+
+.heroLinks a {
+  color: var(--arcade-cyan);
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.heroLinks span {
+  color: var(--arcade-muted);
+}
+
+.accountPanel {
+  border: 1px solid var(--arcade-line);
+  background: rgba(13, 28, 46, 0.9);
+  padding: 1rem;
+  box-shadow: inset 3px 0 0 var(--arcade-blue);
+}
+
+.accountPanel > span {
+  display: block;
+  color: var(--arcade-muted);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.accountPanel > strong {
+  display: block;
+  margin-top: 0.25rem;
+  color: var(--arcade-enamel);
+  font-size: 1.3rem;
+}
+
+.accountPanel > div {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin-top: 0.8rem;
+}
+
+.accountPanel p {
+  color: var(--arcade-muted);
+  font-size: 0.68rem;
+}
+
+.accountPanel b {
+  display: block;
+  color: var(--arcade-cyan);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 0.9rem;
+}
+
+.saveNotice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.8rem;
+  border: 1px solid var(--arcade-gold);
+  background: rgba(255, 209, 102, 0.08);
+  padding: 0.75rem 0.9rem;
+}
+
+.saveNotice strong,
+.saveNotice span {
+  display: block;
+}
+
+.saveNotice strong {
+  color: var(--arcade-enamel);
+  font-size: 0.78rem;
+}
+
+.saveNotice span {
+  margin-top: 0.12rem;
+  color: var(--arcade-muted);
+  font-size: 0.7rem;
+}
+
+.saveNotice button,
+.pairPicker button,
+.challengeLaunch button,
+.feedbackActions button,
+.reviewHero button,
+.reviewActions button,
+.reviewActions a {
+  min-height: 44px;
+  border: 1px solid var(--arcade-cyan);
+  background: var(--arcade-cyan);
+  color: var(--arcade-bg);
+  padding: 0.65rem 0.9rem;
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.gameFrame {
+  overflow: hidden;
+  border: 1px solid var(--arcade-line);
+  background: rgba(7, 17, 31, 0.78);
+  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.38);
+}
+
+.controlRail {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid var(--arcade-line);
+  background: rgba(13, 28, 46, 0.95);
+  padding: 0.8rem 1rem;
+}
+
+.modeTabs {
+  display: flex;
+  gap: 0.35rem;
+  margin-top: 0.4rem;
+}
+
+.modeTabs button {
+  display: flex;
+  min-width: 98px;
+  min-height: 48px;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  border: 1px solid var(--arcade-line);
+  background: var(--arcade-bg);
+  color: var(--arcade-muted);
+  padding: 0.42rem 0.68rem;
+  font: inherit;
+  cursor: pointer;
+}
+
+.modeTabs button small {
+  color: var(--arcade-muted);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 0.5rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.modeTabs button span {
+  margin-top: 0.08rem;
+  font-size: 0.78rem;
+  font-weight: 850;
+}
+
+.modeTabs .activeMode {
+  border-color: var(--arcade-cyan);
+  background: rgba(94, 231, 231, 0.1);
+  color: var(--arcade-enamel);
+  box-shadow: inset 0 -2px 0 var(--arcade-cyan);
+}
+
+.modeTabs button:disabled {
+  cursor: not-allowed;
+  opacity: 0.66;
+}
+
+.railStatus {
+  text-align: right;
+}
+
+.railStatus span,
+.railStatus strong {
+  display: block;
+}
+
+.railReset {
+  min-height: 32px;
+  margin-top: 0.45rem;
+  border: 1px solid var(--arcade-line);
+  background: transparent;
+  color: var(--arcade-cyan);
+  padding: 0.35rem 0.55rem;
+  font: inherit;
+  font-size: 0.6rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.railStatus span {
+  color: var(--arcade-cyan);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 0.65rem;
+  font-weight: 800;
+}
+
+.railStatus strong {
+  margin-top: 0.2rem;
+  color: var(--arcade-muted);
+  font-size: 0.7rem;
+}
+
+.readyPanel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 430px);
+  gap: 1rem;
+  padding: clamp(1.2rem, 4vw, 3rem);
+}
+
+.readyCopy {
+  align-self: center;
+  max-width: 720px;
+}
+
+.readyCopy h2 {
+  max-width: 660px;
+  margin-top: 0.3rem;
+  color: var(--arcade-enamel);
+  font-size: clamp(1.6rem, 4vw, 3rem);
+  letter-spacing: -0.04em;
+  line-height: 1.02;
+}
+
+.readyCopy > span {
+  display: block;
+  max-width: 640px;
+  margin-top: 0.7rem;
+  color: var(--arcade-muted);
+  font-size: 0.82rem;
+  line-height: 1.6;
+}
+
+.pairPicker,
+.challengeLaunch {
+  align-self: center;
+  border: 1px solid var(--arcade-line);
+  background: var(--arcade-panel);
+  padding: 1rem;
+}
+
+.pairPicker label,
+.challengeLaunch span {
+  display: block;
+  color: var(--arcade-muted);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.pairPicker select {
+  width: 100%;
+  min-height: 48px;
+  margin-top: 0.5rem;
+  border: 1px solid var(--arcade-line);
+  background: var(--arcade-bg);
+  color: var(--arcade-enamel);
+  padding: 0.6rem 0.7rem;
+  font: inherit;
+  font-size: 0.75rem;
+}
+
+.pairPicker button,
+.challengeLaunch button {
+  width: 100%;
+  margin-top: 0.65rem;
+}
+
+.challengeLaunch strong {
+  display: block;
+  margin-top: 0.3rem;
+  color: var(--arcade-enamel);
+  font-size: 1.15rem;
+}
+
+.savedWeakAreas {
+  grid-column: 1 / -1;
+  border-top: 1px solid var(--arcade-line);
+  padding-top: 1rem;
+}
+
+.savedWeakAreas > p {
+  color: var(--arcade-muted);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 0.62rem;
+  text-transform: uppercase;
+}
+
+.savedWeakAreas ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 0.45rem;
+  padding: 0;
+  list-style: none;
+}
+
+.savedWeakAreas li {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  border: 1px solid var(--arcade-line);
+  background: rgba(18, 38, 61, 0.65);
+  padding: 0.45rem 0.6rem;
+  color: var(--arcade-muted);
+  font-size: 0.68rem;
+}
+
+.savedWeakAreas b {
+  color: var(--arcade-gold);
+  font-family: var(--font-mono-app), monospace;
+}
+
+.liveBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid var(--arcade-line);
+  background: rgba(18, 38, 61, 0.75);
+  padding: 0.7rem 1rem;
+}
+
+.liveBar > div:not(.liveStats) span,
+.liveBar > div:not(.liveStats) strong {
+  display: block;
+}
+
+.liveBar > div:not(.liveStats) span,
+.liveStats span {
+  color: var(--arcade-muted);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 0.54rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.liveBar > div:not(.liveStats) strong {
+  margin-top: 0.1rem;
+  color: var(--arcade-enamel);
+  font-size: 0.74rem;
+}
+
+.liveStats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-left: auto;
+}
+
+.liveStats .timerUrgent {
+  border-left-color: var(--arcade-danger);
+}
+
+.liveStats .timerUrgent b {
+  color: var(--arcade-danger);
+}
+
+.liveStats p {
+  min-width: 62px;
+  border-left: 1px solid var(--arcade-line);
+  padding-left: 0.6rem;
+}
+
+.liveStats b {
+  display: block;
+  margin-top: 0.08rem;
+  color: var(--arcade-cyan);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 0.82rem;
+}
+
+.duelStage {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: 0.8rem;
+  align-items: stretch;
+  padding: 1rem;
+  background:
+    radial-gradient(circle at 18% 10%, rgba(110, 140, 255, 0.12), transparent 34%),
+    radial-gradient(circle at 82% 10%, rgba(94, 231, 231, 0.1), transparent 34%);
+}
+
+.toothCard {
+  min-width: 0;
+  border: 1px solid var(--arcade-line);
+  background: linear-gradient(155deg, rgba(18, 38, 61, 0.98), rgba(9, 22, 37, 0.98));
+  padding: 0.8rem;
+  transition: border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+}
+
+.toothCardCorrect {
+  border-color: var(--arcade-cyan);
+  box-shadow: inset 0 0 0 1px var(--arcade-cyan), 0 0 34px rgba(94, 231, 231, 0.1);
+}
+
+.toothCardWrong {
+  border-color: var(--arcade-danger);
+  box-shadow: inset 0 0 0 1px var(--arcade-danger);
+}
+
+.toothCardHeader,
+.toothNameRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.7rem;
+}
+
+.cardLetter,
+.evidenceBadge,
+.toothNameRow > span,
+.visualLandmark {
+  font-family: var(--font-mono-app), monospace;
+}
+
+.cardLetter {
+  color: var(--arcade-cyan);
+  font-size: 0.62rem;
+  font-weight: 850;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.evidenceBadge {
+  border: 1px solid rgba(94, 231, 231, 0.38);
+  color: var(--arcade-muted);
+  padding: 0.2rem 0.35rem;
+  font-size: 0.48rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.toothNameRow {
+  margin-top: 0.65rem;
+}
+
+.toothNameRow h2 {
+  color: var(--arcade-enamel);
+  font-size: clamp(0.95rem, 2vw, 1.35rem);
+  line-height: 1.05;
+}
+
+.toothNameRow p {
+  margin-top: 0.18rem;
+  color: var(--arcade-cyan);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 0.64rem;
+}
+
+.toothNameRow > span {
+  max-width: 150px;
+  color: var(--arcade-muted);
+  font-size: 0.52rem;
+  line-height: 1.35;
+  text-align: right;
+  text-transform: uppercase;
+}
+
+.toothSvg {
+  display: block;
+  width: min(100%, 360px);
+  height: clamp(210px, 25vw, 310px);
+  margin: 0.3rem auto 0;
+  overflow: visible;
+  filter: drop-shadow(0 20px 18px rgba(0, 0, 0, 0.28));
+}
+
+.svgRoot,
+.svgCrown,
+.svgCusp {
+  vector-effect: non-scaling-stroke;
+}
+
+.svgRoot {
+  fill: color-mix(in srgb, #f1e4bd 82%, #85754d);
+  stroke: #9f916c;
+  stroke-width: 2;
+}
+
+.svgCrown {
+  fill: var(--tooth-enamel);
+  stroke: #d8c89d;
+  stroke-width: 2.6;
+  stroke-linejoin: round;
+}
+
+.svgCusp {
+  fill: rgba(255, 253, 244, 0.2);
+  stroke: rgba(133, 117, 77, 0.68);
+  stroke-width: 1.5;
+}
+
+.svgGroove,
+.svgRidge,
+.svgGuide {
+  fill: none;
+  vector-effect: non-scaling-stroke;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.svgGroove {
+  stroke: #6f6380;
+  stroke-width: 2.2;
+}
+
+.svgRidge {
+  stroke: #b59b62;
+  stroke-width: 3;
+}
+
+.svgGuide {
+  stroke: var(--arcade-blue);
+  stroke-width: 1.6;
+  stroke-dasharray: 5 5;
+}
+
+.svgLandmark {
+  fill: var(--arcade-gold);
+  stroke: #8f6622;
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.svgOrientation {
+  fill: var(--arcade-muted);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.svgAnnotation {
+  fill: var(--arcade-blue);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 7px;
+  font-weight: 850;
+  letter-spacing: 0.04em;
+}
+
+.visualLandmark {
+  min-height: 2.1em;
+  border-top: 1px solid var(--arcade-line);
+  padding-top: 0.6rem;
+  color: var(--arcade-muted);
+  font-size: 0.6rem;
+  line-height: 1.4;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.versusMark {
+  display: grid;
+  align-self: center;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  border: 1px solid var(--arcade-gold);
+  border-radius: 50%;
+  background: var(--arcade-bg);
+  color: var(--arcade-gold);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 0.68rem;
+  font-weight: 900;
+  box-shadow: 0 0 28px rgba(255, 209, 102, 0.14);
+}
+
+.questionPanel {
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) minmax(300px, 0.85fr);
+  gap: 1rem;
+  align-items: center;
+  border-top: 1px solid var(--arcade-line);
+  border-bottom: 1px solid var(--arcade-line);
+  background: rgba(18, 38, 61, 0.92);
+  padding: 1rem;
+}
+
+.questionHeading h2 {
+  margin-top: 0.28rem;
+  color: var(--arcade-enamel);
+  font-size: clamp(1rem, 2.2vw, 1.45rem);
+  line-height: 1.25;
+}
+
+.choiceGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.55rem;
+}
+
+.choiceGrid button {
+  display: grid;
+  min-height: 70px;
+  grid-template-columns: 32px minmax(0, 1fr);
+  align-items: center;
+  gap: 0.55rem;
+  border: 1px solid var(--arcade-line);
+  background: var(--arcade-bg);
+  color: var(--arcade-enamel);
+  padding: 0.6rem;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.choiceGrid button > span {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border: 1px solid var(--arcade-cyan);
+  color: var(--arcade-cyan);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 0.66rem;
+  font-weight: 900;
+}
+
+.choiceGrid button strong {
+  font-size: 0.72rem;
+  line-height: 1.3;
+}
+
+.choiceGrid button:hover:not(:disabled) {
+  border-color: var(--arcade-cyan);
+  background: rgba(94, 231, 231, 0.08);
+}
+
+.choiceGrid button:disabled {
+  cursor: default;
+}
+
+.choiceGrid .choiceCorrect {
+  border-color: var(--arcade-cyan);
+  background: rgba(94, 231, 231, 0.12);
+}
+
+.choiceGrid .choiceWrong {
+  border-color: var(--arcade-danger);
+  background: rgba(255, 107, 122, 0.1);
+}
+
+.feedbackPanel {
+  background: rgba(7, 17, 31, 0.94);
+}
+
+.feedbackSummary {
+  display: grid;
+  grid-template-columns: minmax(180px, 0.35fr) minmax(0, 1fr);
+  gap: 1rem;
+  border-bottom: 1px solid var(--arcade-line);
+  padding: 1rem;
+}
+
+.resultCorrect,
+.resultWrong {
+  border-left: 3px solid;
+  background: var(--arcade-panel);
+  padding: 0.8rem;
+}
+
+.resultCorrect {
+  border-color: var(--arcade-cyan);
+}
+
+.resultWrong {
+  border-color: var(--arcade-danger);
+}
+
+.resultCorrect span,
+.resultWrong span {
+  font-family: var(--font-mono-app), monospace;
+  font-size: 0.62rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.resultCorrect span {
+  color: var(--arcade-cyan);
+}
+
+.resultWrong span {
+  color: var(--arcade-danger);
+}
+
+.resultCorrect h2,
+.resultWrong h2 {
+  margin-top: 0.35rem;
+  color: var(--arcade-enamel);
+  font-size: 0.9rem;
+  line-height: 1.35;
+}
+
+.explanationGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem;
+}
+
+.explanationGrid article {
+  border: 1px solid var(--arcade-line);
+  background: rgba(13, 28, 46, 0.7);
+  padding: 0.8rem;
+}
+
+.explanationGrid p {
+  margin-top: 0.35rem;
+  color: var(--arcade-muted);
+  font-size: 0.73rem;
+  line-height: 1.55;
+}
+
+.comparisonBlock {
+  padding: 1rem;
+}
+
+.comparisonHeading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.65rem;
+}
+
+.comparisonHeading h3 {
+  margin-top: 0.2rem;
+  color: var(--arcade-enamel);
+  font-size: 0.9rem;
+}
+
+.comparisonHeading > p {
+  max-width: 600px;
+  color: var(--arcade-muted);
+  font-size: 0.68rem;
+  line-height: 1.45;
+  text-align: right;
+}
+
+.comparisonHeading b {
+  color: var(--arcade-gold);
+}
+
+.tableScroller {
+  overflow-x: auto;
+  border: 1px solid var(--arcade-line);
+}
+
+.tableScroller table {
+  width: 100%;
+  min-width: 720px;
+  border-collapse: collapse;
+}
+
+.tableScroller th,
+.tableScroller td {
+  border: 1px solid var(--arcade-line);
+  padding: 0.58rem 0.65rem;
+  font-size: 0.68rem;
+  line-height: 1.4;
+  text-align: left;
+  vertical-align: top;
+}
+
+.tableScroller thead th {
+  background: var(--arcade-panel-strong);
+  color: var(--arcade-cyan);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.tableScroller tbody th {
+  width: 190px;
+  background: rgba(18, 38, 61, 0.65);
+  color: var(--arcade-enamel);
+}
+
+.tableScroller td {
+  width: calc((100% - 190px) / 2);
+  color: var(--arcade-muted);
+}
+
+.feedbackActions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-top: 1px solid var(--arcade-line);
+  padding: 0.8rem 1rem;
+}
+
+.feedbackActions > span {
+  color: var(--arcade-muted);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 0.58rem;
+  text-transform: uppercase;
+}
+
+.reviewPanel {
+  padding: 1rem;
+}
+
+.reviewHero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border: 1px solid var(--arcade-line);
+  background: var(--arcade-panel);
+  padding: 1rem;
+}
+
+.reviewHero h2 {
+  margin-top: 0.25rem;
+  color: var(--arcade-enamel);
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+}
+
+.reviewHero span {
+  display: block;
+  margin-top: 0.25rem;
+  color: var(--arcade-muted);
+  font-size: 0.75rem;
+}
+
+.weakAreaPanel {
+  margin-top: 0.8rem;
+  border: 1px solid var(--arcade-line);
+  background: rgba(18, 38, 61, 0.65);
+  padding: 0.8rem;
+}
+
+.weakAreaPanel ul {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.45rem;
+  margin-top: 0.55rem;
+  padding: 0;
+  list-style: none;
+}
+
+.weakAreaPanel li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.15rem 0.55rem;
+  border: 1px solid var(--arcade-line);
+  background: var(--arcade-bg);
+  padding: 0.55rem;
+}
+
+.weakAreaPanel li strong {
+  color: var(--arcade-enamel);
+  font-size: 0.7rem;
+}
+
+.weakAreaPanel li span {
+  grid-column: 1;
+  color: var(--arcade-muted);
+  font-size: 0.62rem;
+}
+
+.weakAreaPanel li b {
+  grid-column: 2;
+  grid-row: 1 / 3;
+  align-self: center;
+  color: var(--arcade-danger);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 0.62rem;
+}
+
+.weakAreaPanel > p {
+  margin-top: 0.45rem;
+  color: var(--arcade-cyan);
+  font-size: 0.72rem;
+}
+
+.reviewList {
+  display: grid;
+  gap: 0.6rem;
+  margin-top: 0.8rem;
+}
+
+.reviewFocus {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  border: 1px solid var(--arcade-line);
+  background: var(--arcade-panel);
+  padding: 0.7rem;
+}
+
+.reviewFocus span,
+.reviewFocus strong {
+  display: block;
+}
+
+.reviewFocus span {
+  color: var(--arcade-cyan);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 0.55rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.reviewFocus strong {
+  margin-top: 0.18rem;
+  color: var(--arcade-enamel);
+  font-size: 0.76rem;
+}
+
+.reviewFocus button {
+  min-height: 38px;
+  border: 1px solid var(--arcade-cyan);
+  background: transparent;
+  color: var(--arcade-cyan);
+  padding: 0.45rem 0.65rem;
+  font: inherit;
+  font-size: 0.64rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.perfectReview {
+  border: 1px solid var(--arcade-line);
+  background: rgba(94, 231, 231, 0.06);
+  padding: 0.8rem;
+  color: var(--arcade-cyan);
+  font-size: 0.72rem;
+}
+
+.reviewList article {
+  border: 1px solid var(--arcade-line);
+  background: rgba(13, 28, 46, 0.72);
+}
+
+.reviewList article > header {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) auto;
+  gap: 0.6rem;
+  align-items: start;
+  border-bottom: 1px solid var(--arcade-line);
+  padding: 0.7rem;
+}
+
+.reviewList header > span {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border: 1px solid var(--arcade-line);
+  color: var(--arcade-muted);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 0.58rem;
+}
+
+.reviewList header p {
+  color: var(--arcade-cyan);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 0.55rem;
+  text-transform: uppercase;
+}
+
+.reviewList header h3 {
+  margin-top: 0.18rem;
+  color: var(--arcade-enamel);
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
+.reviewList header > b {
+  font-family: var(--font-mono-app), monospace;
+  font-size: 0.58rem;
+  text-transform: uppercase;
+}
+
+.reviewCorrect header > b {
+  color: var(--arcade-cyan);
+}
+
+.reviewWrong header > b {
+  color: var(--arcade-danger);
+}
+
+.reviewList article > div {
+  padding: 0.7rem;
+}
+
+.reviewList article > div p,
+.reviewList article > div span {
+  color: var(--arcade-muted);
+  font-size: 0.68rem;
+  line-height: 1.5;
+}
+
+.reviewList article > div p + p {
+  margin-top: 0.15rem;
+}
+
+.reviewList article > div strong {
+  color: var(--arcade-enamel);
+}
+
+.reviewList article > div span {
+  display: block;
+  margin-top: 0.5rem;
+  border-left: 2px solid var(--arcade-line);
+  padding-left: 0.55rem;
+}
+
+.reviewActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.55rem;
+  margin-top: 0.8rem;
+}
+
+.reviewActions button,
+.reviewActions a {
+  background: transparent;
+  color: var(--arcade-cyan);
+  text-decoration: none;
+}
+
+.saveNotice button:focus-visible,
+.modeTabs button:focus-visible,
+.railReset:focus-visible,
+.pairPicker select:focus-visible,
+.pairPicker button:focus-visible,
+.challengeLaunch button:focus-visible,
+.choiceGrid button:focus-visible,
+.feedbackActions button:focus-visible,
+.reviewHero button:focus-visible,
+.reviewFocus button:focus-visible,
+.reviewActions button:focus-visible,
+.reviewActions a:focus-visible,
+.heroLinks a:focus-visible {
+  outline: 3px solid var(--arcade-cyan);
+  outline-offset: 3px;
+}
+
+@media (max-width: 920px) {
+  .hero,
+  .readyPanel,
+  .questionPanel,
+  .feedbackSummary {
+    grid-template-columns: 1fr;
+  }
+
+  .accountPanel {
+    max-width: 420px;
+  }
+
+  .duelStage {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 0.55rem;
+  }
+
+  .versusMark {
+    position: absolute;
+    left: 50%;
+    top: 1.5rem;
+    z-index: 3;
+    width: 40px;
+    height: 40px;
+    transform: translateX(-50%);
+  }
+
+  .questionPanel {
+    align-items: stretch;
+  }
+
+  .weakAreaPanel ul {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 680px) {
+  .page {
+    padding: 0.8rem;
+  }
+
+  .controlRail,
+  .liveBar,
+  .comparisonHeading,
+  .feedbackActions,
+  .reviewHero {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .reviewFocus {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .reviewFocus button {
+    width: 100%;
+  }
+
+  .railStatus {
+    text-align: left;
+  }
+
+  .liveBar {
+    display: flex;
+  }
+
+  .liveStats {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .liveStats p {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .toothCard {
+    padding: 0.55rem;
+  }
+
+  .toothNameRow {
+    display: block;
+  }
+
+  .toothNameRow > span {
+    display: block;
+    max-width: none;
+    margin-top: 0.35rem;
+    text-align: left;
+  }
+
+  .toothNameRow h2 {
+    font-size: 0.8rem;
+  }
+
+  .toothSvg {
+    height: clamp(155px, 48vw, 220px);
+  }
+
+  .evidenceBadge {
+    display: none;
+  }
+
+  .visualLandmark {
+    font-size: 0.49rem;
+  }
+
+  .choiceGrid,
+  .explanationGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .comparisonHeading > p {
+    text-align: left;
+  }
+
+  .reviewActions {
+    flex-direction: column;
+  }
+
+  .reviewActions button,
+  .reviewActions a,
+  .reviewHero button {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+@media (max-width: 420px) {
+  .hero h1 {
+    font-size: 2.3rem;
+  }
+
+  .duelStage {
+    padding: 0.55rem;
+  }
+
+  .cardLetter {
+    font-size: 0.52rem;
+  }
+
+  .toothNameRow p,
+  .toothNameRow > span {
+    font-size: 0.46rem;
+  }
+
+  .toothSvg {
+    height: 150px;
+  }
+
+  .versusMark {
+    top: 1rem;
+    width: 34px;
+    height: 34px;
+    font-size: 0.56rem;
+  }
+
+  .liveStats span {
+    font-size: 0.43rem;
+  }
+
+  .liveStats b {
+    font-size: 0.7rem;
+  }
+}
