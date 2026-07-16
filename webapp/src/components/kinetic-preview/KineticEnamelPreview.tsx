@@ -43,7 +43,7 @@ export function KineticEnamelPreview() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [completed, setCompleted] = useState<number[]>([]);
   const [pinned, setPinned] = useState(["DENT 521", "DENT 511"]);
-  const [notice, setNotice] = useState("Live concept · demonstration data only");
+  const [notice, setNotice] = useState("Preview uses sample course information");
 
   useEffect(() => {
     if (motionMode !== "cinematic") return;
@@ -100,7 +100,7 @@ export function KineticEnamelPreview() {
   function selectSearchResult(title: string) {
     setSearchOpen(false);
     setSearchQuery("");
-    setNotice(`Command ready · ${title}`);
+    setNotice(`Selected · ${title}`);
   }
 
   const currentTool = TOOLS[toolIndex];
@@ -135,17 +135,23 @@ export function KineticEnamelPreview() {
 
       <aside className={styles.livingRail} aria-label="Preview navigation">
         <button className={styles.brandButton} onClick={() => changeView("dashboard")} aria-label="Fourth Canal home">
-          <span>FC</span>
+          <span className={styles.canalMark} aria-hidden="true">
+            <i /><i /><i /><i />
+          </span>
+          <span className={styles.brandWords}>
+            <b>Fourth Canal</b>
+            <small>Dental study library</small>
+          </span>
         </button>
         <nav>
           <button className={activeView === "dashboard" ? styles.navActive : ""} onClick={() => changeView("dashboard")}>
-            <span>01</span> Flow
+            <span aria-hidden="true">●</span> Today
           </button>
           <button className={activeView === "course" ? styles.navActive : ""} onClick={() => changeView("course")}>
-            <span>02</span> Courses
+            <span aria-hidden="true">▤</span> Courses
           </button>
-          <button onClick={() => setSearchOpen(true)}><span>03</span> Search</button>
-          <button onClick={() => setDrawerOpen(true)}><span>04</span> Resource</button>
+          <button onClick={() => setSearchOpen(true)}><span aria-hidden="true">⌕</span> Search</button>
+          <button onClick={() => setDrawerOpen(true)}><span aria-hidden="true">↗</span> Open resource</button>
         </nav>
         <div className={styles.railPulse} aria-hidden="true"><span /></div>
         <button className={styles.avatarButton} aria-label="Open profile preview">RA</button>
@@ -154,12 +160,12 @@ export function KineticEnamelPreview() {
       <main className={styles.stage}>
         <header className={styles.topbar}>
           <div>
-            <p className={styles.microLabel}>Fourth Canal / Kinetic Enamel Lab</p>
+            <p className={styles.microLabel}>Student home · Thursday, July 16</p>
             <h1>{activeView === "dashboard" ? "Good afternoon, Rick." : "Head & Neck Anatomy"}</h1>
           </div>
           <div className={styles.topActions}>
             <button className={styles.searchTrigger} onClick={() => setSearchOpen(true)}>
-              <span>⌘</span> Command Chamber <kbd>K</kbd>
+              <span aria-hidden="true">⌕</span> Search Fourth Canal
             </button>
             <div className={styles.motionControl} aria-label="Motion level">
               {(["cinematic", "reduced", "off"] as MotionMode[]).map((mode) => (
@@ -168,7 +174,7 @@ export function KineticEnamelPreview() {
                   className={motionMode === mode ? styles.motionActive : ""}
                   onClick={() => setMotionMode(mode)}
                 >
-                  {mode === "cinematic" ? "Cinema" : mode === "reduced" ? "Calm" : "Off"}
+                  {mode === "cinematic" ? "Full motion" : mode === "reduced" ? "Less motion" : "No motion"}
                 </button>
               ))}
             </div>
@@ -176,10 +182,10 @@ export function KineticEnamelPreview() {
         </header>
 
         <div className={styles.statusStrip}>
-          <span><i /> System alive</span>
+          <span><i /> Everything is up to date</span>
           <p>{notice}</p>
           <button onClick={() => changeView(activeView === "dashboard" ? "course" : "dashboard")}>
-            Preview blinds transition <b>→</b>
+            Show page transition <b>→</b>
           </button>
         </div>
 
@@ -209,23 +215,30 @@ export function KineticEnamelPreview() {
 
       {searchOpen && (
         <div className={styles.modalScrim} onMouseDown={() => setSearchOpen(false)}>
-          <section className={styles.commandChamber} onMouseDown={(event) => event.stopPropagation()} aria-modal="true" role="dialog" aria-label="Command Chamber">
+          <section className={styles.commandChamber} onMouseDown={(event) => event.stopPropagation()} aria-modal="true" role="dialog" aria-label="Search Fourth Canal">
+            <div className={styles.searchIntro}>
+              <p className={styles.microLabel}>Search</p>
+              <h2>What are you looking for?</h2>
+              <p>Type a course, lecture topic, classmate, or study tool.</p>
+            </div>
             <div className={styles.commandHeader}>
-              <span>⌘</span>
+              <span aria-hidden="true">⌕</span>
               <input
                 autoFocus
                 value={searchQuery}
                 onChange={(event) => setSearchQuery(event.target.value)}
-                placeholder="Search the entire canal..."
+                placeholder="Example: facial nerve or grade calculator"
                 aria-label="Search Fourth Canal"
               />
-              <button onClick={() => setSearchOpen(false)}>ESC</button>
+              <button onClick={() => setSearchOpen(false)}>Close</button>
             </div>
-            <p className={styles.commandHint}>Courses · lectures · transcripts · tools · people</p>
+            <div className={styles.searchCategories} aria-label="Search examples">
+              <span>Courses</span><span>Lectures</span><span>Study guides</span><span>People</span><span>Tools</span>
+            </div>
             <div className={styles.searchResults}>
               {searchResults.map((result, index) => (
                 <button key={result.title} onClick={() => selectSearchResult(result.title)}>
-                  <span className={styles.resultNumber}>0{index + 1}</span>
+                  <span className={styles.resultNumber}>{index + 1}</span>
                   <span><b>{result.title}</b><small>{result.detail}</small></span>
                   <em>{result.type}</em>
                 </button>

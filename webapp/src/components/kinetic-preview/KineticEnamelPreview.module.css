@@ -242,3 +242,118 @@
   .previewRoot *, .previewRoot *::before, .previewRoot *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
   .pointerGlow { display: none; }
 }
+
+/* Bright clinical revision: sharper, clearer, and intentionally less "AI dashboard." */
+.previewRoot {
+  --ink: #102a34;
+  --ink-soft: #eaf4f2;
+  --cyan: #008e99;
+  --cobalt: #2854c5;
+  --teal: #087d7d;
+  --violet: #6d4dc7;
+  --pink: #bd5c91;
+  --mint: #baf0dc;
+  --line: rgba(27, 68, 78, .19);
+  --panel: rgba(255, 255, 252, .9);
+  --panel-strong: #ffffff;
+  --muted: #526c75;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 74% 5%, rgba(40, 84, 197, .13), transparent 28%),
+    radial-gradient(circle at 87% 44%, rgba(189, 92, 145, .11), transparent 28%),
+    linear-gradient(145deg, #f7fbf9 0%, #dfefed 52%, #edf5f3 100%);
+}
+
+.pointerGlow { background: radial-gradient(circle 260px at var(--pointer-x) var(--pointer-y), rgba(0, 142, 153, .11), transparent 68%); mix-blend-mode: multiply; }
+.ambientField::before { opacity: .38; background-image: linear-gradient(rgba(16,42,52,.055) 1px, transparent 1px), linear-gradient(90deg, rgba(16,42,52,.055) 1px, transparent 1px); }
+.ambientField::after { opacity: .25; background-image: radial-gradient(circle, rgba(0,126,136,.45) 1px, transparent 1.5px); }
+.orbOne { opacity: .17; background: radial-gradient(circle at 30% 30%, rgba(0,142,153,.36), rgba(40,84,197,.03) 70%); }
+.orbTwo { opacity: .2; background: radial-gradient(circle at 30% 30%, rgba(189,92,145,.3), rgba(109,77,199,.03) 70%); }
+.orbThree { opacity: .24; background: radial-gradient(circle at 30% 30%, rgba(0,142,153,.2), transparent 70%); }
+.canallineOne, .canallineTwo { border-color: rgba(0,126,136,.2); }
+.canallineTwo { border-color: rgba(109,77,199,.14); }
+
+.livingRail {
+  width: 172px;
+  align-items: stretch;
+  padding: .8rem;
+  border-color: rgba(16,42,52,.2);
+  border-radius: 6px;
+  background: rgba(255,255,252,.88);
+  box-shadow: 0 18px 48px rgba(25,61,69,.12);
+  backdrop-filter: blur(20px) saturate(120%);
+}
+.brandButton {
+  width: 100%; height: auto; min-height: 66px;
+  display: grid; grid-template-columns: 40px 1fr; align-items: center; gap: .7rem;
+  padding: .65rem .55rem;
+  border: 0; border-bottom: 1px solid var(--line); border-radius: 0;
+  background: transparent; color: var(--ink) !important;
+  box-shadow: none; transform: none; text-align: left;
+}
+.brandButton:hover { transform: translateX(2px); box-shadow: none; }
+.canalMark { position: relative; width: 38px; height: 44px; display: block; overflow: hidden; border-radius: 2px; background: #174553; box-shadow: 0 5px 14px rgba(23,69,83,.18); }
+.canalMark::after { content: ""; position: absolute; left: 18px; bottom: 6px; width: 2px; height: 13px; background: #baf0dc; }
+.canalMark i { position: absolute; top: 7px; width: 2px; height: 22px; background: #fff; transform-origin: bottom; }
+.canalMark i:nth-child(1) { left: 8px; transform: rotate(-17deg); }.canalMark i:nth-child(2) { left: 14px; transform: rotate(-6deg); }.canalMark i:nth-child(3) { right: 14px; transform: rotate(6deg); }.canalMark i:nth-child(4) { right: 8px; transform: rotate(17deg); }
+.brandWords b, .brandWords small { display: block; }.brandWords b { color: #102a34; font-size: .82rem; letter-spacing: -.02em; }.brandWords small { margin-top: .2rem; color: #617780; font: 500 .48rem var(--font-mono-app), monospace; line-height: 1.25; text-transform: uppercase; }
+.livingRail nav { gap: .28rem; }
+.livingRail nav button { min-height: 50px; display: grid; grid-template-columns: 22px 1fr; place-items: initial; align-items: center; gap: .55rem; padding: .55rem .65rem; border-radius: 4px; color: #536a73; text-align: left; font-size: .7rem; }
+.livingRail nav button span { color: #087d7d; font-size: .72rem; opacity: .78; text-align: center; }
+.livingRail nav button:hover, .livingRail nav .navActive { color: #102a34; border-color: rgba(0,126,136,.16); background: #e6f2f0; transform: translateX(2px); }
+.livingRail nav .navActive::before { left: -9px; width: 3px; background: #008e99; box-shadow: none; }
+.railPulse { align-self: center; border-color: rgba(0,126,136,.16); }.railPulse span { background: #008e99; box-shadow: none; }
+.avatarButton { align-self: center; color: #102a34 !important; border-color: rgba(109,77,199,.22); background: #eee9f8; }
+.stage { width: min(1540px, calc(100% - 198px)); margin-left: 198px; }
+
+.topbar h1, .panelHeading h2, .sectionHeading h2, .flowCopy b, .courseCard h3, .toolStage h3, .signalPanel h3, .courseHero h2, .lectureCard h3, .resourceBand h2, .drawerHeader h2, .searchIntro h2 { color: #102a34; }
+.microLabel { color: #087d7d; letter-spacing: .12em; }
+.searchTrigger { border-color: rgba(16,42,52,.18); border-radius: 5px; background: rgba(255,255,252,.86); color: #193944 !important; box-shadow: 0 4px 12px rgba(25,61,69,.06); }
+.searchTrigger:hover { border-color: #008e99; }
+.searchTrigger span { color: #008e99; }
+.searchTrigger kbd { display: none; }
+.motionControl { border-color: rgba(16,42,52,.18); border-radius: 5px; background: rgba(255,255,252,.86); }
+.motionControl button { border-radius: 3px; color: #526c75; }
+.motionControl .motionActive { color: #102a34 !important; background: #baf0dc; box-shadow: none; }
+.statusStrip { border-color: rgba(16,42,52,.15); border-radius: 4px; background: rgba(255,255,252,.72); color: #526c75; }
+.statusStrip > span { color: #087d7d; }.statusStrip > span i { background: #008e99; box-shadow: none; }.statusStrip button { border-left: 1px solid var(--line); border-radius: 0; background: transparent; color: #244650; }
+
+.glassPanel, .courseSection, .lectureCanal { border-color: rgba(16,42,52,.16); border-radius: 8px; background: rgba(255,255,252,.87); box-shadow: 0 12px 32px rgba(25,61,69,.09); backdrop-filter: blur(16px) saturate(115%); }
+.glassPanel::before { background: linear-gradient(115deg, transparent 28%, rgba(255,255,255,.5) 42%, transparent 56%); }
+.liveBadge { color: #087d7d; border-color: rgba(0,126,136,.2); }.liveBadge i { background: #008e99; box-shadow: none; }
+.flowList::before { background: linear-gradient(#008e99, #6d4dc7, #7bbfa7); }
+.flowList > button { color: #102a34; border-bottom-color: rgba(16,42,52,.1); }.flowList time, .flowCopy small, .flowFooter, .sectionHeading > p, .toolStage p, .signalPanel > p:not(.microLabel), .courseMeta, .courseHero > div:first-child > p:not(.microLabel), .resourceBand button em { color: #526c75; }
+.flowNode { background: #fff; box-shadow: 0 0 0 6px rgba(255,255,252,.95); }.checkMark { color: #607a82; }.textButton, .courseOpen, .lectureCard button { color: #1f4c58; }
+.toothPanel { background: radial-gradient(circle at 70% 42%, rgba(0,142,153,.15), transparent 34%), linear-gradient(145deg, rgba(255,255,252,.96), rgba(218,240,236,.82)); }
+.toothCopy > p:not(.microLabel), .anatomyLabelOne, .anatomyLabelTwo { color: #526c75; }
+.enamelButton { border-color: rgba(16,42,52,.24); border-radius: 5px; background: #d8fff2; box-shadow: 0 7px 16px rgba(25,61,69,.12), inset 0 1px white; }
+.enamelButton:hover { box-shadow: 0 10px 22px rgba(25,61,69,.16), inset 0 1px white; }
+.toolDeck, .signalPanel { background: rgba(255,255,252,.9); }
+.toolStage { border-color: rgba(16,42,52,.14); border-radius: 5px; background: #edf5f3; }.toolStage[data-tone="pink"] { background: #f7edf2; }.toolStage[data-tone="mint"] { background: #e8f5f0; }.toolStage[data-tone="violet"] { background: #f0edf8; }
+.toolSymbol { border-color: rgba(16,42,52,.16); border-radius: 4px; background: #fff; color: #008e99; box-shadow: 0 7px 18px rgba(25,61,69,.09); }.roundButton { border-color: rgba(0,126,136,.25); background: #e4f4f1; color: #087d7d !important; }
+.deckDots button { background: rgba(16,42,52,.16); }.deckDots .deckDotActive { background: #008e99; }
+.signalRing { box-shadow: none; }.signalRing::before { background: #fff; }.signalRing small { color: #526c75; }
+.courseSection { background: rgba(247,251,249,.76); }.courseCard { border-color: rgba(16,42,52,.15); border-radius: 6px; background: rgba(255,255,252,.94); box-shadow: 0 8px 20px rgba(25,61,69,.07); }.courseCard:hover { border-color: rgba(0,126,136,.35); }.pinButton { border-color: rgba(16,42,52,.14); border-radius: 3px; background: #f5f8f7; color: #526c75 !important; }.pinButton.pinned { color: #9b3f72 !important; border-color: rgba(189,92,145,.22); background: #faedf4; box-shadow: none; }.courseCode { color: #087d7d; }.progressTrack, .lectureProgress { background: rgba(16,42,52,.1); }.courseMeta b { color: #102a34; }
+
+.courseHero { border-radius: 8px; background: radial-gradient(circle at 80% 50%, rgba(109,77,199,.16), transparent 27%), radial-gradient(circle at 62% 18%, rgba(0,142,153,.12), transparent 28%), rgba(255,255,252,.9); }.backButton { color: #47616b; }.ghostButton { border-color: rgba(16,42,52,.2); border-radius: 5px; background: rgba(255,255,252,.72); color: #244650; }.ghostButton:hover { background: #fff; }
+.courseOrb { border-color: rgba(0,126,136,.24); background: radial-gradient(circle at 33% 25%, #fff, rgba(0,142,153,.15) 38%, rgba(109,77,199,.12) 72%); box-shadow: inset 12px 8px 30px rgba(255,255,255,.55), 0 12px 34px rgba(25,61,69,.1); }.courseOrb small { color: #526c75; }
+.lectureCanal { background: rgba(247,251,249,.75); }.pathNode { border-color: rgba(0,126,136,.34); background: #fff; box-shadow: 0 0 0 8px rgba(247,251,249,.96); }.pathNode span { color: #087d7d; }.lectureCard { border-color: rgba(16,42,52,.14); border-radius: 5px; background: rgba(255,255,252,.92); }.lectureCard:hover, .activeLecture .lectureCard { border-color: rgba(0,126,136,.32); }.lectureCard span { color: #526c75; }
+.resourceBand > div, .resourceBand > button { border-color: rgba(16,42,52,.14); border-radius: 5px; background: rgba(255,255,252,.9); color: #102a34; }.resourceBand button span { color: #087d7d; }
+
+.modalScrim, .drawerScrim { background: rgba(222,235,233,.78); backdrop-filter: blur(10px); }
+.commandChamber { width: min(760px, calc(100% - 2rem)); top: 8vh; padding: 2rem; border-color: rgba(16,42,52,.24); border-radius: 7px; background: #fffefa; box-shadow: 0 24px 70px rgba(25,61,69,.2); }
+.searchIntro { margin-bottom: 1.25rem; }.searchIntro h2 { margin: 0; font-size: 1.9rem; letter-spacing: -.035em; }.searchIntro > p:last-child { margin: .45rem 0 0; color: #526c75; font-size: .78rem; }
+.commandHeader { grid-template-columns: 28px 1fr auto; padding: .9rem 1rem; border: 1px solid rgba(16,42,52,.28); border-radius: 4px; background: #fff; }.commandHeader > span { color: #008e99; }.commandHeader input { color: #102a34; font-size: .95rem; }.commandHeader input::placeholder { color: #71858b; }.commandHeader button { padding: .45rem .6rem; border-color: rgba(16,42,52,.16); border-radius: 3px; color: #526c75; }
+.searchCategories { display: flex; flex-wrap: wrap; gap: .45rem; margin: .85rem 0 1rem; }.searchCategories span { padding: .35rem .5rem; border-left: 2px solid #9edbd0; color: #47616b; background: #f1f7f5; font-size: .62rem; }
+.searchResults { gap: 0; border-top: 1px solid rgba(16,42,52,.12); }.searchResults button { grid-template-columns: 28px 1fr auto; min-height: 74px; padding: .8rem .25rem; border-bottom: 1px solid rgba(16,42,52,.12); border-radius: 0; color: #102a34; }.searchResults button:hover { transform: translateX(3px); border-color: rgba(16,42,52,.12); background: #eef7f5; }.resultNumber { color: #087d7d; }.searchResults small { color: #526c75; }.searchResults em { border-radius: 2px; background: #eeeaf7; color: #6047a4; }.emptySearch { color: #526c75; }
+
+.resourceDrawer { color: #102a34; border-left-color: rgba(16,42,52,.2); background: #f9fcfa; box-shadow: -22px 0 60px rgba(25,61,69,.18); }.drawerHeader > button { border-color: rgba(16,42,52,.16); border-radius: 4px; background: #fff; color: #244650; }.videoFrame { border-color: rgba(16,42,52,.18); border-radius: 5px; }.resourceMeta { color: #526c75; }.resourceMeta strong { color: #087d7d; }.transcriptBlock { border-color: rgba(16,42,52,.14); border-radius: 5px; background: #fff; color: #334f59; }.transcriptBlock b { color: #087d7d; }
+.mobileDock { border-color: rgba(16,42,52,.2); border-radius: 6px; background: rgba(255,255,252,.94); box-shadow: 0 14px 36px rgba(25,61,69,.18); }.mobileDock button { border-radius: 3px; color: #526c75; }.mobileDock .dockActive { color: #102a34; background: #dff0ed; }
+
+@media (max-width: 760px) {
+  .livingRail { display: none; }
+  .stage { width: 100%; margin: 0; }
+  .topbar { padding-top: .8rem; }
+  .commandChamber { top: 3vh; padding: 1.2rem; }
+  .searchIntro h2 { font-size: 1.45rem; }
+}
