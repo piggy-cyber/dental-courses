@@ -16,6 +16,12 @@ const STUDENT_ACTIONS: ActionLink[] = [
     indicator: "teal",
   },
   {
+    href: "/games",
+    label: "Study Games",
+    detail: "Practice tooth ID",
+    indicator: "blue",
+  },
+  {
     href: "/contacts",
     label: "Course Contacts",
     detail: "Class directory",
@@ -60,7 +66,7 @@ const ADMIN_ACTIONS: ActionLink[] = [
 
 export function QuickActionsPanel({ isAdmin }: { isAdmin: boolean }) {
   const actions = isAdmin ? [...STUDENT_ACTIONS, ...ADMIN_ACTIONS] : STUDENT_ACTIONS;
-  const desktopColumns = isAdmin ? "lg:grid-cols-7" : "lg:grid-cols-6";
+  const desktopColumns = isAdmin ? "lg:grid-cols-8" : "lg:grid-cols-7";
 
   return (
     <div className="cockpit-panel">

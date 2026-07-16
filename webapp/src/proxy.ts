@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { authReturnCookie } from "@/lib/auth-redirect";
 
 // Refreshes the Supabase session cookie on every request and blocks
 // unauthenticated access to everything except the public homepage.
@@ -50,7 +51,14 @@ export async function proxy(request: NextRequest) {
   if (!user && !isPublic && !isBotApi) {
     const url = request.nextUrl.clone();
     url.pathname = "/";
-    return NextResponse.redirect(url);
+    url.search = "";
+    const response = NextResponse.redirect(url);
+    const returnCookie = authReturnCookie(
+      `${request.nextUrl.pathname}${request.nextUrl.search}`,
+      request.nextUrl.protocol === "https:",
+    );
+    response.cookies.set(returnCookie.name, returnCookie.value, returnCookie.options);
+    return response;
   }
 
   return supabaseResponse;

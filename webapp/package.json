@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "validate:games": "node scripts/validate-game-content.mjs",
     "import:manifest": "node scripts/import-resource-manifest.mjs"
   },
   "dependencies": {
