@@ -32,6 +32,7 @@ type AppShellProps = {
 const STUDENT_LINKS = [
   { href: "/home", label: "Home" },
   { href: "/library", label: "Courses" },
+  { href: "/contacts", label: "Contacts" },
   { href: "/profile", label: "Profile" },
   { href: "/about", label: "About" },
 ];

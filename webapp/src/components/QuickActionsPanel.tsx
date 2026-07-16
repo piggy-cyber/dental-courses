@@ -16,6 +16,12 @@ const STUDENT_ACTIONS: ActionLink[] = [
     indicator: "teal",
   },
   {
+    href: "/contacts",
+    label: "Course Contacts",
+    detail: "Class directory",
+    indicator: "blue",
+  },
+  {
     href: "https://cmms.serviceinsight.cbre.com/requests",
     label: "CBRE Maintenance",
     detail: "Building request",
