@@ -4,13 +4,13 @@ export const ADMIN_PERMISSION_DEFINITIONS = [
   {
     id: "accounts.manage",
     label: "Student access",
-    description: "Manage D1/D2 labels, course collections, notes, and revocations.",
+    description: "Link Google accounts, manage exceptions, notes, and revocations.",
     href: "/admin/accounts",
   },
   {
     id: "roster.manage",
     label: "Official roster",
-    description: "Add exact Google emails and run roster matching.",
+    description: "Maintain graduating classes and decide which students are allowed to join.",
     href: "/admin/roster",
   },
   {

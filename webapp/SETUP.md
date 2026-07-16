@@ -5,13 +5,12 @@ except the homepage until you approve their account.
 
 How it works, in one paragraph: students visit the homepage (date, campus
 weather, and their own saved Canvas calendar feed). They sign in with Google.
-That puts them on your
-approval list as "pending" — they still can't see anything. You open the
-Accounts page and click Approve. From that moment they can see everything:
-courses, videos, transcripts, files. You can revoke anyone anytime.
-Admins control exactly which resource collections each student sees, so a
-student can have separate access to their own D1 resources and prior-year D2
-resources without browsing every course-year bucket.
+That puts them on your approval list as "pending" — they still can't see
+anything. First, prebuild the graduating class in the Roster page and mark the
+students who are allowed to join. Then link each student's Google account to
+the correct roster name. Their D1, D2, D3, and D4 resources accumulate
+automatically as the class advances. Council responsibilities are managed
+separately and never change a student&apos;s class access.
 
 You need to create two free accounts (Supabase and Google Cloud) and click
 through some settings once. About 30 minutes. Everything below is copy-paste.

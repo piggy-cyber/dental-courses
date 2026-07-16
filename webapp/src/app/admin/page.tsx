@@ -117,7 +117,7 @@ export default async function AdminDashboardPage() {
       visible: canAccounts,
       href: "/admin/accounts",
       label: "Student access",
-      detail: "Approve roster matches and choose D1/D2 or course collection access.",
+      detail: "Link Google accounts to permanent classes and manage access exceptions.",
     },
     {
       visible: canRoster,

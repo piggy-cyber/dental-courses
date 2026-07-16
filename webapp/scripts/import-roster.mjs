@@ -89,34 +89,53 @@ function normalizeEmail(value) {
   return email || null;
 }
 
+function parseBoolean(value) {
+  return ["true", "1", "yes", "y", "allowed"].includes(value.trim().toLowerCase());
+}
+
+function graduationYearFromRecord(record) {
+  const direct = Number(record.graduation_year);
+  if (Number.isInteger(direct) && direct >= 2000 && direct <= 2200) return direct;
+
+  const legacy = record.cohort?.trim().toLowerCase().match(/^d([1-4])-(\d{4})$/);
+  if (!legacy) return null;
+  return Number(legacy[2]) + (5 - Number(legacy[1]));
+}
+
 const records = csvRecords(readFileSync(inputPath, "utf8"));
 let inserted = 0;
 let updated = 0;
 
 for (const record of records) {
   const fullName = record.full_name?.trim();
-  const cohort = record.cohort?.trim().toLowerCase();
+  const graduationYear = graduationYearFromRecord(record);
   const email = normalizeEmail(record.email ?? "");
   const status = record.status?.trim() || "expected";
+  const accessApproved = parseBoolean(record.access_approved ?? "");
 
-  if (!fullName || !cohort) {
-    console.warn(`Skipping row without full_name or cohort: ${JSON.stringify(record)}`);
+  if (!fullName || !graduationYear) {
+    console.warn(`Skipping row without full_name or graduation_year: ${JSON.stringify(record)}`);
     continue;
   }
 
-  let query = supabase.from("student_roster").select("id").limit(1);
+  let query = supabase.from("student_roster").select("id").limit(2);
   query = email
     ? query.ilike("email", email)
-    : query.eq("full_name", fullName).eq("cohort", cohort).is("email", null);
+    : query.ilike("full_name", fullName).eq("graduation_year", graduationYear);
 
   const { data: existing, error: selectError } = await query;
   if (selectError) throw new Error(selectError.message);
+  if ((existing?.length ?? 0) > 1) {
+    throw new Error(`Ambiguous roster name in Class of ${graduationYear}: ${fullName}`);
+  }
 
   const payload = {
     full_name: fullName,
     email,
-    cohort,
+    cohort: `class-${graduationYear}`,
+    graduation_year: graduationYear,
     status,
+    access_approved: accessApproved,
   };
 
   if (existing?.[0]?.id) {
