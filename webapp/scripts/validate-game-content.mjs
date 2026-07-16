@@ -305,6 +305,10 @@ const verifiedSourceNames = new Set([
   "da 7 Maand M2 M3 2020 9 22 2020.ppt",
   "REHE 151 Dental Anatomy and Occlusion Textbook Companion.pdf",
 ]);
+const heldPm1ConflictPhrases = [
+  "Two roots are most common in the course slide (61%).",
+  "One root is reported in 38%, while three roots are reported in 1%.",
+];
 
 assert.equal(rootCanalCatalog.schemaVersion, 1, "root canal schemaVersion must be 1");
 assert.ok(Array.isArray(rootCanalCatalog.records), "root canal records must be an array");
@@ -347,6 +351,14 @@ for (const record of rootCanalCatalog.records) {
       record.sourceRefs.some((sourceRef) => sourceRef.locator.includes("held from Challenge")),
       `${record.id} must document its Challenge hold in sourceRefs`,
     );
+  } else {
+    const challengeSafeText = JSON.stringify(record).toLowerCase();
+    for (const phrase of heldPm1ConflictPhrases) {
+      assert.ok(
+        !challengeSafeText.includes(phrase.toLowerCase()),
+        `${record.id} Challenge-safe content must not contain held PM1 phrase: ${phrase}`,
+      );
+    }
   }
   assert.ok(Array.isArray(record.wrongOptions), `${record.id} wrongOptions must be an array`);
   assert.equal(record.wrongOptions.length, 3, `${record.id} must define three wrong options`);

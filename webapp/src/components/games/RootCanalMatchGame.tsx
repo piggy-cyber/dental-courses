@@ -52,7 +52,7 @@ type Feedback = {
 };
 
 type WeakArea = {
-  category: "Tooth family" | "Root count" | "Canal count" | "Variation";
+  category: "Root count" | "Canal count" | "Variation";
   label: string;
   correct: number;
   attempts: number;
@@ -145,16 +145,14 @@ function variationLabel(record: RootCanalMatchRecord) {
   return "second-molar four-canal variation";
 }
 
-function areaLabels(record: RootCanalMatchRecord) {
-  return [
-    {
-      category: "Tooth family" as const,
-      label: record.toothName.includes("premolar") ? "premolar" : "molar",
-    },
-    { category: "Root count" as const, label: countLabel(record.commonRootPattern, "root") },
-    { category: "Canal count" as const, label: countLabel(record.commonCanalPattern, "canal") },
-    { category: "Variation" as const, label: variationLabel(record) },
-  ];
+function testedArea(record: RootCanalMatchRecord): Pick<WeakArea, "category" | "label"> {
+  if (record.difficulty === "basic") {
+    return { category: "Root count", label: countLabel(record.commonRootPattern, "root") };
+  }
+  if (record.difficulty === "intermediate") {
+    return { category: "Canal count", label: countLabel(record.commonCanalPattern, "canal") };
+  }
+  return { category: "Variation", label: variationLabel(record) };
 }
 
 function weakestAreas(mastery: MasteryMap): WeakArea[] {
@@ -162,21 +160,15 @@ function weakestAreas(mastery: MasteryMap): WeakArea[] {
   for (const record of verifiedRecords) {
     const entry = mastery[record.id];
     if (!entry?.attempts) continue;
-    for (const area of areaLabels(record)) {
-      const key = `${area.category}:${area.label}`;
-      const current = totals.get(key) ?? { ...area, correct: 0, attempts: 0 };
-      current.correct += entry.correct;
-      current.attempts += entry.attempts;
-      totals.set(key, current);
-    }
+    const area = testedArea(record);
+    const key = `${area.category}:${area.label}`;
+    const current = totals.get(key) ?? { ...area, correct: 0, attempts: 0 };
+    current.correct += entry.correct;
+    current.attempts += entry.attempts;
+    totals.set(key, current);
   }
 
-  const categories: WeakArea["category"][] = [
-    "Tooth family",
-    "Root count",
-    "Canal count",
-    "Variation",
-  ];
+  const categories: WeakArea["category"][] = ["Root count", "Canal count", "Variation"];
   return categories.flatMap((category) => {
     const candidates = [...totals.values()]
       .filter((area) => area.category === category)
@@ -679,7 +671,7 @@ export function RootCanalMatchGame({ initialProgress }: RootCanalMatchGameProps)
               </li>
             ))}
           </ul>
-        ) : <p>Complete a Challenge round to build tooth-family, root-count, canal-count, and variation signals.</p>}
+        ) : <p>Complete a Challenge round to build root-count, canal-count, and variation signals from the dimension each level tests.</p>}
       </aside>
 
       <footer className={styles.gameFooter}>
