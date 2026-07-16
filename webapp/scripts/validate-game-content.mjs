@@ -5,8 +5,12 @@ import { fileURLToPath } from "node:url";
 const catalogPath = fileURLToPath(
   new URL("../src/data/games/tooth-data.json", import.meta.url),
 );
+const comparisonPath = fileURLToPath(
+  new URL("../src/data/games/tooth-comparison-data.json", import.meta.url),
+);
 
 const catalog = JSON.parse(await readFile(catalogPath, "utf8"));
+const comparisonDataset = JSON.parse(await readFile(comparisonPath, "utf8"));
 
 const permanentCodes = Array.from({ length: 32 }, (_, index) => String(index + 1));
 const primaryCodes = [..."ABCDEFGHIJKLMNOPQRST"];
@@ -277,6 +281,121 @@ for (const template of catalog.morphologyTemplates) {
   );
 }
 
+const comparisonRowLabels = [
+  "Crown shape",
+  "Lingual anatomy",
+  "Root pattern",
+  "Ridge/groove clue",
+  "Arch clue",
+  "Clinical identification clue",
+];
+const comparisonFeatureTypes = [
+  "crown-shape",
+  "symmetry",
+  "lingual-anatomy",
+  "root-pattern",
+  "ridge-groove",
+  "arch-clue",
+  "clinical-identification",
+];
+const expectedComparisonPairs = [
+  "max-central-incisor::max-lateral-incisor",
+  "mand-central-incisor::mand-lateral-incisor",
+  "max-canine::mand-canine",
+  "max-first-premolar::max-second-premolar",
+  "mand-first-premolar::mand-second-premolar",
+  "max-first-molar::max-second-molar",
+  "mand-first-molar::mand-second-molar",
+];
+
+assert.equal(comparisonDataset.schemaVersion, 1, "comparison schemaVersion must be 1");
+assert.ok(Array.isArray(comparisonDataset.questions), "comparison questions must be an array");
+assert.ok(comparisonDataset.questions.length >= 14, "comparison dataset needs at least 14 cards");
+assertUnique(comparisonDataset.questions.map((question) => question.id), "comparison question ids");
+
+for (const question of comparisonDataset.questions) {
+  assertText(question.id, "comparison question id");
+  assert.ok(comparisonFeatureTypes.includes(question.featureType), `${question.id} featureType`);
+  assert.equal(question.toothA.family, question.toothB.family, `${question.id} tooth family`);
+  for (const [side, tooth] of [["A", question.toothA], ["B", question.toothB]]) {
+    assert.ok(tooth && typeof tooth === "object", `${question.id} tooth${side}`);
+    assertText(tooth.id, `${question.id} tooth${side} id`);
+    assertText(tooth.label, `${question.id} tooth${side} label`);
+    assertText(tooth.universal, `${question.id} tooth${side} universal`);
+    assertText(tooth.family, `${question.id} tooth${side} family`);
+    assertText(tooth.visualId, `${question.id} tooth${side} visualId`);
+  }
+  assertText(question.prompt, `${question.id} prompt`);
+  assert.ok(question.prompt.length <= 220, `${question.id} prompt must stay concise`);
+  assert.deepEqual(question.choices.map((choice) => choice.id).sort(), ["A", "B"]);
+  assert.ok(["A", "B"].includes(question.correctChoice), `${question.id} correctChoice`);
+  assert.ok(
+    question.choices.some((choice) => choice.id === question.correctChoice),
+    `${question.id} correctChoice must exist in choices`,
+  );
+  for (const choice of question.choices) assertText(choice.label, `${question.id} choice ${choice.id}`);
+  assertText(question.explanation, `${question.id} explanation`);
+  assertText(question.distractorExplanation, `${question.id} distractorExplanation`);
+  assertText(question.commonTrap, `${question.id} commonTrap`);
+  assert.ok(question.explanation.length <= 500, `${question.id} explanation must be original and concise`);
+  assert.ok(
+    question.distractorExplanation.length <= 500,
+    `${question.id} distractorExplanation must be original and concise`,
+  );
+  assert.deepEqual(
+    question.comparisonRows.map((row) => row.label),
+    comparisonRowLabels,
+    `${question.id} comparison row order`,
+  );
+  for (const row of question.comparisonRows) {
+    assertText(row.toothA, `${question.id} ${row.label} toothA`);
+    assertText(row.toothB, `${question.id} ${row.label} toothB`);
+    assert.ok(row.toothA.length <= 190, `${question.id} ${row.label} toothA must stay concise`);
+    assert.ok(row.toothB.length <= 190, `${question.id} ${row.label} toothB must stay concise`);
+  }
+  assert.ok(Array.isArray(question.sourceRefs) && question.sourceRefs.length > 0, `${question.id} sourceRefs`);
+  for (const sourceRef of question.sourceRefs) {
+    assert.equal(sourceRef.courseCode, "REHE 151", `${question.id} courseCode`);
+    assertText(sourceRef.sourceName, `${question.id} sourceName`);
+    assertText(sourceRef.locator, `${question.id} locator`);
+    assert.match(
+      sourceRef.locator,
+      /(page|slide|transcript)/i,
+      `${question.id} locator must name a page, slide, or transcript range`,
+    );
+  }
+  assert.ok(
+    ["course-verified", "needs-review"].includes(question.evidenceStatus),
+    `${question.id} evidenceStatus`,
+  );
+}
+
+const actualPairs = [
+  ...new Set(
+    comparisonDataset.questions.map(
+      (question) => `${question.toothA.id}::${question.toothB.id}`,
+    ),
+  ),
+].sort();
+assert.deepEqual(actualPairs, [...expectedComparisonPairs].sort(), "comparison pair coverage");
+for (const pair of expectedComparisonPairs) {
+  assert.ok(
+    comparisonDataset.questions.filter(
+      (question) => `${question.toothA.id}::${question.toothB.id}` === pair,
+    ).length >= 2,
+    `${pair} needs at least two cards`,
+  );
+}
+assert.deepEqual(
+  [...new Set(comparisonDataset.questions.map((question) => question.featureType))].sort(),
+  [...comparisonFeatureTypes].sort(),
+  "comparison feature coverage",
+);
+const verifiedComparisonCount = comparisonDataset.questions.filter(
+  (question) => question.evidenceStatus === "course-verified",
+).length;
+assert.ok(verifiedComparisonCount >= 10, "Challenge mode needs at least 10 verified cards");
+
 console.log(
-  `Validated ${catalog.teeth.length} teeth, ${catalog.morphologyTemplates.length} morphology templates, and ${catalog.teeth.length} supernumerary mappings.`,
+  `Validated ${catalog.teeth.length} teeth, ${catalog.morphologyTemplates.length} morphology templates, ${catalog.teeth.length} supernumerary mappings, and ${verifiedComparisonCount} course-verified comparison cards.`,
 );

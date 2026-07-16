@@ -1,4 +1,4 @@
-export const GAME_IDS = ["tooth-quest"] as const;
+export const GAME_IDS = ["tooth-quest", "tooth-comparison-duel"] as const;
 
 export type GameId = (typeof GAME_IDS)[number];
 
