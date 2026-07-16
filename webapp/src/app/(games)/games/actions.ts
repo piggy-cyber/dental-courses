@@ -4,8 +4,13 @@ import { revalidatePath } from "next/cache";
 import eruptionCatalogJson from "@/data/games/eruption-data.json";
 import rootCanalCatalogJson from "@/data/games/root-canal-match-data.json";
 import toothCatalogJson from "@/data/games/tooth-data.json";
+import toothComparisonJson from "@/data/games/tooth-comparison-data.json";
 import { getSessionProfile } from "@/lib/access";
 import { createClient } from "@/lib/supabase/server";
+import {
+  getToothComparisonMasteryKey,
+  type ToothComparisonDataset,
+} from "@/lib/games/tooth-comparison-types";
 import {
   GAME_IDS,
   progressFromRow,
@@ -41,6 +46,10 @@ const rootCanalRecordDifficulties = new Map(
   rootCanalCatalog.records
     .filter((record) => record.evidenceStatus === "course-verified")
     .map((record) => [record.id, record.difficulty]),
+);
+const toothComparisonDataset = toothComparisonJson as ToothComparisonDataset;
+const validComparisonKeys = new Set<string>(
+  toothComparisonDataset.questions.map(getToothComparisonMasteryKey),
 );
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
@@ -82,7 +91,9 @@ function validateRound(input: GameRoundResult): string | null {
           ? CONTACT_MASTERY_PATTERN.test(code)
           : input.gameId === "eruption-timeline"
             ? validEruptionCodes.has(code)
-            : validRootCanalRecordIds.has(code);
+            : input.gameId === "root-canal-match"
+              ? validRootCanalRecordIds.has(code)
+              : validComparisonKeys.has(code);
     if (!validMasteryCode) return "That mastery item is not recognized.";
     if (
       !entry ||

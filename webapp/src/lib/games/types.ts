@@ -3,6 +3,7 @@ export const GAME_IDS = [
   "contact-area",
   "eruption-timeline",
   "root-canal-match",
+  "tooth-comparison-duel",
 ] as const;
 
 export type GameId = (typeof GAME_IDS)[number];
