@@ -461,6 +461,25 @@
   transition: fill 140ms ease, stroke 140ms ease;
 }
 
+.zoneTargetDisplayOnly {
+  pointer-events: none;
+}
+
+.zoneHitTarget {
+  fill: transparent;
+  stroke: transparent;
+  stroke-width: 4;
+  pointer-events: all;
+  cursor: pointer;
+}
+
+.zoneHitTarget:focus-visible {
+  fill: rgba(94, 231, 231, 0.07);
+  stroke: var(--arcade-cyan);
+  stroke-dasharray: 7 5;
+  outline: none;
+}
+
 .zoneTarget:hover,
 .zoneTarget:focus-visible {
   fill: rgba(94, 231, 231, 0.26);
@@ -656,10 +675,26 @@
   font-weight: 800;
 }
 
-.promptBar > div:nth-child(2) p {
+.promptPosition {
+  color: var(--arcade-cyan);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 0.56rem;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.promptBar h2 {
+  margin-top: 0.18rem;
   color: var(--arcade-enamel);
   font-size: clamp(1rem, 2vw, 1.25rem);
   font-weight: 780;
+}
+
+.promptBar h2:focus-visible {
+  border-radius: 2px;
+  outline: 3px solid var(--arcade-cyan);
+  outline-offset: 4px;
 }
 
 .promptBar > div:nth-child(2) span {
@@ -673,6 +708,86 @@
   display: flex;
   align-items: center;
   gap: 0.9rem;
+}
+
+.challengeMeta {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.7rem;
+}
+
+.timerCard {
+  display: grid;
+  min-width: 60px;
+  min-height: 54px;
+  grid-template-columns: auto auto;
+  align-content: center;
+  justify-content: center;
+  column-gap: 0.2rem;
+  border: 1px solid var(--arcade-cyan);
+  background: rgba(94, 231, 231, 0.08);
+  color: var(--arcade-cyan);
+  font-family: var(--font-mono-app), monospace;
+}
+
+.timerCard small {
+  grid-column: 1 / -1;
+  font-size: 0.48rem;
+  letter-spacing: 0.08em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.timerCard strong {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.timerCard span {
+  align-self: end;
+  font-size: 0.48rem;
+  line-height: 1.25;
+}
+
+.timerUrgent {
+  border-color: var(--arcade-danger);
+  background: rgba(255, 107, 122, 0.11);
+  color: var(--arcade-danger);
+}
+
+.leaveRound {
+  min-height: 44px;
+  border: 1px solid var(--arcade-line);
+  background: transparent;
+  color: var(--arcade-muted);
+  padding: 0.55rem 0.7rem;
+  font: inherit;
+  font-size: 0.66rem;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.leaveRound:hover {
+  border-color: var(--arcade-danger);
+  color: var(--arcade-enamel);
+}
+
+.leaveRoundNote {
+  margin: 0.35rem 0 0;
+  color: var(--arcade-muted);
+  font-size: 0.62rem;
+  text-align: right;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 .challengeGrid {
@@ -946,7 +1061,8 @@
 .challengeIntro button:focus-visible,
 .choiceGrid button:focus-visible,
 .feedbackPanel button:focus-visible,
-.reviewSummary button:focus-visible {
+.reviewSummary button:focus-visible,
+.leaveRound:focus-visible {
   outline: 3px solid var(--arcade-cyan);
   outline-offset: 3px;
 }
@@ -1019,11 +1135,25 @@
     grid-template-columns: auto minmax(0, 1fr);
   }
 
-  .liveStats {
+  .challengeMeta {
     grid-column: 1 / -1;
+    flex-wrap: wrap;
     justify-content: space-between;
     border-top: 1px solid var(--arcade-line);
     padding-top: 0.6rem;
+  }
+
+  .liveStats {
+    flex: 1 1 220px;
+    justify-content: space-between;
+  }
+
+  .leaveRound {
+    flex: 1 1 100%;
+  }
+
+  .leaveRoundNote {
+    text-align: left;
   }
 
   .choiceGrid {

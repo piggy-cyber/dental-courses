@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import contactAreaJson from "@/data/games/contact-area-data.json";
 import toothCatalogJson from "@/data/games/tooth-data.json";
 import { saveGameRound } from "@/app/(games)/games/actions";
@@ -26,6 +26,8 @@ import styles from "./ContactArea.module.css";
 const contactCatalog = contactAreaJson as unknown as ContactAreaCatalog;
 const toothCatalog = toothCatalogJson as ToothCatalog;
 const PENDING_ROUND_KEY = "fourth-canal:contact-area:pending-round";
+const QUESTION_TIME_SECONDS = 30;
+const TIMEOUT_ANSWER = "__timeout__";
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const CONTACT_MASTERY_PATTERN = /^contact-area\|(maxillary|mandibular)\|(anterior|posterior)\|(mesial|distal)\|(incisal-occlusal|middle|cervical|junction|facial|facial-aspect-middle|facial-to-central-groove|lingual|relationship|height|terminal)$/;
 
@@ -96,6 +98,14 @@ function emptyRound(): RoundState {
 
 function accuracy(correct: number, attempts: number) {
   return attempts ? Math.round((correct / attempts) * 100) : 0;
+}
+
+function countdownAnnouncement(seconds: number) {
+  if (seconds === QUESTION_TIME_SECONDS) return `${seconds} seconds for this question.`;
+  if (seconds === 10) return "10 seconds remaining.";
+  if (seconds > 0 && seconds <= 5) return `${seconds} second${seconds === 1 ? "" : "s"} remaining.`;
+  if (seconds === 0) return "Time expired. This answer counts as an incorrect attempt.";
+  return "";
 }
 
 function titleCase(value: string) {
@@ -263,6 +273,9 @@ export function ContactAreaGame({ initialProgress }: ContactAreaGameProps) {
   const [pendingRound, setPendingRound] = useState<GameRoundResult | null>(null);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [timeRemaining, setTimeRemaining] = useState(QUESTION_TIME_SECONDS);
+  const questionHeadingRef = useRef<HTMLHeadingElement>(null);
+  const answerLockRef = useRef(false);
 
   const studyRecord = records[studyIndex] ?? records[0];
   const question = round.questions[round.questionIndex] ?? null;
@@ -308,6 +321,12 @@ export function ContactAreaGame({ initialProgress }: ContactAreaGameProps) {
     };
   }, []);
 
+  useEffect(() => {
+    if (mode !== "challenge" || phase !== "playing" || !question) return;
+    const focusTimer = window.setTimeout(() => questionHeadingRef.current?.focus(), 0);
+    return () => window.clearTimeout(focusTimer);
+  }, [mode, phase, question, round.questionIndex]);
+
   function chooseMode(nextMode: Mode) {
     if (phase === "playing") return;
     setMode(nextMode);
@@ -319,11 +338,13 @@ export function ContactAreaGame({ initialProgress }: ContactAreaGameProps) {
 
   function startChallenge() {
     const questions = createChallengeRound(questionBank);
+    answerLockRef.current = false;
     setRound({ ...emptyRound(), questions });
     setPhase("playing");
     setFeedback(null);
     setSelectedAnswer(null);
     setSelectedZone(null);
+    setTimeRemaining(QUESTION_TIME_SECONDS);
   }
 
   function finishRound(snapshot: RoundState) {
@@ -341,12 +362,15 @@ export function ContactAreaGame({ initialProgress }: ContactAreaGameProps) {
     void persistRound(payload);
   }
 
-  function answerQuestion(value: string, submittedLabel: string) {
-    if (!question || feedback) return;
-    const correct =
+  const answerQuestion = useCallback((value: string, submittedLabel: string) => {
+    if (!question || feedback || answerLockRef.current) return;
+    answerLockRef.current = true;
+    const timedOut = value === TIMEOUT_ANSWER;
+    const correct = !timedOut && (
       question.axis === "choice"
         ? value === question.correctChoice
-        : question.acceptedZones.includes(value as ContactZone);
+        : question.acceptedZones.includes(value as ContactZone)
+    );
     const nextStreak = correct ? round.streak + 1 : 0;
     const gainedScore = correct ? 100 + Math.min(100, nextStreak * 15) : 0;
     const previousMastery = round.masteryDelta[question.masteryCode] ?? { correct: 0, attempts: 0 };
@@ -379,13 +403,32 @@ export function ContactAreaGame({ initialProgress }: ContactAreaGameProps) {
       ],
     };
     setRound(nextRound);
-    setSelectedAnswer(value);
-    if (question.axis !== "choice") setSelectedZone(value as ContactZone);
+    if (!timedOut) {
+      setSelectedAnswer(value);
+      if (question.axis !== "choice") setSelectedZone(value as ContactZone);
+    }
     setFeedback({
       correct,
-      message: correct ? `Correct · +${gainedScore}` : `Not quite · ${question.correctLabel}`,
+      message: timedOut
+        ? `Time expired · ${question.correctLabel}`
+        : correct
+          ? `Correct · +${gainedScore}`
+          : `Not quite · ${question.correctLabel}`,
     });
-  }
+  }, [feedback, question, round]);
+
+  useEffect(() => {
+    if (mode !== "challenge" || phase !== "playing" || !question || feedback) return;
+    const countdownTimer = window.setTimeout(() => {
+      if (timeRemaining <= 1) {
+        setTimeRemaining(0);
+        answerQuestion(TIMEOUT_ANSWER, "Timed out");
+      } else {
+        setTimeRemaining((current) => current - 1);
+      }
+    }, 1000);
+    return () => window.clearTimeout(countdownTimer);
+  }, [answerQuestion, feedback, mode, phase, question, timeRemaining]);
 
   function nextQuestion() {
     if (!feedback) return;
@@ -393,10 +436,22 @@ export function ContactAreaGame({ initialProgress }: ContactAreaGameProps) {
       finishRound(round);
       return;
     }
+    answerLockRef.current = false;
     setRound((current) => ({ ...current, questionIndex: current.questionIndex + 1 }));
     setFeedback(null);
     setSelectedAnswer(null);
     setSelectedZone(null);
+    setTimeRemaining(QUESTION_TIME_SECONDS);
+  }
+
+  function leaveChallenge() {
+    answerLockRef.current = false;
+    setRound(emptyRound());
+    setPhase("idle");
+    setFeedback(null);
+    setSelectedAnswer(null);
+    setSelectedZone(null);
+    setTimeRemaining(QUESTION_TIME_SECONDS);
   }
 
   function discardPendingRound() {
@@ -553,7 +608,7 @@ export function ContactAreaGame({ initialProgress }: ContactAreaGameProps) {
                 />
                 <p className={styles.zoneLegend}>
                   {studyAcceptedZones.length
-                    ? "Course target shown in green; junction records intentionally span both adjoining thirds."
+                    ? "Course target shown in green. Junction contacts occupy the narrow boundary band between adjoining thirds."
                     : "This terminal record is for neighbor logic; no course-verified target region is plotted."}
                 </p>
               </section>
@@ -594,7 +649,7 @@ export function ContactAreaGame({ initialProgress }: ContactAreaGameProps) {
             <div>
               <p>Course-verified set</p>
               <h2>10 questions · five mechanics</h2>
-              <span>Neighbors, contact targets, faciolingual position, cervical comparisons, and terminal teeth.</span>
+              <span>Neighbors, contact targets, faciolingual position, cervical comparisons, and terminal teeth. You have 30 seconds per question; a timeout counts as incorrect, resets the streak, and reveals the explanation.</span>
             </div>
             <button type="button" disabled={Boolean(pendingRound)} onClick={startChallenge}>
               Start Challenge <span aria-hidden="true">→</span>
@@ -605,17 +660,43 @@ export function ContactAreaGame({ initialProgress }: ContactAreaGameProps) {
         {mode === "challenge" && phase === "playing" && question ? (
           <div className={styles.challengeStage}>
             <div className={styles.promptBar}>
-              <div className={styles.promptIndex}>Q{round.questionIndex + 1}</div>
+              <div className={styles.promptIndex} aria-hidden="true">Q{round.questionIndex + 1}</div>
               <div>
-                <p>{question.prompt}</p>
+                <p className={styles.promptPosition} aria-live="polite" aria-atomic="true">
+                  Question {round.questionIndex + 1} of {round.questions.length}
+                </p>
+                <h2 ref={questionHeadingRef} tabIndex={-1}>{question.prompt}</h2>
                 <span>{question.instruction}</span>
               </div>
-              <div className={styles.liveStats} aria-label="Current challenge stats">
-                <span><small>Score</small><strong>{round.score.toLocaleString()}</strong></span>
-                <span><small>Streak</small><strong>×{round.streak}</strong></span>
-                <span><small>Accuracy</small><strong>{round.attempts ? `${accuracy(round.correct, round.attempts)}%` : "—"}</strong></span>
+              <div className={styles.challengeMeta}>
+                <div
+                  className={`${styles.timerCard} ${timeRemaining <= 10 ? styles.timerUrgent : ""}`}
+                  role="timer"
+                  aria-label={`${timeRemaining} seconds remaining`}
+                >
+                  <small>Time</small><strong>{timeRemaining}</strong><span>sec</span>
+                </div>
+                <div className={styles.liveStats} aria-label="Current challenge stats">
+                  <span><small>Score</small><strong>{round.score.toLocaleString()}</strong></span>
+                  <span><small>Streak</small><strong>×{round.streak}</strong></span>
+                  <span><small>Accuracy</small><strong>{round.attempts ? `${accuracy(round.correct, round.attempts)}%` : "—"}</strong></span>
+                </div>
+                <button
+                  type="button"
+                  className={styles.leaveRound}
+                  onClick={leaveChallenge}
+                  aria-describedby="leave-round-note"
+                >
+                  Leave round
+                </button>
               </div>
+              <span className={styles.srOnly} aria-live="assertive" aria-atomic="true">
+                {countdownAnnouncement(timeRemaining)}
+              </span>
             </div>
+            <p className={styles.leaveRoundNote} id="leave-round-note">
+              Leaving discards this partial round without saving it.
+            </p>
 
             <div className={styles.challengeGrid}>
               <section className={styles.archPanel}>
@@ -733,7 +814,7 @@ export function ContactAreaGame({ initialProgress }: ContactAreaGameProps) {
       </section>
 
       <footer className={styles.gameFooter}>
-        <p>Keyboard: Tab into a target, then press Enter or Space. Junction targets accept either adjoining third.</p>
+        <p>Keyboard: Tab into a target, then press Enter or Space. Junction scoring uses the narrow boundary band; its larger invisible tap area improves access without accepting either entire third.</p>
         <p>Original diagrams and prompts are based on course-verified contact rules. Course materials remain private; official course and clinical guidance control.</p>
       </footer>
     </main>

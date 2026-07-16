@@ -148,13 +148,14 @@ export function ContactToothDiagram({
   const clipId = `contact-zone-${useId().replaceAll(":", "")}`;
   const family = crownFamily(record);
   const outline = axis === "incisocervical" ? FACIAL_OUTLINES[family] : OCCLUSAL_OUTLINES[family];
-  let zones: Array<{ id: ContactZone; d: string }>;
+  let zones: Array<{ id: ContactZone; d: string; hitD?: string }>;
   if (axis === "incisocervical") {
     zones = [
       { id: `${surface}-incisal-occlusal`, d: "M70 42 H450 V132 H70 Z" },
       {
         id: `${surface}-incisal-occlusal-middle-junction`,
         d: "M70 132 H450 V154 H70 Z",
+        hitD: "M70 100 H450 V186 H70 Z",
       },
       { id: `${surface}-middle`, d: "M70 154 H450 V234 H70 Z" },
       { id: `${surface}-cervical`, d: "M70 234 H450 V338 H70 Z" },
@@ -210,6 +211,7 @@ export function ContactToothDiagram({
           const isWrong = revealAccepted && isSelected && !acceptedZones.includes(zone.id);
           const className = [
             styles.zoneTarget,
+            zone.hitD ? styles.zoneTargetDisplayOnly : "",
             isSelected ? styles.zoneSelected : "",
             isAccepted ? styles.zoneAccepted : "",
             isWrong ? styles.zoneWrong : "",
@@ -219,9 +221,26 @@ export function ContactToothDiagram({
               key={zone.id}
               className={className}
               d={zone.d}
+              role={zone.hitD ? undefined : "button"}
+              tabIndex={zone.hitD || disabled ? -1 : 0}
+              aria-hidden={zone.hitD ? true : undefined}
+              aria-label={zone.hitD ? undefined : `Select ${zoneLabel(zone.id)}`}
+              aria-disabled={zone.hitD ? undefined : disabled}
+              onClick={zone.hitD ? undefined : () => activate(zone.id)}
+              onKeyDown={zone.hitD ? undefined : (event) => handleKeyDown(event, zone.id)}
+            />
+          );
+        })}
+        {zones.map((zone) => {
+          if (!zone.hitD) return null;
+          return (
+            <path
+              key={`${zone.id}-hit-target`}
+              className={styles.zoneHitTarget}
+              d={zone.hitD}
               role="button"
               tabIndex={disabled ? -1 : 0}
-              aria-label={`Select ${zoneLabel(zone.id)}`}
+              aria-label={`Select ${zoneLabel(zone.id)}. Enlarged tap target around the narrow boundary.`}
               aria-disabled={disabled}
               onClick={() => activate(zone.id)}
               onKeyDown={(event) => handleKeyDown(event, zone.id)}
