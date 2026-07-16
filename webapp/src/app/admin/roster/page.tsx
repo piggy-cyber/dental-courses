@@ -1,4 +1,5 @@
 import { requireAdminProfile } from "@/app/admin/actions";
+import { hasAdminPermission } from "@/lib/admin-permissions";
 import { createClient } from "@/lib/supabase/server";
 import { RosterTable } from "./RosterTable";
 
@@ -17,18 +18,24 @@ export type RosterRow = {
   full_name: string;
   email: string | null;
   cohort: string;
+  graduation_year: number;
   status: "expected" | "signed_in" | "withdrawn";
+  access_approved: boolean;
+  access_approved_at: string | null;
   profile_id: string | null;
   profile: RosterProfile | null;
 };
 
 export default async function AdminRosterPage() {
-  await requireAdminProfile("roster.manage");
+  const { profile } = await requireAdminProfile("roster.manage");
+  const canManageAccounts = hasAdminPermission(profile, "accounts.manage");
   const supabase = await createClient();
   const { data: rosterRows } = await supabase
     .from("student_roster")
-    .select("id, full_name, email, cohort, status, profile_id")
-    .order("cohort")
+    .select(
+      "id, full_name, email, cohort, graduation_year, status, access_approved, access_approved_at, profile_id"
+    )
+    .order("graduation_year")
     .order("full_name");
 
   const profileIds = [
@@ -60,11 +67,12 @@ export default async function AdminRosterPage() {
           Roster
         </h1>
         <p className="mt-2 text-brand-muted">
-          Track expected classmates, signed-in matches, and future D2-D4 cohorts.
+          Prebuild each graduating class, decide who is allowed to join, then link the correct
+          Google account when that student signs in.
         </p>
       </header>
 
-      <RosterTable rows={rows} />
+      <RosterTable rows={rows} canManageAccounts={canManageAccounts} />
     </div>
   );
 }
