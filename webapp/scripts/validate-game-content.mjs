@@ -650,10 +650,19 @@ assert.deepEqual(
 const verifiedComparisonCount = comparisonDataset.questions.filter(
   (question) => question.evidenceStatus === "course-verified",
 ).length;
-assert.ok(verifiedComparisonCount >= 10, "Challenge mode needs at least 10 verified cards");
+const needsReviewComparisonIds = comparisonDataset.questions
+  .filter((question) => question.evidenceStatus === "needs-review")
+  .map((question) => question.id)
+  .sort();
+assert.equal(verifiedComparisonCount, 13, "Challenge mode should contain exactly 13 verified cards");
+assert.deepEqual(
+  needsReviewComparisonIds,
+  ["max-premolars-groove-pattern"],
+  "The disputed maxillary second-premolar groove card must remain study-only",
+);
 
 console.log(
-  `Validated ${catalog.teeth.length} teeth, ${catalog.morphologyTemplates.length} morphology templates, ${catalog.teeth.length} supernumerary mappings, and ${verifiedComparisonCount} course-verified comparison cards.`,
+  `Validated ${catalog.teeth.length} teeth, ${catalog.morphologyTemplates.length} morphology templates, ${catalog.teeth.length} supernumerary mappings, ${verifiedComparisonCount} course-verified comparison cards, and ${needsReviewComparisonIds.length} study-only comparison card.`,
 );
 console.log(
   `Validated all ${contactCatalog.records.length} permanent contact-area records with source locators and anatomically bounded target regions.`,

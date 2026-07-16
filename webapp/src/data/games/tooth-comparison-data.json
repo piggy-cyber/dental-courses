@@ -333,7 +333,7 @@
         { "courseCode": "REHE 151", "sourceName": "da 5 Max PM1 2024.ppt", "locator": "slides 19–22" },
         { "courseCode": "REHE 151", "sourceName": "da 5 Max PM2 2024.ppt", "locator": "slides 6–7 and 34 onward, occlusal comparison" }
       ],
-      "evidenceStatus": "course-verified"
+      "evidenceStatus": "needs-review"
     },
     {
       "id": "mand-premolars-groove-pattern",

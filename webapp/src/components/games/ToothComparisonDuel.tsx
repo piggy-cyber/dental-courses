@@ -394,6 +394,7 @@ export function ToothComparisonDuel({ initialProgress }: ToothComparisonDuelProp
             <div className={styles.modeTabs} role="group" aria-label="Game mode">
               <button
                 type="button"
+                aria-pressed={mode === "study"}
                 className={mode === "study" ? styles.activeMode : ""}
                 disabled={phase === "playing"}
                 onClick={() => resetToReady("study")}
@@ -403,6 +404,7 @@ export function ToothComparisonDuel({ initialProgress }: ToothComparisonDuelProp
               </button>
               <button
                 type="button"
+                aria-pressed={mode === "challenge"}
                 className={mode === "challenge" ? styles.activeMode : ""}
                 disabled={phase === "playing"}
                 onClick={() => resetToReady("challenge")}
