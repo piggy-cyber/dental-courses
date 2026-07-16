@@ -1,0 +1,562 @@
+.page {
+  width: min(1280px, 100%);
+  margin: 0 auto;
+  padding: clamp(1.5rem, 4vw, 3rem) clamp(1rem, 3vw, 2rem) 4rem;
+}
+
+.hero {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.backLink {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--arcade-muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.backLink:hover {
+  color: var(--arcade-cyan);
+}
+
+.backLink:focus-visible,
+.toothGroup:focus-visible {
+  outline: 3px solid var(--arcade-cyan);
+  outline-offset: 3px;
+}
+
+.kicker,
+.controlLabel {
+  color: var(--arcade-cyan);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.hero h1 {
+  max-width: 790px;
+  margin-top: 0.3rem;
+  color: var(--arcade-enamel);
+  font-size: clamp(2.5rem, 7vw, 5.8rem);
+  font-weight: 820;
+  letter-spacing: -0.06em;
+  line-height: 0.92;
+  text-wrap: balance;
+}
+
+.heroCopy {
+  max-width: 680px;
+  margin-top: 0.75rem;
+  color: var(--arcade-muted);
+  font-size: clamp(0.9rem, 1.8vw, 1.05rem);
+  line-height: 1.55;
+}
+
+.progressCluster {
+  display: grid;
+  min-width: min(100%, 440px);
+  grid-template-columns: repeat(4, minmax(76px, 1fr));
+  border: 1px solid var(--arcade-line);
+  background: rgba(13, 28, 46, 0.86);
+}
+
+.progressCluster > span {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  border-right: 1px solid var(--arcade-line);
+  padding: 0.75rem 0.85rem;
+}
+
+.progressCluster > span:last-child {
+  border-right: 0;
+}
+
+.progressCluster small,
+.futureControls span,
+.selectionIdentity small {
+  color: var(--arcade-muted);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 0.56rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.progressCluster strong {
+  margin-top: 0.2rem;
+  color: var(--arcade-enamel);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 1.15rem;
+}
+
+.gameFrame {
+  overflow: hidden;
+  border: 1px solid var(--arcade-line);
+  background: rgba(7, 17, 31, 0.74);
+  box-shadow: 0 24px 90px rgba(0, 0, 0, 0.32);
+}
+
+.controlRail {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid var(--arcade-line);
+  background: rgba(13, 28, 46, 0.94);
+  padding: 0.8rem 1rem;
+}
+
+.modeTabs {
+  display: flex;
+  gap: 0.35rem;
+  margin-top: 0.4rem;
+}
+
+.modeTabs button,
+.futureControls button {
+  display: flex;
+  min-height: 48px;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  border: 1px solid var(--arcade-line);
+  background: var(--arcade-bg);
+  color: var(--arcade-muted);
+  padding: 0.45rem 0.75rem;
+  font: inherit;
+  cursor: pointer;
+}
+
+.modeTabs button:disabled,
+.futureControls button:disabled {
+  cursor: not-allowed;
+  opacity: 0.72;
+}
+
+.modeTabs button small {
+  color: var(--arcade-muted);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 0.52rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.modeTabs button span,
+.futureControls button {
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.futureControls {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.futureControls button {
+  min-height: 44px;
+  flex-direction: row;
+  align-items: center;
+}
+
+.reviewBanner {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: 0.9rem;
+  border-bottom: 1px solid var(--arcade-line);
+  background: rgba(18, 38, 61, 0.82);
+  padding: 1rem 1.2rem;
+}
+
+.statusDot {
+  width: 0.72rem;
+  height: 0.72rem;
+  margin-top: 0.3rem;
+  border: 2px solid var(--arcade-gold);
+  border-radius: 50%;
+  box-shadow: 0 0 18px rgba(255, 209, 102, 0.25);
+}
+
+.reviewBanner p {
+  color: var(--arcade-gold);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.reviewBanner h2 {
+  margin-top: 0.18rem;
+  color: var(--arcade-enamel);
+  font-size: clamp(1.15rem, 2.2vw, 1.5rem);
+}
+
+.reviewBanner div > span {
+  display: block;
+  max-width: 880px;
+  margin-top: 0.35rem;
+  color: var(--arcade-muted);
+  font-size: 0.8rem;
+  line-height: 1.55;
+}
+
+.workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.33fr);
+  min-height: 720px;
+}
+
+.archStack {
+  min-width: 0;
+  padding: 1rem;
+  background:
+    radial-gradient(circle at 50% 48%, rgba(94, 231, 231, 0.08), transparent 45%),
+    linear-gradient(rgba(94, 231, 231, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(94, 231, 231, 0.025) 1px, transparent 1px);
+  background-size: auto, 28px 28px, 28px 28px;
+}
+
+.orientation {
+  display: flex;
+  justify-content: space-between;
+  color: var(--arcade-muted);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 0.57rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.archSection {
+  margin-top: 0.65rem;
+  border: 1px solid rgba(36, 65, 94, 0.9);
+  background: rgba(7, 17, 31, 0.66);
+}
+
+.archHeading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid rgba(36, 65, 94, 0.75);
+  padding: 0.55rem 0.75rem;
+}
+
+.archHeading h2 {
+  color: var(--arcade-enamel);
+  font-size: 0.82rem;
+}
+
+.archHeading span {
+  color: var(--arcade-muted);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 0.54rem;
+  text-transform: uppercase;
+}
+
+.archScroller {
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+}
+
+.archSvg {
+  display: block;
+  width: 100%;
+  min-width: 720px;
+  height: auto;
+}
+
+.archGuide {
+  fill: none;
+  stroke: rgba(94, 231, 231, 0.17);
+  stroke-dasharray: 4 7;
+  stroke-width: 1.5;
+}
+
+.midline {
+  stroke: rgba(94, 231, 231, 0.11);
+  stroke-dasharray: 3 7;
+}
+
+.toothGroup {
+  color: #fff9e9;
+  cursor: pointer;
+  filter: drop-shadow(0 7px 8px rgba(0, 0, 0, 0.34));
+  transition: color 150ms ease, filter 150ms ease;
+}
+
+.toothGroup > path:not(.svgDetail) {
+  fill: currentColor;
+  stroke: #b9d9d8;
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+}
+
+.toothGroup:hover,
+.toothGroup:focus-visible,
+.toothSelected {
+  color: #aef7f3;
+  filter: drop-shadow(0 0 11px rgba(94, 231, 231, 0.58));
+}
+
+.toothSelected > path:not(.svgDetail) {
+  stroke: var(--arcade-cyan);
+  stroke-width: 2.4;
+}
+
+.svgHitArea {
+  fill: transparent;
+  stroke: none;
+}
+
+.svgDetail {
+  fill: none;
+  stroke: rgba(7, 17, 31, 0.48);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.7;
+  vector-effect: non-scaling-stroke;
+}
+
+.svgPit {
+  fill: rgba(7, 17, 31, 0.5);
+}
+
+.svgLabel {
+  fill: var(--arcade-muted);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 10px;
+  font-weight: 700;
+  text-anchor: middle;
+}
+
+.selectionPanel {
+  border-left: 1px solid var(--arcade-line);
+  background: rgba(13, 28, 46, 0.94);
+  padding: 1rem;
+}
+
+.selectionIdentity {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  margin-top: 1rem;
+}
+
+.selectionIdentity > span {
+  display: grid;
+  width: 3.2rem;
+  height: 3.2rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid var(--arcade-cyan);
+  background: rgba(94, 231, 231, 0.08);
+  color: var(--arcade-cyan);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 1.1rem;
+  font-weight: 800;
+}
+
+.selectionIdentity h2 {
+  margin-top: 0.2rem;
+  color: var(--arcade-enamel);
+  font-size: 1rem;
+  line-height: 1.35;
+  text-transform: capitalize;
+}
+
+.selectionCopy {
+  margin-top: 1rem;
+  color: var(--arcade-muted);
+  font-size: 0.78rem;
+  line-height: 1.6;
+}
+
+.emptySelection {
+  display: grid;
+  min-height: 150px;
+  margin-top: 1rem;
+  place-items: center;
+  border: 1px dashed var(--arcade-line);
+  padding: 1.25rem;
+  text-align: center;
+}
+
+.emptySelection > span {
+  display: grid;
+  width: 2.4rem;
+  height: 2.4rem;
+  place-items: center;
+  border: 1px solid var(--arcade-cyan);
+  color: var(--arcade-cyan);
+  font-size: 1.2rem;
+}
+
+.emptySelection h2 {
+  color: var(--arcade-enamel);
+  font-size: 1rem;
+}
+
+.emptySelection p {
+  color: var(--arcade-muted);
+  font-size: 0.74rem;
+  line-height: 1.5;
+}
+
+.pendingFields {
+  margin-top: 1.2rem;
+  border-top: 1px solid var(--arcade-line);
+}
+
+.pendingFields > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid var(--arcade-line);
+  padding: 0.7rem 0;
+}
+
+.pendingFields dt {
+  color: var(--arcade-muted);
+  font-size: 0.7rem;
+}
+
+.pendingFields dd {
+  color: var(--arcade-enamel);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 0.62rem;
+}
+
+.weakAreas {
+  margin-top: 1.2rem;
+  border: 1px solid var(--arcade-line);
+  background: rgba(7, 17, 31, 0.68);
+  padding: 0.8rem;
+}
+
+.weakAreas span {
+  color: var(--arcade-muted);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.weakAreas strong {
+  display: block;
+  margin-top: 0.4rem;
+  color: var(--arcade-enamel);
+  font-size: 1.2rem;
+}
+
+.weakAreas p {
+  margin-top: 0.15rem;
+  color: var(--arcade-muted);
+  font-size: 0.7rem;
+}
+
+.feedbackBar {
+  min-height: 44px;
+  border-top: 1px solid var(--arcade-line);
+  background: rgba(18, 38, 61, 0.84);
+  color: var(--arcade-muted);
+  padding: 0.75rem 1rem;
+  font-size: 0.74rem;
+}
+
+.gameFooter {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1rem;
+  color: var(--arcade-muted);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 0.61rem;
+  line-height: 1.55;
+}
+
+@media (max-width: 980px) {
+  .hero {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .progressCluster {
+    width: 100%;
+  }
+
+  .workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .selectionPanel {
+    border-top: 1px solid var(--arcade-line);
+    border-left: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .page {
+    padding-inline: 0.75rem;
+  }
+
+  .progressCluster {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .progressCluster > span:nth-child(2) {
+    border-right: 0;
+  }
+
+  .progressCluster > span:nth-child(-n + 2) {
+    border-bottom: 1px solid var(--arcade-line);
+  }
+
+  .controlRail,
+  .gameFooter {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .futureControls {
+    justify-content: space-between;
+  }
+
+  .archStack {
+    padding: 0.75rem 0;
+  }
+
+  .orientation,
+  .archHeading {
+    padding-inline: 0.75rem;
+  }
+
+  .archScroller::after {
+    display: block;
+    color: var(--arcade-muted);
+    content: "Swipe to inspect the full arch";
+    padding: 0 0.75rem 0.55rem;
+    font-family: var(--font-mono-app), monospace;
+    font-size: 0.55rem;
+    text-align: right;
+    text-transform: uppercase;
+  }
+
+  .selectionPanel {
+    padding: 0.9rem;
+  }
+}
