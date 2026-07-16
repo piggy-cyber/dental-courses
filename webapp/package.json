@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "validate:games": "node scripts/validate-game-content.mjs",
+    "validate:micp-placeholder": "node scripts/validate-micp-placeholder.mjs",
     "import:manifest": "node scripts/import-resource-manifest.mjs"
   },
   "dependencies": {
