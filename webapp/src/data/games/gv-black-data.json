@@ -1,0 +1,268 @@
+{
+  "schemaVersion": 1,
+  "gameId": "gv-black-sorter",
+  "title": "G.V. Black Classification Sorter",
+  "sourceNote": "Original scenarios and diagrams authored from course-verified lesion locations in REHE 162. No course slide artwork is reproduced.",
+  "classes": [
+    {
+      "id": "I",
+      "masteryKey": "class-I",
+      "title": "Class I",
+      "rule": "Pits and fissures on occlusal surfaces, or in buccal or lingual pits.",
+      "contrast": "Location in a pit or fissure is the deciding feature.",
+      "sourceRefs": [
+        { "courseCode": "REHE 162", "sourceName": "Intro+to+BP+Restorative+I+2026.pdf", "locator": "page 20" }
+      ]
+    },
+    {
+      "id": "II",
+      "masteryKey": "class-II",
+      "title": "Class II",
+      "rule": "Proximal surfaces of premolars and molars.",
+      "contrast": "The posterior proximal location defines the class; a generic smooth-surface label does not.",
+      "sourceRefs": [
+        { "courseCode": "REHE 162", "sourceName": "Intro+to+BP+Restorative+I+2026.pdf", "locator": "pages 21-22" }
+      ]
+    },
+    {
+      "id": "III",
+      "masteryKey": "class-III",
+      "title": "Class III",
+      "rule": "Proximal surfaces of anterior teeth without incisal-edge involvement.",
+      "contrast": "If the incisal edge is involved, sort the lesion as Class IV instead.",
+      "sourceRefs": [
+        { "courseCode": "REHE 162", "sourceName": "Intro+to+BP+Restorative+I+2026.pdf", "locator": "pages 23-24; contrasted with page 25" }
+      ]
+    },
+    {
+      "id": "IV",
+      "masteryKey": "class-IV",
+      "title": "Class IV",
+      "rule": "A proximal surface of an anterior tooth with incisal-edge involvement.",
+      "contrast": "Both the anterior proximal surface and the incisal edge are involved.",
+      "sourceRefs": [
+        { "courseCode": "REHE 162", "sourceName": "Intro+to+BP+Restorative+I+2026.pdf", "locator": "page 25" }
+      ]
+    },
+    {
+      "id": "V",
+      "masteryKey": "class-V",
+      "title": "Class V",
+      "rule": "The gingival or cervical third of a facial or lingual surface.",
+      "contrast": "The cervical-third surface location is the deciding feature.",
+      "sourceRefs": [
+        { "courseCode": "REHE 162", "sourceName": "Intro+to+BP+Restorative+I+2026.pdf", "locator": "page 26" }
+      ]
+    },
+    {
+      "id": "VI",
+      "masteryKey": "class-VI",
+      "title": "Class VI",
+      "rule": "A posterior cusp-tip lesion, or a lesion confined to the incisal edge of an anterior tooth.",
+      "contrast": "An anterior example stays on the incisal edge and does not extend onto a proximal surface.",
+      "sourceRefs": [
+        { "courseCode": "REHE 162", "sourceName": "Intro+to+BP+Restorative+I+2026.pdf", "locator": "pages 27-28" }
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "id": "class-i-molar-occlusal-fissure",
+      "classId": "I",
+      "prompt": "A discrete lesion follows the central pit-and-fissure system on a molar's occlusal surface.",
+      "clinicalCue": "Posterior tooth · occlusal pits and fissures",
+      "explanation": "Class I includes lesions in pits and fissures, including those on an occlusal surface.",
+      "diagram": { "tooth": "molar", "view": "occlusal", "lesion": "occlusal-pit-fissure", "markerSide": "center", "label": "Molar · occlusal view" },
+      "modes": ["study", "challenge"],
+      "evidenceStatus": "course-verified",
+      "sourceRefs": [{ "courseCode": "REHE 162", "sourceName": "Intro+to+BP+Restorative+I+2026.pdf", "locator": "page 20" }]
+    },
+    {
+      "id": "class-i-molar-buccal-pit",
+      "classId": "I",
+      "prompt": "A small lesion is confined to a buccal pit on a molar.",
+      "clinicalCue": "Posterior tooth · buccal pit",
+      "explanation": "A lesion limited to a buccal pit is Class I because the course rule includes buccal pits.",
+      "diagram": { "tooth": "molar", "view": "facial", "lesion": "buccal-pit", "markerSide": "center", "label": "Molar · buccal view" },
+      "modes": ["study", "challenge"],
+      "evidenceStatus": "course-verified",
+      "sourceRefs": [{ "courseCode": "REHE 162", "sourceName": "Intro+to+BP+Restorative+I+2026.pdf", "locator": "page 20" }]
+    },
+    {
+      "id": "class-i-molar-lingual-pit",
+      "classId": "I",
+      "prompt": "A small lesion is confined to a lingual pit on a posterior tooth.",
+      "clinicalCue": "Posterior tooth · lingual pit",
+      "explanation": "A lesion limited to a lingual pit is Class I because the course rule includes lingual pits.",
+      "diagram": { "tooth": "molar", "view": "lingual", "lesion": "lingual-pit", "markerSide": "center", "label": "Molar · lingual view" },
+      "modes": ["study", "challenge"],
+      "evidenceStatus": "course-verified",
+      "sourceRefs": [{ "courseCode": "REHE 162", "sourceName": "Intro+to+BP+Restorative+I+2026.pdf", "locator": "page 20" }]
+    },
+    {
+      "id": "class-ii-premolar-mesial-proximal",
+      "classId": "II",
+      "prompt": "A lesion is localized to the mesial proximal surface of a premolar.",
+      "clinicalCue": "Premolar · mesial proximal surface",
+      "explanation": "Proximal lesions on premolars and molars are Class II.",
+      "diagram": { "tooth": "premolar", "view": "proximal", "lesion": "posterior-proximal", "markerSide": "left", "label": "Premolar · proximal view" },
+      "modes": ["study", "challenge"],
+      "evidenceStatus": "course-verified",
+      "sourceRefs": [{ "courseCode": "REHE 162", "sourceName": "Intro+to+BP+Restorative+I+2026.pdf", "locator": "pages 21-22" }]
+    },
+    {
+      "id": "class-ii-molar-distal-proximal",
+      "classId": "II",
+      "prompt": "A lesion is localized to the distal proximal surface of a molar.",
+      "clinicalCue": "Molar · distal proximal surface",
+      "explanation": "The posterior proximal location places this lesion in Class II.",
+      "diagram": { "tooth": "molar", "view": "proximal", "lesion": "posterior-proximal", "markerSide": "right", "label": "Molar · proximal view" },
+      "modes": ["study", "challenge"],
+      "evidenceStatus": "course-verified",
+      "sourceRefs": [{ "courseCode": "REHE 162", "sourceName": "Intro+to+BP+Restorative+I+2026.pdf", "locator": "pages 21-22" }]
+    },
+    {
+      "id": "class-ii-premolar-contact-zone",
+      "classId": "II",
+      "prompt": "A lesion sits on a premolar's proximal surface directly beneath the contact area.",
+      "clinicalCue": "Premolar · posterior proximal surface",
+      "explanation": "A premolar is a posterior tooth, so its proximal-surface lesion is Class II.",
+      "diagram": { "tooth": "premolar", "view": "proximal", "lesion": "posterior-proximal", "markerSide": "right", "label": "Premolar · contact-side view" },
+      "modes": ["study", "challenge"],
+      "evidenceStatus": "course-verified",
+      "sourceRefs": [{ "courseCode": "REHE 162", "sourceName": "Intro+to+BP+Restorative+I+2026.pdf", "locator": "pages 21-22" }]
+    },
+    {
+      "id": "class-iii-incisor-mesial-intact-edge",
+      "classId": "III",
+      "prompt": "An incisor has a mesial proximal lesion. The incisal edge remains intact and is not involved.",
+      "clinicalCue": "Anterior tooth · proximal surface · incisal edge not involved",
+      "explanation": "An anterior proximal lesion without incisal-edge involvement is Class III.",
+      "diagram": { "tooth": "incisor", "view": "facial", "lesion": "anterior-proximal-no-incisal", "markerSide": "left", "label": "Incisor · facial view" },
+      "modes": ["study", "challenge"],
+      "evidenceStatus": "course-verified",
+      "sourceRefs": [{ "courseCode": "REHE 162", "sourceName": "Intro+to+BP+Restorative+I+2026.pdf", "locator": "pages 23-24; contrasted with page 25" }]
+    },
+    {
+      "id": "class-iii-incisor-distal-intact-edge",
+      "classId": "III",
+      "prompt": "A lateral incisor has a distal proximal lesion that stops short of the uninvolved incisal edge.",
+      "clinicalCue": "Anterior tooth · distal proximal surface · incisal edge not involved",
+      "explanation": "Because the lesion is anterior and proximal but does not involve the incisal edge, it is Class III.",
+      "diagram": { "tooth": "incisor", "view": "facial", "lesion": "anterior-proximal-no-incisal", "markerSide": "right", "label": "Lateral incisor · facial view" },
+      "modes": ["study", "challenge"],
+      "evidenceStatus": "course-verified",
+      "sourceRefs": [{ "courseCode": "REHE 162", "sourceName": "Intro+to+BP+Restorative+I+2026.pdf", "locator": "pages 23-24; contrasted with page 25" }]
+    },
+    {
+      "id": "class-iii-incisor-proximal-only",
+      "classId": "III",
+      "prompt": "The marked lesion is limited to an incisor's proximal surface; the full incisal edge is visibly uninvolved.",
+      "clinicalCue": "Anterior tooth · proximal only · incisal edge intact",
+      "explanation": "Proximal-only involvement on an anterior tooth is Class III when the incisal edge is spared.",
+      "diagram": { "tooth": "incisor", "view": "facial", "lesion": "anterior-proximal-no-incisal", "markerSide": "left", "label": "Incisor · facial view" },
+      "modes": ["study", "challenge"],
+      "evidenceStatus": "course-verified",
+      "sourceRefs": [{ "courseCode": "REHE 162", "sourceName": "Intro+to+BP+Restorative+I+2026.pdf", "locator": "pages 23-24; contrasted with page 25" }]
+    },
+    {
+      "id": "class-iv-incisor-mesioincisal",
+      "classId": "IV",
+      "prompt": "An incisor's mesial proximal lesion extends through the mesioincisal corner and involves the incisal edge.",
+      "clinicalCue": "Anterior tooth · proximal surface plus incisal edge",
+      "explanation": "Anterior proximal involvement plus incisal-edge involvement defines Class IV.",
+      "diagram": { "tooth": "incisor", "view": "facial", "lesion": "anterior-proximal-incisal", "markerSide": "left", "label": "Incisor · facial view" },
+      "modes": ["study", "challenge"],
+      "evidenceStatus": "course-verified",
+      "sourceRefs": [{ "courseCode": "REHE 162", "sourceName": "Intro+to+BP+Restorative+I+2026.pdf", "locator": "page 25" }]
+    },
+    {
+      "id": "class-iv-incisor-distoincisal",
+      "classId": "IV",
+      "prompt": "A lateral incisor's distal proximal lesion reaches the distoincisal corner and includes the incisal edge.",
+      "clinicalCue": "Anterior tooth · distal proximal plus incisal edge",
+      "explanation": "Once an anterior proximal lesion includes the incisal edge, it is Class IV rather than Class III.",
+      "diagram": { "tooth": "incisor", "view": "facial", "lesion": "anterior-proximal-incisal", "markerSide": "right", "label": "Lateral incisor · facial view" },
+      "modes": ["study", "challenge"],
+      "evidenceStatus": "course-verified",
+      "sourceRefs": [{ "courseCode": "REHE 162", "sourceName": "Intro+to+BP+Restorative+I+2026.pdf", "locator": "page 25" }]
+    },
+    {
+      "id": "class-iv-incisor-proximal-edge",
+      "classId": "IV",
+      "prompt": "The marked anterior lesion spans a proximal surface and the adjoining incisal edge.",
+      "clinicalCue": "Anterior tooth · proximal and incisal-edge involvement",
+      "explanation": "The combined proximal and incisal-edge location is the Class IV boundary.",
+      "diagram": { "tooth": "incisor", "view": "facial", "lesion": "anterior-proximal-incisal", "markerSide": "left", "label": "Incisor · facial view" },
+      "modes": ["study", "challenge"],
+      "evidenceStatus": "course-verified",
+      "sourceRefs": [{ "courseCode": "REHE 162", "sourceName": "Intro+to+BP+Restorative+I+2026.pdf", "locator": "page 25" }]
+    },
+    {
+      "id": "class-v-premolar-facial-cervical",
+      "classId": "V",
+      "prompt": "A lesion is confined to the cervical third of a premolar's facial surface.",
+      "clinicalCue": "Premolar · facial surface · cervical third",
+      "explanation": "A lesion in the gingival or cervical third of a facial surface is Class V.",
+      "diagram": { "tooth": "premolar", "view": "facial", "lesion": "cervical-third", "markerSide": "center", "label": "Premolar · facial view" },
+      "modes": ["study", "challenge"],
+      "evidenceStatus": "course-verified",
+      "sourceRefs": [{ "courseCode": "REHE 162", "sourceName": "Intro+to+BP+Restorative+I+2026.pdf", "locator": "page 26" }]
+    },
+    {
+      "id": "class-v-molar-lingual-cervical",
+      "classId": "V",
+      "prompt": "A lesion is confined to the cervical third of a molar's lingual surface.",
+      "clinicalCue": "Molar · lingual surface · cervical third",
+      "explanation": "Class V includes the cervical third on either a facial or lingual surface.",
+      "diagram": { "tooth": "molar", "view": "lingual", "lesion": "cervical-third", "markerSide": "center", "label": "Molar · lingual view" },
+      "modes": ["study", "challenge"],
+      "evidenceStatus": "course-verified",
+      "sourceRefs": [{ "courseCode": "REHE 162", "sourceName": "Intro+to+BP+Restorative+I+2026.pdf", "locator": "page 26" }]
+    },
+    {
+      "id": "class-v-incisor-facial-cervical",
+      "classId": "V",
+      "prompt": "A lesion is centered in the cervical third of an incisor's facial surface.",
+      "clinicalCue": "Incisor · facial surface · cervical third",
+      "explanation": "The cervical-third facial location makes this Class V regardless of the anterior tooth category.",
+      "diagram": { "tooth": "incisor", "view": "facial", "lesion": "cervical-third", "markerSide": "center", "label": "Incisor · facial view" },
+      "modes": ["study", "challenge"],
+      "evidenceStatus": "course-verified",
+      "sourceRefs": [{ "courseCode": "REHE 162", "sourceName": "Intro+to+BP+Restorative+I+2026.pdf", "locator": "page 26" }]
+    },
+    {
+      "id": "class-vi-premolar-cusp-tip",
+      "classId": "VI",
+      "prompt": "A lesion is confined to the tip of a premolar cusp.",
+      "clinicalCue": "Posterior tooth · cusp tip only",
+      "explanation": "A posterior cusp-tip lesion is Class VI.",
+      "diagram": { "tooth": "premolar", "view": "facial", "lesion": "posterior-cusp-tip", "markerSide": "left", "label": "Premolar · facial view" },
+      "modes": ["study", "challenge"],
+      "evidenceStatus": "course-verified",
+      "sourceRefs": [{ "courseCode": "REHE 162", "sourceName": "Intro+to+BP+Restorative+I+2026.pdf", "locator": "pages 27-28" }]
+    },
+    {
+      "id": "class-vi-molar-cusp-tip",
+      "classId": "VI",
+      "prompt": "A lesion is confined to one cusp tip on a molar.",
+      "clinicalCue": "Posterior tooth · isolated cusp tip",
+      "explanation": "A lesion isolated to a posterior cusp tip is Class VI, not an occlusal pit-and-fissure Class I lesion.",
+      "diagram": { "tooth": "molar", "view": "occlusal", "lesion": "posterior-cusp-tip", "markerSide": "right", "label": "Molar · occlusal view" },
+      "modes": ["study", "challenge"],
+      "evidenceStatus": "course-verified",
+      "sourceRefs": [{ "courseCode": "REHE 162", "sourceName": "Intro+to+BP+Restorative+I+2026.pdf", "locator": "pages 27-28" }]
+    },
+    {
+      "id": "class-vi-incisal-edge-only",
+      "classId": "VI",
+      "prompt": "A lesion is confined to the center of an incisor's incisal edge and does not involve either proximal surface.",
+      "clinicalCue": "Anterior tooth · incisal edge only · proximal surfaces not involved",
+      "explanation": "An anterior lesion confined to the incisal edge is Class VI; proximal extension would change the boundary.",
+      "diagram": { "tooth": "incisor", "view": "facial", "lesion": "anterior-incisal-only", "markerSide": "center", "label": "Incisor · facial view" },
+      "modes": ["study", "challenge"],
+      "evidenceStatus": "course-verified",
+      "sourceRefs": [{ "courseCode": "REHE 162", "sourceName": "Intro+to+BP+Restorative+I+2026.pdf", "locator": "pages 27-28" }]
+    }
+  ]
+}

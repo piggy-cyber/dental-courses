@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import eruptionCatalogJson from "@/data/games/eruption-data.json";
 import rootCanalCatalogJson from "@/data/games/root-canal-match-data.json";
+import gvBlackCatalogJson from "@/data/games/gv-black-data.json";
 import toothCatalogJson from "@/data/games/tooth-data.json";
 import toothComparisonJson from "@/data/games/tooth-comparison-data.json";
 import { getSessionProfile } from "@/lib/access";
@@ -22,6 +23,7 @@ import {
   isValidRootCanalRound,
   type RootCanalMatchCatalog,
 } from "@/lib/games/root-canal-match-types";
+import type { GvBlackCatalog } from "@/lib/games/gv-black-types";
 import type { ToothCatalog } from "@/lib/games/tooth-types";
 import type { EruptionCatalog } from "@/lib/games/eruption-types";
 
@@ -50,6 +52,10 @@ const rootCanalRecordDifficulties = new Map(
 const toothComparisonDataset = toothComparisonJson as ToothComparisonDataset;
 const validComparisonKeys = new Set<string>(
   toothComparisonDataset.questions.map(getToothComparisonMasteryKey),
+);
+const gvBlackCatalog = gvBlackCatalogJson as GvBlackCatalog;
+const validGvBlackMasteryKeys = new Set(
+  gvBlackCatalog.classes.map((classification) => classification.masteryKey),
 );
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
@@ -93,7 +99,9 @@ function validateRound(input: GameRoundResult): string | null {
             ? validEruptionCodes.has(code)
             : input.gameId === "root-canal-match"
               ? validRootCanalRecordIds.has(code)
-              : validComparisonKeys.has(code);
+              : input.gameId === "tooth-comparison-duel"
+                ? validComparisonKeys.has(code)
+                : validGvBlackMasteryKeys.has(code);
     if (!validMasteryCode) return "That mastery item is not recognized.";
     if (
       !entry ||

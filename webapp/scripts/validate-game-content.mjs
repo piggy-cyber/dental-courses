@@ -17,12 +17,16 @@ const rootCanalCatalogPath = fileURLToPath(
 const comparisonPath = fileURLToPath(
   new URL("../src/data/games/tooth-comparison-data.json", import.meta.url),
 );
+const gvBlackCatalogPath = fileURLToPath(
+  new URL("../src/data/games/gv-black-data.json", import.meta.url),
+);
 
 const catalog = JSON.parse(await readFile(catalogPath, "utf8"));
 const contactCatalog = JSON.parse(await readFile(contactCatalogPath, "utf8"));
 const eruptionCatalog = JSON.parse(await readFile(eruptionCatalogPath, "utf8"));
 const rootCanalCatalog = JSON.parse(await readFile(rootCanalCatalogPath, "utf8"));
 const comparisonDataset = JSON.parse(await readFile(comparisonPath, "utf8"));
+const gvBlackCatalog = JSON.parse(await readFile(gvBlackCatalogPath, "utf8"));
 
 const permanentCodes = Array.from({ length: 32 }, (_, index) => String(index + 1));
 const primaryCodes = [..."ABCDEFGHIJKLMNOPQRST"];
@@ -877,4 +881,117 @@ for (const record of rootCanalCatalog.records) {
 
 console.log(
   `Validated ${rootCanalCatalog.records.length} Root Canal Match records: 9 course-verified Challenge records and 3 source-conflict review holds.`,
+);
+
+const gvBlackClassIds = ["I", "II", "III", "IV", "V", "VI"];
+const gvBlackLocators = {
+  I: "page 20",
+  II: "pages 21-22",
+  III: "pages 23-24",
+  IV: "page 25",
+  V: "page 26",
+  VI: "pages 27-28",
+};
+const allowedLesionsByClass = {
+  I: new Set(["occlusal-pit-fissure", "buccal-pit", "lingual-pit"]),
+  II: new Set(["posterior-proximal"]),
+  III: new Set(["anterior-proximal-no-incisal"]),
+  IV: new Set(["anterior-proximal-incisal"]),
+  V: new Set(["cervical-third"]),
+  VI: new Set(["posterior-cusp-tip", "anterior-incisal-only"]),
+};
+
+function validateSourceRefs(sourceRefs, label) {
+  assert.ok(Array.isArray(sourceRefs) && sourceRefs.length > 0, `${label} needs sourceRefs`);
+  for (const [index, sourceRef] of sourceRefs.entries()) {
+    assertText(sourceRef.courseCode, `${label} sourceRefs[${index}].courseCode`);
+    assertText(sourceRef.sourceName, `${label} sourceRefs[${index}].sourceName`);
+    assertText(sourceRef.locator, `${label} sourceRefs[${index}].locator`);
+    assert.equal(sourceRef.courseCode, "REHE 162", `${label} must use the controlling course`);
+    assert.equal(
+      sourceRef.sourceName,
+      "Intro+to+BP+Restorative+I+2026.pdf",
+      `${label} must use the controlling source`,
+    );
+  }
+}
+
+assert.equal(gvBlackCatalog.schemaVersion, 1, "G.V. Black schemaVersion must be 1");
+assert.equal(gvBlackCatalog.gameId, "gv-black-sorter");
+assert.deepEqual(
+  gvBlackCatalog.classes.map((classification) => classification.id),
+  gvBlackClassIds,
+  "G.V. Black classes must cover I-VI in order",
+);
+assertUnique(
+  gvBlackCatalog.classes.map((classification) => classification.masteryKey),
+  "G.V. Black mastery keys",
+);
+assert.equal(gvBlackCatalog.cases.length, 18, "G.V. Black catalog must contain 18 cases");
+assertUnique(gvBlackCatalog.cases.map((item) => item.id), "G.V. Black case ids");
+
+for (const classification of gvBlackCatalog.classes) {
+  assertText(classification.title, `${classification.id} title`);
+  assertText(classification.rule, `${classification.id} rule`);
+  assertText(classification.contrast, `${classification.id} contrast`);
+  validateSourceRefs(classification.sourceRefs, `Class ${classification.id}`);
+  assert.ok(
+    classification.sourceRefs.some((sourceRef) =>
+      sourceRef.locator.includes(gvBlackLocators[classification.id]),
+    ),
+    `Class ${classification.id} must cite ${gvBlackLocators[classification.id]}`,
+  );
+
+  const casesForClass = gvBlackCatalog.cases.filter(
+    (item) => item.classId === classification.id,
+  );
+  assert.equal(casesForClass.length, 3, `Class ${classification.id} must have three cases`);
+}
+
+for (const item of gvBlackCatalog.cases) {
+  assert.ok(gvBlackClassIds.includes(item.classId), `${item.id} references a known class`);
+  assertText(item.prompt, `${item.id} prompt`);
+  assertText(item.clinicalCue, `${item.id} clinicalCue`);
+  assertText(item.explanation, `${item.id} explanation`);
+  assert.deepEqual(item.modes, ["study", "challenge"], `${item.id} must support both modes`);
+  assert.equal(item.evidenceStatus, "course-verified", `${item.id} must be course verified`);
+  assert.ok(
+    allowedLesionsByClass[item.classId].has(item.diagram.lesion),
+    `${item.id} lesion does not match Class ${item.classId}`,
+  );
+  validateSourceRefs(item.sourceRefs, item.id);
+  assert.ok(
+    item.sourceRefs.some((sourceRef) =>
+      sourceRef.locator.includes(gvBlackLocators[item.classId]),
+    ),
+    `${item.id} must cite ${gvBlackLocators[item.classId]}`,
+  );
+
+  if (item.classId === "III") {
+    assert.match(item.prompt, /incisal edge/i, `${item.id} must mention the incisal edge`);
+    assert.match(
+      `${item.prompt} ${item.clinicalCue}`,
+      /(not involved|uninvolved|intact)/i,
+      `${item.id} must explicitly spare the incisal edge`,
+    );
+  }
+  if (item.classId === "IV") {
+    assert.match(item.prompt, /incisal edge/i, `${item.id} must state incisal-edge involvement`);
+  }
+  if (item.classId === "VI" && item.diagram.lesion === "anterior-incisal-only") {
+    assert.match(
+      `${item.prompt} ${item.clinicalCue}`,
+      /(confined|only)/i,
+      `${item.id} must remain confined to the incisal edge`,
+    );
+    assert.match(
+      `${item.prompt} ${item.clinicalCue}`,
+      /(not involve|not involved)/i,
+      `${item.id} must explicitly spare proximal surfaces`,
+    );
+  }
+}
+
+console.log(
+  `Validated ${catalog.teeth.length} teeth, ${catalog.morphologyTemplates.length} morphology templates, ${catalog.teeth.length} supernumerary mappings, and ${gvBlackCatalog.cases.length} G.V. Black cases.`,
 );
