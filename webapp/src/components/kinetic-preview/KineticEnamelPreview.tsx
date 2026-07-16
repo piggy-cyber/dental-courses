@@ -232,8 +232,8 @@ export function KineticEnamelPreview() {
             <Image
               src="/brand/fourth-canal-horizontal-on-dark-outlined.svg"
               alt=""
-              width={300}
-              height={66}
+              width={1100}
+              height={240}
               className={styles.transitionBrand}
             />
             <small>{activeView === "dashboard" ? "Opening course" : "Returning home"}</small>
