@@ -34,7 +34,7 @@ function increment(map: Map<string, number>, key: string) {
 }
 
 export default async function AdminCollectionsPage() {
-  await requireAdminProfile();
+  await requireAdminProfile("collections.manage");
   const supabase = await createClient();
 
   const [{ data: collections }, { data: courses }, { data: resources }, { data: grants }] =

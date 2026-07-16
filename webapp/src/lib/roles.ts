@@ -1,10 +1,16 @@
 import type { Profile } from "@/lib/access";
+import { canOpenAdmin, hasFullCouncilAccess } from "@/lib/admin-permissions";
 
-/** DB role is still `owner`; UI labels this Admin. */
+/** Compatibility helper: any approved delegated council member may open admin. */
 export function isAdmin(profile: Profile | null | undefined): boolean {
-  return profile?.role === "owner" && profile.status === "approved";
+  return canOpenAdmin(profile);
 }
 
-export function adminLabel(role: Profile["role"]): string {
-  return role === "owner" ? "Admin" : "Student";
+export function isFullAdmin(profile: Profile | null | undefined): boolean {
+  return hasFullCouncilAccess(profile);
+}
+
+export function adminLabel(role: Profile["role"], councilTitle?: string | null): string {
+  if (councilTitle) return councilTitle;
+  return role === "owner" ? "Full administrator" : "Student";
 }

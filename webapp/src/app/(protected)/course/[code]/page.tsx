@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getSessionProfile } from "@/lib/access";
-import { isAdmin } from "@/lib/roles";
+import { hasAdminPermission } from "@/lib/admin-permissions";
 import { CourseBreadcrumb } from "@/components/CourseBreadcrumb";
 import { CourseReportSection } from "@/components/CourseReportSection";
 import {
@@ -76,7 +76,7 @@ export default async function CoursePage({
   const courseCode = decodeURIComponent(code);
   const supabase = await createClient();
   const { profile } = await getSessionProfile();
-  const isAdminView = isAdmin(profile);
+  const isAdminView = hasAdminPermission(profile, "courses.manage");
 
   let membershipQuery = supabase
     .from("course_collection_members")

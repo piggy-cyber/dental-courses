@@ -29,7 +29,7 @@ export type Account = {
 };
 
 export default async function AdminAccountsPage() {
-  const { userId } = await requireAdminProfile();
+  const { userId } = await requireAdminProfile("accounts.manage");
   const supabase = await createClient();
   const [{ data: profileRows }, { data: rosterRows }] = await Promise.all([
     supabase
@@ -69,7 +69,8 @@ export default async function AdminAccountsPage() {
           Accounts
         </h1>
         <p className="mt-2 text-brand-muted">
-          Search students, review roster matches, and control status or tiers.
+          Approve roster-matched students, then use Manage access to choose D1/D2 labels and
+          the exact course collections they can open.
         </p>
       </header>
 

@@ -1,7 +1,7 @@
 import "server-only";
 
 import { getSessionProfile } from "@/lib/access";
-import { isAdmin } from "@/lib/roles";
+import { hasAdminPermission } from "@/lib/admin-permissions";
 
 export type UploadActor =
   | { kind: "admin"; userId: string }
@@ -18,7 +18,7 @@ export async function authorizeCourseUpload(
   }
 
   const { profile, userId } = await getSessionProfile();
-  if (isAdmin(profile) && userId) {
+  if (hasAdminPermission(profile, "courses.manage") && userId) {
     return { kind: "admin", userId };
   }
 

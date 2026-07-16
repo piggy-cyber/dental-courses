@@ -4,6 +4,13 @@ import type { Profile } from "@/lib/access";
 import { BrandMark } from "@/components/BrandMark";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { UserAvatar } from "@/components/UserAvatar";
+import {
+  canOpenAdmin,
+  canViewAllCourseData,
+  hasAdminPermission,
+  hasFullCouncilAccess,
+  type AdminPermission,
+} from "@/lib/admin-permissions";
 
 export type AppShellCourse = {
   code: string;
@@ -29,14 +36,19 @@ const STUDENT_LINKS = [
   { href: "/about", label: "About" },
 ];
 
-const ADMIN_LINKS = [
+const ADMIN_LINKS: Array<{
+  href: string;
+  label: string;
+  permission?: AdminPermission;
+  fullOnly?: boolean;
+}> = [
   { href: "/admin", label: "Dashboard" },
-  { href: "/admin/accounts", label: "Accounts" },
-  { href: "/admin/roster", label: "Roster" },
-  { href: "/admin/team", label: "Team" },
-  { href: "/admin/collections", label: "Collections" },
-  { href: "/admin/courses", label: "Courses" },
-  { href: "/admin/operations", label: "Operations" },
+  { href: "/admin/accounts", label: "Student access", permission: "accounts.manage" },
+  { href: "/admin/roster", label: "Roster", permission: "roster.manage" },
+  { href: "/admin/team", label: "Council access", fullOnly: true },
+  { href: "/admin/collections", label: "Collections", permission: "collections.manage" },
+  { href: "/admin/courses", label: "Courses & files", permission: "courses.manage" },
+  { href: "/admin/operations", label: "Operations", permission: "operations.manage" },
 ];
 
 function groupedCollections(courses: AppShellCourse[]) {
@@ -85,9 +97,14 @@ export function AppShell({
 }: AppShellProps) {
   const collections = groupedCollections(courses);
   const displayName = profile.name ?? profile.email.split("@")[0] ?? "Student";
-  const navLinks = adminMode ? ADMIN_LINKS : STUDENT_LINKS;
-  const canOpenAdmin = profile.role === "owner";
-  const courseScopeLabel = canOpenAdmin ? "All available" : "Granted";
+  const adminLinks = ADMIN_LINKS.filter((link) => {
+    if (link.fullOnly) return hasFullCouncilAccess(profile);
+    return !link.permission || hasAdminPermission(profile, link.permission);
+  });
+  const navLinks = adminMode ? adminLinks : STUDENT_LINKS;
+  const mayOpenAdmin = canOpenAdmin(profile);
+  const managesCourseData = canViewAllCourseData(profile);
+  const courseScopeLabel = managesCourseData ? "Administrative" : "Granted";
 
   return (
     <div className="app-shell-bg min-h-screen text-brand-ink">
@@ -116,7 +133,7 @@ export function AppShell({
                 {link.label}
               </Link>
             ))}
-            {canOpenAdmin && !adminMode && (
+            {mayOpenAdmin && !adminMode && (
               <Link
                 href="/admin"
                 className="mt-1 block border-l-4 border-transparent px-2 py-1.5 text-sm font-semibold text-brand-blue hover:border-brand-blue hover:bg-brand-sidebar-soft hover:text-brand-navy"
@@ -172,7 +189,7 @@ export function AppShell({
               </div>
             ) : (
               <p className="border border-brand-line bg-brand-panel px-3 py-3 text-sm text-brand-muted">
-                {canOpenAdmin
+                {managesCourseData
                   ? "No course collections are loaded yet."
                   : "No course collections are assigned yet."}
               </p>

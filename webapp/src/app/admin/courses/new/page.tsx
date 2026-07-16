@@ -6,7 +6,7 @@ import { CourseWizard } from "@/components/CourseWizard";
 export const dynamic = "force-dynamic";
 
 export default async function NewCoursePage() {
-  await requireAdminProfile();
+  await requireAdminProfile("courses.manage");
   const collections = await listResourceCollections();
 
   return (

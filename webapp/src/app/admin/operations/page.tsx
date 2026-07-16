@@ -13,7 +13,7 @@ type CourseCoverage = {
 };
 
 export default async function AdminOperationsPage() {
-  await requireAdminProfile();
+  await requireAdminProfile("operations.manage");
   const supabase = await createClient();
 
   const { data: resources } = await supabase

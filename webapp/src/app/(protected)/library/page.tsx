@@ -5,13 +5,13 @@ import {
   collectionFromRow,
   type ResourceCollectionSummary,
 } from "@/lib/resource-collections";
-import { isAdmin } from "@/lib/roles";
+import { canViewAllCourseData } from "@/lib/admin-permissions";
 
 export const dynamic = "force-dynamic";
 
 export default async function LibraryPage() {
   const { profile } = await getSessionProfile();
-  const isAdminView = isAdmin(profile);
+  const isAdminView = canViewAllCourseData(profile);
   const supabase = await createClient();
   const query = supabase
     .from("course_collection_members")

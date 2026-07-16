@@ -13,7 +13,7 @@ export default async function AdminCourseEditorPage({
   params: Promise<{ code: string }>;
   searchParams: Promise<{ collection?: string }>;
 }) {
-  await requireAdminProfile();
+  await requireAdminProfile("courses.manage");
   const { code } = await params;
   const { collection: collectionId } = await searchParams;
   const courseCode = decodeURIComponent(code);

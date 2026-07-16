@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { getSessionProfile } from "@/lib/access";
-import { isAdmin } from "@/lib/roles";
+import { canViewAllCourseData } from "@/lib/admin-permissions";
 import { getTodaysSchedule } from "@/lib/schedule";
 import { tierLabel } from "@/lib/tiers";
 import { getCampusWeather } from "@/lib/weather";
@@ -79,7 +79,7 @@ export default async function HomeDashboardPage() {
   ]);
 
   const displayName = profile?.name ?? profile?.email?.split("@")[0] ?? "Student";
-  const isAdminView = isAdmin(profile);
+  const isAdminView = canViewAllCourseData(profile);
   const handle = profile?.username ? `@${profile.username}` : null;
   const hasCanvasFeed = Boolean(profile?.canvas_ics_url);
   const rawCourseList = ((courses as HomeMembership[] | null) ?? []).flatMap((membership) => {

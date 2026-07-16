@@ -1,13 +1,24 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdminProfile } from "@/app/admin/actions";
+import {
+  councilLabel,
+  hasAdminPermission,
+  hasFullCouncilAccess,
+} from "@/lib/admin-permissions";
 import { RecheckRosterButton } from "./RecheckRosterButton";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminDashboardPage() {
-  await requireAdminProfile();
+  const { profile } = await requireAdminProfile();
   const supabase = await createClient();
+  const canAccounts = hasAdminPermission(profile, "accounts.manage");
+  const canRoster = hasAdminPermission(profile, "roster.manage");
+  const canCollections = hasAdminPermission(profile, "collections.manage");
+  const canCourses = hasAdminPermission(profile, "courses.manage");
+  const canOperations = hasAdminPermission(profile, "operations.manage");
+  const isFullAdmin = hasFullCouncilAccess(profile);
 
   const [
     { count: pendingCount },
@@ -54,88 +65,101 @@ export default async function AdminDashboardPage() {
   const missingFiles = resourceCount - linkedCount;
   const metricRows = [
     {
+      visible: canAccounts,
       href: "/admin/accounts",
       label: "Pending approvals",
       value: pendingCount ?? 0,
       note: "Accounts waiting for review",
     },
     {
+      visible: canAccounts,
       href: "/admin/accounts",
       label: "Banned/revoked",
       value: revokedCount ?? 0,
       note: "Accounts without active access",
     },
     {
+      visible: canRoster,
       href: "/admin/roster",
       label: "Roster not signed in",
       value: rosterUnsignedCount ?? 0,
       note: "Expected students without a matched profile",
     },
     {
+      visible: canOperations,
       href: "/admin/operations",
       label: "Open reports",
       value: openReportCount ?? 0,
       note: "Student reports needing action",
     },
     {
+      visible: canCourses || canCollections,
       label: "Courses",
       value: courseCount ?? 0,
       note: "Course records in the library",
     },
     {
+      visible: canCourses || canCollections,
       label: "Lectures",
       value: lectureCount ?? 0,
       note: "Lecture records in the library",
     },
     {
+      visible: canCourses || canOperations,
       href: "/admin/operations",
       label: "Files in storage",
       value: `${linkedCount}/${resourceCount}`,
       note: missingFiles > 0 ? `${missingFiles} not uploaded` : "All indexed files uploaded",
     },
-  ];
+  ].filter((row) => row.visible);
   const adminDestinations = [
     {
+      visible: canAccounts,
       href: "/admin/accounts",
-      label: "Accounts",
-      detail: "Approve or revoke library access.",
+      label: "Student access",
+      detail: "Approve roster matches and choose D1/D2 or course collection access.",
     },
     {
+      visible: canRoster,
       href: "/admin/roster",
       label: "Roster",
       detail: "Track expected students and matches.",
     },
     {
+      visible: isFullAdmin,
       href: "/admin/team",
-      label: "Team",
-      detail: "Promote or demote admins.",
+      label: "Council access",
+      detail: "Assign officer titles and exact responsibilities.",
     },
     {
+      visible: canCollections,
       href: "/admin/collections",
       label: "Collections",
       detail: `${collectionCount ?? 0} resource set${collectionCount === 1 ? "" : "s"}.`,
     },
     {
+      visible: canCourses,
       href: "/admin/courses",
       label: "Courses",
       detail: "Edit metadata, lectures, files, and transcripts.",
     },
     {
+      visible: canOperations,
       href: "/admin/operations",
       label: "Operations",
       detail: "Upload coverage and exports.",
     },
-  ];
+  ].filter((destination) => destination.visible);
 
   return (
     <div className="space-y-10">
       <header className="app-card p-6">
-        <p className="eyebrow text-brand-gold">Admin portal</p>
+        <p className="eyebrow text-brand-gold">{councilLabel(profile)}</p>
         <h1 className="mt-1 text-3xl font-bold tracking-tight text-brand-navy">
           Dashboard
         </h1>
         <p className="mt-2 text-brand-muted">
-          Manage access, monitor library health, and run operations.
+          Your control desk shows only the responsibilities assigned to your council role.
         </p>
       </header>
 
@@ -189,65 +213,69 @@ export default async function AdminDashboardPage() {
         </ul>
       </section>
 
-      <section>
-        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-brand-muted">
-          Recent sign-ins
-        </h2>
-        <ul className="app-card divide-y divide-brand-line overflow-hidden">
-          {(recentProfiles ?? []).map((row) => (
-            <li key={row.email} className="flex justify-between gap-4 px-4 py-3 text-sm">
-              <span className="font-medium text-brand-ink">{row.name ?? row.email}</span>
-              <span className="text-brand-muted">
-                {row.status} · {new Date(row.created_at).toLocaleDateString()}
-              </span>
-            </li>
-          ))}
-        </ul>
-      </section>
+      {canAccounts && (
+        <section>
+          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-brand-muted">
+            Recent sign-ins
+          </h2>
+          <ul className="app-card divide-y divide-brand-line overflow-hidden">
+            {(recentProfiles ?? []).map((row) => (
+              <li key={row.email} className="flex justify-between gap-4 px-4 py-3 text-sm">
+                <span className="font-medium text-brand-ink">{row.name ?? row.email}</span>
+                <span className="text-brand-muted">
+                  {row.status} · {new Date(row.created_at).toLocaleDateString()}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
-      <section className="app-card-muted p-5 text-sm text-brand-muted">
-        <div className="flex flex-wrap items-start justify-between gap-4">
-          <div>
-            <h2 className="font-semibold text-brand-navy">Roster automation</h2>
-            <p className="mt-1">
-              Re-run email matching after importing a roster or after a pending student signs in.
-            </p>
+      {canRoster && (
+        <section className="app-card-muted p-5 text-sm text-brand-muted">
+          <div className="flex flex-wrap items-start justify-between gap-4">
+            <div>
+              <h2 className="font-semibold text-brand-navy">Roster automation</h2>
+              <p className="mt-1">
+                Re-run email matching after importing a roster or after a pending student signs in.
+              </p>
+            </div>
+            <RecheckRosterButton />
           </div>
-          <RecheckRosterButton />
-        </div>
-      </section>
+        </section>
+      )}
 
-      <section className="app-card-muted p-5 text-sm text-brand-muted">
-        <h2 className="font-semibold text-brand-navy">Maintenance scripts</h2>
-        <ul className="mt-2 list-disc space-y-1 pl-5">
-          <li>
-            <code className="text-brand-ink">node scripts/seed.mjs</code> — refresh course
-            metadata
-          </li>
-          <li>
-            <code className="text-brand-ink">node scripts/import-roster.mjs</code> — import
-            private-staging/roster.csv
-          </li>
-          <li>
-            <code className="text-brand-ink">node scripts/recheck-roster.mjs</code> — re-run
-            roster auto-matches
-          </li>
-          <li>
-            <code className="text-brand-ink">node scripts/upload-files.mjs --canvas</code> —
-            upload Canvas files
-          </li>
-          <li>
-            <code className="text-brand-ink">
-              node scripts/import-resource-manifest.mjs --file private-staging/resource-manifests/d2-2025-2026.json --dry
-            </code>{" "}
-            — preview a staged D2 resource collection import
-          </li>
-          <li>
-            <code className="text-brand-ink">node scripts/make-admin.mjs email</code> — promote
-            admin
-          </li>
-        </ul>
-      </section>
+      {isFullAdmin && (
+        <section className="app-card-muted p-5 text-sm text-brand-muted">
+          <h2 className="font-semibold text-brand-navy">Maintenance scripts</h2>
+          <ul className="mt-2 list-disc space-y-1 pl-5">
+            <li>
+              <code className="text-brand-ink">node scripts/seed.mjs</code> — refresh course
+              metadata
+            </li>
+            <li>
+              <code className="text-brand-ink">node scripts/import-roster.mjs</code> — import
+              private-staging/roster.csv
+            </li>
+            <li>
+              <code className="text-brand-ink">node scripts/recheck-roster.mjs</code> — re-run
+              roster auto-matches
+            </li>
+            <li>
+              <code className="text-brand-ink">node scripts/upload-files.mjs --canvas</code> —
+              upload Canvas files
+            </li>
+            <li>
+              <code className="text-brand-ink">
+                node scripts/import-resource-manifest.mjs --file
+                private-staging/resource-manifests/d2-2025-2026.json --dry
+              </code>{" "}
+              — preview a staged D2 resource collection import
+            </li>
+            <li>Council roles and permissions are managed from the Council access page.</li>
+          </ul>
+        </section>
+      )}
     </div>
   );
 }

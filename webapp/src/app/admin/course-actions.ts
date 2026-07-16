@@ -157,7 +157,7 @@ export async function getCourseEditorData(
   courseCode: string,
   collectionId: string
 ): Promise<CourseEditorData | null> {
-  await requireAdminProfile();
+  await requireAdminProfile("courses.manage");
   const admin = createAdminClient();
 
   const { data: membership } = await admin
@@ -241,7 +241,7 @@ export async function updateCourseMetadata(
     library_tier?: AccessTier;
   }
 ) {
-  const { userId } = await requireAdminProfile();
+  const { userId } = await requireAdminProfile("courses.manage");
   const admin = createAdminClient();
   const title = fields.title.trim();
   if (!title) throw new Error("Course title is required.");
@@ -281,7 +281,7 @@ export async function createLecture(
     sort_order?: number;
   }
 ) {
-  const { userId } = await requireAdminProfile();
+  const { userId } = await requireAdminProfile("courses.manage");
   const admin = createAdminClient();
   const title = fields.title.trim();
   if (!title) throw new Error("Lecture title is required.");
@@ -325,7 +325,7 @@ export async function updateLecture(
     sort_order?: number;
   }
 ) {
-  const { userId } = await requireAdminProfile();
+  const { userId } = await requireAdminProfile("courses.manage");
   const admin = createAdminClient();
 
   const update: Record<string, unknown> = {};
@@ -366,7 +366,7 @@ export async function deleteLecture(
   collectionId: string,
   lectureId: string
 ) {
-  const { userId } = await requireAdminProfile();
+  const { userId } = await requireAdminProfile("courses.manage");
   const admin = createAdminClient();
 
   const { error } = await admin
@@ -395,7 +395,7 @@ export async function saveTranscript(
   lectureId: string,
   content: string
 ) {
-  const { userId } = await requireAdminProfile();
+  const { userId } = await requireAdminProfile("courses.manage");
   const admin = createAdminClient();
   const trimmed = content.trim();
 
@@ -440,7 +440,9 @@ export async function createResource(
   actorId?: string | null
 ) {
   const userId =
-    actorId !== undefined ? actorId : (await requireAdminProfile()).userId;
+    actorId !== undefined
+      ? actorId
+      : (await requireAdminProfile("courses.manage")).userId;
   const admin = createAdminClient();
   const name = fields.name.trim();
   if (!name) throw new Error("Resource name is required.");
@@ -504,7 +506,7 @@ export async function updateResource(
     section_id?: string | null;
   }
 ) {
-  const { userId } = await requireAdminProfile();
+  const { userId } = await requireAdminProfile("courses.manage");
   const admin = createAdminClient();
 
   const update: Record<string, unknown> = { updated_at: new Date().toISOString() };
@@ -551,7 +553,9 @@ export async function deleteResource(
   actorId?: string | null
 ) {
   const userId =
-    actorId !== undefined ? actorId : (await requireAdminProfile()).userId;
+    actorId !== undefined
+      ? actorId
+      : (await requireAdminProfile("courses.manage")).userId;
   const admin = createAdminClient();
 
   const { data: resource } = await admin
@@ -733,7 +737,7 @@ async function notifyIfInboxCleared(
 }
 
 export async function listResourceCollections() {
-  await requireAdminProfile();
+  await requireAdminProfile("courses.manage");
   const admin = createAdminClient();
   const { data, error } = await admin
     .from("resource_collections")
@@ -760,7 +764,7 @@ export type CourseListRow = {
 };
 
 export async function listCoursesForAdmin(): Promise<CourseListRow[]> {
-  await requireAdminProfile();
+  await requireAdminProfile("courses.manage");
   const admin = createAdminClient();
 
   const { data: memberships, error } = await admin
@@ -835,7 +839,7 @@ export async function createCourseFromTemplate(input: {
   lectureCount?: number;
   includeCompanion?: boolean;
 }): Promise<{ courseCode: string; collectionId: string }> {
-  const { userId } = await requireAdminProfile();
+  const { userId } = await requireAdminProfile("courses.manage");
   const admin = createAdminClient();
 
   const template = getCourseTemplate(input.templateId);
@@ -966,7 +970,7 @@ export async function createCourseFromTemplate(input: {
 }
 
 export async function deleteCourse(courseCode: string, collectionId: string) {
-  const { userId } = await requireAdminProfile();
+  const { userId } = await requireAdminProfile("courses.manage");
   const admin = createAdminClient();
 
   const { data: resources } = await admin
@@ -1052,7 +1056,7 @@ export async function assignResourceToSlot(
   resourceId: number,
   target: AssignTarget
 ) {
-  const { userId } = await requireAdminProfile();
+  const { userId } = await requireAdminProfile("courses.manage");
   const admin = createAdminClient();
 
   let lectureTitle: string | undefined;
@@ -1113,7 +1117,7 @@ export async function reorderLectures(
   collectionId: string,
   orderedLectureIds: string[]
 ) {
-  const { userId } = await requireAdminProfile();
+  const { userId } = await requireAdminProfile("courses.manage");
   const admin = createAdminClient();
 
   const results = await Promise.all(
@@ -1145,7 +1149,7 @@ export async function createCourseSection(
   collectionId: string,
   label: string
 ) {
-  const { userId } = await requireAdminProfile();
+  const { userId } = await requireAdminProfile("courses.manage");
   const admin = createAdminClient();
   const trimmed = label.trim();
   if (!trimmed) throw new Error("Section label is required.");
@@ -1187,7 +1191,7 @@ export async function updateCourseSection(
   sectionId: string,
   fields: { label: string }
 ) {
-  const { userId } = await requireAdminProfile();
+  const { userId } = await requireAdminProfile("courses.manage");
   const admin = createAdminClient();
   const label = fields.label.trim();
   if (!label) throw new Error("Section label is required.");
@@ -1217,7 +1221,7 @@ export async function deleteCourseSection(
   collectionId: string,
   sectionId: string
 ) {
-  const { userId } = await requireAdminProfile();
+  const { userId } = await requireAdminProfile("courses.manage");
   const admin = createAdminClient();
 
   const { data: section } = await admin
@@ -1261,7 +1265,7 @@ export async function reorderCourseSections(
   collectionId: string,
   orderedSectionIds: string[]
 ) {
-  const { userId } = await requireAdminProfile();
+  const { userId } = await requireAdminProfile("courses.manage");
   const admin = createAdminClient();
 
   const results = await Promise.all(

@@ -23,7 +23,7 @@ export type RosterRow = {
 };
 
 export default async function AdminRosterPage() {
-  await requireAdminProfile();
+  await requireAdminProfile("roster.manage");
   const supabase = await createClient();
   const { data: rosterRows } = await supabase
     .from("student_roster")

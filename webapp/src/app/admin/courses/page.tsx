@@ -5,7 +5,7 @@ import { CourseListTable } from "@/components/CourseListTable";
 export const dynamic = "force-dynamic";
 
 export default async function AdminCoursesPage() {
-  await requireAdminProfile();
+  await requireAdminProfile("courses.manage");
   const courses = await listCoursesForAdmin();
 
   return (

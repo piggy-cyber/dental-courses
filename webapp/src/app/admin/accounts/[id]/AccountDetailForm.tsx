@@ -39,6 +39,8 @@ export function AccountDetailForm({
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const hasExactActiveRosterEmail =
+    roster?.status !== "withdrawn" && roster?.email?.toLowerCase() === account.email.toLowerCase();
 
   function toggleTier(tier: string) {
     setTiers((current) =>
@@ -116,7 +118,7 @@ export function AccountDetailForm({
         </label>
 
         <fieldset>
-          <legend className="text-sm font-medium text-brand-navy">Resource collection access</legend>
+          <legend className="text-sm font-semibold text-brand-navy">Course collection access</legend>
           <p className="mt-1 text-sm text-brand-muted">
             These grants control what appears on the student&apos;s homepage and library.
           </p>
@@ -150,7 +152,7 @@ export function AccountDetailForm({
         </fieldset>
 
         <fieldset>
-          <legend className="text-sm font-medium text-brand-navy">Year tags</legend>
+          <legend className="text-sm font-semibold text-brand-navy">D1/D2 year labels</legend>
           <p className="mt-1 text-sm text-brand-muted">
             These labels help with roster defaults. Resource collections above control course access.
           </p>
@@ -214,11 +216,21 @@ export function AccountDetailForm({
             <button
               type="button"
               onClick={() => updateStatus("approved")}
-              disabled={isPending || account.status === "approved"}
+              disabled={isPending || account.status === "approved" || !hasExactActiveRosterEmail}
+              title={
+                hasExactActiveRosterEmail
+                  ? "Approve student"
+                  : "Add the exact Google email to the active roster first"
+              }
               className="portal-button-primary px-4 py-2 text-sm font-semibold disabled:opacity-50"
             >
               Approve
             </button>
+            {!hasExactActiveRosterEmail && account.status !== "approved" && (
+              <p className="border border-amber-200 bg-amber-50 px-3 py-2 text-xs leading-relaxed text-amber-800">
+                Approval is locked. Add this exact Google email to the active roster first.
+              </p>
+            )}
             <button
               type="button"
               onClick={() => updateStatus("pending")}
@@ -274,7 +286,9 @@ export function AccountDetailForm({
               </div>
             </dl>
           ) : (
-            <p className="mt-2 text-brand-muted">No roster match.</p>
+            <p className="mt-2 text-brand-muted">
+              No roster match. This account cannot be approved or receive council access.
+            </p>
           )}
         </section>
       </aside>

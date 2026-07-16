@@ -4,13 +4,29 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getSessionProfile } from "@/lib/access";
-import { isAdmin } from "@/lib/roles";
+import {
+  ADMIN_PERMISSION_VALUES,
+  hasAdminPermission,
+  hasFullCouncilAccess,
+  type AdminPermission,
+} from "@/lib/admin-permissions";
 import { normalizeTiers } from "@/lib/tiers";
 
-export async function requireAdminProfile() {
+export async function requireAdminProfile(permission?: AdminPermission) {
   const { profile, userId } = await getSessionProfile();
-  if (!isAdmin(profile) || !userId) {
+  if (!profile || !userId || (permission && !hasAdminPermission(profile, permission))) {
     throw new Error("Not authorized");
+  }
+  if (!permission && profile.role !== "owner" && profile.admin_permissions.length === 0) {
+    throw new Error("Not authorized");
+  }
+  return { profile, userId };
+}
+
+export async function requireFullAdminProfile() {
+  const { profile, userId } = await getSessionProfile();
+  if (!hasFullCouncilAccess(profile) || !profile || !userId) {
+    throw new Error("Only the President or Vice President can manage council access.");
   }
   return { profile, userId };
 }
@@ -19,13 +35,54 @@ export async function setAccountStatus(
   userId: string,
   status: "approved" | "pending" | "revoked"
 ) {
-  const { userId: adminId } = await requireAdminProfile();
+  const { profile: adminProfile, userId: adminId } = await requireAdminProfile("accounts.manage");
   if (userId === adminId && status !== "approved") {
     throw new Error("You cannot revoke or pend your own admin account.");
   }
 
   const supabase = await createClient();
   const now = new Date().toISOString();
+
+  if (status === "approved") {
+    const { data: target } = await supabase
+      .from("profiles")
+      .select("email, role, council_title, admin_permissions")
+      .eq("id", userId)
+      .maybeSingle();
+    if (!target?.email) throw new Error("Account not found.");
+
+    const targetHasCouncilAccess =
+      target.role === "owner" ||
+      Boolean(target.council_title) ||
+      (target.admin_permissions?.length ?? 0) > 0;
+    if (targetHasCouncilAccess && !hasFullCouncilAccess(adminProfile)) {
+      throw new Error("Only the President or Vice President can change a council member status.");
+    }
+
+    const { data: roster } = await supabase
+      .from("student_roster")
+      .select("id")
+      .ilike("email", target.email)
+      .neq("status", "withdrawn")
+      .limit(1)
+      .maybeSingle();
+    if (!roster) {
+      throw new Error("Add this exact Google email to the roster before approving access.");
+    }
+  } else {
+    const { data: target } = await supabase
+      .from("profiles")
+      .select("role, council_title, admin_permissions")
+      .eq("id", userId)
+      .maybeSingle();
+    const targetHasCouncilAccess =
+      target?.role === "owner" ||
+      Boolean(target?.council_title) ||
+      (target?.admin_permissions?.length ?? 0) > 0;
+    if (targetHasCouncilAccess && !hasFullCouncilAccess(adminProfile)) {
+      throw new Error("Only the President or Vice President can change a council member status.");
+    }
+  }
 
   const update: Record<string, unknown> = {
     status,
@@ -49,7 +106,7 @@ export async function updateAccountProfile(
     bio?: string | null;
   }
 ) {
-  await requireAdminProfile();
+  await requireAdminProfile("accounts.manage");
   const supabase = await createClient();
 
   const update = {
@@ -64,7 +121,7 @@ export async function updateAccountProfile(
 }
 
 export async function setAccessTiers(userId: string, tiers: string[]) {
-  await requireAdminProfile();
+  await requireAdminProfile("accounts.manage");
   const supabase = await createClient();
   const { error } = await supabase
     .from("profiles")
@@ -75,7 +132,7 @@ export async function setAccessTiers(userId: string, tiers: string[]) {
 }
 
 export async function setResourceCollectionGrants(userId: string, collectionIds: string[]) {
-  const { userId: adminId } = await requireAdminProfile();
+  const { userId: adminId } = await requireAdminProfile("accounts.manage");
   const supabase = await createClient();
   const normalized = [...new Set(collectionIds.map((id) => id.trim()).filter(Boolean))];
 
@@ -125,7 +182,7 @@ export async function createResourceCollection(input: {
   sourceCohort?: string | null;
   defaultForTier?: boolean;
 }) {
-  await requireAdminProfile();
+  await requireAdminProfile("collections.manage");
   const supabase = await createClient();
 
   const label = input.label.trim();
@@ -165,7 +222,7 @@ export async function createResourceCollection(input: {
 }
 
 export async function saveAdminNote(userId: string, note: string) {
-  await requireAdminProfile();
+  await requireAdminProfile("accounts.manage");
   const supabase = await createClient();
   const { error } = await supabase
     .from("profiles")
@@ -180,7 +237,7 @@ export async function addRosterEntry(input: {
   email?: string | null;
   cohort: string;
 }) {
-  await requireAdminProfile();
+  await requireAdminProfile("roster.manage");
   const fullName = input.fullName.trim();
   const email = input.email?.trim().toLowerCase() || null;
   const cohort = input.cohort.trim().toLowerCase();
@@ -203,7 +260,7 @@ export async function addRosterEntry(input: {
 }
 
 export async function recheckRosterMatches(): Promise<number> {
-  await requireAdminProfile();
+  await requireAdminProfile("roster.manage");
   const { data, error } = await createAdminClient().rpc("recheck_roster_matches");
   if (error) throw new Error(error.message);
   revalidateAdminPaths();
@@ -211,7 +268,7 @@ export async function recheckRosterMatches(): Promise<number> {
 }
 
 export async function promoteToAdmin(userId: string) {
-  await requireAdminProfile();
+  await requireFullAdminProfile();
   const supabase = await createClient();
   const { error } = await supabase
     .from("profiles")
@@ -223,7 +280,7 @@ export async function promoteToAdmin(userId: string) {
 }
 
 export async function demoteAdmin(userId: string) {
-  const { userId: adminId } = await requireAdminProfile();
+  const { userId: adminId } = await requireFullAdminProfile();
   if (userId === adminId) {
     throw new Error("You cannot demote yourself.");
   }
@@ -266,7 +323,7 @@ export async function updateReportStatus(
   status: "open" | "resolved" | "dismissed",
   adminNote?: string
 ) {
-  const { userId } = await requireAdminProfile();
+  const { userId } = await requireAdminProfile("operations.manage");
   const supabase = await createClient();
   const update = {
     status,
@@ -281,6 +338,79 @@ export async function updateReportStatus(
   if (error) throw new Error(error.message);
   revalidatePath("/admin");
   revalidatePath("/admin/operations");
+}
+
+export async function setCouncilAccess(input: {
+  userId: string;
+  title?: string | null;
+  fullAccess: boolean;
+  permissions: string[];
+}) {
+  const { userId: adminId } = await requireFullAdminProfile();
+  const title = cleanOptionalText(input.title);
+  const permissions = [
+    ...new Set(input.permissions.filter((permission) =>
+      ADMIN_PERMISSION_VALUES.includes(permission as AdminPermission)
+    )),
+  ] as AdminPermission[];
+
+  const grantsCouncilAccess = input.fullAccess || permissions.length > 0 || Boolean(title);
+  if (grantsCouncilAccess && !title) throw new Error("A council role title is required.");
+  if (title && title.length < 2) throw new Error("Role title must be at least 2 characters.");
+  if (title && title.length > 80) throw new Error("Role title must be 80 characters or fewer.");
+  if (!input.fullAccess && input.userId === adminId) {
+    throw new Error("You cannot remove your own full access.");
+  }
+
+  const admin = createAdminClient();
+  const { data: target, error: targetError } = await admin
+    .from("profiles")
+    .select("id, email, role, status")
+    .eq("id", input.userId)
+    .maybeSingle();
+  if (targetError) throw new Error(targetError.message);
+  if (!target) throw new Error("Account not found.");
+  if (target.status !== "approved") {
+    throw new Error("Council access requires an approved roster account.");
+  }
+
+  if (grantsCouncilAccess && target.role !== "owner") {
+    const { data: exactRoster, error: rosterError } = await admin
+      .from("student_roster")
+      .select("id")
+      .ilike("email", target.email)
+      .neq("status", "withdrawn")
+      .limit(1)
+      .maybeSingle();
+    if (rosterError) throw new Error(rosterError.message);
+    if (!exactRoster) {
+      throw new Error("Add this exact Google email to the roster before delegating access.");
+    }
+  }
+
+  if (target.role === "owner" && !input.fullAccess) {
+    const { count } = await admin
+      .from("profiles")
+      .select("*", { count: "exact", head: true })
+      .eq("role", "owner")
+      .eq("status", "approved");
+    if ((count ?? 0) <= 1) throw new Error("Cannot remove the last full administrator.");
+  }
+
+  const { error } = await admin
+    .from("profiles")
+    .update({
+      role: input.fullAccess ? "owner" : "student",
+      council_title: grantsCouncilAccess ? title : null,
+      admin_permissions: input.fullAccess ? [] : permissions,
+      delegated_at: new Date().toISOString(),
+      delegated_by: adminId,
+    })
+    .eq("id", input.userId);
+  if (error) throw new Error(error.message);
+
+  revalidateAdminPaths(input.userId);
+  revalidatePath("/admin/team");
 }
 
 function cleanOptionalText(value: string | null | undefined) {

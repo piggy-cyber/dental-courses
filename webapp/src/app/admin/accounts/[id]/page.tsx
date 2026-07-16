@@ -49,7 +49,7 @@ export default async function AdminAccountDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const { userId } = await requireAdminProfile();
+  const { userId } = await requireAdminProfile("accounts.manage");
   const supabase = await createClient();
 
   const { data: accountRow } = await supabase

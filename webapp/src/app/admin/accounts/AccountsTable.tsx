@@ -21,6 +21,9 @@ function AccountStatusControls({
 }) {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const canApprove =
+    account.roster?.status !== "withdrawn" &&
+    account.roster?.email?.toLowerCase() === account.email.toLowerCase();
 
   function update(status: Account["status"]) {
     setError(null);
@@ -44,7 +47,8 @@ function AccountStatusControls({
         <button
           type="button"
           onClick={() => update("approved")}
-          disabled={isPending}
+          disabled={isPending || !canApprove}
+          title={canApprove ? "Approve student" : "Exact active roster email required"}
           className="portal-button-primary px-3 py-1.5 text-xs font-semibold disabled:opacity-60"
         >
           Approve
@@ -59,6 +63,15 @@ function AccountStatusControls({
         >
           Revoke
         </button>
+      )}
+      <Link
+        href={`/admin/accounts/${account.id}`}
+        className="portal-button px-3 py-1.5 text-xs font-semibold"
+      >
+        Manage access
+      </Link>
+      {!canApprove && account.status !== "approved" && (
+        <p className="basis-full text-right text-xs text-amber-800">Roster email required</p>
       )}
       {error && <p className="basis-full text-right text-xs text-rose-600">{error}</p>}
     </div>
@@ -162,7 +175,7 @@ export function AccountsTable({
             <tr>
               <th>Account</th>
               <th>Roster</th>
-              <th>Tiers</th>
+              <th>Library access</th>
               <th>Joined</th>
               <th>Control</th>
             </tr>
