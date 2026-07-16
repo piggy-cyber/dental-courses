@@ -8,9 +8,13 @@ const catalogPath = fileURLToPath(
 const contactCatalogPath = fileURLToPath(
   new URL("../src/data/games/contact-area-data.json", import.meta.url),
 );
+const eruptionCatalogPath = fileURLToPath(
+  new URL("../src/data/games/eruption-data.json", import.meta.url),
+);
 
 const catalog = JSON.parse(await readFile(catalogPath, "utf8"));
 const contactCatalog = JSON.parse(await readFile(contactCatalogPath, "utf8"));
+const eruptionCatalog = JSON.parse(await readFile(eruptionCatalogPath, "utf8"));
 
 const permanentCodes = Array.from({ length: 32 }, (_, index) => String(index + 1));
 const primaryCodes = [..."ABCDEFGHIJKLMNOPQRST"];
@@ -530,4 +534,108 @@ console.log(
 );
 console.log(
   `Validated all ${contactCatalog.records.length} permanent contact-area records with source locators and anatomically bounded target regions.`,
+);
+
+assert.equal(eruptionCatalog.schemaVersion, 1, "eruption schemaVersion must be 1");
+assert.ok(Array.isArray(eruptionCatalog.records), "eruption records must be an array");
+assert.equal(eruptionCatalog.records.length, 35, "eruption catalog must contain 35 records");
+assertUnique(eruptionCatalog.records.map((record) => record.id), "eruption record ids");
+
+const validDentitions = new Set(["permanent", "primary", "mixed"]);
+const validArches = new Set(["maxillary", "mandibular"]);
+const validAgeUnits = new Set(["months", "years"]);
+const validToothTypes = new Set(["incisor", "canine", "premolar", "molar"]);
+const validSequenceBands = new Set([
+  "early",
+  "middle",
+  "late",
+  "third-molar",
+  "early-mixed",
+  "transitional-mixed",
+  "late-mixed",
+]);
+const validTimelineSets = new Set(["permanent", "primary", "mixed"]);
+const validEvidenceStatuses = new Set(["course-verified", "needs-review"]);
+
+for (const record of eruptionCatalog.records) {
+  assertText(record.id, "eruption id");
+  assertText(record.toothName, `${record.id} toothName`);
+  assertText(record.toothNumber, `${record.id} toothNumber`);
+  assert.ok(validToothTypes.has(record.toothType), `${record.id} toothType`);
+  assert.ok(validDentitions.has(record.dentitionType), `${record.id} dentitionType`);
+  assert.ok(validArches.has(record.arch), `${record.id} arch`);
+  assert.ok(validAgeUnits.has(record.ageUnit), `${record.id} ageUnit`);
+  assert.ok(validSequenceBands.has(record.sequenceBand), `${record.id} sequenceBand`);
+  assert.ok(validTimelineSets.has(record.timelineSet), `${record.id} timelineSet`);
+  assert.ok(validEvidenceStatuses.has(record.evidenceStatus), `${record.id} evidenceStatus`);
+  assert.ok(
+    record.eruptionRange &&
+      Number.isFinite(record.eruptionRange.min) &&
+      Number.isFinite(record.eruptionRange.max) &&
+      record.eruptionRange.min > 0 &&
+      record.eruptionRange.max >= record.eruptionRange.min,
+    `${record.id} eruptionRange`,
+  );
+  if (record.typicalRange) {
+    assert.ok(
+      Number.isFinite(record.typicalRange.min) &&
+        Number.isFinite(record.typicalRange.max) &&
+        record.typicalRange.min >= record.eruptionRange.min &&
+        record.typicalRange.max <= record.eruptionRange.max,
+      `${record.id} typicalRange must sit inside the accepted eruptionRange`,
+    );
+  }
+  assert.ok(
+    Number.isInteger(record.sequenceRank) && record.sequenceRank > 0,
+    `${record.id} sequenceRank`,
+  );
+  assertText(record.explanation, `${record.id} explanation`);
+  assertText(record.commonConfusion, `${record.id} commonConfusion`);
+  assert.ok(Array.isArray(record.sourceRefs) && record.sourceRefs.length > 0, `${record.id} sourceRefs`);
+  for (const [index, sourceRef] of record.sourceRefs.entries()) {
+    assertText(sourceRef.courseCode, `${record.id} sourceRefs[${index}].courseCode`);
+    assertText(sourceRef.sourceName, `${record.id} sourceRefs[${index}].sourceName`);
+    assertText(sourceRef.locator, `${record.id} sourceRefs[${index}].locator`);
+    assert.ok(
+      !sourceRef.sourceName.includes("/Users/") && !sourceRef.sourceName.includes("library/"),
+      `${record.id} sourceRefs must not expose private paths`,
+    );
+  }
+  assert.ok(
+    record.sourceRefs.some(
+      (sourceRef) =>
+        sourceRef.sourceName === "REHE 151 Dental Anatomy Course Mastery Guide.pdf" &&
+        sourceRef.locator === "pages 4-5, Universal permanent and primary tooth designations",
+    ),
+    `${record.id} toothNumber requires Course Mastery Guide provenance`,
+  );
+}
+
+const challengeRecords = eruptionCatalog.records.filter(
+  (record) => record.evidenceStatus === "course-verified",
+);
+const needsReviewRecords = eruptionCatalog.records.filter(
+  (record) => record.evidenceStatus === "needs-review",
+);
+const mixedRecords = eruptionCatalog.records.filter((record) => record.timelineSet === "mixed");
+assert.ok(challengeRecords.length > 0, "Challenge mode requires course-verified records");
+assert.equal(needsReviewRecords.length, 7, "seven conflicted records must remain in review");
+assert.ok(
+  challengeRecords.every((record) => record.evidenceStatus === "course-verified"),
+  "Challenge selection must exclude needs-review records",
+);
+assert.equal(mixedRecords.length, 9, "mixed mode must use nine dedicated timeline records");
+assert.ok(
+  mixedRecords.every(
+    (record) => record.dentitionType === "mixed" && record.evidenceStatus === "course-verified",
+  ),
+  "mixed timeline records must be course-verified and explicitly typed",
+);
+for (const record of eruptionCatalog.records.filter((item) => item.sequenceBand === "third-molar")) {
+  assert.deepEqual(record.typicalRange, { min: 17, max: 21 }, `${record.id} typical third-molar range`);
+  assert.deepEqual(record.eruptionRange, { min: 17, max: 25 }, `${record.id} extended third-molar range`);
+}
+
+console.log(
+  `Validated ${eruptionCatalog.records.length} eruption records: ${challengeRecords.length} Challenge-safe, ${needsReviewRecords.length} held for review, and ${mixedRecords.length} mixed-stage records.`,
 );

@@ -1,22 +1,31 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import eruptionCatalogJson from "@/data/games/eruption-data.json";
 import toothCatalogJson from "@/data/games/tooth-data.json";
 import { getSessionProfile } from "@/lib/access";
 import { createClient } from "@/lib/supabase/server";
 import {
   GAME_IDS,
   progressFromRow,
+  type GameId,
   type GameRoundResult,
   type SaveGameRoundResult,
 } from "@/lib/games/types";
 import type { ToothCatalog } from "@/lib/games/tooth-types";
+import type { EruptionCatalog } from "@/lib/games/eruption-types";
 
 const toothCatalog = toothCatalogJson as ToothCatalog;
 const validToothCodes = new Set<string>(
   toothCatalog.teeth.flatMap((tooth) => [tooth.code, tooth.supernumeraryCode]),
 );
 const CONTACT_MASTERY_PATTERN = /^contact-area\|(maxillary|mandibular)\|(anterior|posterior)\|(mesial|distal)\|(incisal-occlusal|middle|cervical|junction|facial|facial-aspect-middle|facial-to-central-groove|lingual|relationship|height|terminal)$/;
+const eruptionCatalog = eruptionCatalogJson as EruptionCatalog;
+const validEruptionCodes = new Set(
+  eruptionCatalog.records
+    .filter((record) => record.evidenceStatus === "course-verified")
+    .map((record) => record.id),
+);
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 function isBoundedInteger(value: unknown, minimum: number, maximum: number) {
@@ -53,8 +62,10 @@ function validateRound(input: GameRoundResult): string | null {
     const validMasteryCode =
       input.gameId === "tooth-quest"
         ? validToothCodes.has(code)
-        : CONTACT_MASTERY_PATTERN.test(code);
-    if (!validMasteryCode) return "That mastery code is not recognized.";
+        : input.gameId === "contact-area"
+          ? CONTACT_MASTERY_PATTERN.test(code)
+          : validEruptionCodes.has(code);
+    if (!validMasteryCode) return "That mastery item is not recognized.";
     if (
       !entry ||
       typeof entry !== "object" ||
@@ -105,7 +116,6 @@ export async function saveGameRound(input: GameRoundResult): Promise<SaveGameRou
   }
 
   revalidatePath("/games");
-  revalidatePath("/games/tooth-quest");
-  revalidatePath("/games/contact-area");
+  revalidatePath(`/games/${input.gameId}`);
   return { ok: true, progress: progressFromRow(row as Record<string, unknown>) };
 }
