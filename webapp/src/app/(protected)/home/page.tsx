@@ -2,8 +2,8 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { getSessionProfile } from "@/lib/access";
 import { canViewAllCourseData } from "@/lib/admin-permissions";
+import { cohortStandingLabel } from "@/lib/cohorts";
 import { getTodaysSchedule } from "@/lib/schedule";
-import { tierLabel } from "@/lib/tiers";
 import { getCampusWeather } from "@/lib/weather";
 import {
   collectionFromRow,
@@ -135,14 +135,15 @@ export default async function HomeDashboardPage() {
                         {collection.short_label}
                       </span>
                     ))
-                  : profile?.access_tiers?.map((tier) => (
+                  : profile?.graduation_year
+                    ? (
                       <span
-                        key={tier}
                         className="border border-brand-line bg-brand-soft px-1.5 py-0.5 font-semibold text-brand-navy"
                       >
-                        {tierLabel(tier)}
+                        {cohortStandingLabel(profile.graduation_year)}
                       </span>
-                    ))}
+                    )
+                    : null}
               </div>
             </div>
           </div>
@@ -294,7 +295,7 @@ export default async function HomeDashboardPage() {
                           <td className="text-xs text-brand-muted">{course.semester ?? "-"}</td>
                           {isAdminView && (
                             <td className="text-xs text-brand-muted">
-                              {tierLabel(course.library_tier)}
+                              {course.library_tier.toUpperCase()}
                             </td>
                           )}
                         </tr>

@@ -308,7 +308,9 @@ export function ToothQuestGame({ initialProgress }: ToothQuestGameProps) {
         attempts: snapshot.attempts,
         masteryDelta: snapshot.masteryDelta,
       };
-      void persistRound(payload);
+      if (snapshot.attempts > 0) {
+        void persistRound(payload);
+      }
     },
     [persistRound],
   );

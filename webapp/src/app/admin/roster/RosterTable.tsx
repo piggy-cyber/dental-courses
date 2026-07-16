@@ -2,47 +2,48 @@
 
 import Link from "next/link";
 import { useMemo, useState, useTransition } from "react";
-import { addRosterEntry } from "@/app/admin/actions";
-import { ACCESS_TIERS, cohortToTier, tierLabel, type AccessTier } from "@/lib/tiers";
+import { addRosterEntry, setRosterAccessApproval } from "@/app/admin/actions";
+import { classLabel, cohortStandingLabel } from "@/lib/cohorts";
 import type { RosterRow } from "./page";
-
-const COHORT_OPTIONS = ["d1-2025", "d2-2026", "d3-2027", "d4-2028"];
 
 function csvValue(value: string | null | undefined) {
   const text = value ?? "";
   return /[",\n]/.test(text) ? `"${text.replaceAll('"', '""')}"` : text;
 }
 
-export function RosterTable({ rows }: { rows: RosterRow[] }) {
-  const [activeTier, setActiveTier] = useState<AccessTier>("d1");
+export function RosterTable({
+  rows,
+  canManageAccounts,
+}: {
+  rows: RosterRow[];
+  canManageAccounts: boolean;
+}) {
+  const classYears = useMemo(
+    () => [...new Set([2029, ...rows.map((row) => row.graduation_year)])].sort((a, b) => a - b),
+    [rows]
+  );
+  const [activeGraduationYear, setActiveGraduationYear] = useState(2029);
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
-  const [cohort, setCohort] = useState("d1-2025");
+  const [graduationYear, setGraduationYear] = useState(2029);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
   const visibleRows = useMemo(
-    () => rows.filter((row) => cohortToTier(row.cohort) === activeTier),
-    [activeTier, rows]
+    () => rows.filter((row) => row.graduation_year === activeGraduationYear),
+    [activeGraduationYear, rows]
   );
 
-  const unsignedCount = visibleRows.filter(
-    (row) => row.status === "expected" && !row.profile_id
-  ).length;
-
-  function switchTier(tier: AccessTier) {
-    setActiveTier(tier);
-    const firstCohort = COHORT_OPTIONS.find((item) => item.startsWith(tier));
-    if (firstCohort) setCohort(firstCohort);
-  }
+  const allowedCount = visibleRows.filter((row) => row.access_approved).length;
+  const unlinkedCount = visibleRows.filter((row) => !row.profile_id).length;
 
   function submit() {
     setMessage(null);
     setError(null);
     startTransition(async () => {
       try {
-        await addRosterEntry({ fullName, email, cohort });
+        await addRosterEntry({ fullName, email, graduationYear });
         setFullName("");
         setEmail("");
         setMessage("Roster row added.");
@@ -52,14 +53,40 @@ export function RosterTable({ rows }: { rows: RosterRow[] }) {
     });
   }
 
+  function updateAccess(row: RosterRow, allowed: boolean) {
+    if (
+      !allowed &&
+      !window.confirm(
+        `Remove student access for ${row.full_name}? A linked account will be revoked and its manual collection grants removed.`
+      )
+    ) {
+      return;
+    }
+    setMessage(null);
+    setError(null);
+    startTransition(async () => {
+      try {
+        await setRosterAccessApproval(row.id, allowed);
+        setMessage(
+          allowed
+            ? `${row.full_name} is now allowed to link a Google account.`
+            : `${row.full_name}'s student access was removed.`
+        );
+      } catch (e) {
+        setError(e instanceof Error ? e.message : "Access update failed");
+      }
+    });
+  }
+
   function exportCsv() {
     const lines = [
-      "full_name,email,cohort,status,profile_email",
+      "full_name,email,graduation_year,access_approved,status,profile_email",
       ...visibleRows.map((row) =>
         [
           csvValue(row.full_name),
           csvValue(row.email),
-          csvValue(row.cohort),
+          row.graduation_year,
+          row.access_approved ? "true" : "false",
           csvValue(row.status),
           csvValue(row.profile?.email),
         ].join(",")
@@ -69,7 +96,7 @@ export function RosterTable({ rows }: { rows: RosterRow[] }) {
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = `${activeTier}-roster.csv`;
+    link.download = `class-of-${activeGraduationYear}-roster.csv`;
     link.click();
     URL.revokeObjectURL(url);
   }
@@ -78,18 +105,21 @@ export function RosterTable({ rows }: { rows: RosterRow[] }) {
     <div className="space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="inline-flex border border-brand-line bg-brand-panel">
-          {ACCESS_TIERS.map((tier) => (
+          {classYears.map((year) => (
             <button
-              key={tier}
+              key={year}
               type="button"
-              onClick={() => switchTier(tier)}
+              onClick={() => {
+                setActiveGraduationYear(year);
+                setGraduationYear(year);
+              }}
               className={`border-r border-brand-line px-4 py-1.5 text-sm font-semibold last:border-r-0 ${
-                activeTier === tier
+                activeGraduationYear === year
                   ? "bg-brand-navy text-white"
                   : "text-brand-muted hover:text-brand-navy"
               }`}
             >
-              {tierLabel(tier)}
+              {classLabel(year)}
             </button>
           ))}
         </div>
@@ -118,17 +148,15 @@ export function RosterTable({ rows }: { rows: RosterRow[] }) {
             type="email"
             className="app-input px-3 py-2 text-sm"
           />
-          <select
-            value={cohort}
-            onChange={(event) => setCohort(event.target.value)}
+          <input
+            type="number"
+            min={2000}
+            max={2200}
+            value={graduationYear}
+            onChange={(event) => setGraduationYear(Number(event.target.value))}
             className="app-input px-3 py-2 text-sm"
-          >
-            {COHORT_OPTIONS.map((option) => (
-              <option key={option} value={option}>
-                {option.toUpperCase()}
-              </option>
-            ))}
-          </select>
+            aria-label="Graduating class year"
+          />
           <button
             type="button"
             onClick={submit}
@@ -142,52 +170,118 @@ export function RosterTable({ rows }: { rows: RosterRow[] }) {
         {error && <p className="mt-2 text-sm text-rose-600">{error}</p>}
       </section>
 
+      <section className="app-card p-4">
+        <h2 className="font-semibold text-brand-navy">How student access works</h2>
+        <ol className="mt-3 grid gap-3 text-sm md:grid-cols-3">
+          <li className="border border-brand-line bg-brand-soft p-3">
+            <p className="font-semibold text-brand-navy">1. Allow the student</p>
+            <p className="mt-1 text-brand-muted">
+              Check Allow access only after confirming the official roster name.
+            </p>
+          </li>
+          <li className="border border-brand-line bg-brand-soft p-3">
+            <p className="font-semibold text-brand-navy">2. Student signs in</p>
+            <p className="mt-1 text-brand-muted">
+              Their Google account stays outside the library until an authorized officer links it.
+            </p>
+          </li>
+          <li className="border border-brand-line bg-brand-soft p-3">
+            <p className="font-semibold text-brand-navy">3. Link the correct account</p>
+            <p className="mt-1 text-brand-muted">
+              {canManageAccounts ? (
+                <>
+                  Open{" "}
+                  <Link
+                    href="/admin/accounts"
+                    className="font-semibold text-brand-blue hover:underline"
+                  >
+                    Accounts
+                  </Link>
+                  , choose the Google account, then select this roster student.
+                </>
+              ) : (
+                "The President, Vice President, or Membership Chair completes the account link."
+              )}
+            </p>
+          </li>
+        </ol>
+      </section>
+
       <div className="flex flex-wrap items-center gap-3 text-sm text-brand-muted">
         <span>{visibleRows.length} roster rows</span>
-        <span>{unsignedCount} not signed in</span>
+        <span>{allowedCount} allowed</span>
+        <span>{unlinkedCount} waiting for Google accounts</span>
       </div>
 
       <div className="app-card overflow-x-auto">
-        <table className="portal-table w-full min-w-[820px] text-sm">
+        <table className="portal-table w-full min-w-[900px] text-sm">
           <thead>
             <tr>
               <th>Student</th>
-              <th>Cohort</th>
-              <th>Roster status</th>
-              <th>Linked profile</th>
+              <th>Class / standing</th>
+              <th>Student access</th>
+              <th>Google account</th>
             </tr>
           </thead>
           <tbody>
             {visibleRows.map((row) => {
-              const unsigned = row.status === "expected" && !row.profile_id;
+              const waiting = row.access_approved && !row.profile_id;
               return (
-                <tr key={row.id} className={unsigned ? "bg-amber-50/70" : undefined}>
+                <tr key={row.id} className={waiting ? "bg-amber-50/70" : undefined}>
                   <td>
                     <p className="font-medium text-brand-ink">{row.full_name}</p>
                     <p className="text-xs text-brand-muted">{row.email ?? "No email on roster"}</p>
                   </td>
-                  <td>{row.cohort.toUpperCase()}</td>
                   <td>
-                    <span
-                      className={`border px-3 py-1 text-xs font-semibold ${
-                        unsigned
-                          ? "border-amber-200 bg-amber-50 text-amber-700"
-                          : "border-emerald-200 bg-emerald-50 text-emerald-700"
-                      }`}
+                    <p className="font-medium text-brand-ink">
+                      {cohortStandingLabel(row.graduation_year)}
+                    </p>
+                    <p className="text-xs text-brand-muted">Permanent class label</p>
+                  </td>
+                  <td>
+                    <button
+                      type="button"
+                      onClick={() => updateAccess(row, !row.access_approved)}
+                      disabled={isPending}
+                      className={
+                        row.access_approved
+                          ? "border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-700 disabled:opacity-50"
+                          : "portal-button px-3 py-1.5 text-xs font-semibold disabled:opacity-50"
+                      }
                     >
-                      {unsigned ? "not signed in" : row.status}
-                    </span>
+                      {row.access_approved ? "Allowed · Remove" : "Allow access"}
+                    </button>
+                    <p className="mt-1 text-xs text-brand-muted">
+                      {row.access_approved
+                        ? "May be linked and approved"
+                        : "Cannot enter the library"}
+                    </p>
                   </td>
                   <td>
                     {row.profile ? (
-                      <Link
-                        href={`/admin/accounts/${row.profile.id}`}
-                        className="font-medium text-brand-blue hover:underline"
-                      >
-                        {row.profile.name ?? row.profile.email}
-                      </Link>
+                      <>
+                        <Link
+                          href={`/admin/accounts/${row.profile.id}`}
+                          className="font-medium text-brand-blue hover:underline"
+                        >
+                          {row.profile.name ?? row.profile.email}
+                        </Link>
+                        <p className="text-xs text-brand-muted">{row.profile.email}</p>
+                      </>
                     ) : (
-                      <span className="text-brand-muted">None</span>
+                      <div>
+                        <span className="text-brand-muted">
+                          {row.access_approved ? "Waiting to be linked" : "Not linked"}
+                        </span>
+                        {row.access_approved && canManageAccounts && (
+                          <Link
+                            href="/admin/accounts"
+                            className="mt-1 block text-xs font-semibold text-brand-blue hover:underline"
+                          >
+                            Open Accounts to link →
+                          </Link>
+                        )}
+                      </div>
                     )}
                   </td>
                 </tr>
@@ -196,7 +290,7 @@ export function RosterTable({ rows }: { rows: RosterRow[] }) {
             {visibleRows.length === 0 && (
               <tr>
                 <td colSpan={4} className="text-center text-brand-muted">
-                  No roster rows for {tierLabel(activeTier)}.
+                  No roster rows for {classLabel(activeGraduationYear)}.
                 </td>
               </tr>
             )}
