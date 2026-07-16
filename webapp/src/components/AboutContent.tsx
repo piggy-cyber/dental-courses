@@ -9,20 +9,19 @@ export function AboutContent({ compact = false }: AboutContentProps) {
     <div className="prose-brand space-y-1">
       {!compact && (
         <>
-          <p className="eyebrow">About</p>
+          <p className="eyebrow">Fourth Canal</p>
           <h1 className="mt-2 text-3xl font-bold text-brand-navy">
-            About Fourth Canal
+            The study layer dental school was missing.
           </h1>
         </>
       )}
       <p className={compact ? "text-brand-muted" : "mt-4 text-lg leading-relaxed text-brand-muted"}>
-        Fourth Canal is an independent, student-run study workspace for an
-        approved dental-school cohort. It provides one organized place to review
-        lectures, read transcripts, and open course files without jumping among
-        multiple platforms.
+        Fourth Canal brings lectures, transcripts, mastery guides, course files,
+        and class tools into one private workspace built for the way dental
+        students actually study.
       </p>
 
-      <h2>What&apos;s Inside</h2>
+      <h2>Everything in its place</h2>
       <ul className="list-disc space-y-2 pl-5">
         <li>
           <strong>Lectures in Order</strong> — embedded YouTube videos and
@@ -42,37 +41,33 @@ export function AboutContent({ compact = false }: AboutContentProps) {
 
       {!compact && (
         <>
-          <h2>Why This Exists</h2>
+          <h2>Look for what is easy to miss</h2>
           <p>
-            This library was built to keep our cohort organized and ensure mastery
-            guides and textbook companions sit directly next to the relevant
-            lecture videos. It is maintained by student operators to support
-            peer-to-peer learning and continuity between cohorts.
+            Dentistry trains us to look beyond what appears complete. A fourth
+            canal can be the difference between a case that looks finished and one
+            that truly is. Fourth Canal follows the same idea: find the missing
+            context, connect it, and make it useful.
           </p>
 
-          <h2>How to Contribute</h2>
+          <h2>Made by students. Improved by students.</h2>
           <p>
-            Because this is a collaborative tool, it relies on shared effort. If
-            you have updated notes, corrected study guides, or notice a broken
-            link, please share them so the entire class can benefit.
+            This is cohort infrastructure, maintained by student operators and
+            strengthened by corrections, better notes, and useful contributions.
           </p>
 
-          <h2>Disclaimer</h2>
+          <h2>Independent by design</h2>
           <p className="border border-brand-line bg-brand-panel p-4 text-sm">
-            This is an independent, student-run resource. It is strictly not
-            affiliated with, endorsed by, sponsored by, or representative of Case
-            Western Reserve University or the School of Dental Medicine. All
-            materials are provided for peer-to-peer study purposes only and must
-            never replace official university communications, syllabi, or Canvas.
-            The accuracy of student-created guides is not guaranteed.
+            Fourth Canal is an independent student-run study tool, not an official
+            university platform. Faculty instructions, Canvas, syllabi, and
+            clinical guidance always control.
           </p>
         </>
       )}
 
       {compact && (
         <p className="text-sm text-brand-muted">
-          Independent, student-run, and maintained for private peer-to-peer study
-          support.
+          Independent, student-run, and built to keep the course material students
+          actually use in one coherent place.
         </p>
       )}
     </div>

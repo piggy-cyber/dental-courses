@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import styles from "./KineticEnamelPreview.module.css";
 
@@ -36,6 +37,7 @@ export function KineticEnamelPreview() {
   const rootRef = useRef<HTMLDivElement>(null);
   const [motionMode, setMotionMode] = useState<MotionMode>("cinematic");
   const [activeView, setActiveView] = useState<PreviewView>("dashboard");
+  const [activeSection, setActiveSection] = useState("Today");
   const [transitioning, setTransitioning] = useState(false);
   const [toolIndex, setToolIndex] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
@@ -46,12 +48,97 @@ export function KineticEnamelPreview() {
   const [notice, setNotice] = useState("Preview uses sample course information");
 
   useEffect(() => {
+    const frame = window.requestAnimationFrame(() => {
+      const saved = window.localStorage.getItem("fourth-canal-motion");
+      if (saved === "cinematic" || saved === "reduced" || saved === "off") {
+        setMotionMode(saved);
+        return;
+      }
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        setMotionMode("reduced");
+      }
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
+
+  useEffect(() => {
     if (motionMode !== "cinematic") return;
     const timer = window.setInterval(() => {
       setToolIndex((current) => (current + 1) % TOOLS.length);
     }, 4300);
     return () => window.clearInterval(timer);
   }, [motionMode]);
+
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+
+    const sections = Array.from(root.querySelectorAll<HTMLElement>("[data-scroll-label]"));
+    let frame = 0;
+    const updateScrollEffects = () => {
+      const rect = root.getBoundingClientRect();
+      const rootTop = window.scrollY + rect.top;
+      const travel = Math.max(root.offsetHeight - window.innerHeight, 1);
+      const progress = Math.min(Math.max((window.scrollY - rootTop) / travel, 0), 1);
+      root.style.setProperty("--scroll-progress", motionMode === "off" ? "1" : progress.toFixed(4));
+      root.style.setProperty(
+        "--parallax-y",
+        motionMode === "cinematic" ? `${Math.round(progress * -14)}px` : "0px",
+      );
+      const targetY = window.innerHeight * .34;
+      const closestSection = sections.reduce<HTMLElement | null>((closest, section) => {
+        if (!closest) return section;
+        const sectionDistance = Math.abs(section.getBoundingClientRect().top - targetY);
+        const closestDistance = Math.abs(closest.getBoundingClientRect().top - targetY);
+        return sectionDistance < closestDistance ? section : closest;
+      }, null);
+      const scrollLabel = closestSection?.getAttribute("data-scroll-label");
+      if (scrollLabel) setActiveSection(scrollLabel);
+    };
+    const scheduleScrollEffects = () => {
+      window.cancelAnimationFrame(frame);
+      frame = window.requestAnimationFrame(updateScrollEffects);
+    };
+
+    const revealItems = Array.from(root.querySelectorAll<HTMLElement>("[data-reveal]"));
+    const revealObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            (entry.target as HTMLElement).dataset.revealed = "true";
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.12 },
+    );
+    revealItems.forEach((item) => {
+      if (motionMode === "off") item.dataset.revealed = "true";
+      else revealObserver.observe(item);
+    });
+    root.dataset.ready = "true";
+
+    updateScrollEffects();
+    window.addEventListener("scroll", scheduleScrollEffects, { passive: true });
+    window.addEventListener("resize", scheduleScrollEffects);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", scheduleScrollEffects);
+      window.removeEventListener("resize", scheduleScrollEffects);
+      revealObserver.disconnect();
+    };
+  }, [activeView, motionMode]);
+
+  useEffect(() => {
+    if (!searchOpen && !drawerOpen) return;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      setSearchOpen(false);
+      setDrawerOpen(false);
+    };
+    document.addEventListener("keydown", closeOnEscape);
+    return () => document.removeEventListener("keydown", closeOnEscape);
+  }, [drawerOpen, searchOpen]);
 
   const searchResults = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
@@ -76,13 +163,22 @@ export function KineticEnamelPreview() {
 
   function changeView(next: PreviewView) {
     if (next === activeView || transitioning) return;
-    if (motionMode === "off") {
+    const commitView = () => {
       setActiveView(next);
+      setActiveSection(next === "dashboard" ? "Today" : "Course");
+    };
+    if (motionMode === "off") {
+      commitView();
       return;
     }
     setTransitioning(true);
-    window.setTimeout(() => setActiveView(next), motionMode === "reduced" ? 150 : 480);
+    window.setTimeout(commitView, motionMode === "reduced" ? 150 : 480);
     window.setTimeout(() => setTransitioning(false), motionMode === "reduced" ? 360 : 1180);
+  }
+
+  function selectMotionMode(mode: MotionMode) {
+    setMotionMode(mode);
+    window.localStorage.setItem("fourth-canal-motion", mode);
   }
 
   function toggleComplete(index: number) {
@@ -110,15 +206,14 @@ export function KineticEnamelPreview() {
       ref={rootRef}
       className={styles.previewRoot}
       data-motion={motionMode}
+      data-integrated-footer="true"
       onPointerMove={movePointer}
     >
       <div className={styles.pointerGlow} aria-hidden="true" />
       <div className={styles.ambientField} aria-hidden="true">
-        <span className={styles.orbOne} />
-        <span className={styles.orbTwo} />
-        <span className={styles.orbThree} />
-        <span className={styles.canallineOne} />
-        <span className={styles.canallineTwo} />
+        <span className={styles.prismVeil} />
+        <span className={styles.canalContourOne} />
+        <span className={styles.canalContourTwo} />
       </div>
 
       {transitioning && (
@@ -127,8 +222,9 @@ export function KineticEnamelPreview() {
             <span key={index} style={{ "--blind-index": index } as React.CSSProperties} />
           ))}
           <div className={styles.transitionMark}>
-            <span>FC</span>
-            <strong>{activeView === "dashboard" ? "Opening course" : "Returning home"}</strong>
+            <span className={styles.transitionCanals}><i /><i /><i /><i /></span>
+            <strong><b>FOURTH</b> CANAL</strong>
+            <small>{activeView === "dashboard" ? "Opening course" : "Returning home"}</small>
           </div>
         </div>
       )}
@@ -139,21 +235,26 @@ export function KineticEnamelPreview() {
             <i /><i /><i /><i />
           </span>
           <span className={styles.brandWords}>
-            <b>Fourth Canal</b>
+            <b><strong>FOURTH</strong> CANAL</b>
             <small>Dental study library</small>
           </span>
         </button>
         <nav>
-          <button className={activeView === "dashboard" ? styles.navActive : ""} onClick={() => changeView("dashboard")}>
+          <button className={activeView === "dashboard" ? styles.navActive : ""} onClick={() => changeView("dashboard")} aria-current={activeView === "dashboard" ? "page" : undefined}>
             <span aria-hidden="true">●</span> Today
           </button>
-          <button className={activeView === "course" ? styles.navActive : ""} onClick={() => changeView("course")}>
+          <button className={activeView === "course" ? styles.navActive : ""} onClick={() => changeView("course")} aria-current={activeView === "course" ? "page" : undefined}>
             <span aria-hidden="true">▤</span> Courses
           </button>
           <button onClick={() => setSearchOpen(true)}><span aria-hidden="true">⌕</span> Search</button>
           <button onClick={() => setDrawerOpen(true)}><span aria-hidden="true">↗</span> Open resource</button>
         </nav>
-        <div className={styles.railPulse} aria-hidden="true"><span /></div>
+        <div className={styles.scrollTrace} aria-hidden="true">
+          <div className={styles.scrollStrands}>
+            <span /><span /><span /><span><i /></span>
+          </div>
+          <p><span>{activeSection}</span><small>Scroll position</small></p>
+        </div>
         <button className={styles.avatarButton} aria-label="Open profile preview">RA</button>
       </aside>
 
@@ -172,7 +273,8 @@ export function KineticEnamelPreview() {
                 <button
                   key={mode}
                   className={motionMode === mode ? styles.motionActive : ""}
-                  onClick={() => setMotionMode(mode)}
+                  onClick={() => selectMotionMode(mode)}
+                  aria-pressed={motionMode === mode}
                 >
                   {mode === "cinematic" ? "Full motion" : mode === "reduced" ? "Less motion" : "No motion"}
                 </button>
@@ -204,6 +306,19 @@ export function KineticEnamelPreview() {
         ) : (
           <CourseView onDrawer={() => setDrawerOpen(true)} onHome={() => changeView("dashboard")} />
         )}
+
+        <footer className={styles.previewFooter}>
+          <div>
+            <b><strong>FOURTH</strong> CANAL</b>
+            <p>Independent student-run study support. Official course and clinical guidance always controls.</p>
+          </div>
+          <nav aria-label="Preview legal links">
+            <Link href="/about">About</Link>
+            <Link href="/legal#privacy">Privacy</Link>
+            <Link href="/legal#terms">Terms</Link>
+            <Link href="/legal#disclaimer">Disclaimer</Link>
+          </nav>
+        </footer>
       </main>
 
       <nav className={styles.mobileDock} aria-label="Mobile preview navigation">
@@ -250,7 +365,14 @@ export function KineticEnamelPreview() {
       )}
 
       <div className={`${styles.drawerScrim} ${drawerOpen ? styles.drawerScrimOpen : ""}`} onClick={() => setDrawerOpen(false)} />
-      <aside className={`${styles.resourceDrawer} ${drawerOpen ? styles.drawerOpen : ""}`} aria-hidden={!drawerOpen}>
+      <aside
+        className={`${styles.resourceDrawer} ${drawerOpen ? styles.drawerOpen : ""}`}
+        aria-hidden={!drawerOpen}
+        aria-label="Lecture resource"
+        aria-modal="true"
+        inert={!drawerOpen}
+        role="dialog"
+      >
         <div className={styles.drawerHeader}>
           <div><p className={styles.microLabel}>Layered Resource View</p><h2>Cranial Nerve VII</h2></div>
           <button onClick={() => setDrawerOpen(false)} aria-label="Close resource drawer">×</button>
@@ -292,7 +414,7 @@ type DashboardProps = {
 function DashboardView({ completed, currentTool, pinned, toolIndex, onComplete, onDrawer, onPin, onSelectTool, onViewCourse }: DashboardProps) {
   return (
     <div className={styles.dashboardView}>
-      <section className={styles.heroGrid}>
+      <section className={styles.heroGrid} data-scroll-label="Today" data-reveal>
         <article className={`${styles.glassPanel} ${styles.flowPanel}`}>
           <div className={styles.panelHeading}>
             <div><p className={styles.microLabel}>Thursday · July 16</p><h2>Today’s Flow</h2></div>
@@ -324,8 +446,8 @@ function DashboardView({ completed, currentTool, pinned, toolIndex, onComplete, 
           <div className={styles.toothScene} role="img" aria-label="Translucent animated tooth with illuminated root canals">
             <div className={styles.toothHalo} />
             <div className={styles.toothModel}>
-              <div className={styles.toothCrown}><i /><b /><em /></div>
-              <div className={`${styles.toothRoot} ${styles.rootLeft}`}><i /></div>
+              <div className={styles.toothCrown}><i /><b /><em /><strong /></div>
+              <div className={`${styles.toothRoot} ${styles.rootLeft}`}><i /><b /></div>
               <div className={`${styles.toothRoot} ${styles.rootCenter}`}><i /></div>
               <div className={`${styles.toothRoot} ${styles.rootRight}`}><i /></div>
             </div>
@@ -335,7 +457,7 @@ function DashboardView({ completed, currentTool, pinned, toolIndex, onComplete, 
         </article>
       </section>
 
-      <section className={styles.middleGrid}>
+      <section className={styles.middleGrid} data-scroll-label="Tools" data-reveal>
         <article className={`${styles.glassPanel} ${styles.toolDeck}`}>
           <div className={styles.panelHeading}>
             <div><p className={styles.microLabel}>Rotating utility layer</p><h2>Tool Deck</h2></div>
@@ -360,7 +482,7 @@ function DashboardView({ completed, currentTool, pinned, toolIndex, onComplete, 
         </article>
       </section>
 
-      <section className={styles.courseSection}>
+      <section className={styles.courseSection} data-scroll-label="Courses" data-reveal>
         <div className={styles.sectionHeading}>
           <div><p className={styles.microLabel}>Pinned + adaptive</p><h2>Course Pulse</h2></div>
           <p>Your most active courses surface themselves. Pin what cannot move.</p>
@@ -369,7 +491,7 @@ function DashboardView({ completed, currentTool, pinned, toolIndex, onComplete, 
           {COURSES.map((course, index) => (
             <article className={styles.courseCard} key={course.code} style={{ "--course-index": index } as React.CSSProperties}>
               <div className={`${styles.courseGlow} ${styles[course.color]}`} />
-              <button className={`${styles.pinButton} ${pinned.includes(course.code) ? styles.pinned : ""}`} onClick={() => onPin(course.code)} aria-label={`${pinned.includes(course.code) ? "Unpin" : "Pin"} ${course.title}`}>⌁</button>
+              <button className={`${styles.pinButton} ${pinned.includes(course.code) ? styles.pinned : ""}`} onClick={() => onPin(course.code)} aria-label={`${pinned.includes(course.code) ? "Unpin" : "Pin"} ${course.title}`} aria-pressed={pinned.includes(course.code)}>⌁</button>
               <span className={styles.courseCode}>{course.code}</span>
               <h3>{course.title}</h3>
               <div className={styles.progressTrack}><i style={{ width: `${course.progress}%` }} /></div>
@@ -393,7 +515,7 @@ function CourseView({ onDrawer, onHome }: { onDrawer: () => void; onHome: () => 
 
   return (
     <div className={styles.courseView}>
-      <section className={`${styles.glassPanel} ${styles.courseHero}`}>
+      <section className={`${styles.glassPanel} ${styles.courseHero}`} data-scroll-label="Course" data-reveal>
         <div>
           <button className={styles.backButton} onClick={onHome}>← Today’s Flow</button>
           <p className={styles.microLabel}>DENT 521 · Module 03</p>
@@ -401,10 +523,14 @@ function CourseView({ onDrawer, onHome }: { onDrawer: () => void; onHome: () => 
           <p>Follow each branch in sequence. Your lecture, transcript, and mastery guide stay aligned around the same anatomical path.</p>
           <div className={styles.heroActions}><button className={styles.enamelButton} onClick={onDrawer}>Resume lecture <span>→</span></button><button className={styles.ghostButton}>Open mastery guide</button></div>
         </div>
-        <div className={styles.courseOrb}><span>58%</span><small>module<br />mastery</small></div>
+        <div className={styles.masteryGauge}>
+          <span>58%</span>
+          <small>Module mastery</small>
+          <i><b /></i>
+        </div>
       </section>
 
-      <section className={styles.lectureCanal}>
+      <section className={styles.lectureCanal} data-scroll-label="Lectures" data-reveal>
         <div className={styles.sectionHeading}><div><p className={styles.microLabel}>Sequential learning path</p><h2>Lecture Canal</h2></div><p>Every resource stays attached to where it belongs.</p></div>
         <div className={styles.canalPath}>
           {lectures.map((lecture, index) => (
@@ -421,13 +547,26 @@ function CourseView({ onDrawer, onHome }: { onDrawer: () => void; onHome: () => 
         </div>
       </section>
 
-      <section className={styles.resourceBand}>
-        <div><p className={styles.microLabel}>Attached resources</p><h2>Everything moves together.</h2></div>
-        {[
-          ["Video", "48 min", "58%"],
-          ["Transcript", "18 pages", "Synced"],
-          ["Mastery Guide", "12 sections", "Updated"],
-        ].map((resource) => <button key={resource[0]} onClick={onDrawer}><span>{resource[0]}</span><b>{resource[1]}</b><em>{resource[2]}</em><i>↗</i></button>)}
+      <section className={styles.resourceBand} data-scroll-label="Resources" data-reveal>
+        <div className={styles.resourceIntro}>
+          <p className={styles.microLabel}>Attached resources</p>
+          <h2>Everything stays connected.</h2>
+          <p>Open the lecture, transcript, or guide without losing your place.</p>
+        </div>
+        <div className={styles.resourceList}>
+          {[
+            ["Video", "48 min", "58% watched"],
+            ["Transcript", "18 pages", "Synced"],
+            ["Mastery Guide", "12 sections", "Updated"],
+          ].map((resource) => (
+            <button key={resource[0]} onClick={onDrawer}>
+              <span className={styles.resourceType}>{resource[0]}</span>
+              <span className={styles.resourceDetail}><b>{resource[1]}</b><small>Head & Neck · Module 03</small></span>
+              <strong>{resource[2]}</strong>
+              <i aria-hidden="true">↗</i>
+            </button>
+          ))}
+        </div>
       </section>
     </div>
   );

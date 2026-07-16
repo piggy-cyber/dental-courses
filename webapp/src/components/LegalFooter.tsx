@@ -10,7 +10,7 @@ const LEGAL_LINKS = [
 
 export function LegalFooter() {
   return (
-    <footer className="border-t border-brand-line bg-brand-panel text-brand-muted">
+    <footer className="site-legal-footer border-t border-brand-line bg-brand-panel text-brand-muted">
       <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-6 sm:px-6 lg:px-8">
         <p className="max-w-5xl text-xs leading-relaxed">
           Independent student-run study tool. Not affiliated with, endorsed by,

@@ -85,6 +85,10 @@ body {
   letter-spacing: 0;
 }
 
+body:has([data-integrated-footer="true"]) > .site-legal-footer {
+  display: none;
+}
+
 ::selection {
   background: color-mix(in srgb, var(--brand-teal) 24%, transparent);
 }
