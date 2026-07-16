@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
+import ts from "typescript";
 
 const dataPath = fileURLToPath(
   new URL("../src/data/games/micp-occlusion-data.ts", import.meta.url),
@@ -51,7 +52,61 @@ assert.match(componentSource, /Clinical map in review/i);
 assert.match(componentSource, /moduleStateFrom\(micpOcclusionDataset\)/);
 assert.match(componentSource, /tabIndex=\{tooth\.code === focusedCode \? 0 : -1\}/);
 assert.match(componentSource, /<g aria-hidden="true">/);
-assert.match(componentSource, /disabled=\{!moduleState\.challengeEnabled\}/);
+assert.doesNotMatch(componentSource, /studyEnabled|challengeEnabled/);
+assert.equal(
+  componentSource.match(/<button type="button" disabled>/g)?.length,
+  3,
+  "Study, Challenge, and Review controls must stay disabled in the placeholder",
+);
 assert.doesNotMatch(componentSource, /saveGameRound|GameRoundResult|initialProgress/);
+
+const transpiledTypes = ts.transpileModule(typeSource, {
+  compilerOptions: {
+    module: ts.ModuleKind.ESNext,
+    target: ts.ScriptTarget.ES2022,
+  },
+}).outputText;
+const runtimeTypes = await import(
+  `data:text/javascript;base64,${Buffer.from(transpiledTypes).toString("base64")}`
+);
+const { isCourseVerifiedMicpRelationship } = runtimeTypes;
+
+const validRelationship = {
+  id: "runtime-fixture",
+  maxillaryTooth: "3",
+  mandibularContactTooth: "30",
+  cusp: "fixture only",
+  fossaOrEmbrasure: "fixture only",
+  contactType: "fixture only",
+  explanation: "Fixture validates the evidence boundary, not a clinical fact.",
+  clinicalNote: "Not published.",
+  evidenceStatus: "course-verified",
+  sourceRefs: [
+    {
+      courseCode: "DENT-TEST",
+      sourceName: "runtime-fixture.pdf",
+      locator: "fixture page 1",
+    },
+  ],
+};
+
+assert.equal(isCourseVerifiedMicpRelationship(validRelationship), true);
+assert.equal(
+  isCourseVerifiedMicpRelationship({ ...validRelationship, sourceRefs: [] }),
+  false,
+  "course-verified runtime data must include at least one source reference",
+);
+
+for (const field of ["courseCode", "sourceName", "locator"]) {
+  const invalidSourceRef = { ...validRelationship.sourceRefs[0], [field]: "   " };
+  assert.equal(
+    isCourseVerifiedMicpRelationship({
+      ...validRelationship,
+      sourceRefs: [invalidSourceRef],
+    }),
+    false,
+    `course-verified runtime data must reject a blank ${field}`,
+  );
+}
 
 console.log("Validated empty MICP dataset, evidence-gated schema, and disabled game state.");

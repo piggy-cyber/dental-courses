@@ -222,13 +222,20 @@ function moduleStateFrom(dataset: MicpOcclusionDataset) {
 
   if (dataset.status === "ready") {
     return {
-      statusLabel: "Course-verified map ready",
-      heading: "Reviewed MICP relationship data is available",
-      explanation: "Study and Challenge availability now follows the reviewed course dataset.",
-      heroCopy: "Explore the arches, then use the reviewed relationship map in Study or Challenge mode.",
-      studyEnabled: dataset.relationships.length > 0,
-      challengeEnabled: verifiedRelationshipCount > 0,
-      footer: `${verifiedRelationshipCount} course-verified relationship records are available.`,
+      statusLabel: "Course-verified map staged",
+      heading: "Reviewed MICP relationship data is staged",
+      explanation:
+        "The reviewed dataset is present, but Study and Challenge mechanics are not implemented in this placeholder.",
+      heroCopy:
+        "Explore the arch shell. Reviewed relationship details remain hidden until the learning mechanic is built.",
+      selectionCopy:
+        "Selection confirmed. Reviewed relationship details are not exposed in this placeholder.",
+      relationshipState: "Staged, not shown",
+      explanationState: "Locked in placeholder",
+      clinicalNoteState: "Locked in placeholder",
+      evidenceState: `${verifiedRelationshipCount} verified record${verifiedRelationshipCount === 1 ? "" : "s"} staged`,
+      feedbackSuffix: "Relationship details are not exposed in this placeholder.",
+      footer: `${verifiedRelationshipCount} runtime-validated relationship record${verifiedRelationshipCount === 1 ? " is" : "s are"} staged; modes remain unavailable.`,
     };
   }
 
@@ -239,8 +246,13 @@ function moduleStateFrom(dataset: MicpOcclusionDataset) {
       "The course decks, handout, companion chapter, border-movement materials, and transcript are being checked tooth by tooth before any relationship appears here.",
     heroCopy:
       "Explore the arch shell now. Reviewed tooth relationships will unlock the learning mechanic later.",
-    studyEnabled: false,
-    challengeEnabled: false,
+    selectionCopy:
+      "Selection confirmed. No opposing contact, cusp, fossa or embrasure, or contact type has been assigned.",
+    relationshipState: "Pending review",
+    explanationState: "Not authored",
+    clinicalNoteState: "Not authored",
+    evidenceState: "Needs review",
+    feedbackSuffix: "Relationship details remain locked for clinical review.",
     footer: "No relationship records are available in Study or Challenge mode.",
   };
 }
@@ -296,7 +308,7 @@ export function MicpOcclusionTrainer() {
         </div>
         <div
           className={styles.progressCluster}
-          aria-label={moduleState.challengeEnabled ? "MICP progress" : "MICP progress unavailable until review"}
+          aria-label="MICP progress unavailable in this placeholder"
         >
           <span><small>Score</small><strong>—</strong></span>
           <span><small>Streak</small><strong>—</strong></span>
@@ -312,14 +324,14 @@ export function MicpOcclusionTrainer() {
             <div
               className={styles.modeTabs}
               role="group"
-              aria-label={moduleState.challengeEnabled ? "MICP game modes" : "MICP modes unavailable"}
+              aria-label="MICP modes unavailable in this placeholder"
             >
-              <button type="button" disabled={!moduleState.studyEnabled}>
-                <small>{moduleState.studyEnabled ? "Reviewed map" : "Future data"}</small>
+              <button type="button" disabled>
+                <small>Future data</small>
                 <span>Study</span>
               </button>
-              <button type="button" disabled={!moduleState.challengeEnabled}>
-                <small>Verified only</small>
+              <button type="button" disabled>
+                <small>Mechanics pending</small>
                 <span>Challenge</span>
               </button>
             </div>
@@ -375,7 +387,7 @@ export function MicpOcclusionTrainer() {
                   </div>
                 </div>
                 <p className={styles.selectionCopy}>
-                  Selection confirmed. No opposing contact, cusp, fossa or embrasure, or contact type has been assigned.
+                  {moduleState.selectionCopy}
                 </p>
               </>
             ) : (
@@ -387,10 +399,10 @@ export function MicpOcclusionTrainer() {
             )}
 
             <dl className={styles.pendingFields}>
-              <div><dt>Relationship</dt><dd>Pending review</dd></div>
-              <div><dt>Explanation</dt><dd>Not authored</dd></div>
-              <div><dt>Clinical note</dt><dd>Not authored</dd></div>
-              <div><dt>Evidence</dt><dd>Needs review</dd></div>
+              <div><dt>Relationship</dt><dd>{moduleState.relationshipState}</dd></div>
+              <div><dt>Explanation</dt><dd>{moduleState.explanationState}</dd></div>
+              <div><dt>Clinical note</dt><dd>{moduleState.clinicalNoteState}</dd></div>
+              <div><dt>Evidence</dt><dd>{moduleState.evidenceState}</dd></div>
             </dl>
 
             <div className={styles.weakAreas}>
@@ -403,7 +415,7 @@ export function MicpOcclusionTrainer() {
 
         <div className={styles.feedbackBar} aria-live="polite">
           {selectedTooth
-            ? `Tooth ${selectedTooth.code} selected. Relationship details remain locked for clinical review.`
+            ? `Tooth ${selectedTooth.code} selected. ${moduleState.feedbackSuffix}`
             : "Select any tooth to inspect this review-gated shell."}
         </div>
       </section>

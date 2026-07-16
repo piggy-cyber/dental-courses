@@ -53,8 +53,30 @@ export type MicpDatasetReady = {
 
 export type MicpOcclusionDataset = MicpDatasetInReview | MicpDatasetReady;
 
+function isNonEmptyText(value: unknown): value is string {
+  return typeof value === "string" && value.trim().length > 0;
+}
+
+export function isCompleteSourceRef(value: unknown): value is SourceRef {
+  if (!value || typeof value !== "object") return false;
+
+  const sourceRef = value as Partial<SourceRef>;
+  return (
+    isNonEmptyText(sourceRef.courseCode) &&
+    isNonEmptyText(sourceRef.sourceName) &&
+    isNonEmptyText(sourceRef.locator)
+  );
+}
+
 export function isCourseVerifiedMicpRelationship(
   relationship: MicpRelationship,
 ): relationship is CourseVerifiedMicpRelationship {
-  return relationship.evidenceStatus === "course-verified";
+  if (!relationship || typeof relationship !== "object") return false;
+
+  return (
+    relationship.evidenceStatus === "course-verified" &&
+    Array.isArray(relationship.sourceRefs) &&
+    relationship.sourceRefs.length > 0 &&
+    relationship.sourceRefs.every(isCompleteSourceRef)
+  );
 }
