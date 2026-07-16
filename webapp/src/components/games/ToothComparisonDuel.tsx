@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import toothComparisonJson from "@/data/games/tooth-comparison-data.json";
 import { saveGameRound } from "@/app/(games)/games/actions";
 import type { GameProgress, GameRoundResult, MasteryMap } from "@/lib/games/types";
@@ -18,6 +18,7 @@ import styles from "./ToothComparisonDuel.module.css";
 const dataset = toothComparisonJson as ToothComparisonDataset;
 const QUESTIONS = dataset.questions;
 const CHALLENGE_LENGTH = 10;
+const CHALLENGE_SECONDS_PER_QUESTION = 20;
 const PENDING_ROUND_KEY = "fourth-canal:tooth-comparison-duel:pending-round";
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const VALID_MASTERY_KEYS = new Set(QUESTIONS.map(getToothComparisonMasteryKey));
@@ -50,7 +51,7 @@ type ReviewAnswer = {
   pairLabel: string;
   family: string;
   featureType: ToothComparisonFeatureType;
-  submittedChoice: "A" | "B";
+  submittedChoice: "A" | "B" | null;
   correctChoice: "A" | "B";
   submittedLabel: string;
   correctLabel: string;
@@ -93,6 +94,10 @@ function shuffle<T>(items: T[]) {
 function accuracy(correct: number, attempts: number) {
   if (!attempts) return 0;
   return Math.round((correct / attempts) * 100);
+}
+
+function currentTimeMs() {
+  return Date.now();
 }
 
 function storePendingRound(round: GameRoundResult | null) {
@@ -163,14 +168,104 @@ export function ToothComparisonDuel({ initialProgress }: ToothComparisonDuelProp
   const [sequence, setSequence] = useState<ToothComparisonQuestion[]>(QUESTIONS.slice(0, 2));
   const [questionIndex, setQuestionIndex] = useState(0);
   const [selectedChoice, setSelectedChoice] = useState<"A" | "B" | null>(null);
+  const [timedOut, setTimedOut] = useState(false);
+  const [deadlineMs, setDeadlineMs] = useState<number | null>(null);
+  const [secondsLeft, setSecondsLeft] = useState(CHALLENGE_SECONDS_PER_QUESTION);
   const [stats, setStats] = useState<RoundStats>(emptyStats);
   const [review, setReview] = useState<ReviewAnswer[]>([]);
+  const [showAllReview, setShowAllReview] = useState(false);
   const [progress, setProgress] = useState<GameProgress | null>(initialProgress);
   const [pendingRound, setPendingRound] = useState<GameRoundResult | null>(null);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
+  const resolvedQuestionRef = useRef<string | null>(null);
 
   const currentQuestion = sequence[questionIndex] ?? null;
+  const answerResolved = selectedChoice !== null || timedOut;
+
+  const resolveChallengeAnswer = useCallback((choice: "A" | "B" | null) => {
+    if (mode !== "challenge" || phase !== "playing" || !currentQuestion) return;
+
+    const questionToken = `${questionIndex}:${currentQuestion.id}`;
+    if (resolvedQuestionRef.current === questionToken) return;
+    resolvedQuestionRef.current = questionToken;
+
+    const correct = choice === currentQuestion.correctChoice;
+    const masteryKey = getToothComparisonMasteryKey(currentQuestion);
+    const choiceLabel = choice
+      ? currentQuestion.choices.find((item) => item.id === choice)?.label ?? choice
+      : "No answer — time expired";
+    const correctLabel =
+      currentQuestion.choices.find((item) => item.id === currentQuestion.correctChoice)?.label ??
+      currentQuestion.correctChoice;
+
+    setSelectedChoice(choice);
+    setTimedOut(choice === null);
+    setDeadlineMs(null);
+    setStats((previous) => {
+      const nextStreak = correct ? previous.streak + 1 : 0;
+      const existingMastery = previous.masteryDelta[masteryKey] ?? { correct: 0, attempts: 0 };
+      return {
+        score: previous.score + (correct ? 100 + previous.streak * 20 : 0),
+        streak: nextStreak,
+        bestStreak: Math.max(previous.bestStreak, nextStreak),
+        correct: previous.correct + (correct ? 1 : 0),
+        attempts: previous.attempts + 1,
+        masteryDelta: {
+          ...previous.masteryDelta,
+          [masteryKey]: {
+            correct: existingMastery.correct + (correct ? 1 : 0),
+            attempts: existingMastery.attempts + 1,
+          },
+        },
+      };
+    });
+    setReview((previous) => [
+      ...previous,
+      {
+        questionId: currentQuestion.id,
+        prompt: currentQuestion.prompt,
+        pairLabel: pairLabel(currentQuestion),
+        family: currentQuestion.toothA.family,
+        featureType: currentQuestion.featureType,
+        submittedChoice: choice,
+        correctChoice: currentQuestion.correctChoice,
+        submittedLabel: choiceLabel,
+        correctLabel,
+        correct,
+        explanation: currentQuestion.explanation,
+      },
+    ]);
+  }, [currentQuestion, mode, phase, questionIndex]);
+
+  useEffect(() => {
+    if (
+      mode !== "challenge" ||
+      phase !== "playing" ||
+      !currentQuestion ||
+      answerResolved ||
+      deadlineMs === null
+    ) {
+      return undefined;
+    }
+
+    const updateTimer = () => {
+      const millisecondsLeft = deadlineMs - Date.now();
+      setSecondsLeft(Math.max(0, Math.ceil(millisecondsLeft / 1000)));
+      if (millisecondsLeft <= 0) resolveChallengeAnswer(null);
+    };
+
+    updateTimer();
+    const interval = window.setInterval(updateTimer, 250);
+    const timeout = window.setTimeout(
+      updateTimer,
+      Math.max(0, deadlineMs - Date.now()) + 25,
+    );
+    return () => {
+      window.clearInterval(interval);
+      window.clearTimeout(timeout);
+    };
+  }, [answerResolved, currentQuestion, deadlineMs, mode, phase, resolveChallengeAnswer]);
 
   const persistRound = useCallback(async (payload: GameRoundResult) => {
     storePendingRound(payload);
@@ -239,14 +334,28 @@ export function ToothComparisonDuel({ initialProgress }: ToothComparisonDuelProp
     return [...groups.values()].sort((a, b) => b.missed - a.missed);
   }, [review]);
 
+  const missedReview = useMemo(() => review.filter((answer) => !answer.correct), [review]);
+  const visibleReview = showAllReview ? review : missedReview;
+
+  function armChallengeTimer() {
+    resolvedQuestionRef.current = null;
+    setTimedOut(false);
+    setSecondsLeft(CHALLENGE_SECONDS_PER_QUESTION);
+    setDeadlineMs(Date.now() + CHALLENGE_SECONDS_PER_QUESTION * 1000);
+  }
+
   function startStudy() {
     const nextSequence = QUESTIONS.filter((question) => pairKey(question) === studyPair);
     setMode("study");
     setSequence(nextSequence);
     setQuestionIndex(0);
     setSelectedChoice(null);
+    setTimedOut(false);
+    setDeadlineMs(null);
     setStats(emptyStats());
     setReview([]);
+    setShowAllReview(false);
+    resolvedQuestionRef.current = null;
     setPhase("playing");
   }
 
@@ -256,61 +365,24 @@ export function ToothComparisonDuel({ initialProgress }: ToothComparisonDuelProp
     setSequence(shuffle(verified).slice(0, Math.min(CHALLENGE_LENGTH, verified.length)));
     setQuestionIndex(0);
     setSelectedChoice(null);
+    armChallengeTimer();
     setStats(emptyStats());
     setReview([]);
+    setShowAllReview(false);
     setPhase("playing");
   }
 
   function handleChoice(choice: "A" | "B") {
-    if (!currentQuestion || selectedChoice) return;
+    if (!currentQuestion || answerResolved) return;
+    if (mode === "challenge") {
+      resolveChallengeAnswer(deadlineMs !== null && currentTimeMs() >= deadlineMs ? null : choice);
+      return;
+    }
     setSelectedChoice(choice);
-    if (mode !== "challenge") return;
-
-    const correct = choice === currentQuestion.correctChoice;
-    const masteryKey = getToothComparisonMasteryKey(currentQuestion);
-    const choiceLabel = currentQuestion.choices.find((item) => item.id === choice)?.label ?? choice;
-    const correctLabel =
-      currentQuestion.choices.find((item) => item.id === currentQuestion.correctChoice)?.label ??
-      currentQuestion.correctChoice;
-
-    setStats((previous) => {
-      const nextStreak = correct ? previous.streak + 1 : 0;
-      const existingMastery = previous.masteryDelta[masteryKey] ?? { correct: 0, attempts: 0 };
-      return {
-        score: previous.score + (correct ? 100 + previous.streak * 20 : 0),
-        streak: nextStreak,
-        bestStreak: Math.max(previous.bestStreak, nextStreak),
-        correct: previous.correct + (correct ? 1 : 0),
-        attempts: previous.attempts + 1,
-        masteryDelta: {
-          ...previous.masteryDelta,
-          [masteryKey]: {
-            correct: existingMastery.correct + (correct ? 1 : 0),
-            attempts: existingMastery.attempts + 1,
-          },
-        },
-      };
-    });
-    setReview((previous) => [
-      ...previous,
-      {
-        questionId: currentQuestion.id,
-        prompt: currentQuestion.prompt,
-        pairLabel: pairLabel(currentQuestion),
-        family: currentQuestion.toothA.family,
-        featureType: currentQuestion.featureType,
-        submittedChoice: choice,
-        correctChoice: currentQuestion.correctChoice,
-        submittedLabel: choiceLabel,
-        correctLabel,
-        correct,
-        explanation: currentQuestion.explanation,
-      },
-    ]);
   }
 
   function finishChallenge() {
-    if (mode !== "challenge" || !selectedChoice || stats.attempts !== sequence.length) return;
+    if (mode !== "challenge" || !answerResolved || stats.attempts !== sequence.length) return;
     const payload: GameRoundResult = {
       roundId: crypto.randomUUID(),
       gameId: "tooth-comparison-duel",
@@ -322,11 +394,14 @@ export function ToothComparisonDuel({ initialProgress }: ToothComparisonDuelProp
     };
     setPhase("review");
     setSelectedChoice(null);
+    setTimedOut(false);
+    setDeadlineMs(null);
+    setShowAllReview(false);
     void persistRound(payload);
   }
 
   function nextQuestion() {
-    if (!selectedChoice || !currentQuestion) return;
+    if (!answerResolved || !currentQuestion) return;
     const isLast = questionIndex >= sequence.length - 1;
     if (mode === "challenge" && isLast) {
       finishChallenge();
@@ -334,6 +409,8 @@ export function ToothComparisonDuel({ initialProgress }: ToothComparisonDuelProp
     }
     setQuestionIndex(isLast ? 0 : questionIndex + 1);
     setSelectedChoice(null);
+    if (mode === "challenge") armChallengeTimer();
+    else setTimedOut(false);
   }
 
   function resetToReady(nextMode = mode) {
@@ -341,8 +418,13 @@ export function ToothComparisonDuel({ initialProgress }: ToothComparisonDuelProp
     setPhase("ready");
     setQuestionIndex(0);
     setSelectedChoice(null);
+    setTimedOut(false);
+    setDeadlineMs(null);
+    setSecondsLeft(CHALLENGE_SECONDS_PER_QUESTION);
     setStats(emptyStats());
     setReview([]);
+    setShowAllReview(false);
+    resolvedQuestionRef.current = null;
   }
 
   const correctChoiceLabel = currentQuestion?.choices.find(
@@ -396,7 +478,6 @@ export function ToothComparisonDuel({ initialProgress }: ToothComparisonDuelProp
                 type="button"
                 aria-pressed={mode === "study"}
                 className={mode === "study" ? styles.activeMode : ""}
-                disabled={phase === "playing"}
                 onClick={() => resetToReady("study")}
               >
                 <small>Learn</small>
@@ -406,10 +487,9 @@ export function ToothComparisonDuel({ initialProgress }: ToothComparisonDuelProp
                 type="button"
                 aria-pressed={mode === "challenge"}
                 className={mode === "challenge" ? styles.activeMode : ""}
-                disabled={phase === "playing"}
                 onClick={() => resetToReady("challenge")}
               >
-                <small>10 scored</small>
+                <small>20 sec each</small>
                 <span>Challenge</span>
               </button>
             </div>
@@ -417,6 +497,11 @@ export function ToothComparisonDuel({ initialProgress }: ToothComparisonDuelProp
           <div className={styles.railStatus}>
             <span>{phase === "playing" ? `${questionIndex + 1} / ${sequence.length}` : "Ready"}</span>
             <strong>{mode === "study" ? "Compare without score pressure" : "Only course-verified cards"}</strong>
+            {phase !== "ready" && (
+              <button type="button" className={styles.railReset} onClick={() => resetToReady(mode)}>
+                Reset current session
+              </button>
+            )}
           </div>
         </div>
 
@@ -424,11 +509,11 @@ export function ToothComparisonDuel({ initialProgress }: ToothComparisonDuelProp
           <section className={styles.readyPanel}>
             <div className={styles.readyCopy}>
               <p>{mode === "study" ? "Study mode" : "Challenge mode"}</p>
-              <h2>{mode === "study" ? "Choose a look-alike pair" : "Ten comparisons. One evidence trail."}</h2>
+              <h2>{mode === "study" ? "Choose a look-alike pair" : "Ten comparisons. Twenty seconds each."}</h2>
               <span>
                 {mode === "study"
                   ? "Work one family at a time. Every answer reveals the correct clue, the tempting trap, and a six-row comparison."
-                  : "Score, streak, attempts, accuracy, and family-by-feature weak areas update as you answer."}
+                  : "The visible timer resolves an unanswered card as a miss. Score, streak, accuracy, and weak areas update as you answer."}
               </span>
             </div>
             {mode === "study" ? (
@@ -483,6 +568,14 @@ export function ToothComparisonDuel({ initialProgress }: ToothComparisonDuelProp
               </div>
               {mode === "challenge" && (
                 <div className={styles.liveStats} aria-label="Live challenge stats">
+                  <p
+                    className={!answerResolved && secondsLeft <= 5 ? styles.timerUrgent : ""}
+                    role="timer"
+                    aria-label={`${secondsLeft} seconds remaining`}
+                  >
+                    <span>{answerResolved ? "Time locked" : "Time"}</span>
+                    <b>{timedOut ? "0s" : `${secondsLeft}s`}</b>
+                  </p>
                   <p><span>Score</span><b>{stats.score}</b></p>
                   <p><span>Streak</span><b>{stats.streak}</b></p>
                   <p><span>Attempts</span><b>{stats.attempts}</b></p>
@@ -497,8 +590,9 @@ export function ToothComparisonDuel({ initialProgress }: ToothComparisonDuelProp
                 label={currentQuestion.toothA.label}
                 universal={currentQuestion.toothA.universal}
                 visualId={currentQuestion.toothA.visualId}
+                revealLandmarks={mode === "study" || answerResolved}
                 state={
-                  selectedChoice
+                  answerResolved
                     ? currentQuestion.correctChoice === "A"
                       ? "correct"
                       : selectedChoice === "A"
@@ -513,8 +607,9 @@ export function ToothComparisonDuel({ initialProgress }: ToothComparisonDuelProp
                 label={currentQuestion.toothB.label}
                 universal={currentQuestion.toothB.universal}
                 visualId={currentQuestion.toothB.visualId}
+                revealLandmarks={mode === "study" || answerResolved}
                 state={
-                  selectedChoice
+                  answerResolved
                     ? currentQuestion.correctChoice === "B"
                       ? "correct"
                       : selectedChoice === "B"
@@ -532,7 +627,7 @@ export function ToothComparisonDuel({ initialProgress }: ToothComparisonDuelProp
               </div>
               <div className={styles.choiceGrid}>
                 {currentQuestion.choices.map((choice) => {
-                  const isCorrect = selectedChoice && choice.id === currentQuestion.correctChoice;
+                  const isCorrect = answerResolved && choice.id === currentQuestion.correctChoice;
                   const isWrong = selectedChoice === choice.id && choice.id !== currentQuestion.correctChoice;
                   return (
                     <button
@@ -540,7 +635,7 @@ export function ToothComparisonDuel({ initialProgress }: ToothComparisonDuelProp
                       type="button"
                       className={`${isCorrect ? styles.choiceCorrect : ""} ${isWrong ? styles.choiceWrong : ""}`}
                       aria-pressed={selectedChoice === choice.id}
-                      disabled={selectedChoice !== null}
+                      disabled={answerResolved}
                       onClick={() => handleChoice(choice.id)}
                     >
                       <span>{choice.id}</span>
@@ -551,11 +646,11 @@ export function ToothComparisonDuel({ initialProgress }: ToothComparisonDuelProp
               </div>
             </section>
 
-            {selectedChoice && (
+            {answerResolved && (
               <section className={styles.feedbackPanel} aria-live="polite">
                 <div className={styles.feedbackSummary}>
                   <div className={selectedChoice === currentQuestion.correctChoice ? styles.resultCorrect : styles.resultWrong}>
-                    <span>{selectedChoice === currentQuestion.correctChoice ? "Correct" : "Not this one"}</span>
+                    <span>{timedOut ? "Time expired" : selectedChoice === currentQuestion.correctChoice ? "Correct" : "Not this one"}</span>
                     <h2>{correctChoiceLabel}</h2>
                   </div>
                   <div className={styles.explanationGrid}>
@@ -644,7 +739,25 @@ export function ToothComparisonDuel({ initialProgress }: ToothComparisonDuelProp
             </div>
 
             <div className={styles.reviewList}>
-              {review.map((answer, index) => (
+              <div className={styles.reviewFocus}>
+                <div>
+                  <span>Missed-item review</span>
+                  <strong>
+                    {missedReview.length
+                      ? `${missedReview.length} miss${missedReview.length === 1 ? "" : "es"} to revisit`
+                      : "No misses in this round"}
+                  </strong>
+                </div>
+                {review.length > 0 && (
+                  <button type="button" onClick={() => setShowAllReview((current) => !current)}>
+                    {showAllReview ? "Show misses only" : "Show all answers"}
+                  </button>
+                )}
+              </div>
+              {!showAllReview && missedReview.length === 0 && (
+                <p className={styles.perfectReview}>Perfect round — there are no missed items to review.</p>
+              )}
+              {visibleReview.map((answer, index) => (
                 <article key={answer.questionId} className={answer.correct ? styles.reviewCorrect : styles.reviewWrong}>
                   <header>
                     <span>{String(index + 1).padStart(2, "0")}</span>
