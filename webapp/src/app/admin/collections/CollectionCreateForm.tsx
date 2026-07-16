@@ -2,17 +2,21 @@
 
 import { useState, useTransition } from "react";
 import { createResourceCollection } from "@/app/admin/actions";
+import { academicYearLabel, classLabel } from "@/lib/cohorts";
 
 export function CollectionCreateForm() {
   const [id, setId] = useState("");
   const [label, setLabel] = useState("");
   const [shortLabel, setShortLabel] = useState("");
-  const [sourceTier, setSourceTier] = useState("");
-  const [sourceCohort, setSourceCohort] = useState("");
+  const [graduationYear, setGraduationYear] = useState(2029);
+  const [curriculumYear, setCurriculumYear] = useState(2);
+  const [academicYearStart, setAcademicYearStart] = useState(2026);
+  const [cumulativeAccess, setCumulativeAccess] = useState(true);
   const [description, setDescription] = useState("");
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const suggestedLabel = `${classLabel(graduationYear)} · D${curriculumYear} · ${academicYearLabel(academicYearStart)}`;
 
   function submit() {
     setMessage(null);
@@ -21,18 +25,17 @@ export function CollectionCreateForm() {
       try {
         await createResourceCollection({
           id,
-          label,
-          shortLabel,
-          sourceTier,
-          sourceCohort,
+          label: label || suggestedLabel,
+          shortLabel: shortLabel || `${classLabel(graduationYear)} · D${curriculumYear}`,
+          graduationYear,
+          curriculumYear,
+          academicYearStart,
+          cumulativeAccess,
           description,
-          defaultForTier: false,
         });
         setId("");
         setLabel("");
         setShortLabel("");
-        setSourceTier("");
-        setSourceCohort("");
         setDescription("");
         setMessage("Collection created.");
       } catch (e) {
@@ -45,10 +48,53 @@ export function CollectionCreateForm() {
     <section className="app-card p-5">
       <div>
         <p className="eyebrow">New collection</p>
-        <h2 className="mt-1 font-semibold text-brand-navy">Create a resource set</h2>
+        <h2 className="mt-1 font-semibold text-brand-navy">Create a permanent resource vintage</h2>
         <p className="mt-1 text-sm text-brand-muted">
-          Use this for separate bundles like your D1 year, prior D2 resources, or a clinical set.
+          Example: Class of 2029 · D2 · 2026–27. The label never changes even when the students
+          become D3 or D4.
         </p>
+      </div>
+
+      <div className="mt-4 grid gap-4 sm:grid-cols-3">
+        <label className="block text-sm">
+          <span className="font-medium text-brand-navy">Graduating class</span>
+          <input
+            type="number"
+            min={2000}
+            max={2200}
+            value={graduationYear}
+            onChange={(event) => setGraduationYear(Number(event.target.value))}
+            className="app-input mt-1 w-full px-3 py-2"
+          />
+        </label>
+        <label className="block text-sm">
+          <span className="font-medium text-brand-navy">Resource D-year</span>
+          <select
+            value={curriculumYear}
+            onChange={(event) => setCurriculumYear(Number(event.target.value))}
+            className="app-input mt-1 w-full px-3 py-2"
+          >
+            {[1, 2, 3, 4].map((year) => (
+              <option key={year} value={year}>
+                D{year}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="block text-sm">
+          <span className="font-medium text-brand-navy">Academic year starts</span>
+          <input
+            type="number"
+            min={2000}
+            max={2200}
+            value={academicYearStart}
+            onChange={(event) => setAcademicYearStart(Number(event.target.value))}
+            className="app-input mt-1 w-full px-3 py-2"
+          />
+          <span className="mt-1 block text-xs text-brand-muted">
+            {academicYearLabel(academicYearStart)}
+          </span>
+        </label>
       </div>
 
       <div className="mt-4 grid gap-4 sm:grid-cols-2">
@@ -57,11 +103,11 @@ export function CollectionCreateForm() {
           <input
             value={id}
             onChange={(event) => setId(event.target.value.toLowerCase())}
-            placeholder="d2-2024-2025"
+            placeholder="class-2029-d2-2026-2027"
             className="app-input mt-1 w-full px-3 py-2"
           />
           <span className="mt-1 block text-xs text-brand-muted">
-            Lowercase letters, numbers, and hyphens. Leave blank to generate from the name.
+            Leave blank to generate it from the permanent label.
           </span>
         </label>
         <label className="block text-sm">
@@ -69,7 +115,7 @@ export function CollectionCreateForm() {
           <input
             value={label}
             onChange={(event) => setLabel(event.target.value)}
-            placeholder="D2 2024-2025 Resources"
+            placeholder={suggestedLabel}
             className="app-input mt-1 w-full px-3 py-2"
           />
         </label>
@@ -78,32 +124,23 @@ export function CollectionCreateForm() {
           <input
             value={shortLabel}
             onChange={(event) => setShortLabel(event.target.value)}
-            placeholder="Prior D2 Resources"
+            placeholder={`${classLabel(graduationYear)} · D${curriculumYear}`}
             className="app-input mt-1 w-full px-3 py-2"
           />
         </label>
-        <label className="block text-sm">
-          <span className="font-medium text-brand-navy">Source tier</span>
-          <select
-            value={sourceTier}
-            onChange={(event) => setSourceTier(event.target.value)}
-            className="app-input mt-1 w-full px-3 py-2"
-          >
-            <option value="">No tier</option>
-            <option value="d1">D1</option>
-            <option value="d2">D2</option>
-            <option value="d3">D3</option>
-            <option value="d4">D4</option>
-          </select>
-        </label>
-        <label className="block text-sm">
-          <span className="font-medium text-brand-navy">Source cohort</span>
+        <label className="flex items-start gap-3 border border-brand-line bg-brand-soft px-3 py-3 text-sm">
           <input
-            value={sourceCohort}
-            onChange={(event) => setSourceCohort(event.target.value)}
-            placeholder="d2-2024"
-            className="app-input mt-1 w-full px-3 py-2"
+            type="checkbox"
+            checked={cumulativeAccess}
+            onChange={(event) => setCumulativeAccess(event.target.checked)}
+            className="mt-1"
           />
+          <span>
+            <span className="font-semibold text-brand-navy">Cumulative class access</span>
+            <span className="mt-0.5 block text-xs text-brand-muted">
+              Automatically available to this class once they reach this D-year.
+            </span>
+          </span>
         </label>
       </div>
 
@@ -113,14 +150,14 @@ export function CollectionCreateForm() {
           value={description}
           onChange={(event) => setDescription(event.target.value)}
           rows={3}
-          placeholder="Resource bundle imported from last year's D2 class."
+          placeholder="Second-year resources for the Class of 2029."
           className="app-input mt-1 w-full px-3 py-2"
         />
       </label>
 
       <p className="portal-notice mt-4 p-3 text-sm">
-        New collections are manual-grant by default. Assign them from an account detail page after
-        import.
+        Cumulative access adds this set without removing D1 or other earlier resources. Turn it off
+        only for admin previews or special manual collections.
       </p>
 
       <div className="mt-4 flex flex-wrap items-center gap-3">

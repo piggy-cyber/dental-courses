@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireAdminProfile } from "@/app/admin/actions";
 import { createClient } from "@/lib/supabase/server";
+import { hasCumulativeCollectionAccess } from "@/lib/cohorts";
 import { AccountDetailForm } from "./AccountDetailForm";
 
 export const dynamic = "force-dynamic";
@@ -17,10 +18,10 @@ export type AccountDetail = {
   created_at: string;
   approved_at: string | null;
   access_note: string | null;
-  access_tiers: string[];
   admin_note: string | null;
   roster_id: string | null;
   roster_match: boolean;
+  council_title: string | null;
 };
 
 export type RosterMatch = {
@@ -28,7 +29,9 @@ export type RosterMatch = {
   full_name: string;
   email: string | null;
   cohort: string;
+  graduation_year: number;
   status: "expected" | "signed_in" | "withdrawn";
+  access_approved: boolean;
   profile_id: string | null;
 };
 
@@ -39,6 +42,10 @@ export type AdminResourceCollection = {
   description: string | null;
   source_tier: string | null;
   source_cohort: string | null;
+  graduation_year: number | null;
+  curriculum_year: number | null;
+  academic_year_start: number | null;
+  cumulative_access: boolean;
   is_active: boolean;
   sort_order: number;
 };
@@ -55,41 +62,28 @@ export default async function AdminAccountDetailPage({
   const { data: accountRow } = await supabase
     .from("profiles")
     .select(
-      "id, email, name, username, bio, role, status, created_at, approved_at, access_note, access_tiers, admin_note, roster_id, roster_match"
+      "id, email, name, username, bio, role, status, created_at, approved_at, access_note, admin_note, roster_id, roster_match, council_title"
     )
     .eq("id", id)
     .maybeSingle();
 
   if (!accountRow) notFound();
+  const account = accountRow as AccountDetail;
 
-  const account = {
-    ...(accountRow as AccountDetail),
-    access_tiers: (accountRow as AccountDetail).access_tiers ?? [],
-  };
-
-  let roster: RosterMatch | null = null;
-  if (account.roster_id) {
-    const { data } = await supabase
+  const [{ data: rosterRows }, { data: collections }, { data: grantRows }] = await Promise.all([
+    supabase
       .from("student_roster")
-      .select("id, full_name, email, cohort, status, profile_id")
-      .eq("id", account.roster_id)
-      .maybeSingle();
-    roster = (data as RosterMatch | null) ?? null;
-  }
-
-  if (!roster) {
-    const { data } = await supabase
-      .from("student_roster")
-      .select("id, full_name, email, cohort, status, profile_id")
-      .eq("profile_id", account.id)
-      .maybeSingle();
-    roster = (data as RosterMatch | null) ?? null;
-  }
-
-  const [{ data: collections }, { data: grantRows }] = await Promise.all([
+      .select(
+        "id, full_name, email, cohort, graduation_year, status, access_approved, profile_id"
+      )
+      .neq("status", "withdrawn")
+      .order("graduation_year")
+      .order("full_name"),
     supabase
       .from("resource_collections")
-      .select("id, label, short_label, description, source_tier, source_cohort, is_active, sort_order")
+      .select(
+        "id, label, short_label, description, source_tier, source_cohort, graduation_year, curriculum_year, academic_year_start, cumulative_access, is_active, sort_order"
+      )
       .order("sort_order")
       .order("label"),
     supabase
@@ -98,9 +92,24 @@ export default async function AdminAccountDetailPage({
       .eq("profile_id", account.id),
   ]);
 
-  const grantedCollectionIds = new Set(
-    ((grantRows as { collection_id: string }[] | null) ?? []).map((row) => row.collection_id)
+  const allRosterRows = (rosterRows as RosterMatch[] | null) ?? [];
+  const roster =
+    allRosterRows.find((row) => row.id === account.roster_id || row.profile_id === account.id) ??
+    null;
+  const rosterOptions = allRosterRows.filter(
+    (row) => row.access_approved && (row.profile_id === null || row.profile_id === account.id)
   );
+  const collectionList = (collections as AdminResourceCollection[] | null) ?? [];
+  const automaticCollectionIds = roster?.access_approved
+    ? collectionList
+        .filter((collection) => hasCumulativeCollectionAccess(roster.graduation_year, collection))
+        .map((collection) => collection.id)
+    : [];
+  const automaticSet = new Set(automaticCollectionIds);
+  const manualGrantedCollectionIds =
+    ((grantRows as { collection_id: string }[] | null) ?? [])
+      .map((row) => row.collection_id)
+      .filter((collectionId) => !automaticSet.has(collectionId));
 
   return (
     <div className="space-y-6">
@@ -114,10 +123,7 @@ export default async function AdminAccountDetailPage({
           </h1>
           <p className="mt-1 text-brand-muted">{account.email}</p>
         </div>
-        <Link
-          href="/admin/roster"
-          className="portal-button px-4 py-2 text-sm"
-        >
+        <Link href="/admin/roster" className="portal-button px-4 py-2 text-sm">
           Open roster
         </Link>
       </header>
@@ -125,9 +131,11 @@ export default async function AdminAccountDetailPage({
       <AccountDetailForm
         account={account}
         roster={roster}
+        rosterOptions={rosterOptions}
         isSelf={account.id === userId}
-        collections={(collections as AdminResourceCollection[] | null) ?? []}
-        grantedCollectionIds={[...grantedCollectionIds]}
+        collections={collectionList}
+        automaticCollectionIds={automaticCollectionIds}
+        manualGrantedCollectionIds={manualGrantedCollectionIds}
       />
     </div>
   );
