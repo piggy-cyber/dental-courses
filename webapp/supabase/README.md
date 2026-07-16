@@ -21,8 +21,9 @@ or policy definitions.
 ## Access model
 
 - Students authenticate through Google OAuth only.
-- Roster-matched accounts can be approved automatically.
-- Row-level security limits course collections to approved grants.
+- The roster stores a permanent graduating class and a separate Allow access decision.
+- Google accounts can only be approved after they match an allowed roster student.
+- Row-level security grants cumulative D1-D4 collections for the linked class, plus explicit exceptions.
 - Owner-only maintenance actions are checked in server actions and the database.
 - The service-role key is server-only and must never be exposed to the browser.
 

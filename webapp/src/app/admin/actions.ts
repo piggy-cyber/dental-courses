@@ -10,7 +10,6 @@ import {
   hasFullCouncilAccess,
   type AdminPermission,
 } from "@/lib/admin-permissions";
-import { normalizeTiers } from "@/lib/tiers";
 
 export async function requireAdminProfile(permission?: AdminPermission) {
   const { profile, userId } = await getSessionProfile();
@@ -46,7 +45,7 @@ export async function setAccountStatus(
   if (status === "approved") {
     const { data: target } = await supabase
       .from("profiles")
-      .select("email, role, council_title, admin_permissions")
+      .select("email, roster_id, role, council_title, admin_permissions")
       .eq("id", userId)
       .maybeSingle();
     if (!target?.email) throw new Error("Account not found.");
@@ -62,12 +61,14 @@ export async function setAccountStatus(
     const { data: roster } = await supabase
       .from("student_roster")
       .select("id")
+      .eq("id", target.roster_id ?? "00000000-0000-0000-0000-000000000000")
       .ilike("email", target.email)
       .neq("status", "withdrawn")
+      .eq("access_approved", true)
       .limit(1)
       .maybeSingle();
     if (!roster) {
-      throw new Error("Add this exact Google email to the roster before approving access.");
+      throw new Error("Link this Google account to an allowed roster student before approving access.");
     }
   } else {
     const { data: target } = await supabase
@@ -120,17 +121,6 @@ export async function updateAccountProfile(
   revalidateAdminPaths(userId);
 }
 
-export async function setAccessTiers(userId: string, tiers: string[]) {
-  await requireAdminProfile("accounts.manage");
-  const supabase = await createClient();
-  const { error } = await supabase
-    .from("profiles")
-    .update({ access_tiers: normalizeTiers(tiers) })
-    .eq("id", userId);
-  if (error) throw new Error(error.message);
-  revalidateAdminPaths(userId);
-}
-
 export async function setResourceCollectionGrants(userId: string, collectionIds: string[]) {
   const { userId: adminId } = await requireAdminProfile("accounts.manage");
   const supabase = await createClient();
@@ -178,17 +168,20 @@ export async function createResourceCollection(input: {
   label: string;
   shortLabel: string;
   description?: string | null;
-  sourceTier?: string | null;
-  sourceCohort?: string | null;
-  defaultForTier?: boolean;
+  graduationYear?: number | null;
+  curriculumYear?: number | null;
+  academicYearStart?: number | null;
+  cumulativeAccess?: boolean;
 }) {
   await requireAdminProfile("collections.manage");
   const supabase = await createClient();
 
   const label = input.label.trim();
   const shortLabel = input.shortLabel.trim();
-  const sourceTier = cleanOptionalText(input.sourceTier)?.toLowerCase() ?? null;
-  const sourceCohort = cleanOptionalText(input.sourceCohort)?.toLowerCase() ?? null;
+  const graduationYear = normalizeYear(input.graduationYear);
+  const curriculumYear = normalizeCurriculumYear(input.curriculumYear);
+  const academicYearStart = normalizeYear(input.academicYearStart);
+  const cumulativeAccess = Boolean(input.cumulativeAccess);
   const id = cleanOptionalText(input.id) ?? slugifyCollectionId(label || shortLabel);
 
   if (!id || !/^[a-z0-9][a-z0-9-]{2,62}$/.test(id)) {
@@ -196,8 +189,8 @@ export async function createResourceCollection(input: {
   }
   if (!label) throw new Error("Collection name is required.");
   if (!shortLabel) throw new Error("Short label is required.");
-  if (sourceTier && !["d1", "d2", "d3", "d4"].includes(sourceTier)) {
-    throw new Error("Source tier must be D1, D2, D3, or D4.");
+  if (cumulativeAccess && (!graduationYear || !curriculumYear || !academicYearStart)) {
+    throw new Error("Cumulative collections need a class, D-year, and academic year.");
   }
 
   const { count } = await supabase
@@ -209,9 +202,13 @@ export async function createResourceCollection(input: {
     label,
     short_label: shortLabel,
     description: cleanOptionalText(input.description),
-    source_tier: sourceTier,
-    source_cohort: sourceCohort,
-    default_for_tier: Boolean(input.defaultForTier),
+    source_tier: curriculumYear ? `d${curriculumYear}` : null,
+    source_cohort: graduationYear ? `class-${graduationYear}` : null,
+    default_for_tier: false,
+    graduation_year: graduationYear,
+    curriculum_year: curriculumYear,
+    academic_year_start: academicYearStart,
+    cumulative_access: cumulativeAccess,
     sort_order: ((count ?? 0) + 1) * 10,
   });
   if (error) throw new Error(error.message);
@@ -235,15 +232,15 @@ export async function saveAdminNote(userId: string, note: string) {
 export async function addRosterEntry(input: {
   fullName: string;
   email?: string | null;
-  cohort: string;
+  graduationYear: number;
 }) {
   await requireAdminProfile("roster.manage");
   const fullName = input.fullName.trim();
   const email = input.email?.trim().toLowerCase() || null;
-  const cohort = input.cohort.trim().toLowerCase();
+  const graduationYear = normalizeYear(input.graduationYear);
 
   if (!fullName) throw new Error("Roster name is required.");
-  if (!/^d[1-4]-\d{4}$/.test(cohort)) throw new Error("Use a cohort like d1-2025.");
+  if (!graduationYear) throw new Error("Use a valid four-digit graduation year.");
   if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     throw new Error("Use a valid email address.");
   }
@@ -251,7 +248,14 @@ export async function addRosterEntry(input: {
   const supabase = await createClient();
   const { error } = await supabase
     .from("student_roster")
-    .insert({ full_name: fullName, email, cohort, status: "expected" });
+    .insert({
+      full_name: fullName,
+      email,
+      cohort: `class-${graduationYear}`,
+      graduation_year: graduationYear,
+      status: "expected",
+      access_approved: false,
+    });
   if (error) throw new Error(error.message);
 
   const { error: recheckError } = await createAdminClient().rpc("recheck_roster_matches");
@@ -265,6 +269,30 @@ export async function recheckRosterMatches(): Promise<number> {
   if (error) throw new Error(error.message);
   revalidateAdminPaths();
   return Number(data ?? 0);
+}
+
+export async function setRosterAccessApproval(rosterId: string, allowed: boolean) {
+  const { userId } = await requireAdminProfile("roster.manage");
+  const { error } = await createAdminClient().rpc("set_roster_access_approval", {
+    p_actor_id: userId,
+    p_roster_id: rosterId,
+    p_allowed: allowed,
+  });
+  if (error) throw new Error(error.message);
+  revalidateAdminPaths();
+}
+
+export async function linkAccountToRoster(userId: string, rosterId: string) {
+  const { userId: actorId } = await requireAdminProfile("accounts.manage");
+  const { error } = await createAdminClient().rpc("link_profile_to_roster", {
+    p_actor_id: actorId,
+    p_profile_id: userId,
+    p_roster_id: rosterId,
+  });
+  if (error) throw new Error(error.message);
+  revalidateAdminPaths(userId);
+  revalidatePath("/home");
+  revalidatePath("/library");
 }
 
 export async function promoteToAdmin(userId: string) {
@@ -380,11 +408,12 @@ export async function setCouncilAccess(input: {
       .select("id")
       .ilike("email", target.email)
       .neq("status", "withdrawn")
+      .eq("access_approved", true)
       .limit(1)
       .maybeSingle();
     if (rosterError) throw new Error(rosterError.message);
     if (!exactRoster) {
-      throw new Error("Add this exact Google email to the roster before delegating access.");
+      throw new Error("Link this account to an allowed roster student before delegating access.");
     }
   }
 
@@ -416,6 +445,16 @@ export async function setCouncilAccess(input: {
 function cleanOptionalText(value: string | null | undefined) {
   const trimmed = value?.trim() ?? "";
   return trimmed || null;
+}
+
+function normalizeYear(value: number | null | undefined) {
+  if (!Number.isInteger(value) || !value || value < 2000 || value > 2200) return null;
+  return value;
+}
+
+function normalizeCurriculumYear(value: number | null | undefined) {
+  if (!Number.isInteger(value) || !value || value < 1 || value > 4) return null;
+  return value;
 }
 
 function slugifyCollectionId(value: string) {

@@ -19,6 +19,8 @@ export type Profile = {
   admin_permissions: string[];
   delegated_at: string | null;
   delegated_by: string | null;
+  graduation_year: number | null;
+  roster_access_approved: boolean;
 };
 
 export async function getSessionProfile(): Promise<{
@@ -41,11 +43,21 @@ export async function getSessionProfile(): Promise<{
 
   if (!profile) return { profile: null, userId: user.id };
 
+  const { data: roster } = profile.roster_id
+    ? await supabase
+        .from("student_roster")
+        .select("graduation_year, access_approved")
+        .eq("id", profile.roster_id)
+        .maybeSingle()
+    : { data: null };
+
   return {
     profile: {
       ...(profile as Profile),
       access_tiers: (profile.access_tiers as string[] | null) ?? [],
       admin_permissions: (profile.admin_permissions as string[] | null) ?? [],
+      graduation_year: roster?.graduation_year ?? null,
+      roster_access_approved: roster?.access_approved ?? false,
     },
     userId: user.id,
   };
