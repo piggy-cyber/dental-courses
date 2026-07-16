@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import gvBlackCatalogJson from "@/data/games/gv-black-data.json";
 import toothCatalogJson from "@/data/games/tooth-data.json";
 import { getSessionProfile } from "@/lib/access";
 import { createClient } from "@/lib/supabase/server";
@@ -10,11 +11,16 @@ import {
   type GameRoundResult,
   type SaveGameRoundResult,
 } from "@/lib/games/types";
+import type { GvBlackCatalog } from "@/lib/games/gv-black-types";
 import type { ToothCatalog } from "@/lib/games/tooth-types";
 
 const toothCatalog = toothCatalogJson as ToothCatalog;
 const validToothCodes = new Set<string>(
   toothCatalog.teeth.flatMap((tooth) => [tooth.code, tooth.supernumeraryCode]),
+);
+const gvBlackCatalog = gvBlackCatalogJson as GvBlackCatalog;
+const validGvBlackMasteryKeys = new Set(
+  gvBlackCatalog.classes.map((classification) => classification.masteryKey),
 );
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
@@ -46,10 +52,12 @@ function validateRound(input: GameRoundResult): string | null {
     return "That mastery update is too large.";
   }
 
+  const validMasteryCodes =
+    input.gameId === "tooth-quest" ? validToothCodes : validGvBlackMasteryKeys;
   let masteryCorrect = 0;
   let masteryAttempts = 0;
   for (const [code, entry] of Object.entries(input.masteryDelta)) {
-    if (!validToothCodes.has(code)) return "That tooth code is not recognized.";
+    if (!validMasteryCodes.has(code)) return "That mastery category is not recognized.";
     if (
       !entry ||
       typeof entry !== "object" ||
@@ -100,6 +108,6 @@ export async function saveGameRound(input: GameRoundResult): Promise<SaveGameRou
   }
 
   revalidatePath("/games");
-  revalidatePath("/games/tooth-quest");
+  revalidatePath(`/games/${input.gameId}`);
   return { ok: true, progress: progressFromRow(row as Record<string, unknown>) };
 }
