@@ -1,6 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import { getSessionProfile } from "@/lib/access";
+import { getShellCourses } from "@/lib/shell-courses";
+import { AppShell } from "@/components/AppShell";
 import { BrandMarkPublic } from "@/components/BrandMark";
 import styles from "./AboutPage.module.css";
 
@@ -34,10 +36,104 @@ const PRINCIPLES = [
   },
 ] as const;
 
+async function WorkspaceAboutPage({ profile }: { profile: NonNullable<Awaited<ReturnType<typeof getSessionProfile>>["profile"]> }) {
+  const courses = await getShellCourses();
+
+  return (
+    <AppShell profile={profile} courses={courses}>
+      <div className={styles.workspaceAbout}>
+        <section className={styles.workspaceHero}>
+          <div className={styles.workspaceHeroCopy}>
+            <p className="eyebrow">About Fourth Canal</p>
+            <h1>The study layer dental school was missing.</h1>
+            <p>
+              Fourth Canal brings lectures, transcripts, mastery guides, course files,
+              and class tools into one private workspace built for the way dental
+              students actually study.
+            </p>
+            <div className={styles.workspaceActions}>
+              <Link href="/library" className="portal-button-primary">
+                Open my courses <span aria-hidden="true">→</span>
+              </Link>
+              <a href="#workspace-story" className="portal-button">
+                Why the fourth canal?
+              </a>
+            </div>
+          </div>
+
+          <figure className={styles.workspaceSpecimen}>
+            <div className={styles.workspaceSpecimenImage}>
+              <Image
+                src="/brand/fourth-canal-hero-brand-image-v2.png"
+                alt="Enamel microscopy field with four anatomical canal strands"
+                fill
+                priority
+                sizes="(max-width: 767px) 100vw, 42vw"
+              />
+            </div>
+            <figcaption>
+              <span>Anatomical atlas · fourth trace active</span>
+              <strong>04 / 04</strong>
+            </figcaption>
+          </figure>
+        </section>
+
+        <section className={styles.workspaceOrigin} id="workspace-story">
+          <span aria-hidden="true">04</span>
+          <div>
+            <p className="eyebrow">Why Fourth Canal?</p>
+            <h2>Look for what is easy to miss.</h2>
+            <p>
+              A canal is a narrow space inside a tooth root that carries pulp. In upper
+              first molars, the mesiobuccal root often contains a second, slender canal
+              called MB2—the “fourth canal.” It can hide beneath dentin and be easy to
+              overlook, but untreated anatomy can allow disease to persist. Fourth Canal
+              follows that same clinical habit: keep looking, find the missing context,
+              connect it, and make it useful.
+            </p>
+          </div>
+          <blockquote>
+            The most useful layer is often the one nobody organized for you.
+          </blockquote>
+        </section>
+
+        <section className={styles.workspacePrinciples} aria-labelledby="workspace-principles-title">
+          <div className={styles.workspaceSectionHeading}>
+            <p className="eyebrow">How it works</p>
+            <h2 id="workspace-principles-title">A calmer way through the course.</h2>
+          </div>
+          <div className={styles.workspacePrincipleGrid}>
+            {PRINCIPLES.map((principle) => (
+              <article key={principle.number}>
+                <span>{principle.number}</span>
+                <h3>{principle.title}</h3>
+                <p>{principle.copy}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className={styles.workspaceClosing}>
+          <div>
+            <p className="eyebrow">Private academic workspace</p>
+            <h2>Spend less time finding the material. Spend more time understanding it.</h2>
+          </div>
+          <Link href="/library" className="portal-button-primary">
+            Open my courses <span aria-hidden="true">→</span>
+          </Link>
+        </section>
+      </div>
+    </AppShell>
+  );
+}
+
 export default async function AboutPage() {
   const { profile } = await getSessionProfile();
-  const backHref = profile?.status === "approved" ? "/home" : "/";
-  const backLabel = profile?.status === "approved" ? "Open my courses" : "Back to sign in";
+  if (profile?.status === "approved") {
+    return <WorkspaceAboutPage profile={profile} />;
+  }
+
+  const backHref = "/";
 
   return (
     <div className={`${styles.aboutPage} fc-site`} data-integrated-footer="true">
@@ -49,7 +145,7 @@ export default async function AboutPage() {
           <small>Dental education</small>
         </div>
         <Link href={backHref} className={styles.headerAction}>
-          {backLabel} <span aria-hidden="true">→</span>
+          Back to sign in <span aria-hidden="true">→</span>
         </Link>
       </header>
 
@@ -65,7 +161,7 @@ export default async function AboutPage() {
             </p>
             <div className={styles.heroActions}>
               <Link href={backHref} className={styles.primaryAction}>
-                {profile?.status === "approved" ? "Open my courses" : "Return to sign in"}
+                Return to sign in
                 <span aria-hidden="true">→</span>
               </Link>
               <a href="#why" className={styles.secondaryAction}>Why the fourth canal?</a>
@@ -102,9 +198,11 @@ export default async function AboutPage() {
             <p className={styles.eyebrow}>Why Fourth Canal?</p>
             <h2>Look for what is easy to miss.</h2>
             <p>
-              Dentistry trains us to look beyond what appears complete. A fourth canal
-              can be the difference between a case that looks finished and one that
-              truly is. Fourth Canal follows the same idea: find the missing context,
+              A canal is a narrow space inside a tooth root that carries pulp. In upper
+              first molars, the mesiobuccal root often contains a second, slender canal
+              called MB2—the “fourth canal.” It can hide beneath dentin and be easy to
+              overlook, but untreated anatomy can allow disease to persist. Fourth Canal
+              follows that same clinical habit: keep looking, find the missing context,
               connect it, and make it useful.
             </p>
           </div>
@@ -137,7 +235,7 @@ export default async function AboutPage() {
             <h2>Spend less time finding the material. Spend more time understanding it.</h2>
           </div>
           <Link href={backHref} className={styles.primaryAction}>
-            {profile?.status === "approved" ? "Open my courses" : "Return to sign in"}
+            Return to sign in
             <span aria-hidden="true">→</span>
           </Link>
         </section>

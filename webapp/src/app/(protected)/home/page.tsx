@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
 import { getSessionProfile } from "@/lib/access";
 import { canViewAllCourseData } from "@/lib/admin-permissions";
@@ -109,51 +110,72 @@ export default async function HomeDashboardPage() {
   return (
     <div className="space-y-6">
       {/* Identity strip + stat gauges */}
-      <header className="cockpit-panel">
-        <div className="flex flex-wrap items-center justify-between gap-4 p-4">
-          <div className="flex items-center gap-3">
-            <UserAvatar
-              name={profile?.name}
-              email={profile?.email}
-              avatarUrl={profile?.avatar_url}
-              size="lg"
-              className="border border-brand-line"
-            />
-            <div>
-              <p className="eyebrow">{isAdminView ? "Admin desk" : "Student desk"}</p>
-              <h1 className="portal-title text-2xl font-bold sm:text-3xl">
-                {displayName}
-              </h1>
-              <div className="mt-0.5 flex flex-wrap gap-1.5 text-xs">
-                {handle && <span className="font-medium text-brand-muted">{handle}</span>}
-                {visibleCollections.length > 0
-                  ? visibleCollections.map((collection) => (
-                      <span
-                        key={collection.id}
-                        className="border border-brand-line bg-brand-soft px-1.5 py-0.5 font-semibold text-brand-navy"
-                      >
-                        {collection.short_label}
-                      </span>
-                    ))
-                  : profile?.graduation_year
-                    ? (
-                      <span
-                        className="border border-brand-line bg-brand-soft px-1.5 py-0.5 font-semibold text-brand-navy"
-                      >
-                        {cohortStandingLabel(profile.graduation_year)}
-                      </span>
-                    )
-                    : null}
+      <header className="cockpit-panel overflow-hidden">
+        <div className="fc-dashboard-intro">
+          <div className="fc-dashboard-identity">
+            <div className="flex items-center gap-3">
+              <UserAvatar
+                name={profile?.name}
+                email={profile?.email}
+                avatarUrl={profile?.avatar_url}
+                size="lg"
+                className="border border-brand-line"
+              />
+              <div>
+                <p className="eyebrow">{isAdminView ? "Admin desk" : "Student desk"}</p>
+                <h1 className="portal-title text-2xl font-bold sm:text-3xl">
+                  {displayName}
+                </h1>
+                <div className="mt-0.5 flex flex-wrap gap-1.5 text-xs">
+                  {handle && <span className="font-medium text-brand-muted">{handle}</span>}
+                  {visibleCollections.length > 0
+                    ? visibleCollections.map((collection) => (
+                        <span
+                          key={collection.id}
+                          className="border border-brand-line bg-brand-soft px-1.5 py-0.5 font-semibold text-brand-navy"
+                        >
+                          {collection.short_label}
+                        </span>
+                      ))
+                    : profile?.graduation_year
+                      ? (
+                        <span
+                          className="border border-brand-line bg-brand-soft px-1.5 py-0.5 font-semibold text-brand-navy"
+                        >
+                          {cohortStandingLabel(profile.graduation_year)}
+                        </span>
+                      )
+                      : null}
+                </div>
               </div>
             </div>
+            <div>
+              <p className="mt-4 max-w-xl text-sm leading-6 text-brand-muted">
+                Your courses, schedule, study material, and class tools—kept in one
+                place so the context that matters is never the part you miss.
+              </p>
+              <Link href="/profile" className="cockpit-switch mt-4 inline-flex">
+                <span className="cockpit-switch-indicator cockpit-switch-indicator-blue" />
+                Edit profile
+              </Link>
+            </div>
           </div>
-          <Link
-            href="/profile"
-            className="cockpit-switch"
-          >
-            <span className="cockpit-switch-indicator cockpit-switch-indicator-blue" />
-            Edit profile
-          </Link>
+
+          <figure className="fc-dashboard-microscopy">
+            <div>
+              <Image
+                src="/brand/fourth-canal-hero-brand-image-v2.png"
+                alt="Enamel microscopy field with four anatomical canal strands"
+                fill
+                priority
+                sizes="(max-width: 767px) 100vw, 42vw"
+              />
+            </div>
+            <figcaption>
+              <span>Anatomical atlas · fourth trace active</span>
+              <strong>04 / 04</strong>
+            </figcaption>
+          </figure>
         </div>
         <StatGauges
           gauges={[
