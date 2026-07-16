@@ -226,6 +226,19 @@
   display: block;
 }
 
+.railReset {
+  min-height: 32px;
+  margin-top: 0.45rem;
+  border: 1px solid var(--arcade-line);
+  background: transparent;
+  color: var(--arcade-cyan);
+  padding: 0.35rem 0.55rem;
+  font: inherit;
+  font-size: 0.6rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
 .railStatus span {
   color: var(--arcade-cyan);
   font-family: var(--font-mono-app), monospace;
@@ -383,8 +396,17 @@
 
 .liveStats {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.45rem;
   margin-left: auto;
+}
+
+.liveStats .timerUrgent {
+  border-left-color: var(--arcade-danger);
+}
+
+.liveStats .timerUrgent b {
+  color: var(--arcade-danger);
 }
 
 .liveStats p {
@@ -914,6 +936,56 @@
   margin-top: 0.8rem;
 }
 
+.reviewFocus {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  border: 1px solid var(--arcade-line);
+  background: var(--arcade-panel);
+  padding: 0.7rem;
+}
+
+.reviewFocus span,
+.reviewFocus strong {
+  display: block;
+}
+
+.reviewFocus span {
+  color: var(--arcade-cyan);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 0.55rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.reviewFocus strong {
+  margin-top: 0.18rem;
+  color: var(--arcade-enamel);
+  font-size: 0.76rem;
+}
+
+.reviewFocus button {
+  min-height: 38px;
+  border: 1px solid var(--arcade-cyan);
+  background: transparent;
+  color: var(--arcade-cyan);
+  padding: 0.45rem 0.65rem;
+  font: inherit;
+  font-size: 0.64rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.perfectReview {
+  border: 1px solid var(--arcade-line);
+  background: rgba(94, 231, 231, 0.06);
+  padding: 0.8rem;
+  color: var(--arcade-cyan);
+  font-size: 0.72rem;
+}
+
 .reviewList article {
   border: 1px solid var(--arcade-line);
   background: rgba(13, 28, 46, 0.72);
@@ -1009,12 +1081,14 @@
 
 .saveNotice button:focus-visible,
 .modeTabs button:focus-visible,
+.railReset:focus-visible,
 .pairPicker select:focus-visible,
 .pairPicker button:focus-visible,
 .challengeLaunch button:focus-visible,
 .choiceGrid button:focus-visible,
 .feedbackActions button:focus-visible,
 .reviewHero button:focus-visible,
+.reviewFocus button:focus-visible,
 .reviewActions button:focus-visible,
 .reviewActions a:focus-visible,
 .heroLinks a:focus-visible {
@@ -1070,6 +1144,15 @@
   .reviewHero {
     align-items: stretch;
     flex-direction: column;
+  }
+
+  .reviewFocus {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .reviewFocus button {
+    width: 100%;
   }
 
   .railStatus {

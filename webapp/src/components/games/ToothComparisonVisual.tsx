@@ -11,6 +11,7 @@ type ToothComparisonVisualProps = {
   universal: string;
   visualId: string;
   state?: "idle" | "correct" | "wrong";
+  revealLandmarks?: boolean;
 };
 
 function IncisorCentral({ maxillary }: { maxillary: boolean }) {
@@ -79,7 +80,7 @@ function Canine({ maxillary }: { maxillary: boolean }) {
   );
 }
 
-function MaxPremolar({ first }: { first: boolean }) {
+function MaxPremolar({ first, revealLandmarks }: { first: boolean; revealLandmarks: boolean }) {
   return first ? (
     <>
       <path className={styles.svgRoot} d="M76 163 C70 179 72 196 84 207 C99 195 107 178 108 160 Z" />
@@ -92,9 +93,13 @@ function MaxPremolar({ first }: { first: boolean }) {
       <circle className={styles.svgLandmark} cx="91" cy="84" r="4" />
       <circle className={styles.svgLandmark} cx="170" cy="84" r="4" />
       <path className={styles.svgGuide} d="M60 151 H198 V214 H60 Z" />
-      <text className={styles.svgAnnotation} x="84" y="158" textAnchor="middle">F</text>
-      <text className={styles.svgAnnotation} x="176" y="158" textAnchor="middle">L</text>
-      <text className={styles.svgAnnotation} x="129" y="216" textAnchor="middle">COMMON TWO-ROOT VARIANT · 61%</text>
+      {revealLandmarks && (
+        <>
+          <text className={styles.svgAnnotation} x="84" y="158" textAnchor="middle">F</text>
+          <text className={styles.svgAnnotation} x="176" y="158" textAnchor="middle">L</text>
+          <text className={styles.svgAnnotation} x="129" y="216" textAnchor="middle">COMMON TWO-ROOT VARIANT · 61%</text>
+        </>
+      )}
     </>
   ) : (
     <>
@@ -195,7 +200,7 @@ function MandMolar({ first }: { first: boolean }) {
   );
 }
 
-function renderMorphology(visualId: ToothComparisonVisualId): ReactNode {
+function renderMorphology(visualId: ToothComparisonVisualId, revealLandmarks: boolean): ReactNode {
   switch (visualId) {
     case "max-central-incisor":
       return <IncisorCentral maxillary />;
@@ -210,9 +215,9 @@ function renderMorphology(visualId: ToothComparisonVisualId): ReactNode {
     case "mand-canine":
       return <Canine maxillary={false} />;
     case "max-first-premolar":
-      return <MaxPremolar first />;
+      return <MaxPremolar first revealLandmarks={revealLandmarks} />;
     case "max-second-premolar":
-      return <MaxPremolar first={false} />;
+      return <MaxPremolar first={false} revealLandmarks={revealLandmarks} />;
     case "mand-first-premolar":
       return <MandPremolar first />;
     case "mand-second-premolar":
@@ -234,6 +239,7 @@ export function ToothComparisonVisual({
   universal,
   visualId,
   state = "idle",
+  revealLandmarks = true,
 }: ToothComparisonVisualProps) {
   const typedVisualId = visualId as ToothComparisonVisualId;
   const metadata = TOOTH_COMPARISON_VISUALS[typedVisualId];
@@ -256,7 +262,7 @@ export function ToothComparisonVisual({
           <h2>{label}</h2>
           <p>{universal}</p>
         </div>
-        <span>{metadata.viewLabel}</span>
+        <span>{revealLandmarks ? metadata.viewLabel : "Landmarks hidden until answer"}</span>
       </div>
       <svg
         className={styles.toothSvg}
@@ -265,7 +271,11 @@ export function ToothComparisonVisual({
         aria-labelledby={`${gradientId}-title ${gradientId}-desc`}
       >
         <title id={`${gradientId}-title`}>{label} morphology diagram</title>
-        <desc id={`${gradientId}-desc`}>{metadata.landmark}. Original course-evidence diagram.</desc>
+        <desc id={`${gradientId}-desc`}>
+          {revealLandmarks
+            ? `${metadata.landmark}. Original course-evidence diagram.`
+            : "Original course-evidence morphology diagram. Landmark notes reveal after submission."}
+        </desc>
         <defs>
           <linearGradient id={gradientId} x1="0" y1="0" x2="1" y2="1">
             <stop offset="0" stopColor="#fffdf4" />
@@ -274,12 +284,14 @@ export function ToothComparisonVisual({
           </linearGradient>
         </defs>
         <g style={{ "--tooth-enamel": `url(#${gradientId})` } as React.CSSProperties}>
-          {renderMorphology(typedVisualId)}
+          {renderMorphology(typedVisualId, revealLandmarks)}
         </g>
         <text className={styles.svgOrientation} x="14" y="18">M</text>
         <text className={styles.svgOrientation} x="238" y="18">D</text>
       </svg>
-      <p className={styles.visualLandmark}>{metadata.landmark}</p>
+      <p className={styles.visualLandmark}>
+        {revealLandmarks ? metadata.landmark : "Landmark note reveals after answer"}
+      </p>
     </article>
   );
 }
