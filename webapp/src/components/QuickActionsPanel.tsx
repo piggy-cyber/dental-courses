@@ -22,6 +22,12 @@ const STUDENT_ACTIONS: ActionLink[] = [
     indicator: "blue",
   },
   {
+    href: "/contacts",
+    label: "Course Contacts",
+    detail: "Class directory",
+    indicator: "blue",
+  },
+  {
     href: "https://cmms.serviceinsight.cbre.com/requests",
     label: "CBRE Maintenance",
     detail: "Building request",
@@ -58,7 +64,7 @@ export function QuickActionsPanel({ isAdmin }: { isAdmin: boolean }) {
   return (
     <div className="cockpit-panel">
       <div className="cockpit-section-bar">Quick Actions</div>
-      <div className="grid grid-cols-2 gap-px bg-brand-line sm:grid-cols-3 lg:grid-cols-5">
+      <div className="grid grid-cols-2 gap-px bg-brand-line sm:grid-cols-3 lg:grid-cols-6">
         {actions.map((action) => {
           const indicatorClass =
             action.indicator === "amber"
