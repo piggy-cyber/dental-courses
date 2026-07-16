@@ -5,8 +5,12 @@ import { fileURLToPath } from "node:url";
 const catalogPath = fileURLToPath(
   new URL("../src/data/games/tooth-data.json", import.meta.url),
 );
+const rootCanalCatalogPath = fileURLToPath(
+  new URL("../src/data/games/root-canal-match-data.json", import.meta.url),
+);
 
 const catalog = JSON.parse(await readFile(catalogPath, "utf8"));
+const rootCanalCatalog = JSON.parse(await readFile(rootCanalCatalogPath, "utf8"));
 
 const permanentCodes = Array.from({ length: 32 }, (_, index) => String(index + 1));
 const primaryCodes = [..."ABCDEFGHIJKLMNOPQRST"];
@@ -279,4 +283,99 @@ for (const template of catalog.morphologyTemplates) {
 
 console.log(
   `Validated ${catalog.teeth.length} teeth, ${catalog.morphologyTemplates.length} morphology templates, and ${catalog.teeth.length} supernumerary mappings.`,
+);
+
+const rootCanalFields = [
+  "id",
+  "toothName",
+  "toothNumber",
+  "difficulty",
+  "commonRootPattern",
+  "commonCanalPattern",
+  "importantVariation",
+  "clinicalNote",
+  "explanation",
+  "evidenceStatus",
+];
+const rootCanalDifficulties = ["basic", "intermediate", "clinical"];
+const verifiedSourceNames = new Set([
+  "da 5 Max PM1 2024.ppt",
+  "da 6 Max M1 2024.ppt",
+  "da 7 Maand M1 2020.ppt",
+  "da 7 Maand M2 M3 2020 9 22 2020.ppt",
+  "REHE 151 Dental Anatomy and Occlusion Textbook Companion.pdf",
+]);
+
+assert.equal(rootCanalCatalog.schemaVersion, 1, "root canal schemaVersion must be 1");
+assert.ok(Array.isArray(rootCanalCatalog.records), "root canal records must be an array");
+assert.equal(rootCanalCatalog.records.length, 12, "root canal catalog must contain 12 records");
+assertUnique(rootCanalCatalog.records.map((record) => record.id), "root canal record ids");
+
+for (const difficulty of rootCanalDifficulties) {
+  assert.equal(
+    rootCanalCatalog.records.filter((record) => record.difficulty === difficulty).length,
+    4,
+    `${difficulty} must contain four root canal records`,
+  );
+  assert.equal(
+    rootCanalCatalog.records.filter(
+      (record) => record.difficulty === difficulty && record.evidenceStatus === "course-verified",
+    ).length,
+    3,
+    `${difficulty} Challenge pool must contain three course-verified records`,
+  );
+  assert.equal(
+    rootCanalCatalog.records.filter(
+      (record) => record.difficulty === difficulty && record.evidenceStatus === "needs-review",
+    ).length,
+    1,
+    `${difficulty} review queue must contain one held record`,
+  );
+}
+
+for (const record of rootCanalCatalog.records) {
+  for (const field of rootCanalFields) assertText(record[field], `${record.id} ${field}`);
+  assert.ok(rootCanalDifficulties.includes(record.difficulty), `${record.id} difficulty is valid`);
+  assert.ok(
+    ["course-verified", "needs-review"].includes(record.evidenceStatus),
+    `${record.id} evidenceStatus is valid`,
+  );
+  if (record.evidenceStatus === "needs-review") {
+    assert.ok(record.id.startsWith("mx-pm1"), `${record.id} review hold must be the known PM1 conflict`);
+    assert.match(record.explanation, /conflict/i, `${record.id} documents its source conflict`);
+    assert.ok(
+      record.sourceRefs.some((sourceRef) => sourceRef.locator.includes("held from Challenge")),
+      `${record.id} must document its Challenge hold in sourceRefs`,
+    );
+  }
+  assert.ok(Array.isArray(record.wrongOptions), `${record.id} wrongOptions must be an array`);
+  assert.equal(record.wrongOptions.length, 3, `${record.id} must define three wrong options`);
+  assertUnique(record.wrongOptions, `${record.id} wrong options`);
+  record.wrongOptions.forEach((option, index) => assertText(option, `${record.id} wrong option ${index}`));
+
+  const correctAnswer =
+    record.difficulty === "basic"
+      ? record.commonRootPattern
+      : record.difficulty === "intermediate"
+        ? record.commonCanalPattern
+        : record.importantVariation;
+  assert.ok(!record.wrongOptions.includes(correctAnswer), `${record.id} answer must not be a distractor`);
+  assert.match(record.commonRootPattern, /\b(one|two|three|four) roots?\b/i, `${record.id} names a root count`);
+  assert.match(record.commonCanalPattern, /\b(one|two|three|four) canals?\b/i, `${record.id} names a canal count`);
+
+  assert.ok(Array.isArray(record.sourceRefs), `${record.id} sourceRefs must be an array`);
+  assert.ok(record.sourceRefs.length > 0, `${record.id} must have at least one sourceRef`);
+  for (const [index, sourceRef] of record.sourceRefs.entries()) {
+    assert.equal(sourceRef.courseCode, "REHE 151", `${record.id} source ${index} course code`);
+    assertText(sourceRef.sourceName, `${record.id} source ${index} filename`);
+    assertText(sourceRef.locator, `${record.id} source ${index} locator`);
+    assert.ok(
+      verifiedSourceNames.has(sourceRef.sourceName),
+      `${record.id} source ${index} must be in the verified source pack`,
+    );
+  }
+}
+
+console.log(
+  `Validated ${rootCanalCatalog.records.length} Root Canal Match records: 9 course-verified Challenge records and 3 source-conflict review holds.`,
 );

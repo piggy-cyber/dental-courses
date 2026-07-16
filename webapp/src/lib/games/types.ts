@@ -1,4 +1,4 @@
-export const GAME_IDS = ["tooth-quest"] as const;
+export const GAME_IDS = ["tooth-quest", "root-canal-match"] as const;
 
 export type GameId = (typeof GAME_IDS)[number];
 
