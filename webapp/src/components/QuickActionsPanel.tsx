@@ -28,6 +28,12 @@ const STUDENT_ACTIONS: ActionLink[] = [
     indicator: "blue",
   },
   {
+    href: "/grade-calculator",
+    label: "Grade Calculator",
+    detail: "Plan course grades",
+    indicator: "blue",
+  },
+  {
     href: "https://cmms.serviceinsight.cbre.com/requests",
     label: "CBRE Maintenance",
     detail: "Building request",
@@ -60,11 +66,12 @@ const ADMIN_ACTIONS: ActionLink[] = [
 
 export function QuickActionsPanel({ isAdmin }: { isAdmin: boolean }) {
   const actions = isAdmin ? [...STUDENT_ACTIONS, ...ADMIN_ACTIONS] : STUDENT_ACTIONS;
+  const desktopColumns = isAdmin ? "lg:grid-cols-8" : "lg:grid-cols-7";
 
   return (
     <div className="cockpit-panel">
       <div className="cockpit-section-bar">Quick Actions</div>
-      <div className="grid grid-cols-2 gap-px bg-brand-line sm:grid-cols-3 lg:grid-cols-6">
+      <div className={`grid grid-cols-2 gap-px bg-brand-line sm:grid-cols-3 ${desktopColumns}`}>
         {actions.map((action) => {
           const indicatorClass =
             action.indicator === "amber"

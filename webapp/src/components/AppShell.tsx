@@ -34,6 +34,7 @@ const STUDENT_LINKS = [
   { href: "/library", label: "Courses" },
   { href: "/games", label: "Games" },
   { href: "/contacts", label: "Contacts" },
+  { href: "/grade-calculator", label: "Grade Calculator" },
   { href: "/profile", label: "Profile" },
   { href: "/about", label: "About" },
 ];
