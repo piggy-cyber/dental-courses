@@ -1,0 +1,1431 @@
+.page {
+  width: min(1240px, 100%);
+  margin: 0 auto;
+  padding: clamp(1.5rem, 4vw, 3rem) clamp(1rem, 3vw, 2rem) 4rem;
+}
+
+.hero {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.backLink {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--arcade-muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.backLink:hover {
+  color: var(--arcade-cyan);
+}
+
+.backLink:focus-visible,
+.controlRail button:focus-visible,
+.modeIntro button:focus-visible,
+.saveNotice button:focus-visible,
+.answerForm input:focus-visible,
+.answerForm button:focus-visible,
+.reviewPanel button:focus-visible,
+.quadrantTabs button:focus-visible,
+.toothTarget:focus-visible {
+  outline: 3px solid var(--arcade-cyan);
+  outline-offset: 3px;
+}
+
+.kicker,
+.controlLabel {
+  color: var(--arcade-cyan);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.hero h1 {
+  margin-top: 0.3rem;
+  color: var(--arcade-enamel);
+  font-size: clamp(2.7rem, 8vw, 6.4rem);
+  font-weight: 820;
+  letter-spacing: -0.065em;
+  line-height: 0.9;
+}
+
+.heroCopy {
+  margin-top: 0.65rem;
+  color: var(--arcade-muted);
+  font-size: clamp(0.9rem, 1.8vw, 1.05rem);
+}
+
+.progressCluster {
+  display: grid;
+  min-width: min(100%, 360px);
+  grid-template-columns: repeat(3, minmax(88px, 1fr));
+  border: 1px solid var(--arcade-line);
+  background: rgba(13, 28, 46, 0.86);
+}
+
+.progressCluster > span,
+.liveStats > span {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+}
+
+.progressCluster > span {
+  border-right: 1px solid var(--arcade-line);
+  padding: 0.75rem 0.9rem;
+}
+
+.progressCluster > span:last-child {
+  border-right: 0;
+}
+
+.progressCluster small,
+.liveStats small {
+  color: var(--arcade-muted);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.progressCluster strong,
+.liveStats strong {
+  margin-top: 0.25rem;
+  color: var(--arcade-enamel);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 1.15rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.saveNotice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid var(--arcade-gold);
+  background: rgba(255, 209, 102, 0.08);
+  padding: 0.8rem 1rem;
+}
+
+.saveNotice strong {
+  color: var(--arcade-enamel);
+}
+
+.saveNotice p {
+  margin-top: 0.15rem;
+  color: var(--arcade-muted);
+  font-size: 0.75rem;
+}
+
+.saveActions {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 0.45rem;
+}
+
+.saveNotice button,
+.startButton {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--arcade-cyan);
+  background: var(--arcade-cyan);
+  color: #07111f;
+  padding: 0.65rem 0.9rem;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.saveNotice button:hover,
+.startButton:hover {
+  border-color: var(--arcade-enamel);
+  background: var(--arcade-enamel);
+}
+
+.saveActions button:last-child {
+  border-color: var(--arcade-line);
+  background: transparent;
+  color: var(--arcade-muted);
+}
+
+.saveActions button:last-child:hover {
+  border-color: var(--arcade-danger);
+  background: rgba(255, 107, 122, 0.08);
+  color: var(--arcade-danger);
+}
+
+.saveNotice button:disabled,
+.startButton:disabled {
+  border-color: var(--arcade-line);
+  background: var(--arcade-panel-strong);
+  color: var(--arcade-muted);
+  cursor: wait;
+}
+
+.gameFrame {
+  overflow: hidden;
+  border: 1px solid var(--arcade-line);
+  background: rgba(7, 17, 31, 0.72);
+  box-shadow: 0 24px 90px rgba(0, 0, 0, 0.32);
+}
+
+.controlRail {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid var(--arcade-line);
+  background: rgba(13, 28, 46, 0.94);
+  padding: 0.8rem 1rem;
+}
+
+.modeTabs,
+.dentitionControl > div {
+  display: flex;
+  gap: 0.35rem;
+  margin-top: 0.4rem;
+}
+
+.modeTabs button,
+.dentitionControl button {
+  display: flex;
+  min-height: 48px;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  border: 1px solid var(--arcade-line);
+  background: var(--arcade-bg);
+  color: var(--arcade-muted);
+  padding: 0.45rem 0.7rem;
+  font: inherit;
+  cursor: pointer;
+}
+
+.modeTabs button small {
+  color: var(--arcade-muted);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 0.52rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.modeTabs button span,
+.dentitionControl button {
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.modeTabs button:disabled,
+.dentitionControl button:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.modeTabs .activeMode,
+.dentitionControl .activeDentition {
+  border-color: var(--arcade-cyan);
+  background: rgba(94, 231, 231, 0.09);
+  color: var(--arcade-enamel);
+  box-shadow: inset 0 -2px 0 var(--arcade-cyan);
+}
+
+.dentitionControl button {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.dentitionControl button span {
+  color: var(--arcade-muted);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 0.6rem;
+}
+
+.modeIntro,
+.reviewSummary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid var(--arcade-line);
+  background: rgba(18, 38, 61, 0.68);
+  padding: 1rem 1.2rem;
+}
+
+.modeIntro p,
+.reviewSummary p {
+  color: var(--arcade-cyan);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.modeIntro h2,
+.reviewSummary h2 {
+  margin-top: 0.15rem;
+  color: var(--arcade-enamel);
+  font-size: 1.25rem;
+}
+
+.modeIntro div > span,
+.reviewSummary div > span {
+  display: block;
+  margin-top: 0.2rem;
+  color: var(--arcade-muted);
+  font-size: 0.78rem;
+}
+
+.promptBar {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1rem;
+  border-bottom: 1px solid var(--arcade-line);
+  background: rgba(18, 38, 61, 0.88);
+  padding: 0.8rem 1rem;
+}
+
+.promptIndex {
+  display: grid;
+  width: 3rem;
+  height: 3rem;
+  place-items: center;
+  border: 1px solid var(--arcade-cyan);
+  color: var(--arcade-cyan);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 0.66rem;
+  font-weight: 800;
+}
+
+.promptCopy p {
+  color: var(--arcade-enamel);
+  font-size: clamp(1rem, 2vw, 1.3rem);
+  font-weight: 780;
+}
+
+.promptCopy span {
+  display: block;
+  margin-top: 0.2rem;
+  color: var(--arcade-muted);
+  font-size: 0.75rem;
+}
+
+.liveStats {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.archStage {
+  position: relative;
+  min-height: 500px;
+  overflow: hidden;
+  padding: 1.4rem 1rem 1rem;
+  isolation: isolate;
+}
+
+.archBackdrop {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.archBackdrop span:first-child {
+  position: absolute;
+  left: 50%;
+  top: 48%;
+  width: min(78vw, 850px);
+  height: 330px;
+  border: 1px solid rgba(94, 231, 231, 0.12);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.archBackdrop span:nth-child(2) {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  width: 1px;
+  height: 90%;
+  background: linear-gradient(transparent, rgba(94, 231, 231, 0.12), transparent);
+  transform: translate(-50%, -50%);
+}
+
+.archBackdrop span:last-child {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  width: 90%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(94, 231, 231, 0.1), transparent);
+  transform: translate(-50%, -50%);
+}
+
+.archRoot {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.desktopArch {
+  width: min(1050px, 100%);
+  margin: 0 auto;
+}
+
+.archOrientation {
+  display: flex;
+  justify-content: space-between;
+  color: var(--arcade-muted);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.archRow {
+  display: flex;
+  min-height: 170px;
+  align-items: flex-start;
+  justify-content: center;
+  gap: clamp(0.05rem, 0.6vw, 0.42rem);
+}
+
+.maxillaryRow {
+  padding-top: 0.4rem;
+}
+
+.mandibularRow {
+  align-items: flex-end;
+  padding-bottom: 0.4rem;
+}
+
+.midline {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 0.8rem;
+  margin: -0.6rem 0;
+  color: var(--arcade-muted);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.midline span:first-child {
+  text-align: right;
+}
+
+.midline i {
+  width: 7px;
+  height: 7px;
+  border: 1px solid var(--arcade-cyan);
+  transform: rotate(45deg);
+}
+
+.toothTarget {
+  position: relative;
+  display: flex;
+  width: clamp(46px, 5.2vw, 60px);
+  height: 82px;
+  flex: 0 1 60px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  background: transparent;
+  padding: 0;
+  color: var(--arcade-muted);
+  cursor: pointer;
+  transition: transform 150ms ease, filter 150ms ease, border-color 150ms ease, background 150ms ease;
+}
+
+.toothTarget.upper {
+  transform: translateY(var(--curve));
+}
+
+.toothTarget.lower {
+  transform: translateY(calc(var(--curve) * -1));
+}
+
+.toothTarget:hover:not(:disabled) {
+  border-color: rgba(94, 231, 231, 0.38);
+  background: rgba(94, 231, 231, 0.055);
+  filter: brightness(1.08);
+}
+
+.toothTarget:disabled {
+  cursor: default;
+}
+
+.crown {
+  position: relative;
+  display: block;
+  width: 38px;
+  height: 46px;
+  overflow: hidden;
+  border: 1px solid rgba(7, 17, 31, 0.34);
+  background:
+    radial-gradient(circle at 35% 23%, rgba(255, 255, 255, 0.95) 0 7%, transparent 21%),
+    linear-gradient(145deg, #fffef8 0, #f2edd7 58%, #cfe5df 100%);
+  box-shadow:
+    inset -5px -6px 9px rgba(7, 17, 31, 0.16),
+    inset 4px 4px 7px rgba(255, 255, 255, 0.72),
+    0 5px 10px rgba(0, 0, 0, 0.3);
+  clip-path: polygon(14% 5%, 86% 5%, 100% 28%, 92% 82%, 70% 100%, 30% 100%, 8% 82%, 0 28%);
+  transition: filter 150ms ease, transform 150ms ease;
+}
+
+.mirroredCrown {
+  transform: scaleX(-1);
+}
+
+.cusp,
+.mainGroove,
+.crossGroove,
+.centralPit,
+.incisalEdge {
+  position: absolute;
+  pointer-events: none;
+}
+
+.cusp {
+  display: none;
+  width: 14px;
+  height: 14px;
+  border: 1px solid rgba(76, 91, 88, 0.16);
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 32%, #fff 0 16%, #eee8d3 48%, #b7cec8 100%);
+  box-shadow: 0 1px 2px rgba(7, 17, 31, 0.18);
+}
+
+.crown[data-cusps="1"] .cuspOne,
+.crown[data-cusps="2"] .cuspOne,
+.crown[data-cusps="2"] .cuspTwo,
+.crown[data-cusps="3"] .cuspOne,
+.crown[data-cusps="3"] .cuspTwo,
+.crown[data-cusps="3"] .cuspThree,
+.crown[data-cusps="4"] .cuspOne,
+.crown[data-cusps="4"] .cuspTwo,
+.crown[data-cusps="4"] .cuspThree,
+.crown[data-cusps="4"] .cuspFour,
+.crown[data-cusps="5"] .cuspOne,
+.crown[data-cusps="5"] .cuspTwo,
+.crown[data-cusps="5"] .cuspThree,
+.crown[data-cusps="5"] .cuspFour,
+.crown[data-cusps="5"] .cuspFive {
+  display: block;
+}
+
+.cuspOne { left: 3px; top: 4px; }
+.cuspTwo { right: 3px; top: 5px; }
+.cuspThree { left: 4px; bottom: 4px; }
+.cuspFour { right: 4px; bottom: 4px; }
+.cuspFive { left: 50%; bottom: 1px; width: 11px; height: 11px; transform: translateX(-50%); }
+
+.crown[data-cusps="1"] .cuspOne {
+  left: 50%;
+  top: 28%;
+  width: 18px;
+  height: 18px;
+  transform: translate(-50%, -50%);
+}
+
+.crown[data-cusps="2"] .cuspOne {
+  left: 50%;
+  top: 2px;
+  width: 20px;
+  height: 20px;
+  transform: translateX(-50%);
+}
+
+.crown[data-cusps="2"] .cuspTwo {
+  left: 50%;
+  right: auto;
+  top: auto;
+  bottom: 2px;
+  width: 20px;
+  height: 20px;
+  transform: translateX(-50%);
+}
+
+.crown[data-cusps="3"] .cuspOne { left: 3px; top: 4px; }
+.crown[data-cusps="3"] .cuspTwo { right: 3px; top: 5px; }
+.crown[data-cusps="3"] .cuspThree { left: 50%; bottom: 2px; transform: translateX(-50%); }
+
+.mainGroove {
+  left: 18%;
+  top: 49%;
+  width: 64%;
+  height: 1px;
+  background: rgba(51, 74, 72, 0.42);
+  box-shadow: 0 0 0 0.5px rgba(255, 255, 255, 0.2);
+  transform: rotate(-8deg);
+}
+
+.crossGroove {
+  left: 50%;
+  top: 22%;
+  display: none;
+  width: 1px;
+  height: 56%;
+  background: rgba(51, 74, 72, 0.35);
+}
+
+.centralPit {
+  left: 50%;
+  top: 50%;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: rgba(38, 58, 57, 0.55);
+  transform: translate(-50%, -50%);
+}
+
+.incisalEdge {
+  display: none;
+}
+
+.crown[data-type="incisor"] {
+  width: 29px;
+  height: 44px;
+  clip-path: polygon(8% 2%, 92% 2%, 82% 96%, 18% 96%);
+}
+
+.crown[data-type="incisor"] .cusp,
+.crown[data-type="incisor"] .mainGroove,
+.crown[data-type="incisor"] .centralPit {
+  display: none;
+}
+
+.crown[data-type="incisor"] .incisalEdge {
+  left: 12%;
+  top: 5px;
+  display: block;
+  width: 76%;
+  height: 2px;
+  border-radius: 999px;
+  background: rgba(84, 104, 101, 0.38);
+}
+
+.crown[data-type="canine"] {
+  width: 34px;
+  height: 46px;
+  clip-path: polygon(50% 0, 91% 30%, 80% 82%, 62% 100%, 34% 96%, 12% 78%, 7% 31%);
+}
+
+.crown[data-type="canine"] .mainGroove {
+  left: 49%;
+  top: 25%;
+  width: 1px;
+  height: 52%;
+  transform: rotate(7deg);
+}
+
+.crown[data-type="premolar"] {
+  width: 36px;
+  height: 43px;
+  border-radius: 46% 54% 48% 52%;
+  clip-path: ellipse(49% 48% at 50% 50%);
+}
+
+.crown[data-type="premolar"] .mainGroove {
+  left: 50%;
+  top: 18%;
+  width: 1px;
+  height: 64%;
+  transform: none;
+}
+
+.crown[data-type="molar"] {
+  width: 43px;
+  height: 46px;
+}
+
+.crown[data-profile="molar-heart-variable"] .crossGroove {
+  display: block;
+  left: 42%;
+  top: 36%;
+  height: 34%;
+  transform: rotate(28deg);
+}
+
+.crown[data-profile="molar-rhomboid-tapered"] .crossGroove,
+.crown[data-profile="molar-rhomboid-carabelli"] .crossGroove,
+.crown[data-profile="primary-molar-rhomboid-four"] .crossGroove {
+  left: 14%;
+  top: 50%;
+  display: block;
+  width: 72%;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 1px 0 rgba(51, 74, 72, 0.35);
+  transform: rotate(-34deg);
+}
+
+.crown[data-profile="molar-rounded-variable"] .crossGroove {
+  left: 48%;
+  top: 24%;
+  display: block;
+  height: 54%;
+  transform: rotate(18deg);
+}
+
+.crown[data-profile="molar-rectangle-cross"] .crossGroove {
+  display: block;
+}
+
+.crown[data-profile="molar-pentagonal-five"] .mainGroove,
+.crown[data-profile="primary-molar-rectangle-five"] .mainGroove {
+  left: 48%;
+  top: 20%;
+  width: 1px;
+  height: 58%;
+  transform: rotate(-24deg);
+  transform-origin: bottom;
+}
+
+.crown[data-profile="molar-pentagonal-five"] .crossGroove,
+.crown[data-profile="primary-molar-rectangle-five"] .crossGroove {
+  left: 52%;
+  top: 20%;
+  display: block;
+  height: 58%;
+  transform: rotate(28deg);
+  transform-origin: bottom;
+}
+
+.crown[data-profile="primary-molar-trapezoid-bulge"] .mainGroove {
+  left: 27%;
+  width: 46%;
+  transform: rotate(4deg);
+}
+
+.crown[data-profile="primary-molar-elongated-four"] .mainGroove {
+  left: 50%;
+  top: 18%;
+  width: 1px;
+  height: 65%;
+  transform: rotate(-5deg);
+}
+
+.crown[data-profile="premolar-oval-balanced"] .crossGroove {
+  left: 27%;
+  top: 51%;
+  display: block;
+  width: 46%;
+  height: 1px;
+}
+
+.crown[data-profile="premolar-rounded-three"] .mainGroove {
+  left: 48%;
+  top: 24%;
+  width: 1px;
+  height: 52%;
+  transform: rotate(-24deg);
+  transform-origin: bottom;
+}
+
+.crown[data-profile="premolar-rounded-three"] .crossGroove {
+  left: 52%;
+  top: 24%;
+  display: block;
+  height: 52%;
+  transform: rotate(26deg);
+  transform-origin: bottom;
+}
+
+.crown[data-profile="premolar-diamond-dominant"] .mainGroove {
+  left: 49%;
+  top: 35%;
+  width: 1px;
+  height: 30%;
+  transform: none;
+}
+
+.crown[data-profile="premolar-diamond-dominant"] .crossGroove {
+  left: 17%;
+  top: 49%;
+  display: block;
+  width: 66%;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.46);
+  box-shadow: 0 1px 0 rgba(51, 74, 72, 0.3);
+}
+
+/* Template-specific occlusal silhouettes. Mirroring supplies the opposite side. */
+.crown[data-profile="molar-heart-variable"] {
+  width: 41px;
+  clip-path: polygon(8% 14%, 35% 2%, 50% 15%, 66% 1%, 92% 14%, 100% 48%, 77% 94%, 50% 100%, 16% 86%, 0 45%);
+}
+
+.crown[data-profile="molar-rhomboid-tapered"],
+.crown[data-profile="primary-molar-rhomboid-four"] {
+  clip-path: polygon(22% 0, 100% 12%, 82% 100%, 0 84%);
+}
+
+.crown[data-profile="molar-rhomboid-carabelli"] {
+  width: 46px;
+  clip-path: polygon(19% 0, 94% 8%, 100% 69%, 77% 100%, 4% 87%, 0 22%);
+}
+
+.crown[data-profile="molar-rhomboid-carabelli"] .cuspFive {
+  left: 5px;
+  bottom: 7px;
+  display: block;
+  width: 8px;
+  height: 8px;
+  transform: none;
+}
+
+.crown[data-profile="molar-rounded-variable"] {
+  border-radius: 35% 46% 41% 33%;
+  clip-path: polygon(15% 1%, 77% 4%, 100% 30%, 91% 85%, 62% 100%, 11% 91%, 0 42%);
+}
+
+.crown[data-profile="molar-rectangle-cross"] {
+  width: 44px;
+  border-radius: 22%;
+  clip-path: polygon(9% 0, 91% 0, 100% 15%, 94% 92%, 82% 100%, 13% 96%, 0 82%, 1% 16%);
+}
+
+.crown[data-profile="molar-pentagonal-five"] {
+  width: 47px;
+  clip-path: polygon(11% 0, 79% 1%, 100% 37%, 89% 92%, 46% 100%, 5% 79%, 0 28%);
+}
+
+.crown[data-profile="premolar-oval-balanced"] {
+  width: 36px;
+  border-radius: 48%;
+}
+
+.crown[data-profile="premolar-hexagonal-sharp"] {
+  width: 38px;
+  border-radius: 0;
+  clip-path: polygon(25% 0, 77% 0, 100% 30%, 82% 100%, 18% 98%, 0 31%);
+}
+
+.crown[data-profile="premolar-rounded-three"] {
+  width: 39px;
+  border-radius: 44% 44% 51% 49%;
+  clip-path: ellipse(49% 48% at 50% 50%);
+}
+
+.crown[data-profile="premolar-diamond-dominant"] {
+  width: 37px;
+  border-radius: 0;
+  clip-path: polygon(50% 0, 100% 45%, 52% 100%, 0 52%);
+}
+
+.crown[data-profile="canine-pentagonal-broad"],
+.crown[data-profile="primary-canine-broad"] {
+  width: 37px;
+  clip-path: polygon(50% 0, 96% 31%, 83% 84%, 59% 100%, 28% 94%, 5% 69%, 7% 29%);
+}
+
+.crown[data-profile="canine-pentagonal-narrow"],
+.crown[data-profile="primary-canine-narrow"] {
+  width: 30px;
+  clip-path: polygon(50% 0, 90% 31%, 78% 86%, 57% 100%, 28% 93%, 9% 68%, 11% 28%);
+}
+
+.crown[data-profile="incisor-rounded-narrow"],
+.crown[data-profile="primary-incisor-rounded"] {
+  width: 27px;
+  border-radius: 34% 34% 18% 18%;
+  clip-path: polygon(14% 2%, 86% 2%, 93% 18%, 77% 96%, 23% 96%, 7% 18%);
+}
+
+.crown[data-profile="incisor-chisel-broad"],
+.crown[data-profile="primary-incisor-chisel-broad"] {
+  width: 33px;
+  clip-path: polygon(4% 2%, 96% 2%, 82% 96%, 18% 96%);
+}
+
+.crown[data-profile="incisor-chisel-twisted"] {
+  width: 27px;
+  clip-path: polygon(2% 9%, 89% 0, 100% 16%, 75% 98%, 18% 92%);
+}
+
+.crown[data-profile="incisor-chisel-slim"],
+.crown[data-profile="primary-incisor-chisel-slim"] {
+  width: 24px;
+  clip-path: polygon(7% 2%, 93% 2%, 78% 97%, 22% 97%);
+}
+
+.crown[data-profile="primary-molar-trapezoid-bulge"] {
+  width: 41px;
+  clip-path: polygon(14% 0, 86% 3%, 100% 30%, 89% 91%, 68% 100%, 19% 91%, 0 49%, 2% 21%);
+}
+
+.crown[data-profile="primary-molar-rectangle-five"] {
+  width: 43px;
+  clip-path: polygon(8% 0, 89% 0, 100% 18%, 93% 86%, 75% 100%, 12% 94%, 0 72%, 1% 17%);
+}
+
+.crown[data-profile="primary-molar-elongated-four"] {
+  width: 38px;
+  height: 48px;
+  clip-path: polygon(13% 0, 88% 4%, 100% 22%, 92% 89%, 73% 100%, 12% 92%, 0 69%, 2% 17%);
+}
+
+.crown[data-profile="primary-incisor-sloped"] {
+  width: 25px;
+  clip-path: polygon(4% 7%, 92% 0, 83% 97%, 18% 91%);
+}
+
+.toothLabel {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  min-width: 1.45rem;
+  border: 1px solid transparent;
+  color: transparent;
+  padding: 0.1rem 0.2rem;
+  font-family: var(--font-mono-app), monospace;
+  font-size: 0.62rem;
+  font-weight: 800;
+  text-align: center;
+  transform: translateX(-50%);
+}
+
+.labelVisible {
+  border-color: var(--arcade-line);
+  background: rgba(7, 17, 31, 0.9);
+  color: var(--arcade-muted);
+}
+
+.toothHighlighted {
+  border-color: var(--arcade-gold);
+  background: rgba(255, 209, 102, 0.09);
+  animation: targetPulse 1.05s ease-in-out infinite alternate;
+}
+
+.toothHighlighted .crown {
+  filter: drop-shadow(0 0 9px rgba(255, 209, 102, 0.75));
+}
+
+.toothSelected {
+  border-color: rgba(94, 231, 231, 0.7);
+  background: rgba(94, 231, 231, 0.07);
+}
+
+.toothSelected .crown {
+  filter: drop-shadow(0 0 6px rgba(94, 231, 231, 0.48));
+}
+
+.toothCorrect {
+  border-color: var(--arcade-cyan);
+  background: rgba(94, 231, 231, 0.12);
+}
+
+.toothCorrect .crown {
+  filter: drop-shadow(0 0 8px rgba(94, 231, 231, 0.8));
+}
+
+.toothWrong {
+  border-color: var(--arcade-danger);
+  background: rgba(255, 107, 122, 0.12);
+}
+
+.toothWrong .crown {
+  filter: drop-shadow(0 0 8px rgba(255, 107, 122, 0.75));
+}
+
+.toothRevealed:not(.toothCorrect):not(.toothWrong) {
+  border-color: var(--arcade-gold);
+}
+
+.mobileArch {
+  display: none;
+}
+
+.answerForm {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  border-top: 1px solid var(--arcade-line);
+  padding: 0.85rem 1rem;
+}
+
+.answerForm > label {
+  color: var(--arcade-enamel);
+  font-size: 0.78rem;
+  font-weight: 750;
+}
+
+.answerForm > div {
+  display: flex;
+}
+
+.answerForm input {
+  width: 8rem;
+  min-height: 44px;
+  border: 1px solid var(--arcade-line);
+  border-right: 0;
+  background: var(--arcade-bg);
+  color: var(--arcade-enamel);
+  padding: 0.55rem 0.7rem;
+  font-family: var(--font-mono-app), monospace;
+  font-size: 1rem;
+  font-weight: 700;
+  outline: none;
+  text-transform: uppercase;
+}
+
+.answerForm button {
+  min-height: 44px;
+  border: 1px solid var(--arcade-cyan);
+  background: var(--arcade-cyan);
+  color: #07111f;
+  padding: 0.55rem 0.8rem;
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.answerForm button:disabled,
+.answerForm input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.answerForm > span {
+  color: var(--arcade-muted);
+  font-size: 0.68rem;
+}
+
+.feedback {
+  min-height: 2.5rem;
+  border-top: 1px solid var(--arcade-line);
+  padding: 0.65rem 1rem;
+  color: transparent;
+  font-family: var(--font-mono-app), monospace;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.feedbackCorrect {
+  background: rgba(94, 231, 231, 0.08);
+  color: var(--arcade-cyan);
+}
+
+.feedbackWrong {
+  background: rgba(255, 107, 122, 0.08);
+  color: var(--arcade-danger);
+}
+
+.toothInspector {
+  display: grid;
+  grid-template-columns: minmax(240px, 0.75fr) minmax(0, 1.55fr);
+  gap: 1rem;
+  border-top: 1px solid var(--arcade-line);
+  background: rgba(13, 28, 46, 0.9);
+  padding: 1rem;
+}
+
+.inspectorIdentity {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.codeTile {
+  display: grid;
+  width: 3.2rem;
+  height: 3.2rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid var(--arcade-cyan);
+  color: var(--arcade-cyan);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 1.15rem;
+  font-weight: 800;
+}
+
+.inspectorIdentity p {
+  color: var(--arcade-muted);
+  font-size: 0.68rem;
+  text-transform: capitalize;
+}
+
+.inspectorIdentity h2 {
+  margin-top: 0.2rem;
+  color: var(--arcade-enamel);
+  font-size: 1.1rem;
+}
+
+.toothInspector dl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.toothInspector dl > div {
+  border: 1px solid var(--arcade-line);
+  background: var(--arcade-bg);
+  padding: 0.55rem 0.65rem;
+}
+
+.toothInspector dt {
+  color: var(--arcade-cyan);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.toothInspector dd {
+  margin-top: 0.2rem;
+  color: var(--arcade-muted);
+  font-size: 0.72rem;
+  line-height: 1.45;
+  text-transform: capitalize;
+}
+
+.studyCue {
+  grid-column: 1 / -1;
+  color: var(--arcade-muted);
+  font-size: 0.65rem;
+}
+
+.reviewPanel {
+  border-top: 1px solid var(--arcade-line);
+  background: rgba(13, 28, 46, 0.94);
+}
+
+.reviewList {
+  max-height: 430px;
+  overflow-y: auto;
+  padding: 0.65rem;
+}
+
+.reviewList li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.8rem;
+  border: 1px solid var(--arcade-line);
+  border-bottom: 0;
+  padding: 0.65rem 0.75rem;
+}
+
+.reviewList li:last-child {
+  border-bottom: 1px solid var(--arcade-line);
+}
+
+.reviewList li > span {
+  color: var(--arcade-muted);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 0.65rem;
+}
+
+.reviewList p {
+  color: var(--arcade-enamel);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.reviewList small {
+  display: block;
+  margin-top: 0.15rem;
+  color: var(--arcade-muted);
+  font-size: 0.68rem;
+}
+
+.reviewList strong {
+  font-family: var(--font-mono-app), monospace;
+  font-size: 0.65rem;
+  text-align: right;
+}
+
+.reviewCorrect strong {
+  color: var(--arcade-cyan);
+}
+
+.reviewWrong strong {
+  color: var(--arcade-danger);
+}
+
+.gameFooter {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-top: 1rem;
+  color: var(--arcade-muted);
+  font-size: 0.68rem;
+  line-height: 1.5;
+}
+
+.gameFooter p {
+  max-width: 620px;
+}
+
+.gameFooter a {
+  color: var(--arcade-cyan);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+@keyframes targetPulse {
+  from { box-shadow: 0 0 0 rgba(255, 209, 102, 0); }
+  to { box-shadow: 0 0 18px rgba(255, 209, 102, 0.22); }
+}
+
+@media (max-width: 920px) {
+  .hero {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .progressCluster {
+    width: 100%;
+  }
+
+  .controlRail {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .promptBar {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .liveStats {
+    grid-column: 1 / -1;
+    justify-content: flex-end;
+    border-top: 1px solid var(--arcade-line);
+    padding-top: 0.55rem;
+  }
+
+  .toothInspector {
+    grid-template-columns: 1fr;
+  }
+
+  .studyCue {
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 767px) {
+  .page {
+    padding-top: 1rem;
+  }
+
+  .hero h1 {
+    font-size: clamp(3.2rem, 19vw, 5rem);
+  }
+
+  .modeTabs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .modeTabs button {
+    width: 100%;
+  }
+
+  .dentitionControl > div {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .modeIntro,
+  .reviewSummary,
+  .saveNotice {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .saveActions {
+    width: 100%;
+  }
+
+  .saveActions button {
+    flex: 1;
+  }
+
+  .archStage {
+    min-height: 340px;
+    padding: 1rem 0.75rem;
+  }
+
+  .desktopArch {
+    display: none;
+  }
+
+  .mobileArch {
+    display: block;
+  }
+
+  .quadrantTabs {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.3rem;
+  }
+
+  .quadrantTabs button {
+    display: flex;
+    min-height: 54px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--arcade-line);
+    background: var(--arcade-bg);
+    color: var(--arcade-muted);
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .quadrantTabs button > span {
+    font-family: var(--font-mono-app), monospace;
+    font-size: 0.72rem;
+    font-weight: 800;
+  }
+
+  .quadrantTabs button small {
+    margin-top: 0.1rem;
+    font-size: 0.48rem;
+  }
+
+  .quadrantTabs button:disabled {
+    cursor: default;
+    opacity: 0.42;
+  }
+
+  .quadrantTabs .activeQuadrant {
+    border-color: var(--arcade-cyan);
+    background: rgba(94, 231, 231, 0.09);
+    color: var(--arcade-cyan);
+    opacity: 1;
+  }
+
+  .mobileQuadrantPanel {
+    margin-top: 0.65rem;
+    border: 1px solid var(--arcade-line);
+    background: rgba(13, 28, 46, 0.72);
+    padding: 0.7rem 0.45rem;
+  }
+
+  .mobileQuadrantPanel > p {
+    color: var(--arcade-cyan);
+    font-family: var(--font-mono-app), monospace;
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .mobileToothRow {
+    display: flex;
+    min-height: 115px;
+    align-items: center;
+    justify-content: center;
+    gap: 0.2rem;
+    margin-top: 0.35rem;
+  }
+
+  .mobileToothRow .toothTarget {
+    width: clamp(48px, 17vw, 62px);
+    min-width: 48px;
+    transform: none;
+  }
+
+  .mobileOrientation {
+    display: block;
+    color: var(--arcade-muted);
+    font-family: var(--font-mono-app), monospace;
+    font-size: 0.54rem;
+    text-align: center;
+  }
+
+  .answerForm {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .answerForm > div,
+  .answerForm input {
+    width: 100%;
+  }
+
+  .toothInspector dl {
+    grid-template-columns: 1fr;
+  }
+
+  .reviewList li {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .reviewList strong {
+    grid-column: 2;
+    text-align: left;
+  }
+
+  .gameFooter {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 480px) {
+  .progressCluster {
+    grid-template-columns: 1fr;
+  }
+
+  .progressCluster > span {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    border-right: 0;
+    border-bottom: 1px solid var(--arcade-line);
+  }
+
+  .progressCluster > span:last-child {
+    border-bottom: 0;
+  }
+
+  .promptBar {
+    grid-template-columns: 1fr;
+  }
+
+  .promptIndex {
+    width: auto;
+    height: 2rem;
+  }
+
+  .liveStats {
+    grid-column: auto;
+    justify-content: space-between;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toothHighlighted {
+    animation: none;
+  }
+
+  .toothTarget,
+  .crown {
+    transition: none;
+  }
+}

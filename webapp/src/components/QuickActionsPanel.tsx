@@ -28,6 +28,12 @@ const STUDENT_ACTIONS: ActionLink[] = [
     indicator: "blue",
   },
   {
+    href: "/games",
+    label: "Study Games",
+    detail: "Practice tooth ID",
+    indicator: "blue",
+  },
+  {
     href: "https://cmms.serviceinsight.cbre.com/requests",
     label: "CBRE Maintenance",
     detail: "Building request",
