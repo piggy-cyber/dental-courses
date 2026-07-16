@@ -44,6 +44,7 @@ export function CampusMapPanel() {
               alt={current.alt}
               fill
               className="object-contain"
+              loading="eager"
               onError={() => setHasImages(false)}
               sizes="(max-width: 768px) 100vw, 40vw"
             />
