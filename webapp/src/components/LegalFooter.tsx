@@ -14,6 +14,10 @@ const LEGAL_LINKS = [
 export function LegalFooter() {
   const pathname = usePathname();
   const isGame = pathname === "/games" || pathname.startsWith("/games/");
+  const hasIntegratedFooter = pathname === "/about" || pathname === "/ui-preview";
+
+  if (hasIntegratedFooter) return null;
+
   return (
     <footer className={`${isGame ? "" : "fc-site"} site-legal-footer border-t border-brand-line bg-brand-panel text-brand-muted`}>
       <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-6 sm:px-6 lg:px-8">

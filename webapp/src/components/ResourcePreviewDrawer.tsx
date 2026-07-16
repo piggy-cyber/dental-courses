@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { createPortal } from "react-dom";
 import { ResourcePreviewPanel } from "@/components/ResourcePreviewPanel";
 
 export function ResourcePreviewDrawer({
@@ -29,7 +30,7 @@ export function ResourcePreviewDrawer({
 
   if (!open) return null;
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center sm:p-4">
       <button
         type="button"
@@ -64,6 +65,7 @@ export function ResourcePreviewDrawer({
           <ResourcePreviewPanel resourceId={resourceId} />
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }

@@ -24,8 +24,8 @@ export function ResourceFileRow({ resource }: { resource: CourseResource }) {
 
 const ESSENTIAL_ACCENTS = {
   Syllabus: "border-l-brand-blue",
-  "Cheat sheet": "border-l-brand-gold",
-  "Textbook version": "border-l-brand-teal",
+  "Course Mastery Guide": "border-l-brand-gold",
+  "Textbook companion": "border-l-brand-teal",
 } as const;
 
 export function CourseEssentialsPanel({
@@ -40,12 +40,12 @@ export function CourseEssentialsPanel({
       resources: essentials.syllabus,
     },
     {
-      label: "Cheat sheet" as const,
-      description: "Condensed mastery guide for quick review.",
+      label: "Course Mastery Guide" as const,
+      description: "A focused course guide for efficient review.",
       resources: essentials.masteryGuide,
     },
     {
-      label: "Textbook version" as const,
+      label: "Textbook companion" as const,
       description: "Long-form companion for deeper study.",
       resources: essentials.textbookCompanion,
     },
@@ -64,7 +64,7 @@ export function CourseEssentialsPanel({
           const accent = ESSENTIAL_ACCENTS[label];
 
           return (
-            <article key={label} className={`app-card border-l-4 p-5 ${accent}`}>
+            <article key={label} className={`app-card min-w-0 border-l-4 p-5 ${accent}`}>
               <div>
                 <h3 className="font-semibold text-brand-navy">{label}</h3>
                 <p className="mt-1 text-sm text-brand-muted">{description}</p>
