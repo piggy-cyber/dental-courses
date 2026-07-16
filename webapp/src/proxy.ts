@@ -37,6 +37,7 @@ export async function proxy(request: NextRequest) {
   const path = request.nextUrl.pathname;
   const isPublic =
     path === "/" ||
+    path === "/ui-preview" ||
     path === "/about" ||
     path === "/legal" ||
     path === "/robots.txt" ||
