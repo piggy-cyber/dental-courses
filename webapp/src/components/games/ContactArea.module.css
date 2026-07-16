@@ -1,0 +1,1079 @@
+.page {
+  width: min(1240px, 100%);
+  margin: 0 auto;
+  padding: clamp(1.5rem, 4vw, 3rem) clamp(1rem, 3vw, 2rem) 4rem;
+}
+
+.hero {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.backLink {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--arcade-muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.backLink:hover {
+  color: var(--arcade-cyan);
+}
+
+.kicker,
+.controlLabel,
+.sectionHeading p,
+.challengeIntro p {
+  color: var(--arcade-cyan);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.hero h1 {
+  margin-top: 0.3rem;
+  color: var(--arcade-enamel);
+  font-size: clamp(2.7rem, 8vw, 6.2rem);
+  font-weight: 820;
+  letter-spacing: -0.065em;
+  line-height: 0.9;
+}
+
+.heroCopy {
+  max-width: 660px;
+  margin-top: 0.65rem;
+  color: var(--arcade-muted);
+  font-size: clamp(0.9rem, 1.8vw, 1.05rem);
+}
+
+.progressCluster {
+  display: grid;
+  min-width: min(100%, 360px);
+  grid-template-columns: repeat(3, minmax(88px, 1fr));
+  border: 1px solid var(--arcade-line);
+  background: rgba(13, 28, 46, 0.86);
+}
+
+.progressCluster > span,
+.liveStats > span {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+}
+
+.progressCluster > span {
+  border-right: 1px solid var(--arcade-line);
+  padding: 0.75rem 0.9rem;
+}
+
+.progressCluster > span:last-child {
+  border-right: 0;
+}
+
+.progressCluster small,
+.liveStats small {
+  color: var(--arcade-muted);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 0.56rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.progressCluster strong,
+.liveStats strong {
+  margin-top: 0.25rem;
+  color: var(--arcade-enamel);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 1.08rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.saveNotice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid var(--arcade-gold);
+  background: rgba(255, 209, 102, 0.08);
+  padding: 0.8rem 1rem;
+}
+
+.saveNotice strong {
+  color: var(--arcade-enamel);
+}
+
+.saveNotice p {
+  margin-top: 0.15rem;
+  color: var(--arcade-muted);
+  font-size: 0.75rem;
+}
+
+.saveNotice > div:last-child {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 0.45rem;
+}
+
+.saveNotice button,
+.challengeIntro button,
+.reviewSummary button,
+.feedbackPanel button {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--arcade-cyan);
+  background: var(--arcade-cyan);
+  color: #07111f;
+  padding: 0.65rem 0.9rem;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.saveNotice button:last-child {
+  border-color: var(--arcade-line);
+  background: transparent;
+  color: var(--arcade-muted);
+}
+
+.saveNotice button:disabled,
+.challengeIntro button:disabled,
+.reviewSummary button:disabled {
+  border-color: var(--arcade-line);
+  background: var(--arcade-panel-strong);
+  color: var(--arcade-muted);
+  cursor: wait;
+}
+
+.gameFrame {
+  overflow: hidden;
+  border: 1px solid var(--arcade-line);
+  background: rgba(7, 17, 31, 0.74);
+  box-shadow: 0 24px 90px rgba(0, 0, 0, 0.32);
+}
+
+.controlRail {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid var(--arcade-line);
+  background: rgba(13, 28, 46, 0.95);
+  padding: 0.8rem 1rem;
+}
+
+.modeTabs {
+  display: flex;
+  gap: 0.35rem;
+  margin-top: 0.4rem;
+}
+
+.modeTabs button {
+  display: flex;
+  min-width: 120px;
+  min-height: 50px;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  border: 1px solid var(--arcade-line);
+  background: var(--arcade-bg);
+  color: var(--arcade-muted);
+  padding: 0.45rem 0.7rem;
+  font: inherit;
+  cursor: pointer;
+}
+
+.modeTabs button small {
+  font-family: var(--font-mono-app), monospace;
+  font-size: 0.52rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.modeTabs button span {
+  margin-top: 0.15rem;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.modeTabs .activeMode {
+  border-color: var(--arcade-cyan);
+  background: rgba(94, 231, 231, 0.09);
+  color: var(--arcade-enamel);
+  box-shadow: inset 0 -2px 0 var(--arcade-cyan);
+}
+
+.modeTabs button:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.evidenceKey,
+.verifiedBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--arcade-muted);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 0.62rem;
+}
+
+.evidenceKey span,
+.verifiedBadge span {
+  width: 0.55rem;
+  height: 0.55rem;
+  border: 1px solid var(--arcade-cyan);
+  border-radius: 50%;
+  background: rgba(94, 231, 231, 0.35);
+  box-shadow: 0 0 12px rgba(94, 231, 231, 0.5);
+}
+
+.studyLab,
+.challengeStage,
+.reviewPanel {
+  padding: 1rem;
+}
+
+.studyToolbar,
+.challengeIntro,
+.reviewSummary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border: 1px solid var(--arcade-line);
+  background: rgba(18, 38, 61, 0.68);
+  padding: 0.9rem 1rem;
+}
+
+.studyToolbar > button {
+  display: grid;
+  width: 46px;
+  height: 46px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid var(--arcade-line);
+  background: var(--arcade-bg);
+  color: var(--arcade-cyan);
+  font: inherit;
+  font-size: 1.15rem;
+  cursor: pointer;
+}
+
+.studyToolbar > div {
+  min-width: 0;
+  text-align: center;
+}
+
+.studyToolbar p,
+.panelHeading span,
+.zoneControls > div > span,
+.explanationBlock span,
+.trapBlock span {
+  color: var(--arcade-muted);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 0.57rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.studyToolbar h2 {
+  margin-top: 0.2rem;
+  color: var(--arcade-enamel);
+  font-size: clamp(1rem, 2.5vw, 1.45rem);
+}
+
+.archPanel,
+.zonePanel,
+.studyCard,
+.answerPanel {
+  border: 1px solid var(--arcade-line);
+  background: rgba(13, 28, 46, 0.84);
+}
+
+.archPanel {
+  margin-top: 0.75rem;
+  padding: 0.7rem;
+}
+
+.panelHeading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0 0.25rem 0.55rem;
+}
+
+.panelHeading strong {
+  color: var(--arcade-cyan);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+}
+
+.archDiagram {
+  display: block;
+  width: 100%;
+  min-height: 190px;
+  border: 1px solid rgba(36, 65, 94, 0.62);
+  background:
+    radial-gradient(circle at 50% 50%, rgba(94, 231, 231, 0.08), transparent 50%),
+    rgba(7, 17, 31, 0.65);
+}
+
+.archGuide {
+  fill: none;
+  stroke: rgba(94, 231, 231, 0.16);
+  stroke-width: 1.5;
+}
+
+.archMidline {
+  stroke: rgba(255, 209, 102, 0.26);
+  stroke-dasharray: 4 5;
+}
+
+.archTooth,
+.archToothActive {
+  transition: filter 160ms ease, opacity 160ms ease;
+}
+
+.archTooth path:first-child {
+  fill: #d6e5df;
+  stroke: rgba(7, 17, 31, 0.68);
+  stroke-width: 1.4;
+}
+
+.archTooth {
+  opacity: 0.68;
+}
+
+.archToothActive {
+  filter: drop-shadow(0 0 9px rgba(94, 231, 231, 0.86));
+}
+
+.archToothActive path:first-child {
+  fill: var(--arcade-cyan);
+  stroke: var(--arcade-enamel);
+  stroke-width: 2.2;
+}
+
+.toothDetail {
+  fill: none;
+  stroke: rgba(7, 17, 31, 0.42);
+  stroke-linecap: round;
+  stroke-width: 1.2;
+}
+
+.archToothLabel {
+  fill: var(--arcade-gold);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 11px;
+  font-weight: 800;
+  text-anchor: middle;
+}
+
+.archCaption {
+  fill: var(--arcade-muted);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.studyGrid,
+.challengeGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.zonePanel,
+.answerPanel {
+  min-width: 0;
+  padding: 0.8rem;
+}
+
+.zoneControls {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.zoneControls > div > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin-top: 0.35rem;
+}
+
+.zoneControls button {
+  min-height: 42px;
+  border: 1px solid var(--arcade-line);
+  background: var(--arcade-bg);
+  color: var(--arcade-muted);
+  padding: 0.45rem 0.65rem;
+  font: inherit;
+  font-size: 0.68rem;
+  font-weight: 750;
+  text-transform: capitalize;
+  cursor: pointer;
+}
+
+.zoneControls .activeControl {
+  border-color: var(--arcade-cyan);
+  background: rgba(94, 231, 231, 0.09);
+  color: var(--arcade-enamel);
+}
+
+.zoneDiagram {
+  display: block;
+  width: min(100%, 570px);
+  min-height: 330px;
+  margin: 0.25rem auto 0;
+  touch-action: manipulation;
+}
+
+.zoneToothBase {
+  fill: #f3f0df;
+  opacity: 0.18;
+}
+
+.zoneTarget {
+  fill: rgba(110, 140, 255, 0.14);
+  stroke: rgba(156, 180, 201, 0.22);
+  stroke-width: 2;
+  cursor: pointer;
+  transition: fill 140ms ease, stroke 140ms ease;
+}
+
+.zoneTarget:hover,
+.zoneTarget:focus-visible {
+  fill: rgba(94, 231, 231, 0.26);
+  stroke: var(--arcade-cyan);
+  outline: none;
+}
+
+.zoneSelected {
+  fill: rgba(110, 140, 255, 0.42);
+  stroke: var(--arcade-blue);
+}
+
+.zoneAccepted {
+  fill: rgba(94, 231, 153, 0.42);
+  stroke: #5ee799;
+  stroke-width: 3;
+}
+
+.zoneWrong {
+  fill: rgba(255, 107, 122, 0.4);
+  stroke: var(--arcade-danger);
+}
+
+.zoneToothOutline {
+  fill: none;
+  stroke: var(--arcade-enamel);
+  stroke-width: 4;
+  pointer-events: none;
+}
+
+.toothMorphologyLine {
+  fill: none;
+  stroke: rgba(255, 249, 233, 0.42);
+  stroke-linecap: round;
+  stroke-width: 3;
+  pointer-events: none;
+}
+
+.surfaceFocusLine {
+  fill: none;
+  stroke: var(--arcade-gold);
+  stroke-linecap: round;
+  stroke-width: 7;
+  filter: drop-shadow(0 0 7px rgba(255, 209, 102, 0.5));
+  pointer-events: none;
+}
+
+.surfaceAxisLabel,
+.zoneAxisLabel,
+.surfaceBadge {
+  fill: var(--arcade-muted);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 13px;
+  font-weight: 750;
+  pointer-events: none;
+}
+
+.surfaceAxisLabel {
+  fill: var(--arcade-gold);
+  font-size: 18px;
+}
+
+.surfaceBadge {
+  fill: var(--arcade-enamel);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+}
+
+.zoneLegend,
+.touchHint {
+  color: var(--arcade-muted);
+  font-size: 0.69rem;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.studyCard {
+  padding: 1rem;
+}
+
+.studyCard dl {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin-top: 0.8rem;
+  border-left: 1px solid var(--arcade-line);
+  border-top: 1px solid var(--arcade-line);
+}
+
+.studyCard dl div {
+  min-width: 0;
+  border-bottom: 1px solid var(--arcade-line);
+  border-right: 1px solid var(--arcade-line);
+  padding: 0.65rem;
+}
+
+.studyCard dt {
+  color: var(--arcade-muted);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 0.55rem;
+  text-transform: uppercase;
+}
+
+.studyCard dd {
+  margin-top: 0.25rem;
+  color: var(--arcade-enamel);
+  font-size: 0.76rem;
+  line-height: 1.35;
+}
+
+.explanationBlock,
+.trapBlock {
+  margin-top: 0.8rem;
+  border-left: 3px solid var(--arcade-cyan);
+  background: rgba(94, 231, 231, 0.055);
+  padding: 0.75rem;
+}
+
+.trapBlock {
+  border-left-color: var(--arcade-gold);
+  background: rgba(255, 209, 102, 0.055);
+}
+
+.explanationBlock p,
+.trapBlock p {
+  margin-top: 0.35rem;
+  color: var(--arcade-muted);
+  font-size: 0.76rem;
+  line-height: 1.55;
+}
+
+.clinicalNote {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+  border: 1px solid var(--arcade-line);
+  background: rgba(7, 17, 31, 0.55);
+  padding: 0.8rem 1rem;
+}
+
+.clinicalNote strong {
+  flex: 0 0 auto;
+  color: var(--arcade-cyan);
+  font-size: 0.72rem;
+}
+
+.clinicalNote p {
+  color: var(--arcade-muted);
+  font-size: 0.72rem;
+  line-height: 1.5;
+}
+
+.challengeIntro {
+  margin: 1rem;
+  padding: clamp(1rem, 3vw, 1.5rem);
+}
+
+.challengeIntro h2,
+.reviewSummary h2,
+.sectionHeading h3 {
+  margin-top: 0.2rem;
+  color: var(--arcade-enamel);
+  font-size: clamp(1.2rem, 3vw, 1.7rem);
+}
+
+.challengeIntro div > span,
+.reviewSummary div > span {
+  display: block;
+  margin-top: 0.3rem;
+  color: var(--arcade-muted);
+  font-size: 0.78rem;
+}
+
+.promptBar {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1rem;
+  border: 1px solid var(--arcade-line);
+  background: rgba(18, 38, 61, 0.88);
+  padding: 0.8rem 1rem;
+}
+
+.promptIndex {
+  display: grid;
+  width: 3rem;
+  height: 3rem;
+  place-items: center;
+  border: 1px solid var(--arcade-cyan);
+  color: var(--arcade-cyan);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 0.66rem;
+  font-weight: 800;
+}
+
+.promptBar > div:nth-child(2) p {
+  color: var(--arcade-enamel);
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  font-weight: 780;
+}
+
+.promptBar > div:nth-child(2) span {
+  display: block;
+  margin-top: 0.2rem;
+  color: var(--arcade-muted);
+  font-size: 0.73rem;
+}
+
+.liveStats {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.challengeGrid {
+  grid-template-columns: minmax(0, 0.95fr) minmax(340px, 1.05fr);
+}
+
+.challengeGrid .archPanel {
+  margin-top: 0;
+}
+
+.answerPanel {
+  display: flex;
+  min-height: 360px;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.choiceGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.55rem;
+}
+
+.choiceGrid button {
+  min-height: 88px;
+  border: 1px solid var(--arcade-line);
+  background: var(--arcade-bg);
+  color: var(--arcade-enamel);
+  padding: 0.8rem;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 750;
+  line-height: 1.4;
+  text-align: left;
+  cursor: pointer;
+}
+
+.choiceGrid button:hover:not(:disabled) {
+  border-color: var(--arcade-cyan);
+  background: rgba(94, 231, 231, 0.08);
+}
+
+.choiceGrid button:disabled {
+  cursor: default;
+}
+
+.choiceGrid .choiceCorrect {
+  border-color: #5ee799;
+  background: rgba(94, 231, 153, 0.12);
+}
+
+.choiceGrid .choiceWrong {
+  border-color: var(--arcade-danger);
+  background: rgba(255, 107, 122, 0.11);
+}
+
+.touchHint {
+  margin-top: auto;
+  padding-top: 0.5rem;
+}
+
+.touchHint span {
+  margin-right: 0.45rem;
+  color: var(--arcade-gold);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 0.62rem;
+  font-weight: 800;
+}
+
+.feedbackPanel {
+  display: grid;
+  min-height: 96px;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.9rem;
+  margin-top: 0.75rem;
+  border: 1px solid var(--arcade-line);
+  background: rgba(13, 28, 46, 0.88);
+  padding: 0.85rem 1rem;
+}
+
+.feedbackCorrect {
+  border-color: #5ee799;
+  background: rgba(94, 231, 153, 0.08);
+}
+
+.feedbackWrong {
+  border-color: var(--arcade-danger);
+  background: rgba(255, 107, 122, 0.07);
+}
+
+.feedbackMark {
+  display: grid;
+  width: 2.6rem;
+  height: 2.6rem;
+  place-items: center;
+  border: 1px solid currentColor;
+  color: var(--arcade-cyan);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 1.25rem;
+}
+
+.feedbackWrong .feedbackMark {
+  color: var(--arcade-danger);
+}
+
+.feedbackPanel strong {
+  color: var(--arcade-enamel);
+}
+
+.feedbackPanel p {
+  margin-top: 0.25rem;
+  color: var(--arcade-muted);
+  font-size: 0.74rem;
+  line-height: 1.5;
+}
+
+.feedbackPanel div > span,
+.feedbackPanel div > small {
+  display: block;
+  margin-top: 0.25rem;
+  color: var(--arcade-muted);
+  font-size: 0.67rem;
+}
+
+.feedbackPanel div > small {
+  color: var(--arcade-cyan);
+  font-family: var(--font-mono-app), monospace;
+}
+
+.feedbackPlaceholder {
+  grid-column: 1 / -1;
+  text-align: center;
+}
+
+.reviewSummary {
+  padding: 1rem 1.2rem;
+}
+
+.weakSection,
+.missedSection {
+  margin-top: 0.75rem;
+  border: 1px solid var(--arcade-line);
+  background: rgba(13, 28, 46, 0.7);
+  padding: 1rem;
+}
+
+.sectionHeading h3 {
+  font-size: 1.2rem;
+}
+
+.weakGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.55rem;
+  margin-top: 0.8rem;
+}
+
+.weakGrid article {
+  display: flex;
+  min-width: 0;
+  min-height: 100px;
+  flex-direction: column;
+  border: 1px solid var(--arcade-line);
+  background: var(--arcade-bg);
+  padding: 0.7rem;
+}
+
+.weakGrid small {
+  color: var(--arcade-cyan);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 0.55rem;
+  text-transform: uppercase;
+}
+
+.weakGrid strong {
+  margin-top: 0.4rem;
+  color: var(--arcade-enamel);
+  font-size: 0.75rem;
+  line-height: 1.3;
+}
+
+.weakGrid span {
+  margin-top: auto;
+  color: var(--arcade-muted);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 0.62rem;
+}
+
+.missedList {
+  display: grid;
+  gap: 0.5rem;
+  margin-top: 0.8rem;
+}
+
+.missedList li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 0.8rem;
+  border: 1px solid var(--arcade-line);
+  background: var(--arcade-bg);
+  padding: 0.8rem;
+}
+
+.missedList > li > span {
+  color: var(--arcade-danger);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 0.68rem;
+}
+
+.missedList strong {
+  color: var(--arcade-enamel);
+  font-size: 0.8rem;
+}
+
+.missedList p,
+.missedList small,
+.missedList em {
+  display: block;
+  margin-top: 0.25rem;
+  color: var(--arcade-muted);
+  font-size: 0.7rem;
+  font-style: normal;
+  line-height: 1.45;
+}
+
+.missedList p {
+  color: var(--arcade-gold);
+  font-family: var(--font-mono-app), monospace;
+}
+
+.missedList em {
+  color: #d8b4bb;
+}
+
+.missedList > li > b {
+  color: var(--arcade-cyan);
+  font-family: var(--font-mono-app), monospace;
+  font-size: 0.58rem;
+  font-weight: 700;
+}
+
+.cleanRound {
+  margin-top: 0.8rem;
+  border: 1px solid #5ee799;
+  background: rgba(94, 231, 153, 0.08);
+  color: var(--arcade-muted);
+  padding: 1rem;
+  font-size: 0.76rem;
+}
+
+.gameFooter {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 1rem;
+  color: var(--arcade-muted);
+  font-size: 0.67rem;
+  line-height: 1.5;
+}
+
+.gameFooter p:last-child {
+  text-align: right;
+}
+
+.backLink:focus-visible,
+.modeTabs button:focus-visible,
+.studyToolbar button:focus-visible,
+.zoneControls button:focus-visible,
+.saveNotice button:focus-visible,
+.challengeIntro button:focus-visible,
+.choiceGrid button:focus-visible,
+.feedbackPanel button:focus-visible,
+.reviewSummary button:focus-visible {
+  outline: 3px solid var(--arcade-cyan);
+  outline-offset: 3px;
+}
+
+@media (max-width: 900px) {
+  .hero {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .progressCluster {
+    width: 100%;
+  }
+
+  .studyGrid,
+  .challengeGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .weakGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 680px) {
+  .page {
+    padding-top: 1.1rem;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.8rem, 17vw, 4.2rem);
+  }
+
+  .controlRail,
+  .challengeIntro,
+  .reviewSummary,
+  .saveNotice {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .evidenceKey {
+    align-self: flex-start;
+  }
+
+  .modeTabs button {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .studyLab,
+  .challengeStage,
+  .reviewPanel {
+    padding: 0.65rem;
+  }
+
+  .archDiagram {
+    min-height: 145px;
+  }
+
+  .zoneControls {
+    flex-direction: column;
+  }
+
+  .zoneDiagram {
+    min-height: 280px;
+  }
+
+  .promptBar {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .liveStats {
+    grid-column: 1 / -1;
+    justify-content: space-between;
+    border-top: 1px solid var(--arcade-line);
+    padding-top: 0.6rem;
+  }
+
+  .choiceGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .choiceGrid button {
+    min-height: 64px;
+  }
+
+  .feedbackPanel {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .feedbackPanel button {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
+  .weakGrid,
+  .studyCard dl {
+    grid-template-columns: 1fr;
+  }
+
+  .missedList li {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .missedList > li > b {
+    grid-column: 2;
+  }
+
+  .clinicalNote,
+  .gameFooter {
+    grid-template-columns: 1fr;
+  }
+
+  .clinicalNote {
+    flex-direction: column;
+  }
+
+  .gameFooter p:last-child {
+    text-align: left;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .archTooth,
+  .archToothActive,
+  .zoneTarget {
+    transition: none;
+  }
+}

@@ -5,8 +5,12 @@ import { fileURLToPath } from "node:url";
 const catalogPath = fileURLToPath(
   new URL("../src/data/games/tooth-data.json", import.meta.url),
 );
+const contactCatalogPath = fileURLToPath(
+  new URL("../src/data/games/contact-area-data.json", import.meta.url),
+);
 
 const catalog = JSON.parse(await readFile(catalogPath, "utf8"));
+const contactCatalog = JSON.parse(await readFile(contactCatalogPath, "utf8"));
 
 const permanentCodes = Array.from({ length: 32 }, (_, index) => String(index + 1));
 const primaryCodes = [..."ABCDEFGHIJKLMNOPQRST"];
@@ -277,6 +281,170 @@ for (const template of catalog.morphologyTemplates) {
   );
 }
 
+const contactRecordFields = [
+  "id",
+  "toothNumber",
+  "toothName",
+  "arch",
+  "view",
+  "mesialContactTooth",
+  "distalContactTooth",
+  "mesialContactLocation",
+  "distalContactLocation",
+  "buccolingualContactPosition",
+  "acceptedTargetRegion",
+  "explanation",
+  "commonTrap",
+  "sourceRefs",
+  "evidenceStatus",
+];
+const contactLocations = new Set([
+  "incisal-third",
+  "incisal-middle-junction",
+  "occlusal-third",
+  "occlusal-middle-junction",
+  "middle-third",
+]);
+const buccolingualLocations = new Set([
+  "facial-third",
+  "facial-middle-junction",
+  "middle-third",
+]);
+const incisoZones = new Set([
+  "mesial-incisal-occlusal",
+  "mesial-middle",
+  "mesial-cervical",
+  "distal-incisal-occlusal",
+  "distal-middle",
+  "distal-cervical",
+]);
+const faciolingualZones = new Set(["facial-third", "middle-third", "lingual-third"]);
+const targetRegionFields = [
+  "mesialIncisocervical",
+  "distalIncisocervical",
+  "mesialFaciolingual",
+  "distalFaciolingual",
+];
+
+assert.equal(contactCatalog.schemaVersion, 1, "contact-area schemaVersion must be 1");
+assert.equal(contactCatalog.courseCode, "REHE 151", "contact-area course must be REHE 151");
+assert.ok(Array.isArray(contactCatalog.records), "contact-area records must be an array");
+assert.ok(contactCatalog.records.length >= 16, "contact-area catalog must cover both arches and terminal molars");
+assertUnique(contactCatalog.records.map((record) => record.id), "contact-area record ids");
+assertUnique(contactCatalog.records.map((record) => record.toothNumber), "contact-area tooth numbers");
+
+for (const record of contactCatalog.records) {
+  for (const field of contactRecordFields) {
+    assert.ok(Object.hasOwn(record, field), `${record.id} must include editable field ${field}`);
+  }
+  assertText(record.id, "contact-area id");
+  assert.ok(permanentCodes.includes(record.toothNumber), `${record.id} must use a permanent Universal number`);
+  assertText(record.toothName, `${record.id} toothName`);
+  assert.ok(["maxillary", "mandibular"].includes(record.arch), `${record.id} arch`);
+  assert.ok(["facial", "occlusal"].includes(record.view), `${record.id} view`);
+  assert.ok(["course-verified", "needs-review"].includes(record.evidenceStatus), `${record.id} evidenceStatus`);
+  assertText(record.explanation, `${record.id} explanation`);
+  assertText(record.commonTrap, `${record.id} commonTrap`);
+
+  for (const [surface, neighbor] of [
+    ["mesial", record.mesialContactTooth],
+    ["distal", record.distalContactTooth],
+  ]) {
+    assert.ok(
+      neighbor === null || permanentCodes.includes(neighbor),
+      `${record.id} ${surface} neighbor must be a permanent Universal number or null`,
+    );
+    assert.notEqual(neighbor, record.toothNumber, `${record.id} cannot contact itself`);
+  }
+
+  for (const [surface, location] of [
+    ["mesial", record.mesialContactLocation],
+    ["distal", record.distalContactLocation],
+  ]) {
+    assert.ok(
+      location === null || contactLocations.has(location),
+      `${record.id} ${surface} contact location`,
+    );
+  }
+
+  assert.ok(
+    record.buccolingualContactPosition &&
+      typeof record.buccolingualContactPosition === "object" &&
+      !Array.isArray(record.buccolingualContactPosition),
+    `${record.id} buccolingualContactPosition must be an object`,
+  );
+  for (const surface of ["mesial", "distal"]) {
+    const location = record.buccolingualContactPosition[surface];
+    assert.ok(
+      location === null || buccolingualLocations.has(location),
+      `${record.id} ${surface} buccolingual location`,
+    );
+  }
+
+  assert.ok(
+    record.acceptedTargetRegion &&
+      typeof record.acceptedTargetRegion === "object" &&
+      !Array.isArray(record.acceptedTargetRegion),
+    `${record.id} acceptedTargetRegion must be an object`,
+  );
+  for (const field of targetRegionFields) {
+    const zones = record.acceptedTargetRegion[field];
+    assert.ok(Array.isArray(zones), `${record.id} ${field} must be an array`);
+    assertUnique(zones, `${record.id} ${field} zones`);
+    const allowed = field.endsWith("Incisocervical") ? incisoZones : faciolingualZones;
+    for (const zone of zones) {
+      assert.ok(allowed.has(zone), `${record.id} ${field} contains unknown zone ${zone}`);
+    }
+  }
+
+  assert.ok(Array.isArray(record.sourceRefs) && record.sourceRefs.length > 0, `${record.id} needs sourceRefs`);
+  for (const sourceRef of record.sourceRefs) {
+    assert.equal(sourceRef.courseCode, "REHE 151", `${record.id} source courseCode`);
+    assertText(sourceRef.sourceName, `${record.id} sourceName`);
+    assertText(sourceRef.locator, `${record.id} source locator`);
+    assert.ok(!sourceRef.sourceName.includes("/"), `${record.id} sourceName must not expose a local path`);
+  }
+
+  if (record.evidenceStatus === "course-verified") {
+    for (const surface of ["mesial", "distal"]) {
+      const location = record[`${surface}ContactLocation`];
+      const zones = record.acceptedTargetRegion[`${surface}Incisocervical`];
+      assert.equal(Boolean(location), zones.length > 0, `${record.id} ${surface} location and target regions must agree`);
+    }
+  }
+}
+
+const challengeRecords = contactCatalog.records.filter(
+  (record) => record.evidenceStatus === "course-verified",
+);
+assert.equal(
+  challengeRecords.length,
+  contactCatalog.records.length,
+  "only course-verified records may enter the current Challenge catalog",
+);
+assert.equal(
+  challengeRecords.filter((record) => record.distalContactTooth === null).length,
+  2,
+  "Challenge must include verified maxillary and mandibular terminal molars",
+);
+assert.ok(
+  challengeRecords.some(
+    (record) =>
+      record.mesialContactLocation &&
+      record.distalContactLocation &&
+      record.mesialContactLocation !== record.distalContactLocation,
+  ),
+  "Challenge must support cervical contact comparisons",
+);
+assert.ok(
+  challengeRecords.some((record) => record.arch === "maxillary") &&
+    challengeRecords.some((record) => record.arch === "mandibular"),
+  "Challenge must cover both arches",
+);
+
 console.log(
   `Validated ${catalog.teeth.length} teeth, ${catalog.morphologyTemplates.length} morphology templates, and ${catalog.teeth.length} supernumerary mappings.`,
+);
+console.log(
+  `Validated ${contactCatalog.records.length} course-verified contact-area records with source locators and generous target regions.`,
 );
