@@ -169,14 +169,14 @@ export function GradeCalculator({
         </div>
 
         <div className="overflow-x-auto">
-          <table className="portal-table min-w-[760px]">
+          <table className="portal-table min-w-[760px] table-fixed">
             <thead>
               <tr>
-                <th>Assignment or exam</th>
-                <th className="w-32">Score</th>
-                <th className="w-32">Weight</th>
-                <th className="w-32">Course points</th>
-                <th className="w-24"><span className="sr-only">Actions</span></th>
+                <th className="w-[34%]">Assignment or exam</th>
+                <th className="w-[19%]">Score</th>
+                <th className="w-[19%]">Weight</th>
+                <th className="w-[16%]">Course points</th>
+                <th className="w-[12%]"><span className="sr-only">Actions</span></th>
               </tr>
             </thead>
             <tbody>
