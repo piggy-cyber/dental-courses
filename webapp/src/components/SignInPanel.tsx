@@ -4,13 +4,11 @@ import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 
 export function SignInPanel() {
-  const [email, setEmail] = useState("");
-  const [busy, setBusy] = useState<"google" | "email" | null>(null);
-  const [sent, setSent] = useState(false);
+  const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   async function signInWithGoogle() {
-    setBusy("google");
+    setBusy(true);
     setError(null);
     const supabase = createClient();
     const { data, error: authError } = await supabase.auth.signInWithOAuth({
@@ -22,88 +20,37 @@ export function SignInPanel() {
     });
     if (authError) {
       setError(authError.message);
-      setBusy(null);
+      setBusy(false);
       return;
     }
     if (!data.url) {
       setError("Google sign-in did not return a login URL.");
-      setBusy(null);
+      setBusy(false);
       return;
     }
     window.location.assign(data.url);
   }
 
-  async function sendMagicLink(event: React.FormEvent) {
-    event.preventDefault();
-    setBusy("email");
-    setError(null);
-    const supabase = createClient();
-    const { error: authError } = await supabase.auth.signInWithOtp({
-      email: email.trim(),
-      options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
-    });
-    if (authError) {
-      setError(authError.message);
-      setBusy(null);
-      return;
-    }
-    setSent(true);
-    setBusy(null);
-  }
-
-  if (sent) {
-    return (
-      <div className="border border-emerald-200 bg-emerald-50 px-5 py-4 text-left">
-        <p className="font-medium text-emerald-900">Check your email</p>
-        <p className="mt-1 text-sm text-emerald-800">
-          We sent a sign-in link to <strong>{email}</strong>. Click it to
-          continue.
-        </p>
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-4 text-left">
-      <form onSubmit={sendMagicLink} className="space-y-3">
-        <label className="block text-sm font-semibold text-brand-navy" htmlFor="email">
-          Personal Gmail sign-in
-        </label>
-        <input
-          id="email"
-          type="email"
-          required
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="yourname@gmail.com"
-          className="app-input w-full px-4 py-2.5"
-        />
-        <button
-          type="submit"
-          disabled={busy !== null}
-          className="portal-button-primary w-full px-4 py-2.5 disabled:opacity-60"
-        >
-          {busy === "email" ? "Sending link..." : "Email me a sign-in link"}
-        </button>
-      </form>
-
-      <div className="relative py-1">
-        <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-brand-line" />
-        </div>
-        <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-brand-panel px-3 text-brand-muted">or</span>
-        </div>
-      </div>
-
       <button
         type="button"
         onClick={signInWithGoogle}
-        disabled={busy !== null}
+        disabled={busy}
         className="portal-button inline-flex w-full gap-3 px-4 py-2.5 disabled:opacity-60"
       >
-        {busy === "google" ? "Opening Google..." : "Sign in with personal Gmail"}
+        <svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5 shrink-0">
+          <path fill="#4285F4" d="M21.6 12.23c0-.71-.06-1.4-.18-2.07H12v3.92h5.38a4.6 4.6 0 0 1-2 3.02v2.55h3.24c1.9-1.75 2.98-4.33 2.98-7.42Z" />
+          <path fill="#34A853" d="M12 22c2.7 0 4.98-.9 6.64-2.42l-3.24-2.55c-.9.6-2.05.96-3.4.96-2.61 0-4.82-1.76-5.61-4.13H3.04v2.62A10 10 0 0 0 12 22Z" />
+          <path fill="#FBBC05" d="M6.39 13.86A6 6 0 0 1 6.08 12c0-.65.11-1.28.31-1.86V7.52H3.04A10 10 0 0 0 2 12c0 1.61.38 3.14 1.04 4.48l3.35-2.62Z" />
+          <path fill="#EA4335" d="M12 6.01c1.47 0 2.79.5 3.83 1.5l2.87-2.87A9.63 9.63 0 0 0 12 2a10 10 0 0 0-8.96 5.52l3.35 2.62C7.18 7.77 9.39 6.01 12 6.01Z" />
+        </svg>
+        {busy ? "Opening Google..." : "Continue with Google"}
       </button>
+
+      <p className="text-sm leading-relaxed text-brand-muted">
+        Use the personal Google account registered for your cohort access.
+      </p>
 
       {error && (
         <p className="border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800">

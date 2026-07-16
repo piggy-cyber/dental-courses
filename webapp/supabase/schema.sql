@@ -1,4 +1,4 @@
--- D1 Course Library schema
+-- Fourth Canal course workspace schema
 -- Run this once in the Supabase SQL editor (paste the whole file and click Run).
 
 -- ---------------------------------------------------------------------------

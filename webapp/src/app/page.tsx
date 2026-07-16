@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { SignInPanel } from "@/components/SignInPanel";
@@ -8,6 +9,10 @@ import { AccessRequestForm } from "@/components/AccessRequestForm";
 import { getSessionProfile } from "@/lib/access";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 export default async function LoginHomePage({
   searchParams,
@@ -40,13 +45,13 @@ export default async function LoginHomePage({
 
       <div className="mx-auto grid max-w-6xl gap-8 px-6 py-10 lg:grid-cols-[1.08fr_0.92fr] lg:items-start">
         <section className="app-hero p-7 sm:p-10">
-          <p className="eyebrow">Health Education Campus · D1</p>
+          <p className="eyebrow">Independent cohort study workspace</p>
           <h1 className="portal-title mt-3 max-w-2xl text-4xl font-bold sm:text-5xl">
-            Course Library
+            Fourth Canal
           </h1>
           <p className="mt-4 max-w-xl text-lg leading-relaxed text-brand-muted">
-            Use your personal Gmail, not your @case.edu address, to access approved
-            lectures, videos, transcripts, and course files.
+            One private place for approved lectures, transcripts, study guides,
+            and course files—organized for your cohort.
           </p>
 
           <div className="mt-8 grid gap-3 sm:grid-cols-3">
@@ -67,12 +72,13 @@ export default async function LoginHomePage({
               <>
                 <SignInPanel />
                 <p className="mt-4 text-sm text-brand-muted">
-                  Roster students with a matching personal Gmail are approved automatically.
+                  Access is limited to approved Google accounts. Roster matches are
+                  approved automatically.
                 </p>
                 {params.auth_error && (
                   <p className="mt-3 border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800">
-                    Sign-in failed. Try the email link, or confirm Google is enabled
-                    in Supabase.
+                    Google sign-in failed. Try again or ask the site operator to
+                    confirm your approved account.
                   </p>
                 )}
               </>
@@ -103,12 +109,6 @@ export default async function LoginHomePage({
         <AboutSummary />
       </div>
 
-      <footer className="border-t border-brand-line py-6 text-center text-xs text-brand-muted">
-        Student-built · Not an official CWRU site.{" "}
-        <Link href="/about" className="underline-offset-2 hover:text-brand-navy hover:underline">
-          About
-        </Link>
-      </footer>
     </main>
   );
 }

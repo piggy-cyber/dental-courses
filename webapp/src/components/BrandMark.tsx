@@ -19,7 +19,7 @@ export function BrandMark({
           inverse ? "bg-brand-gold text-brand-sidebar" : "brand-tile"
         }`}
       >
-        D1
+        FC
       </span>
       {showWordmark && (
         <span
@@ -27,7 +27,7 @@ export function BrandMark({
             inverse ? "text-white" : "text-brand-navy"
           }`}
         >
-          Course Library
+          Fourth Canal
         </span>
       )}
     </Link>
@@ -41,9 +41,9 @@ export function BrandMarkPublic({ className = "" }: { className?: string }) {
         aria-hidden="true"
         className="brand-tile inline-flex h-8 w-8 items-center justify-center border border-brand-line text-xs font-extrabold tracking-tight"
       >
-        D1
+        FC
       </span>
-      <span className="text-base font-bold text-brand-navy">Course Library</span>
+      <span className="text-base font-bold text-brand-navy">Fourth Canal</span>
     </Link>
   );
 }

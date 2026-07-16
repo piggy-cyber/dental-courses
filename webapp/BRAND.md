@@ -1,12 +1,12 @@
-# D1 Course Library — Brand Guidelines
+# Fourth Canal — Brand Guidelines
 
 ## Theme: Clinical Calm
 
-A student-built study desk for Case Western D1 — not a corporate portal, not an official university site. The feeling is **focused, trustworthy, and calm**: one place to open a lecture, watch the video, read the transcript, and grab the cheat sheet without digging through Drive folders.
+A private, student-built study workspace for an approved dental-school cohort—not a corporate portal and not an official university site. The feeling is **focused, trustworthy, and calm**: one place to open a lecture, watch the video, read the transcript, and grab the relevant study guide without digging through folders.
 
 **Tagline:** *Every lecture, one desk.*
 
-**Positioning:** Peer-made course hub for the Health Education Campus D1 class. Videos stay on YouTube; files live in private storage; access is approval-based.
+**Positioning:** Independent, peer-made course workspace. Files live behind approval-based access, and official school systems remain the source of truth.
 
 ---
 
@@ -23,13 +23,13 @@ A student-built study desk for Case Western D1 — not a corporate portal, not a
 
 ## Name & logo
 
-**Product name:** D1 Course Library  
-**Short mark:** `D1` in a navy rounded square  
-**Wordmark:** “Course Library” in navy, bold
+**Product name:** Fourth Canal
+**Short mark:** `FC` in a navy square
+**Wordmark:** “Fourth Canal” in navy, bold
 
 ```
 ┌────┐
-│ D1 │  Course Library
+│ FC │  Fourth Canal
 └────┘
 ```
 
@@ -104,7 +104,7 @@ Line height: **1.5–1.65** for body; keep paragraphs short.
 **Homepage:** One sentence on what it is + how to get in.  
 **About:** Who built it, what’s inside, access model, disclaimer.  
 **Empty states:** Say what to do next (“Run seed script”, “Not uploaded yet”).  
-**Errors:** Plain English; suggest email sign-in if OAuth fails.  
+**Errors:** Plain English; direct users to retry Google or contact the site operator.
 
 **Required disclaimer (About + footer):**  
 *Student-built resource hub. Not affiliated with or endorsed by Case Western Reserve University or the School of Dental Medicine.*
@@ -119,7 +119,7 @@ Line height: **1.5–1.65** for body; keep paragraphs short.
 | Multimedia assets | Lectures and videos |
 | Cheat sheet | Course Mastery Guide |
 | Repository | Library |
-| Authentication failure | Sign-in failed — try email link |
+| Authentication failure | Google sign-in failed — try again |
 
 ---
 
@@ -151,4 +151,4 @@ Display names match Canvas / source filenames so students recognize them.
 
 ---
 
-*Last updated: July 2026 — D1 Course Library, Case Western D1 cohort.*
+*Last updated: July 2026 — Fourth Canal.*

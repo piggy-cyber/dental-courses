@@ -1,4 +1,4 @@
-# D1 Course Library — Setup Guide
+# Fourth Canal — Setup Guide
 
 This is the real, secure version of the course site. Nobody sees anything
 except the homepage until you approve their account.
@@ -21,7 +21,7 @@ through some settings once. About 30 minutes. Everything below is copy-paste.
 ## Step 1 — Create the Supabase project (the database)
 
 1. Go to https://supabase.com and sign up (you can use your Google account).
-2. Click "New project". Name it `d1-course-library`, pick a strong database
+2. Click "New project". Name it `Fourth Canal`, pick a strong database
    password (save it somewhere), region `East US (North Virginia)`.
 3. Wait ~2 minutes for it to finish creating.
 
@@ -35,19 +35,24 @@ through some settings once. About 30 minutes. Everything below is copy-paste.
 ## Step 3 — Turn on Google sign-in
 
 1. Go to https://console.cloud.google.com and sign in with your Gmail.
-2. Create a new project (name doesn't matter, e.g. `d1-library`).
+2. Create a new project (name doesn't matter, e.g. `fourth-canal`).
 3. In the search bar, find "OAuth consent screen" ("branding" page):
-   - User type: External. App name: `D1 Course Library`. Add your email.
+   - User type: External. App name: `Fourth Canal`. Add the app logo,
+     `https://fourthcanal.com` as the homepage, and the public Privacy and
+     Terms links from `https://fourthcanal.com/legal`.
    - You can leave everything else default and save.
 4. Search for "Credentials" -> "Create credentials" -> "OAuth client ID":
    - Application type: Web application.
    - Under "Authorized redirect URIs" click "+ Add URI" and paste your
      Supabase callback URL. You find it in Supabase under
      Authentication -> Sign In / Up -> Google -> "Callback URL".
-     It looks like `https://XXXX.supabase.co/auth/v1/callback`.
+     For this project it is
+     `https://fourthcanal.supabase.co/auth/v1/callback`.
    - Click Create. Copy the "Client ID" and "Client secret" it shows you.
 5. Back in Supabase: Authentication -> Sign In / Up -> Google:
    - Toggle it on, paste the Client ID and Client secret, save.
+6. Keep email/password and magic-link sign-in disabled. Fourth Canal uses
+   Google OAuth only.
 
 ## Step 4 — Connect this app to Supabase
 
@@ -114,7 +119,8 @@ The easiest host for Next.js is Vercel (free for this size):
 5. Click Deploy.
 6. After it deploys, add your live URL to two allow-lists:
    - Supabase: Authentication -> URL Configuration -> Site URL + Redirect URLs
-     (add `https://your-site.vercel.app/auth/callback`).
+     (set `https://fourthcanal.com` and add
+     `https://fourthcanal.com/auth/callback`).
 
 That's it. Students sign in, you approve them, they get everything.
 

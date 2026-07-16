@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { getSessionProfile } from "@/lib/access";
 import { isAdmin } from "@/lib/roles";
 import { normalizeTiers } from "@/lib/tiers";
@@ -196,15 +197,14 @@ export async function addRosterEntry(input: {
     .insert({ full_name: fullName, email, cohort, status: "expected" });
   if (error) throw new Error(error.message);
 
-  const { error: recheckError } = await supabase.rpc("recheck_roster_matches");
+  const { error: recheckError } = await createAdminClient().rpc("recheck_roster_matches");
   if (recheckError) throw new Error(recheckError.message);
   revalidateAdminPaths();
 }
 
 export async function recheckRosterMatches(): Promise<number> {
   await requireAdminProfile();
-  const supabase = await createClient();
-  const { data, error } = await supabase.rpc("recheck_roster_matches");
+  const { data, error } = await createAdminClient().rpc("recheck_roster_matches");
   if (error) throw new Error(error.message);
   revalidateAdminPaths();
   return Number(data ?? 0);

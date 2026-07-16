@@ -5,9 +5,10 @@ import { AboutContent } from "@/components/AboutContent";
 import { getSessionProfile } from "@/lib/access";
 
 export const metadata = {
-  title: "About — D1 Course Library",
+  title: "About",
   description:
-    "What is inside the D1 Course Library, why it exists, and how classmates can contribute.",
+    "How Fourth Canal organizes private, peer-to-peer study resources for an approved cohort.",
+  alternates: { canonical: "/about" },
 };
 
 export default async function AboutPage() {
@@ -47,9 +48,6 @@ export default async function AboutPage() {
         </div>
       </main>
 
-      <footer className="border-t border-brand-line py-8 text-center text-sm text-brand-muted">
-        D1 Course Library · Every lecture, one desk.
-      </footer>
     </div>
   );
 }

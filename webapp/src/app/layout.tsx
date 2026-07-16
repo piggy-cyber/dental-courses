@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { IBM_Plex_Mono, Source_Sans_3 } from "next/font/google";
+import { LegalFooter } from "@/components/LegalFooter";
 import "./globals.css";
 
 const sourceSans = Source_Sans_3({
@@ -16,9 +17,36 @@ const plexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "D1 Course Library",
+  metadataBase: new URL("https://fourthcanal.com"),
+  applicationName: "Fourth Canal",
+  title: {
+    default: "Fourth Canal",
+    template: "%s · Fourth Canal",
+  },
   description:
-    "Every lecture, one desk — videos, transcripts, mastery guides, and course files for Case Western D1.",
+    "A private, independent cohort workspace for lectures, transcripts, study guides, and course files.",
+  manifest: "/manifest.webmanifest",
+  openGraph: {
+    type: "website",
+    url: "/",
+    siteName: "Fourth Canal",
+    title: "Fourth Canal",
+    description:
+      "A private, independent cohort workspace for lectures, transcripts, study guides, and course files.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Fourth Canal",
+    description:
+      "A private, independent cohort workspace for lectures, transcripts, study guides, and course files.",
+  },
+  robots: {
+    index: false,
+    follow: false,
+    noarchive: true,
+    nosnippet: true,
+    noimageindex: true,
+  },
 };
 
 const themeScript = `
@@ -52,6 +80,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         {children}
+        <LegalFooter />
       </body>
     </html>
   );

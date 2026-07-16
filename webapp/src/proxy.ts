@@ -35,7 +35,14 @@ export async function proxy(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   const path = request.nextUrl.pathname;
-  const isPublic = path === "/" || path === "/about" || path.startsWith("/auth");
+  const isPublic =
+    path === "/" ||
+    path === "/about" ||
+    path === "/legal" ||
+    path === "/robots.txt" ||
+    path === "/manifest.webmanifest" ||
+    path.startsWith("/opengraph-image") ||
+    path.startsWith("/auth");
   // Bot uploads authenticate with a Bearer API key inside the route handler,
   // not a session cookie, so let them through to be authorized there.
   const isBotApi = path.startsWith("/api/admin/course-resource");

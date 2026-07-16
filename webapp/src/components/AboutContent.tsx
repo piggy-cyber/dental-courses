@@ -11,15 +11,15 @@ export function AboutContent({ compact = false }: AboutContentProps) {
         <>
           <p className="eyebrow">About</p>
           <h1 className="mt-2 text-3xl font-bold text-brand-navy">
-            About the D1 Course Library
+            About Fourth Canal
           </h1>
         </>
       )}
       <p className={compact ? "text-brand-muted" : "mt-4 text-lg leading-relaxed text-brand-muted"}>
-        The D1 Course Library is a dedicated study desk for our Case Western
-        Reserve University Health Education Campus cohort. It provides a single,
-        organized place to watch lectures, read transcripts, and open course files
-        without jumping between Canvas, Drive, and YouTube.
+        Fourth Canal is an independent, student-run study workspace for an
+        approved dental-school cohort. It provides one organized place to review
+        lectures, read transcripts, and open course files without jumping among
+        multiple platforms.
       </p>
 
       <h2>What&apos;s Inside</h2>
@@ -29,8 +29,8 @@ export function AboutContent({ compact = false }: AboutContentProps) {
           transcripts when available.
         </li>
         <li>
-          <strong>Course Mastery Guides</strong> — condensed cheat sheets for
-          each course.
+          <strong>Course Mastery Guides</strong> — focused study guides for each
+          course.
         </li>
         <li>
           <strong>Textbook Companions</strong> — long-form study guides.
@@ -46,9 +46,8 @@ export function AboutContent({ compact = false }: AboutContentProps) {
           <p>
             This library was built to keep our cohort organized and ensure mastery
             guides and textbook companions sit directly next to the relevant
-            lecture videos. It is an independent project maintained by the
-            First-Year Class Presidency to support our collective success in
-            dental school.
+            lecture videos. It is maintained by student operators to support
+            peer-to-peer learning and continuity between cohorts.
           </p>
 
           <h2>How to Contribute</h2>
@@ -72,8 +71,8 @@ export function AboutContent({ compact = false }: AboutContentProps) {
 
       {compact && (
         <p className="text-sm text-brand-muted">
-          Independent, student-run, and maintained by the First-Year Class
-          Presidency for peer-to-peer study support.
+          Independent, student-run, and maintained for private peer-to-peer study
+          support.
         </p>
       )}
     </div>

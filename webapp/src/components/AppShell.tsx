@@ -210,7 +210,7 @@ export function AppShell({
               <BrandMark showWordmark={false} />
               <div className="min-w-0">
                 <p className="truncate text-sm font-bold text-brand-navy">
-                  Course Library
+                  Fourth Canal
                 </p>
                 <p className="truncate text-xs text-brand-muted">
                   {adminMode ? "Admin portal" : "Student library"}

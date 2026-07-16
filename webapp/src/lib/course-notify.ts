@@ -1,6 +1,6 @@
 import "server-only";
 
-import { getGroupMeBotId, postBotMessage } from "@/lib/groupme";
+import { postBotMessage } from "@/lib/groupme";
 
 export function getGroupMeContentBotId(): string | null {
   return (
@@ -21,7 +21,7 @@ export function getGroupMeContentBotLabel(): string | null {
 export function getSiteUrl(): string {
   const fromEnv = process.env.NEXT_PUBLIC_SITE_URL?.trim();
   if (fromEnv) return fromEnv.replace(/\/$/, "");
-  return "https://dental-courses-piggy-cybers-projects.vercel.app";
+  return "https://fourthcanal.com";
 }
 
 export function formatCourseContentGroupMeText(input: {
