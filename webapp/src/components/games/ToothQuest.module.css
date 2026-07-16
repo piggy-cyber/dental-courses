@@ -136,6 +136,7 @@
 }
 
 .saveNotice button,
+.saveNotice a,
 .startButton {
   display: inline-flex;
   min-height: 44px;
@@ -152,6 +153,7 @@
 }
 
 .saveNotice button:hover,
+.saveNotice a:hover,
 .startButton:hover {
   border-color: var(--arcade-enamel);
   background: var(--arcade-enamel);

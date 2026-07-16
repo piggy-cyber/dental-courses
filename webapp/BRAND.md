@@ -2,11 +2,11 @@
 
 ## Theme: Clinical Calm
 
-A private, student-built study workspace for an approved dental-school cohort—not a corporate portal and not an official university site. The feeling is **focused, trustworthy, and calm**: one place to open a lecture, watch the video, read the transcript, and grab the relevant study guide without digging through folders.
+A student-built dental study desk with a public core and a separate private cohort library—not a corporate portal and not an official university site. The feeling is **focused, trustworthy, and calm**: open the game, calculate a grade, or read a course guide without digging through folders.
 
-**Tagline:** *Every lecture, one desk.*
+**Public promise:** *Study the signal. Skip the clutter.*
 
-**Positioning:** Independent, peer-made course workspace. Files live behind approval-based access, and official school systems remain the source of truth.
+**Positioning:** Independent, peer-made dental study tools. The public core is open; legacy D1 course files remain behind approval-based access. Official school systems remain the source of truth.
 
 ---
 
@@ -16,7 +16,7 @@ A private, student-built study workspace for an approved dental-school cohort—
 |-------|--------|------------|
 | Tone | Direct, helpful, peer-to-peer | Corporate, salesy, institutional |
 | Voice | “Open the lecture” / “Course files” | “Leverage assets” / “Content ecosystem” |
-| Audience | Busy dental students who need answers fast | General public, recruiters, patients |
+| Audience | Dental students who need answers fast | Recruiters, patients, or clinical consumers |
 | Trust | Clear labels, honest disclaimers, no clutter | Over-designed, gamified, flashy |
 
 ---
@@ -101,7 +101,7 @@ Line height: **1.5–1.65** for body; keep paragraphs short.
 
 ## Copy standards
 
-**Homepage:** One sentence on what it is + how to get in.  
+**Homepage:** Lead with the game, grade calculator, and web-native course guides. Account creation is secondary.
 **About:** Who built it, what’s inside, access model, disclaimer.  
 **Empty states:** Say what to do next (“Run seed script”, “Not uploaded yet”).  
 **Errors:** Plain English; direct users to retry Google or contact the site operator.
@@ -143,10 +143,13 @@ Display names match Canvas / source filenames so students recognize them.
 
 | Page | Brand notes |
 |------|-------------|
-| `/` | Paper bg, navy title, teal eyebrow, sign-in panel |
+| `/` | Paper bg, navy title, teal eyebrow, three public core tools |
 | `/about` | Story + disclaimer, public |
-| `/library` | Semester groups, course cards |
-| `/course/[code]` | Lecture-first, files shelf below |
+| `/games` | Public arcade; sign-in offered for saved progress |
+| `/grade-calculator` | Public, local-only calculation |
+| `/guides` | Public two-guide course index |
+| `/library` | Private D1 semester groups, unlisted and no-index |
+| `/course/[code]` | Private D1 lecture and file workspace |
 | `/owner` | Gold accent for admin only |
 
 ---

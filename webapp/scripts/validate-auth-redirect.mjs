@@ -29,17 +29,19 @@ assert.equal(
   "/games/root-canal-match?mode=clinical",
 );
 assert.equal(safeReturnPath("/admin/accounts/123"), "/admin/accounts/123");
+assert.equal(safeReturnPath("/guides/dspr-136"), "/guides/dspr-136");
+assert.equal(safeReturnPath("/d1"), "/d1");
 assert.equal(safeReturnPath("/games/tooth-quest#answer"), "/games/tooth-quest");
-assert.equal(safeReturnPath("https://evil.example/path"), "/home");
-assert.equal(safeReturnPath("//evil.example/path"), "/home");
-assert.equal(safeReturnPath("/\\\\evil.example/path"), "/home");
-assert.equal(safeReturnPath("/%5Cevil.example/path"), "/home");
-assert.equal(safeReturnPath("/auth/callback?code=secret"), "/home");
-assert.equal(safeReturnPath("/api/admin/course-resource"), "/home");
-assert.equal(safeReturnPath("/_next/static/chunk.js"), "/home");
-assert.equal(safeReturnPath(`/games/${"x".repeat(2_100)}`), "/home");
-assert.equal(safeReturnPath("/"), "/home");
-assert.equal(safeReturnPath(null), "/home");
+assert.equal(safeReturnPath("https://evil.example/path"), "/");
+assert.equal(safeReturnPath("//evil.example/path"), "/");
+assert.equal(safeReturnPath("/\\\\evil.example/path"), "/");
+assert.equal(safeReturnPath("/%5Cevil.example/path"), "/");
+assert.equal(safeReturnPath("/auth/callback?code=secret"), "/");
+assert.equal(safeReturnPath("/api/admin/course-resource"), "/");
+assert.equal(safeReturnPath("/_next/static/chunk.js"), "/");
+assert.equal(safeReturnPath(`/games/${"x".repeat(2_100)}`), "/");
+assert.equal(safeReturnPath("/"), "/");
+assert.equal(safeReturnPath(null), "/");
 
 const previewRequest =
   "https://dental-courses-abc-piggy-cybers-projects.vercel.app/auth/callback?code=test";
@@ -79,7 +81,7 @@ assert.doesNotMatch(clearHeader, /Domain=/i);
 
 assert.equal(
   authRedirectUrl(previewRequest, "//evil.example/path").href,
-  "https://dental-courses-abc-piggy-cybers-projects.vercel.app/home",
+  "https://dental-courses-abc-piggy-cybers-projects.vercel.app/",
 );
 
 console.log("Validated auth return paths, redirect locations, and cookie response headers.");

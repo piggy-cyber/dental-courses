@@ -1,11 +1,9 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import { PublicHeader } from "@/components/PublicHeader";
 import { SignInPanel } from "@/components/SignInPanel";
-import { BrandMarkPublic } from "@/components/BrandMark";
-import { AccessRequestForm } from "@/components/AccessRequestForm";
 import { getSessionProfile } from "@/lib/access";
+import { getPublicGuideCourses } from "@/lib/public-guides";
 
 export const dynamic = "force-dynamic";
 
@@ -13,100 +11,145 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
-const STUDY_LAYERS = [
-  ["01", "Lectures", "Recordings and transcripts stay paired."],
-  ["02", "Course files", "Slides, syllabi, and guides stay in context."],
-  ["03", "Student tools", "Contacts, planning, and course utilities."],
+const CORE_TOOLS = [
+  {
+    number: "01",
+    eyebrow: "Play",
+    title: "Tooth Quest",
+    detail: "Learn Universal tooth numbering on a visual arch, then test recall against the clock.",
+    href: "/games",
+    action: "Play the game",
+  },
+  {
+    number: "02",
+    eyebrow: "Calculate",
+    title: "Grade Calculator",
+    detail: "See your current grade and the average you need on the work that remains.",
+    href: "/grade-calculator",
+    action: "Open calculator",
+  },
+  {
+    number: "03",
+    eyebrow: "Study",
+    title: "Course Guides",
+    detail: "Read Course Mastery Guides and Textbook Companions as searchable, mobile-friendly webpages.",
+    href: "/guides",
+    action: "Browse guides",
+  },
 ] as const;
 
-export default async function LoginHomePage({
+export default async function PublicHomePage({
   searchParams,
 }: {
   searchParams: Promise<{ auth_error?: string }>;
 }) {
-  const { profile } = await getSessionProfile();
-  const params = await searchParams;
-
-  if (profile?.status === "approved") redirect("/home");
+  const [{ profile }, params] = await Promise.all([getSessionProfile(), searchParams]);
+  const courses = getPublicGuideCourses();
+  const featuredCodes = new Set(["REHE 151", "DSPR 136", "HEWB 134", "REHE 120"]);
+  const featured = courses.filter((course) => featuredCodes.has(course.code));
 
   return (
-    <main className="fc-site fc-public-page" data-integrated-footer="false">
-      <header className="fc-public-header">
-        <BrandMarkPublic />
-        <nav aria-label="Public navigation">
-          <Link href="/about">Our story</Link>
-          <Link href="/legal">Privacy and terms</Link>
-        </nav>
-      </header>
+    <div className="fc-site public-core-page">
+      <PublicHeader />
 
-      <section className="fc-public-hero" data-fc-reveal>
-        <div className="fc-public-copy">
-          <p className="eyebrow">Independent dental education workspace</p>
-          <h1>The study layer dental school was missing.</h1>
-          <p className="fc-public-lead">
-            Lectures, transcripts, Course Mastery Guides, class tools, and course files—connected in one private place built for how dental students actually study.
-          </p>
+      <main>
+        <section className="public-core-hero">
+          <div className="public-core-hero-copy">
+            <p className="eyebrow">Open dental study tools</p>
+            <h1>Study the signal.<br />Skip the clutter.</h1>
+            <p className="public-core-lead">
+              A visual dental anatomy game, a fast grade calculator, and focused course guides—free to use, with an account only when you want progress saved.
+            </p>
+            <div className="public-core-hero-actions">
+              <Link href="/games/tooth-quest" className="public-core-primary-action">
+                Play Tooth Quest <span aria-hidden="true">→</span>
+              </Link>
+              <Link href="/guides" className="public-core-secondary-action">
+                Browse {courses.length} courses
+              </Link>
+            </div>
+          </div>
 
-          <div className="fc-public-layers">
-            {STUDY_LAYERS.map(([number, title, detail]) => (
-              <article key={number}>
-                <span>{number}</span>
-                <div><h2>{title}</h2><p>{detail}</p></div>
+          <div className="public-core-signal" aria-label="Three Fourth Canal study tools">
+            <div className="public-core-signal-label"><span>PUBLIC STUDY DESK</span><b>03 / 03</b></div>
+            <div className="public-core-signal-lines" aria-hidden="true">
+              <i /><i /><i />
+            </div>
+            <ol>
+              <li><span>01</span><b>Game</b><small>Recall</small></li>
+              <li><span>02</span><b>Calculator</b><small>Plan</small></li>
+              <li><span>03</span><b>Guides</b><small>Understand</small></li>
+            </ol>
+          </div>
+        </section>
+
+        <section className="public-core-tools" aria-labelledby="tools-title">
+          <div className="public-core-section-heading">
+            <div><p className="eyebrow">The core</p><h2 id="tools-title">Everything you need to start.</h2></div>
+            <p>No account wall. Open a tool and get to work.</p>
+          </div>
+          <div className="public-core-tool-grid">
+            {CORE_TOOLS.map((tool) => (
+              <article key={tool.number}>
+                <div className="public-core-tool-index"><span>{tool.number}</span><small>{tool.eyebrow}</small></div>
+                <h3>{tool.title}</h3>
+                <p>{tool.detail}</p>
+                <Link href={tool.href}>{tool.action} <span aria-hidden="true">→</span></Link>
               </article>
             ))}
           </div>
-        </div>
+        </section>
 
-        <div className="fc-public-visual" aria-label="Microscopy-inspired Fourth Canal brand image">
-          <Image
-            src="/brand/fourth-canal-hero-brand-image-v2.png"
-            alt="Enamel microscopy field with four anatomical canal strands"
-            fill
-            priority
-            sizes="(max-width: 900px) 100vw, 48vw"
-          />
-          <div className="fc-public-visual-label">
-            <span>ANATOMICAL ATLAS / 04</span>
-            <b>The fourth strand is the signal.</b>
+        <section className="public-core-featured" aria-labelledby="featured-title">
+          <div className="public-core-section-heading">
+            <div><p className="eyebrow">Web-native reading</p><h2 id="featured-title">A course guide should feel like a webpage.</h2></div>
+            <p>Searchable text, responsive tables, and section navigation replace the PDF-first experience.</p>
           </div>
-        </div>
+          <div className="public-core-course-grid">
+            {featured.map((course) => (
+              <Link href={`/guides/${course.slug}`} key={course.code}>
+                <span>{course.code}</span>
+                <h3>{course.title}</h3>
+                <p>Course Mastery Guide + Textbook Companion</p>
+                <b aria-hidden="true">→</b>
+              </Link>
+            ))}
+          </div>
+          <Link href="/guides" className="public-core-inline-link">View all {courses.length} courses <span aria-hidden="true">→</span></Link>
+        </section>
 
-        <aside className="fc-signin-card" aria-labelledby="signin-title">
-          <p className="eyebrow">Private student access</p>
-          <h2 id="signin-title">Open your workspace.</h2>
-          <p>Use the Google account connected to your cohort access.</p>
-
-          <div className="fc-signin-action">
+        <section className="public-core-account" id="account" aria-labelledby="account-title">
+          <div>
+            <p className="eyebrow">Optional account</p>
+            <h2 id="account-title">Use everything now. Sign in when you want it saved.</h2>
+            <p>
+              Public tools and guides work without an account. Google sign-in adds private progress saving. The original D1 course library remains separate and restricted to approved students.
+            </p>
+          </div>
+          <aside>
             {!profile ? (
               <>
+                <h3>Save your progress</h3>
+                <p>Any Google account can create a Fourth Canal account.</p>
                 <SignInPanel />
-                {params.auth_error && (
-                  <p className="fc-auth-error">
-                    Google sign-in failed. Try again or ask the site operator to confirm your approved account.
-                  </p>
-                )}
+                {params.auth_error && <p className="fc-auth-error">Google sign-in failed. Please try again.</p>}
               </>
             ) : (
-              <div className="fc-pending-access">
-                <strong>{profile.status === "revoked" ? "Your access is inactive." : "Your account is waiting for approval."}</strong>
-                <span>{profile.email}</span>
-                <p>
-                  {profile.status === "revoked"
-                    ? "Contact an admin if you think this is a mistake."
-                    : "Roster matches are approved automatically. Other accounts are reviewed by a student administrator."}
-                </p>
-                {profile.status === "pending" && <AccessRequestForm initialNote={profile.access_note} />}
+              <div className="public-core-signed-in">
+                <p className="eyebrow">Signed in</p>
+                <h3>{profile.name ?? profile.email.split("@")[0]}</h3>
+                <p>{profile.email}</p>
+                <p>Your public study progress can be saved to this account.</p>
+                <div>
+                  <Link href="/games/tooth-quest">Continue to Tooth Quest</Link>
+                  {profile.status === "approved" && <Link href="/d1">Open private D1 library</Link>}
+                </div>
                 <form action="/auth/signout" method="post"><button>Sign out</button></form>
               </div>
             )}
-          </div>
-
-          <div className="fc-signin-note">
-            <span className="fc-mini-canals" aria-hidden="true"><i /><i /><i /><i /></span>
-            <p>Independent and student-run. Official course and clinical guidance always controls.</p>
-          </div>
-        </aside>
-      </section>
-    </main>
+          </aside>
+        </section>
+      </main>
+    </div>
   );
 }

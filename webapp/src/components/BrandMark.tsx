@@ -34,7 +34,7 @@ export function BrandMark({
 
 export function BrandMarkPublic({ className = "" }: { className?: string }) {
   return (
-    <Link href="/" aria-label="Fourth Canal sign in" className={`fc-brand-link ${className}`}>
+    <Link href="/" aria-label="Fourth Canal home" className={`fc-brand-link ${className}`}>
       <Image
         src="/brand/fourth-canal-horizontal-on-light-outlined.svg"
         alt=""

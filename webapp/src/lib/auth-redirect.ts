@@ -1,14 +1,16 @@
 export const AUTH_RETURN_COOKIE = "fc_auth_return_to";
 
-const DEFAULT_RETURN_PATH = "/home";
+const DEFAULT_RETURN_PATH = "/";
 const RETURN_ORIGIN = "https://return.fourthcanal.invalid";
 const MAX_RETURN_PATH_LENGTH = 2_048;
 const ALLOWED_RETURN_PREFIXES = [
   "/admin",
   "/contacts",
   "/course",
+  "/d1",
   "/games",
   "/grade-calculator",
+  "/guides",
   "/home",
   "/library",
   "/owner",

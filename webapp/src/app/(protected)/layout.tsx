@@ -1,7 +1,12 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getSessionProfile } from "@/lib/access";
 import { createClient } from "@/lib/supabase/server";
 import { AppShell, type AppShellCourse } from "@/components/AppShell";
+
+export const metadata: Metadata = {
+  robots: { index: false, follow: false, noarchive: true },
+};
 
 type SidebarMembership = {
   collection_id: string;

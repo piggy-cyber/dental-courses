@@ -101,7 +101,8 @@
 }
 
 .nav a,
-.nav button {
+.nav button,
+.nav > span {
   display: inline-flex;
   min-height: 44px;
   align-items: center;

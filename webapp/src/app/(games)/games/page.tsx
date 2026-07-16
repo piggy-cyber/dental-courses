@@ -64,7 +64,7 @@ export default function GamesHubPage() {
       <aside className={styles.note}>
         <span className={styles.noteMarker} aria-hidden="true">i</span>
         <p>
-          Your Tooth Quest progress is private to your Fourth Canal account. This is a study aid; official course and clinical guidance control.
+          Play without an account. Sign in when you want progress saved privately to your Fourth Canal account. This is a study aid; official course and clinical guidance control.
         </p>
       </aside>
     </main>

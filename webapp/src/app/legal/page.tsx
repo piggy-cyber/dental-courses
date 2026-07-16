@@ -21,8 +21,7 @@ const SECTIONS = [
 
 export default async function LegalPage() {
   const { profile } = await getSessionProfile();
-  const backHref = profile?.status === "approved" ? "/home" : "/";
-  const backLabel = profile?.status === "approved" ? "Back to dashboard" : "Back to sign in";
+  const privateLibraryHref = profile?.status === "approved" ? "/d1" : null;
 
   return (
     <div className="fc-site app-shell-bg min-h-screen text-brand-ink">
@@ -30,8 +29,8 @@ export default async function LegalPage() {
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-3">
           <BrandMarkPublic />
           <div className="flex items-center gap-3">
-            <Link href={backHref} className="text-sm font-medium text-brand-muted hover:text-brand-navy">
-              {backLabel}
+            <Link href="/" className="text-sm font-medium text-brand-muted hover:text-brand-navy">
+              Back to study desk
             </Link>
           </div>
         </div>
@@ -73,14 +72,14 @@ export default async function LegalPage() {
             <h2 className="mt-2">What the site handles</h2>
             <p>
               The service may handle account details such as name, email address, Google profile
-              image, role, access status, course access, support reports, and administrative notes.
+              image, saved game progress, role, access status, course access, support reports, and administrative notes.
               If a user chooses to connect them, it may also handle a private Canvas calendar-feed
               URL and a GroupMe access token. Course files, transcripts, study materials, and access
               records are stored to operate the library.
             </p>
             <h2>Why the data is used</h2>
             <p>
-              Data is used to authenticate users, control access, organize course resources,
+              Data is used to authenticate users, save study-game progress, control private-library access, organize course resources,
               display schedules, send requested class notifications, investigate reports, secure
               the service, and maintain continuity between student operators. Personal data is not
               sold.
@@ -104,11 +103,12 @@ export default async function LegalPage() {
 
           <section id="terms" className="app-card scroll-mt-24 p-6 prose-brand">
             <p className="eyebrow">02 / Terms and acceptable use</p>
-            <h2 className="mt-2">Limited academic access</h2>
+            <h2 className="mt-2">Public tools and private-library access</h2>
             <p>
-              Access is personal, revocable, and limited to approved users for private academic
-              study. An account may not be shared, sold, transferred, or used to give an
-              unauthorized person access to restricted material.
+              Public games, calculators, and guides may be used without an account. Account-based
+              progress is personal. Access to the separate D1 library is revocable and limited to
+              approved users; an account may not be shared or used to give another person access
+              to restricted material.
             </p>
             <h2>Prohibited use</h2>
             <ul className="list-disc space-y-2 pl-5">
@@ -139,7 +139,7 @@ export default async function LegalPage() {
             </p>
             <h2>No academic, clinical, or professional advice</h2>
             <p>
-              Content is provided for private study support and general educational information.
+              Content is provided for study support and general educational information.
               It is not official course instruction, a clinical protocol, patient-care guidance,
               legal advice, or a substitute for faculty direction, source materials, professional
               judgment, or applicable policies. Users must independently verify important
@@ -221,9 +221,12 @@ export default async function LegalPage() {
           </section>
 
           <div className="flex flex-wrap gap-3">
-            <Link href={backHref} className="portal-button-primary px-5 py-2.5">
-              {backLabel}
+            <Link href="/" className="portal-button-primary px-5 py-2.5">
+              Back to study desk
             </Link>
+            {privateLibraryHref && (
+              <Link href={privateLibraryHref} className="portal-button px-5 py-2.5">Private D1 library</Link>
+            )}
             <Link href="/about" className="portal-button px-5 py-2.5">
               About this site
             </Link>

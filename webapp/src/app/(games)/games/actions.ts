@@ -74,8 +74,8 @@ export async function saveGameRound(input: GameRoundResult): Promise<SaveGameRou
   if (validationError) return { ok: false, error: validationError };
 
   const { profile, userId } = await getSessionProfile();
-  if (!profile || !userId || profile.id !== userId || profile.status !== "approved") {
-    return { ok: false, error: "Your approved Fourth Canal session is required to save." };
+  if (!profile || !userId || profile.id !== userId) {
+    return { ok: false, error: "Sign in to save this round to your Fourth Canal account." };
   }
 
   const supabase = await createClient();

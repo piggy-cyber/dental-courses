@@ -31,13 +31,12 @@ export function LegalFooter() {
           </p>
         ) : (
           <p className="max-w-5xl text-xs leading-relaxed">
-            Independent student-run study support. Official university, course, faculty,
-            and clinical guidance always controls.
+            Independent student-run study support. Public tools and student-created guides may be incomplete or inaccurate. Official university, course, faculty, and clinical guidance always controls.
           </p>
         )}
 
         <div className="flex flex-col gap-3 border-t border-brand-line pt-4 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-xs">© 2026 Fourth Canal · Private academic use only.</p>
+          <p className="text-xs">© 2026 Fourth Canal · Independent dental study tools.</p>
           <nav
             className="flex flex-wrap gap-x-4 gap-y-2 text-xs"
             aria-label="Legal and site information"

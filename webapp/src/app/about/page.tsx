@@ -1,6 +1,5 @@
 import Link from "next/link";
 import Image from "next/image";
-import { getSessionProfile } from "@/lib/access";
 import { BrandMarkPublic } from "@/components/BrandMark";
 import styles from "./AboutPage.module.css";
 
@@ -14,31 +13,27 @@ export const metadata = {
 const PRINCIPLES = [
   {
     number: "01",
-    title: "Everything in its place",
-    copy: "Lectures, transcripts, mastery guides, course files, and class tools stay attached to the course context that makes them useful.",
+    title: "Three clear starting points",
+    copy: "Play the dental anatomy game, plan a grade, or open a course guide without walking through a course portal first.",
   },
   {
     number: "02",
-    title: "Built for the way students actually study",
-    copy: "Search by the thing you remember, continue where you stopped, and move between the lecture and its supporting material without rebuilding the trail.",
+    title: "The webpage is the document",
+    copy: "Course Mastery Guides and Textbook Companions are searchable, responsive reading experiences—not files you have to download first.",
   },
   {
     number: "03",
-    title: "Made by students. Improved by students.",
-    copy: "Fourth Canal is cohort infrastructure: maintained by student operators and strengthened by corrections, better notes, and useful contributions.",
+    title: "Open first. Account second.",
+    copy: "The core tools work immediately. A free account only enters the picture when a student wants game progress saved.",
   },
   {
     number: "04",
     title: "Independent by design",
-    copy: "This is a private student-run study tool, not an official university platform. Faculty instructions, Canvas, syllabi, and clinical guidance always control.",
+    copy: "This is an independent student-run study tool, not an official university platform. The original D1 library remains a separate restricted workspace.",
   },
 ] as const;
 
-export default async function AboutPage() {
-  const { profile } = await getSessionProfile();
-  const backHref = profile?.status === "approved" ? "/home" : "/";
-  const backLabel = profile?.status === "approved" ? "Open my courses" : "Back to sign in";
-
+export default function AboutPage() {
   return (
     <div className={`${styles.aboutPage} fc-site`} data-integrated-footer="true">
       <div className={styles.microscopyField} aria-hidden="true" />
@@ -48,8 +43,8 @@ export default async function AboutPage() {
           <BrandMarkPublic />
           <small>Dental education</small>
         </div>
-        <Link href={backHref} className={styles.headerAction}>
-          {backLabel} <span aria-hidden="true">→</span>
+        <Link href="/" className={styles.headerAction}>
+          Open the study desk <span aria-hidden="true">→</span>
         </Link>
       </header>
 
@@ -59,13 +54,12 @@ export default async function AboutPage() {
             <p className={styles.eyebrow}>Independent · Student-built · Course-ready</p>
             <h1>The study layer <span>dental school was missing.</span></h1>
             <p className={styles.lead}>
-              Fourth Canal brings lectures, transcripts, mastery guides, course files,
-              and class tools into one private workspace built for the way dental
-              students actually study.
+              Fourth Canal is a public dental study desk: a visual anatomy game, a
+              grade calculator, and focused course guides built for the browser.
             </p>
             <div className={styles.heroActions}>
-              <Link href={backHref} className={styles.primaryAction}>
-                {profile?.status === "approved" ? "Open my courses" : "Return to sign in"}
+              <Link href="/" className={styles.primaryAction}>
+                Open the study desk
                 <span aria-hidden="true">→</span>
               </Link>
               <a href="#why" className={styles.secondaryAction}>Why the fourth canal?</a>
@@ -118,7 +112,7 @@ export default async function AboutPage() {
         <section className={styles.principles} aria-labelledby="principles-title">
           <div className={styles.sectionHeading}>
             <p className={styles.eyebrow}>How it works</p>
-            <h2 id="principles-title">A calmer way through the course.</h2>
+            <h2 id="principles-title">A calmer way to start studying.</h2>
           </div>
           <div className={styles.principleGrid}>
             {PRINCIPLES.map((principle) => (
@@ -133,11 +127,11 @@ export default async function AboutPage() {
 
         <section className={styles.closing}>
           <div>
-            <p className={styles.eyebrow}>Private academic workspace</p>
+            <p className={styles.eyebrow}>Open dental study desk</p>
             <h2>Spend less time finding the material. Spend more time understanding it.</h2>
           </div>
-          <Link href={backHref} className={styles.primaryAction}>
-            {profile?.status === "approved" ? "Open my courses" : "Return to sign in"}
+          <Link href="/" className={styles.primaryAction}>
+            Open the study desk
             <span aria-hidden="true">→</span>
           </Link>
         </section>

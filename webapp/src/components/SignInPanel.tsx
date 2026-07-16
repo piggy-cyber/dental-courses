@@ -49,7 +49,7 @@ export function SignInPanel() {
       </button>
 
       <p className="text-sm leading-relaxed text-brand-muted">
-        Use the personal Google account registered for your cohort access.
+        Use any Google account. Sign-in is only required to save progress or open private cohort material.
       </p>
 
       {error && (

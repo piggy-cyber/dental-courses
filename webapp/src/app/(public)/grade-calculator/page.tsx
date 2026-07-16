@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { GradeCalculator } from "@/components/GradeCalculator";
+import { PublicHeader } from "@/components/PublicHeader";
 import { getGradeCalculatorPreset } from "@/lib/grade-calculator-presets";
 
 export const metadata: Metadata = {
-  title: "Grade Calculator — Fourth Canal",
+  title: "Grade Calculator",
   description: "Calculate your current course grade and plan what you need on remaining work.",
+  alternates: { canonical: "/grade-calculator" },
 };
 
 function normalizeCourseCode(value: string | string[] | undefined): string | undefined {
@@ -23,28 +26,30 @@ export default async function GradeCalculatorPage({
   const preset = getGradeCalculatorPreset(requestedCourseCode);
 
   return (
-    <div className="space-y-5">
-      <header className="cockpit-panel overflow-hidden">
-        <div className="cockpit-section-bar">Student tool</div>
-        <div className="p-5">
-          <p className="eyebrow">Grade Calculator</p>
-          <h1 className="portal-title mt-1 text-3xl font-bold">Know where you stand.</h1>
-          <p className="mt-2 max-w-3xl text-sm leading-relaxed text-brand-muted">
-            Enter each score and how much it counts toward the course. Your current grade and the average needed on remaining work update automatically.
+    <div className="fc-site public-core-page public-tool-page">
+      <PublicHeader />
+      <main className="public-tool-main">
+        <nav className="public-core-breadcrumb" aria-label="Breadcrumb">
+          <Link href="/">Home</Link><span aria-hidden="true">/</span><span>Grade calculator</span>
+        </nav>
+        <header className="public-tool-hero">
+          <p className="eyebrow">Free student tool</p>
+          <h1>Know where you stand.</h1>
+          <p>
+            Enter each score and how much it counts. Your current grade and the average needed on remaining work update automatically—nothing is uploaded or saved.
           </p>
           {requestedCourseCode && !preset && (
             <p className="portal-notice mt-4 max-w-3xl px-3 py-2 text-sm">
               {requestedCourseCode} does not have a saved grading setup yet, so this opened the generic calculator.
             </p>
           )}
-        </div>
-      </header>
-
-      <GradeCalculator
-        key={preset?.courseCode ?? requestedCourseCode ?? "generic"}
-        preset={preset}
-        requestedCourseCode={requestedCourseCode}
-      />
+        </header>
+        <GradeCalculator
+          key={preset?.courseCode ?? requestedCourseCode ?? "generic"}
+          preset={preset}
+          requestedCourseCode={requestedCourseCode}
+        />
+      </main>
     </div>
   );
 }

@@ -63,6 +63,7 @@ type Feedback = {
 
 type ToothQuestGameProps = {
   initialProgress: GameProgress | null;
+  canSaveProgress: boolean;
 };
 
 const MODES: Array<{ id: Mode; label: string; eyebrow: string; description: string }> = [
@@ -228,7 +229,7 @@ function isPendingRound(value: unknown): value is GameRoundResult {
   return correct === round.correct && attempts === round.attempts;
 }
 
-export function ToothQuestGame({ initialProgress }: ToothQuestGameProps) {
+export function ToothQuestGame({ initialProgress, canSaveProgress }: ToothQuestGameProps) {
   const [mode, setMode] = useState<Mode>("map");
   const [phase, setPhase] = useState<Phase>("idle");
   const [dentition, setDentition] = useState<Dentition>("permanent");
@@ -308,14 +309,15 @@ export function ToothQuestGame({ initialProgress }: ToothQuestGameProps) {
         attempts: snapshot.attempts,
         masteryDelta: snapshot.masteryDelta,
       };
-      if (snapshot.attempts > 0) {
+      if (snapshot.attempts > 0 && canSaveProgress) {
         void persistRound(payload);
       }
     },
-    [persistRound],
+    [canSaveProgress, persistRound],
   );
 
   useEffect(() => {
+    if (!canSaveProgress) return;
     let restoreTimer: ReturnType<typeof setTimeout> | null = null;
     try {
       const raw = sessionStorage.getItem(PENDING_ROUND_KEY);
@@ -330,7 +332,7 @@ export function ToothQuestGame({ initialProgress }: ToothQuestGameProps) {
     return () => {
       if (restoreTimer) clearTimeout(restoreTimer);
     };
-  }, []);
+  }, [canSaveProgress]);
 
   useEffect(() => {
     if (phase === "playing" && round.question?.answerMode === "input" && !feedback) {
@@ -533,6 +535,18 @@ export function ToothQuestGame({ initialProgress }: ToothQuestGameProps) {
           <span><small>Mastered</small><strong>{masteredCount}</strong></span>
         </div>
       </header>
+
+      {!canSaveProgress ? (
+        <aside className={styles.saveNotice} role="status">
+          <div>
+            <strong>Playing as a guest.</strong>
+            <p>Your game works normally. Sign in when you want scores and mastery saved.</p>
+          </div>
+          <div className={styles.saveActions}>
+            <Link href="/#account">Sign in to save</Link>
+          </div>
+        </aside>
+      ) : null}
 
       {pendingRound ? (
         <aside className={styles.saveNotice} role="status">

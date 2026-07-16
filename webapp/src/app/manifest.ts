@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "Fourth Canal",
     short_name: "Fourth Canal",
     description:
-      "A private, independent cohort workspace for lectures, transcripts, study guides, and course files.",
+      "Open dental study tools, including Tooth Quest, a grade calculator, and course guides.",
     start_url: "/",
     display: "browser",
     background_color: "#F2EDE2",

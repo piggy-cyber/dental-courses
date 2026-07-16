@@ -4,10 +4,12 @@ import styles from "./GameShell.module.css";
 
 type GameShellProps = {
   children: ReactNode;
-  displayName: string;
+  displayName: string | null;
+  signedIn: boolean;
+  hasD1Access: boolean;
 };
 
-export function GameShell({ children, displayName }: GameShellProps) {
+export function GameShell({ children, displayName, signedIn, hasD1Access }: GameShellProps) {
   return (
     <div className={styles.shell}>
       <a className={styles.skipLink} href="#game-content">
@@ -26,13 +28,19 @@ export function GameShell({ children, displayName }: GameShellProps) {
 
         <nav className={styles.nav} aria-label="Game navigation">
           <Link href="/games">Games</Link>
-          <Link href="/home">Dashboard</Link>
-          <Link href="/profile" className={styles.profileLink}>
-            {displayName}
-          </Link>
-          <form action="/auth/signout" method="post">
-            <button type="submit">Sign out</button>
-          </form>
+          <Link href="/grade-calculator">Calculator</Link>
+          <Link href="/guides">Guides</Link>
+          {hasD1Access && <Link href="/d1">D1 library</Link>}
+          {signedIn ? (
+            <>
+              <span className={styles.profileLink}>{displayName}</span>
+              <form action="/auth/signout" method="post">
+                <button type="submit">Sign out</button>
+              </form>
+            </>
+          ) : (
+            <Link href="/#account" className={styles.profileLink}>Sign in to save</Link>
+          )}
         </nav>
       </header>
       {children}

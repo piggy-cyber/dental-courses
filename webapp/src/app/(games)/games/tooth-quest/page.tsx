@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { redirect } from "next/navigation";
 import { ToothQuestGame } from "@/components/games/ToothQuestGame";
 import { getSessionProfile } from "@/lib/access";
 import { getGameProgress } from "@/lib/games/progress";
@@ -13,10 +12,9 @@ export const metadata: Metadata = {
 
 export default async function ToothQuestPage() {
   const { profile, userId } = await getSessionProfile();
-  if (!profile || !userId || profile.id !== userId || profile.status !== "approved") {
-    redirect("/");
-  }
-
-  const progress = await getGameProgress(userId, "tooth-quest");
-  return <ToothQuestGame initialProgress={progress} />;
+  const canSaveProgress = Boolean(profile && userId && profile.id === userId);
+  const progress = canSaveProgress && userId
+    ? await getGameProgress(userId, "tooth-quest")
+    : null;
+  return <ToothQuestGame initialProgress={progress} canSaveProgress={canSaveProgress} />;
 }
