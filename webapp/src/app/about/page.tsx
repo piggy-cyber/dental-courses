@@ -79,7 +79,7 @@ export default async function AboutPage() {
             </div>
             <div className={styles.enamelSlice}>
               <Image
-                src="/brand/fourth-canal-hero-brand-image.png"
+                src="/brand/fourth-canal-hero-brand-image-v2.png"
                 alt="Enamel microscopy field with four anatomical canal strands"
                 fill
                 priority

@@ -59,7 +59,7 @@ export default async function LoginHomePage({
 
         <div className="fc-public-visual" aria-label="Microscopy-inspired Fourth Canal brand image">
           <Image
-            src="/brand/fourth-canal-hero-brand-image.png"
+            src="/brand/fourth-canal-hero-brand-image-v2.png"
             alt="Enamel microscopy field with four anatomical canal strands"
             fill
             priority
