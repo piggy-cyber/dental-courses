@@ -1,0 +1,1472 @@
+{
+  "schemaVersion": 1,
+  "courseCode": "REHE 151",
+  "records": [
+    {
+      "id": "max-right-central-8",
+      "toothNumber": "8",
+      "toothName": "Maxillary right central incisor",
+      "arch": "maxillary",
+      "view": "facial",
+      "mesialContactTooth": "9",
+      "distalContactTooth": "7",
+      "mesialContactLocation": "incisal-third",
+      "distalContactLocation": "incisal-middle-junction",
+      "buccolingualContactPosition": {
+        "mesial": "middle-third",
+        "distal": "middle-third"
+      },
+      "acceptedTargetRegion": {
+        "mesialIncisocervical": [
+          "mesial-incisal-occlusal"
+        ],
+        "distalIncisocervical": [
+          "distal-incisal-occlusal-middle-junction"
+        ],
+        "mesialFaciolingual": [
+          "middle-third"
+        ],
+        "distalFaciolingual": [
+          "middle-third"
+        ]
+      },
+      "explanation": "On a maxillary central incisor, the mesial contact is in the incisal third and the distal contact is slightly more cervical at the incisal-middle junction. The central-to-lateral contact is centered faciolingually.",
+      "commonTrap": "Do not put both contacts at the same height just because the crown looks broad and nearly balanced.",
+      "sourceRefs": [
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 - max ci recording.txt",
+          "locator": "07:53-08:32"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "DA REVIEW trj 2024 for canvas.ppt",
+          "locator": "slides 4, 6, and 8"
+        }
+      ],
+      "evidenceStatus": "course-verified"
+    },
+    {
+      "id": "max-right-lateral-7",
+      "toothNumber": "7",
+      "toothName": "Maxillary right lateral incisor",
+      "arch": "maxillary",
+      "view": "facial",
+      "mesialContactTooth": "8",
+      "distalContactTooth": "6",
+      "mesialContactLocation": "incisal-middle-junction",
+      "distalContactLocation": "middle-third",
+      "buccolingualContactPosition": {
+        "mesial": "middle-third",
+        "distal": "middle-third"
+      },
+      "acceptedTargetRegion": {
+        "mesialIncisocervical": [
+          "mesial-incisal-occlusal-middle-junction"
+        ],
+        "distalIncisocervical": [
+          "distal-middle"
+        ],
+        "mesialFaciolingual": [
+          "middle-third"
+        ],
+        "distalFaciolingual": [
+          "middle-third"
+        ]
+      },
+      "explanation": "The maxillary lateral incisor steps cervically from a mesial contact at the incisal-middle junction to a distal contact in the middle third. Both contacts are centered faciolingually in the course map.",
+      "commonTrap": "The rounded distal corner can make the distal contact look closer to the incisal edge than it is.",
+      "sourceRefs": [
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 - max li 8 31 2021.txt",
+          "locator": "01:55-02:59"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "DA REVIEW trj 2024 for canvas.ppt",
+          "locator": "slides 4 and 6"
+        }
+      ],
+      "evidenceStatus": "course-verified"
+    },
+    {
+      "id": "max-right-canine-6",
+      "toothNumber": "6",
+      "toothName": "Maxillary right canine",
+      "arch": "maxillary",
+      "view": "facial",
+      "mesialContactTooth": "7",
+      "distalContactTooth": "5",
+      "mesialContactLocation": "incisal-middle-junction",
+      "distalContactLocation": "middle-third",
+      "buccolingualContactPosition": {
+        "mesial": "middle-third",
+        "distal": "middle-third"
+      },
+      "acceptedTargetRegion": {
+        "mesialIncisocervical": [
+          "mesial-incisal-occlusal-middle-junction"
+        ],
+        "distalIncisocervical": [
+          "distal-middle"
+        ],
+        "mesialFaciolingual": [
+          "middle-third"
+        ],
+        "distalFaciolingual": [
+          "middle-third"
+        ]
+      },
+      "explanation": "The maxillary canine follows the same cervical step: mesial at the incisal-middle junction and distal in the middle third. The course faciolingual map keeps canine contacts in the middle third.",
+      "commonTrap": "Do not use the cusp tip as the contact landmark; contacts sit on the proximal crown contours.",
+      "sourceRefs": [
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "da 3 Max C 2024.ppt",
+          "locator": "slide 11"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "DA REVIEW trj 2024 for canvas.ppt",
+          "locator": "slides 4 and 6"
+        }
+      ],
+      "evidenceStatus": "course-verified"
+    },
+    {
+      "id": "max-right-first-premolar-5",
+      "toothNumber": "5",
+      "toothName": "Maxillary right first premolar",
+      "arch": "maxillary",
+      "view": "facial",
+      "mesialContactTooth": "6",
+      "distalContactTooth": "4",
+      "mesialContactLocation": "occlusal-middle-junction",
+      "distalContactLocation": "occlusal-middle-junction",
+      "buccolingualContactPosition": {
+        "mesial": "facial-third",
+        "distal": "facial-third"
+      },
+      "acceptedTargetRegion": {
+        "mesialIncisocervical": [
+          "mesial-incisal-occlusal-middle-junction"
+        ],
+        "distalIncisocervical": [
+          "distal-incisal-occlusal-middle-junction"
+        ],
+        "mesialFaciolingual": [
+          "facial-third"
+        ],
+        "distalFaciolingual": [
+          "facial-third"
+        ]
+      },
+      "explanation": "Both contacts of the maxillary first premolar are at the occlusal-middle junction in posterior terminology, and the course faciolingual map places premolar contacts in the facial third.",
+      "commonTrap": "Posterior contacts move facially; do not center them buccolingually as you would an anterior contact.",
+      "sourceRefs": [
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "da 5 Max PM1 2024.ppt",
+          "locator": "slide 8"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "DA REVIEW trj 2024 for canvas.ppt",
+          "locator": "slides 4 and 6"
+        }
+      ],
+      "evidenceStatus": "course-verified"
+    },
+    {
+      "id": "max-right-second-premolar-4",
+      "toothNumber": "4",
+      "toothName": "Maxillary right second premolar",
+      "arch": "maxillary",
+      "view": "facial",
+      "mesialContactTooth": "5",
+      "distalContactTooth": "3",
+      "mesialContactLocation": "occlusal-middle-junction",
+      "distalContactLocation": "occlusal-middle-junction",
+      "buccolingualContactPosition": {
+        "mesial": "facial-third",
+        "distal": "facial-third"
+      },
+      "acceptedTargetRegion": {
+        "mesialIncisocervical": [
+          "mesial-incisal-occlusal-middle-junction"
+        ],
+        "distalIncisocervical": [
+          "distal-incisal-occlusal-middle-junction"
+        ],
+        "mesialFaciolingual": [
+          "facial-third"
+        ],
+        "distalFaciolingual": [
+          "facial-third"
+        ]
+      },
+      "explanation": "The maxillary second premolar keeps both contacts at the occlusal-middle junction and in the facial third faciolingually.",
+      "commonTrap": "Its rounder crown does not move the contact into the middle of the occlusal table.",
+      "sourceRefs": [
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "da 5 Max PM2 2024.ppt",
+          "locator": "slide 12"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "DA REVIEW trj 2024 for canvas.ppt",
+          "locator": "slides 4 and 6"
+        }
+      ],
+      "evidenceStatus": "course-verified"
+    },
+    {
+      "id": "max-right-first-molar-3",
+      "toothNumber": "3",
+      "toothName": "Maxillary right first molar",
+      "arch": "maxillary",
+      "view": "facial",
+      "mesialContactTooth": "4",
+      "distalContactTooth": "2",
+      "mesialContactLocation": "occlusal-third",
+      "distalContactLocation": "middle-third",
+      "buccolingualContactPosition": {
+        "mesial": "facial-to-central-groove",
+        "distal": "middle-third"
+      },
+      "acceptedTargetRegion": {
+        "mesialIncisocervical": [
+          "mesial-incisal-occlusal"
+        ],
+        "distalIncisocervical": [
+          "distal-middle"
+        ],
+        "mesialFaciolingual": [
+          "facial-to-central-groove"
+        ],
+        "distalFaciolingual": [
+          "middle-third"
+        ]
+      },
+      "explanation": "The maxillary first molar has a mesial contact in the occlusal third and a distal contact in the middle third. Faciolingually, its broad mesial contact begins facially and extends toward the central groove, while the distal contact lies in the middle third.",
+      "commonTrap": "Do not shrink the broad mesial contact to the facial third alone; the course map extends it toward the central groove.",
+      "sourceRefs": [
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "da 6 Max M1 2024.ppt",
+          "locator": "slide 7"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "DA REVIEW trj 2024 for canvas.ppt",
+          "locator": "slides 4 and 6"
+        }
+      ],
+      "evidenceStatus": "course-verified"
+    },
+    {
+      "id": "max-right-second-molar-2",
+      "toothNumber": "2",
+      "toothName": "Maxillary right second molar",
+      "arch": "maxillary",
+      "view": "facial",
+      "mesialContactTooth": "3",
+      "distalContactTooth": "1",
+      "mesialContactLocation": "occlusal-third",
+      "distalContactLocation": "middle-third",
+      "buccolingualContactPosition": {
+        "mesial": "middle-third",
+        "distal": "middle-third"
+      },
+      "acceptedTargetRegion": {
+        "mesialIncisocervical": [
+          "mesial-incisal-occlusal"
+        ],
+        "distalIncisocervical": [
+          "distal-middle"
+        ],
+        "mesialFaciolingual": [
+          "middle-third"
+        ],
+        "distalFaciolingual": [
+          "middle-third"
+        ]
+      },
+      "explanation": "The maxillary second molar repeats the course height map of mesial in the occlusal third and distal in the middle third. Its contact map is more central faciolingually than the premolars.",
+      "commonTrap": "Do not carry the premolar facial-third rule unchanged onto every maxillary molar contact.",
+      "sourceRefs": [
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "da 6 Max M2 M3 2020.ppt",
+          "locator": "slide 4"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "DA REVIEW trj 2024 for canvas.ppt",
+          "locator": "slides 4 and 6"
+        }
+      ],
+      "evidenceStatus": "course-verified"
+    },
+    {
+      "id": "max-right-third-molar-1",
+      "toothNumber": "1",
+      "toothName": "Maxillary right third molar",
+      "arch": "maxillary",
+      "view": "occlusal",
+      "mesialContactTooth": "2",
+      "distalContactTooth": null,
+      "mesialContactLocation": null,
+      "distalContactLocation": null,
+      "buccolingualContactPosition": {
+        "mesial": null,
+        "distal": null
+      },
+      "acceptedTargetRegion": {
+        "mesialIncisocervical": [],
+        "distalIncisocervical": [],
+        "mesialFaciolingual": [],
+        "distalFaciolingual": []
+      },
+      "explanation": "Tooth #1 is terminal in the maxillary right arch. It has a mesial neighbor (#2), but there is no tooth distal to it to form an interproximal contact in a complete permanent arch map.",
+      "commonTrap": "Do not confuse a distal crown surface with a distal contact; a terminal tooth still has the surface but no distal neighbor.",
+      "sourceRefs": [
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.docx",
+          "locator": "Table 8, permanent arch sequence Study Rule"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "additional terminology 2023 A.pptx",
+          "locator": "slide 8, contact-area definition"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "da 6 Max M2 M3 2020.ppt",
+          "locator": "slides 32-35"
+        }
+      ],
+      "evidenceStatus": "course-verified"
+    },
+    {
+      "id": "mand-right-central-25",
+      "toothNumber": "25",
+      "toothName": "Mandibular right central incisor",
+      "arch": "mandibular",
+      "view": "facial",
+      "mesialContactTooth": "24",
+      "distalContactTooth": "26",
+      "mesialContactLocation": "incisal-third",
+      "distalContactLocation": "incisal-third",
+      "buccolingualContactPosition": {
+        "mesial": "middle-third",
+        "distal": "middle-third"
+      },
+      "acceptedTargetRegion": {
+        "mesialIncisocervical": [
+          "mesial-incisal-occlusal"
+        ],
+        "distalIncisocervical": [
+          "distal-incisal-occlusal"
+        ],
+        "mesialFaciolingual": [
+          "middle-third"
+        ],
+        "distalFaciolingual": [
+          "middle-third"
+        ]
+      },
+      "explanation": "Both contacts of the mandibular central incisor are in the incisal third and centered faciolingually, matching its strongly symmetric crown form.",
+      "commonTrap": "Do not import the maxillary central's incisal-to-junction step onto the mandibular central.",
+      "sourceRefs": [
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "DA REVIEW trj 2024 for canvas.ppt",
+          "locator": "slides 5 and 7"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.docx",
+          "locator": "Table 22, mandibular central incisor"
+        }
+      ],
+      "evidenceStatus": "course-verified"
+    },
+    {
+      "id": "mand-right-lateral-26",
+      "toothNumber": "26",
+      "toothName": "Mandibular right lateral incisor",
+      "arch": "mandibular",
+      "view": "facial",
+      "mesialContactTooth": "25",
+      "distalContactTooth": "27",
+      "mesialContactLocation": "incisal-third",
+      "distalContactLocation": "incisal-third",
+      "buccolingualContactPosition": {
+        "mesial": "middle-third",
+        "distal": "middle-third"
+      },
+      "acceptedTargetRegion": {
+        "mesialIncisocervical": [
+          "mesial-incisal-occlusal"
+        ],
+        "distalIncisocervical": [
+          "distal-incisal-occlusal"
+        ],
+        "mesialFaciolingual": [
+          "middle-third"
+        ],
+        "distalFaciolingual": [
+          "middle-third"
+        ]
+      },
+      "explanation": "Both mandibular lateral incisor contacts remain in the incisal third, although the distal contact is described as more cervical within that third. The contacts remain centered faciolingually.",
+      "commonTrap": "More cervical does not automatically mean the distal contact has crossed into the middle third.",
+      "sourceRefs": [
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.docx",
+          "locator": "Tables 17 and 22, mandibular lateral incisor"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "DA REVIEW trj 2024 for canvas.ppt",
+          "locator": "slides 5 and 7"
+        }
+      ],
+      "evidenceStatus": "course-verified"
+    },
+    {
+      "id": "mand-right-canine-27",
+      "toothNumber": "27",
+      "toothName": "Mandibular right canine",
+      "arch": "mandibular",
+      "view": "facial",
+      "mesialContactTooth": "26",
+      "distalContactTooth": "28",
+      "mesialContactLocation": "incisal-third",
+      "distalContactLocation": "incisal-middle-junction",
+      "buccolingualContactPosition": {
+        "mesial": "middle-third",
+        "distal": "middle-third"
+      },
+      "acceptedTargetRegion": {
+        "mesialIncisocervical": [
+          "mesial-incisal-occlusal"
+        ],
+        "distalIncisocervical": [
+          "distal-incisal-occlusal-middle-junction"
+        ],
+        "mesialFaciolingual": [
+          "middle-third"
+        ],
+        "distalFaciolingual": [
+          "middle-third"
+        ]
+      },
+      "explanation": "The mandibular canine has a mesial contact in the incisal third and a distal contact at the incisal-middle junction. Both are centered faciolingually in the course map.",
+      "commonTrap": "The distal crown bend does not move the contact all the way into the middle third.",
+      "sourceRefs": [
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "da 3 Mand C 2024.ppt",
+          "locator": "slide 6"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "DA REVIEW trj 2024 for canvas.ppt",
+          "locator": "slides 5 and 7"
+        }
+      ],
+      "evidenceStatus": "course-verified"
+    },
+    {
+      "id": "mand-right-first-premolar-28",
+      "toothNumber": "28",
+      "toothName": "Mandibular right first premolar",
+      "arch": "mandibular",
+      "view": "facial",
+      "mesialContactTooth": "27",
+      "distalContactTooth": "29",
+      "mesialContactLocation": "occlusal-middle-junction",
+      "distalContactLocation": "occlusal-middle-junction",
+      "buccolingualContactPosition": {
+        "mesial": "facial-third",
+        "distal": "facial-third"
+      },
+      "acceptedTargetRegion": {
+        "mesialIncisocervical": [
+          "mesial-incisal-occlusal-middle-junction"
+        ],
+        "distalIncisocervical": [
+          "distal-incisal-occlusal-middle-junction"
+        ],
+        "mesialFaciolingual": [
+          "facial-third"
+        ],
+        "distalFaciolingual": [
+          "facial-third"
+        ]
+      },
+      "explanation": "Both mandibular first premolar contacts are at the occlusal-middle junction and in the facial third faciolingually.",
+      "commonTrap": "The small lingual cusp does not pull the interproximal contact toward the lingual surface.",
+      "sourceRefs": [
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "da 5 Mand PM1 2021 9 2 a.ppt",
+          "locator": "slide 14"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "DA REVIEW trj 2024 for canvas.ppt",
+          "locator": "slide 7"
+        }
+      ],
+      "evidenceStatus": "course-verified"
+    },
+    {
+      "id": "mand-right-second-premolar-29",
+      "toothNumber": "29",
+      "toothName": "Mandibular right second premolar",
+      "arch": "mandibular",
+      "view": "facial",
+      "mesialContactTooth": "28",
+      "distalContactTooth": "30",
+      "mesialContactLocation": "occlusal-middle-junction",
+      "distalContactLocation": "occlusal-middle-junction",
+      "buccolingualContactPosition": {
+        "mesial": "facial-third",
+        "distal": "facial-third"
+      },
+      "acceptedTargetRegion": {
+        "mesialIncisocervical": [
+          "mesial-incisal-occlusal-middle-junction"
+        ],
+        "distalIncisocervical": [
+          "distal-incisal-occlusal-middle-junction"
+        ],
+        "mesialFaciolingual": [
+          "facial-third"
+        ],
+        "distalFaciolingual": [
+          "facial-third"
+        ]
+      },
+      "explanation": "The mandibular second premolar keeps both contacts at the occlusal-middle junction, with both contacts placed in the facial third faciolingually.",
+      "commonTrap": "A broad, molar-like occlusal table does not make its contact location molar-like in this course map.",
+      "sourceRefs": [
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "DA REVIEW trj 2024 for canvas.ppt",
+          "locator": "slides 5 and 7"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "da 5 Mand PM 2 2021 9 23 a.ppt",
+          "locator": "slides 5-16, tooth identity and proximal views"
+        }
+      ],
+      "evidenceStatus": "course-verified"
+    },
+    {
+      "id": "mand-right-first-molar-30",
+      "toothNumber": "30",
+      "toothName": "Mandibular right first molar",
+      "arch": "mandibular",
+      "view": "facial",
+      "mesialContactTooth": "29",
+      "distalContactTooth": "31",
+      "mesialContactLocation": "occlusal-middle-junction",
+      "distalContactLocation": "middle-third",
+      "buccolingualContactPosition": {
+        "mesial": "facial-third",
+        "distal": "facial-aspect-middle-third"
+      },
+      "acceptedTargetRegion": {
+        "mesialIncisocervical": [
+          "mesial-incisal-occlusal-middle-junction"
+        ],
+        "distalIncisocervical": [
+          "distal-middle"
+        ],
+        "mesialFaciolingual": [
+          "facial-third"
+        ],
+        "distalFaciolingual": [
+          "facial-aspect-middle-third"
+        ]
+      },
+      "explanation": "The mandibular first molar places its mesial contact at the occlusal-middle junction and its distal contact in the middle third. Faciolingually, the distal contact approaches the facial aspect of the middle third.",
+      "commonTrap": "Do not place the distal contact as high and facial as the mesial contact.",
+      "sourceRefs": [
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "da 7 Maand M1 2020.ppt",
+          "locator": "slide 6"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "DA REVIEW trj 2024 for canvas.ppt",
+          "locator": "slides 5 and 7"
+        }
+      ],
+      "evidenceStatus": "course-verified"
+    },
+    {
+      "id": "mand-right-second-molar-31",
+      "toothNumber": "31",
+      "toothName": "Mandibular right second molar",
+      "arch": "mandibular",
+      "view": "facial",
+      "mesialContactTooth": "30",
+      "distalContactTooth": "32",
+      "mesialContactLocation": "occlusal-middle-junction",
+      "distalContactLocation": "middle-third",
+      "buccolingualContactPosition": {
+        "mesial": "facial-aspect-middle-third",
+        "distal": "facial-aspect-middle-third"
+      },
+      "acceptedTargetRegion": {
+        "mesialIncisocervical": [
+          "mesial-incisal-occlusal-middle-junction"
+        ],
+        "distalIncisocervical": [
+          "distal-middle"
+        ],
+        "mesialFaciolingual": [
+          "facial-aspect-middle-third"
+        ],
+        "distalFaciolingual": [
+          "facial-aspect-middle-third"
+        ]
+      },
+      "explanation": "The mandibular second molar has its mesial contact at the occlusal-middle junction and distal contact in the middle third. Both contacts occupy the facial aspect of the middle third faciolingually.",
+      "commonTrap": "Its symmetric occlusal outline does not make the mesial and distal contacts equal in height.",
+      "sourceRefs": [
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "da 7 Maand M2 M3 2020 9 22 2020.ppt",
+          "locator": "slide 5"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "DA REVIEW trj 2024 for canvas.ppt",
+          "locator": "slides 5 and 7"
+        }
+      ],
+      "evidenceStatus": "course-verified"
+    },
+    {
+      "id": "mand-right-third-molar-32",
+      "toothNumber": "32",
+      "toothName": "Mandibular right third molar",
+      "arch": "mandibular",
+      "view": "occlusal",
+      "mesialContactTooth": "31",
+      "distalContactTooth": null,
+      "mesialContactLocation": null,
+      "distalContactLocation": null,
+      "buccolingualContactPosition": {
+        "mesial": null,
+        "distal": null
+      },
+      "acceptedTargetRegion": {
+        "mesialIncisocervical": [],
+        "distalIncisocervical": [],
+        "mesialFaciolingual": [],
+        "distalFaciolingual": []
+      },
+      "explanation": "Tooth #32 is terminal in the mandibular right arch. It contacts #31 mesially, but has no distal neighbor to form an interproximal contact in a complete permanent arch map.",
+      "commonTrap": "A terminal molar has a distal surface, but no distal interproximal contact without a distal neighbor.",
+      "sourceRefs": [
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.docx",
+          "locator": "Table 8, permanent arch sequence Study Rule"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "additional terminology 2023 A.pptx",
+          "locator": "slide 8, contact-area definition"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "da 7 Maand M2 M3 2020 9 22 2020.ppt",
+          "locator": "slides 25-28"
+        }
+      ],
+      "evidenceStatus": "course-verified"
+    },
+    {
+      "id": "max-left-central-9",
+      "toothNumber": "9",
+      "toothName": "Maxillary left central incisor",
+      "arch": "maxillary",
+      "view": "facial",
+      "mesialContactTooth": "8",
+      "distalContactTooth": "10",
+      "mesialContactLocation": "incisal-third",
+      "distalContactLocation": "incisal-middle-junction",
+      "buccolingualContactPosition": {
+        "mesial": "middle-third",
+        "distal": "middle-third"
+      },
+      "acceptedTargetRegion": {
+        "mesialIncisocervical": [
+          "mesial-incisal-occlusal"
+        ],
+        "distalIncisocervical": [
+          "distal-incisal-occlusal-middle-junction"
+        ],
+        "mesialFaciolingual": [
+          "middle-third"
+        ],
+        "distalFaciolingual": [
+          "middle-third"
+        ]
+      },
+      "explanation": "On a maxillary central incisor, the mesial contact is in the incisal third and the distal contact is slightly more cervical at the incisal-middle junction. The central-to-lateral contact is centered faciolingually.",
+      "commonTrap": "Do not put both contacts at the same height just because the crown looks broad and nearly balanced.",
+      "sourceRefs": [
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 - max ci recording.txt",
+          "locator": "07:53-08:32"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "DA REVIEW trj 2024 for canvas.ppt",
+          "locator": "slides 4, 6, and 8"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.docx",
+          "locator": "Table 8, permanent arch sequence Study Rule"
+        }
+      ],
+      "evidenceStatus": "course-verified"
+    },
+    {
+      "id": "max-left-lateral-10",
+      "toothNumber": "10",
+      "toothName": "Maxillary left lateral incisor",
+      "arch": "maxillary",
+      "view": "facial",
+      "mesialContactTooth": "9",
+      "distalContactTooth": "11",
+      "mesialContactLocation": "incisal-middle-junction",
+      "distalContactLocation": "middle-third",
+      "buccolingualContactPosition": {
+        "mesial": "middle-third",
+        "distal": "middle-third"
+      },
+      "acceptedTargetRegion": {
+        "mesialIncisocervical": [
+          "mesial-incisal-occlusal-middle-junction"
+        ],
+        "distalIncisocervical": [
+          "distal-middle"
+        ],
+        "mesialFaciolingual": [
+          "middle-third"
+        ],
+        "distalFaciolingual": [
+          "middle-third"
+        ]
+      },
+      "explanation": "The maxillary lateral incisor steps cervically from a mesial contact at the incisal-middle junction to a distal contact in the middle third. Both contacts are centered faciolingually in the course map.",
+      "commonTrap": "The rounded distal corner can make the distal contact look closer to the incisal edge than it is.",
+      "sourceRefs": [
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 - max li 8 31 2021.txt",
+          "locator": "01:55-02:59"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "DA REVIEW trj 2024 for canvas.ppt",
+          "locator": "slides 4 and 6"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.docx",
+          "locator": "Table 8, permanent arch sequence Study Rule"
+        }
+      ],
+      "evidenceStatus": "course-verified"
+    },
+    {
+      "id": "max-left-canine-11",
+      "toothNumber": "11",
+      "toothName": "Maxillary left canine",
+      "arch": "maxillary",
+      "view": "facial",
+      "mesialContactTooth": "10",
+      "distalContactTooth": "12",
+      "mesialContactLocation": "incisal-middle-junction",
+      "distalContactLocation": "middle-third",
+      "buccolingualContactPosition": {
+        "mesial": "middle-third",
+        "distal": "middle-third"
+      },
+      "acceptedTargetRegion": {
+        "mesialIncisocervical": [
+          "mesial-incisal-occlusal-middle-junction"
+        ],
+        "distalIncisocervical": [
+          "distal-middle"
+        ],
+        "mesialFaciolingual": [
+          "middle-third"
+        ],
+        "distalFaciolingual": [
+          "middle-third"
+        ]
+      },
+      "explanation": "The maxillary canine follows the same cervical step: mesial at the incisal-middle junction and distal in the middle third. The course faciolingual map keeps canine contacts in the middle third.",
+      "commonTrap": "Do not use the cusp tip as the contact landmark; contacts sit on the proximal crown contours.",
+      "sourceRefs": [
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "da 3 Max C 2024.ppt",
+          "locator": "slide 11"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "DA REVIEW trj 2024 for canvas.ppt",
+          "locator": "slides 4 and 6"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.docx",
+          "locator": "Table 8, permanent arch sequence Study Rule"
+        }
+      ],
+      "evidenceStatus": "course-verified"
+    },
+    {
+      "id": "max-left-first-premolar-12",
+      "toothNumber": "12",
+      "toothName": "Maxillary left first premolar",
+      "arch": "maxillary",
+      "view": "facial",
+      "mesialContactTooth": "11",
+      "distalContactTooth": "13",
+      "mesialContactLocation": "occlusal-middle-junction",
+      "distalContactLocation": "occlusal-middle-junction",
+      "buccolingualContactPosition": {
+        "mesial": "facial-third",
+        "distal": "facial-third"
+      },
+      "acceptedTargetRegion": {
+        "mesialIncisocervical": [
+          "mesial-incisal-occlusal-middle-junction"
+        ],
+        "distalIncisocervical": [
+          "distal-incisal-occlusal-middle-junction"
+        ],
+        "mesialFaciolingual": [
+          "facial-third"
+        ],
+        "distalFaciolingual": [
+          "facial-third"
+        ]
+      },
+      "explanation": "Both contacts of the maxillary first premolar are at the occlusal-middle junction in posterior terminology, and the course faciolingual map places premolar contacts in the facial third.",
+      "commonTrap": "Posterior contacts move facially; do not center them buccolingually as you would an anterior contact.",
+      "sourceRefs": [
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "da 5 Max PM1 2024.ppt",
+          "locator": "slide 8"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "DA REVIEW trj 2024 for canvas.ppt",
+          "locator": "slides 4 and 6"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.docx",
+          "locator": "Table 8, permanent arch sequence Study Rule"
+        }
+      ],
+      "evidenceStatus": "course-verified"
+    },
+    {
+      "id": "max-left-second-premolar-13",
+      "toothNumber": "13",
+      "toothName": "Maxillary left second premolar",
+      "arch": "maxillary",
+      "view": "facial",
+      "mesialContactTooth": "12",
+      "distalContactTooth": "14",
+      "mesialContactLocation": "occlusal-middle-junction",
+      "distalContactLocation": "occlusal-middle-junction",
+      "buccolingualContactPosition": {
+        "mesial": "facial-third",
+        "distal": "facial-third"
+      },
+      "acceptedTargetRegion": {
+        "mesialIncisocervical": [
+          "mesial-incisal-occlusal-middle-junction"
+        ],
+        "distalIncisocervical": [
+          "distal-incisal-occlusal-middle-junction"
+        ],
+        "mesialFaciolingual": [
+          "facial-third"
+        ],
+        "distalFaciolingual": [
+          "facial-third"
+        ]
+      },
+      "explanation": "The maxillary second premolar keeps both contacts at the occlusal-middle junction and in the facial third faciolingually.",
+      "commonTrap": "Its rounder crown does not move the contact into the middle of the occlusal table.",
+      "sourceRefs": [
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "da 5 Max PM2 2024.ppt",
+          "locator": "slide 12"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "DA REVIEW trj 2024 for canvas.ppt",
+          "locator": "slides 4 and 6"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.docx",
+          "locator": "Table 8, permanent arch sequence Study Rule"
+        }
+      ],
+      "evidenceStatus": "course-verified"
+    },
+    {
+      "id": "max-left-first-molar-14",
+      "toothNumber": "14",
+      "toothName": "Maxillary left first molar",
+      "arch": "maxillary",
+      "view": "facial",
+      "mesialContactTooth": "13",
+      "distalContactTooth": "15",
+      "mesialContactLocation": "occlusal-third",
+      "distalContactLocation": "middle-third",
+      "buccolingualContactPosition": {
+        "mesial": "facial-to-central-groove",
+        "distal": "middle-third"
+      },
+      "acceptedTargetRegion": {
+        "mesialIncisocervical": [
+          "mesial-incisal-occlusal"
+        ],
+        "distalIncisocervical": [
+          "distal-middle"
+        ],
+        "mesialFaciolingual": [
+          "facial-to-central-groove"
+        ],
+        "distalFaciolingual": [
+          "middle-third"
+        ]
+      },
+      "explanation": "The maxillary first molar has a mesial contact in the occlusal third and a distal contact in the middle third. Faciolingually, its broad mesial contact begins facially and extends toward the central groove, while the distal contact lies in the middle third.",
+      "commonTrap": "Do not shrink the broad mesial contact to the facial third alone; the course map extends it toward the central groove.",
+      "sourceRefs": [
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "da 6 Max M1 2024.ppt",
+          "locator": "slide 7"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "DA REVIEW trj 2024 for canvas.ppt",
+          "locator": "slides 4 and 6"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.docx",
+          "locator": "Table 8, permanent arch sequence Study Rule"
+        }
+      ],
+      "evidenceStatus": "course-verified"
+    },
+    {
+      "id": "max-left-second-molar-15",
+      "toothNumber": "15",
+      "toothName": "Maxillary left second molar",
+      "arch": "maxillary",
+      "view": "facial",
+      "mesialContactTooth": "14",
+      "distalContactTooth": "16",
+      "mesialContactLocation": "occlusal-third",
+      "distalContactLocation": "middle-third",
+      "buccolingualContactPosition": {
+        "mesial": "middle-third",
+        "distal": "middle-third"
+      },
+      "acceptedTargetRegion": {
+        "mesialIncisocervical": [
+          "mesial-incisal-occlusal"
+        ],
+        "distalIncisocervical": [
+          "distal-middle"
+        ],
+        "mesialFaciolingual": [
+          "middle-third"
+        ],
+        "distalFaciolingual": [
+          "middle-third"
+        ]
+      },
+      "explanation": "The maxillary second molar repeats the course height map of mesial in the occlusal third and distal in the middle third. Its contact map is more central faciolingually than the premolars.",
+      "commonTrap": "Do not carry the premolar facial-third rule unchanged onto every maxillary molar contact.",
+      "sourceRefs": [
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "da 6 Max M2 M3 2020.ppt",
+          "locator": "slide 4"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "DA REVIEW trj 2024 for canvas.ppt",
+          "locator": "slides 4 and 6"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.docx",
+          "locator": "Table 8, permanent arch sequence Study Rule"
+        }
+      ],
+      "evidenceStatus": "course-verified"
+    },
+    {
+      "id": "max-left-third-molar-16",
+      "toothNumber": "16",
+      "toothName": "Maxillary left third molar",
+      "arch": "maxillary",
+      "view": "occlusal",
+      "mesialContactTooth": "15",
+      "distalContactTooth": null,
+      "mesialContactLocation": null,
+      "distalContactLocation": null,
+      "buccolingualContactPosition": {
+        "mesial": null,
+        "distal": null
+      },
+      "acceptedTargetRegion": {
+        "mesialIncisocervical": [],
+        "distalIncisocervical": [],
+        "mesialFaciolingual": [],
+        "distalFaciolingual": []
+      },
+      "explanation": "Tooth #16 is terminal in the maxillary left arch. It has a mesial neighbor (#15), but there is no tooth distal to it to form an interproximal contact in a complete permanent arch map.",
+      "commonTrap": "Do not confuse a distal crown surface with a distal contact; a terminal tooth still has the surface but no distal neighbor.",
+      "sourceRefs": [
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.docx",
+          "locator": "Table 8, permanent arch sequence Study Rule"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "additional terminology 2023 A.pptx",
+          "locator": "slide 8, contact-area definition"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "da 6 Max M2 M3 2020.ppt",
+          "locator": "slides 32-35"
+        }
+      ],
+      "evidenceStatus": "course-verified"
+    },
+    {
+      "id": "mand-left-central-24",
+      "toothNumber": "24",
+      "toothName": "Mandibular left central incisor",
+      "arch": "mandibular",
+      "view": "facial",
+      "mesialContactTooth": "25",
+      "distalContactTooth": "23",
+      "mesialContactLocation": "incisal-third",
+      "distalContactLocation": "incisal-third",
+      "buccolingualContactPosition": {
+        "mesial": "middle-third",
+        "distal": "middle-third"
+      },
+      "acceptedTargetRegion": {
+        "mesialIncisocervical": [
+          "mesial-incisal-occlusal"
+        ],
+        "distalIncisocervical": [
+          "distal-incisal-occlusal"
+        ],
+        "mesialFaciolingual": [
+          "middle-third"
+        ],
+        "distalFaciolingual": [
+          "middle-third"
+        ]
+      },
+      "explanation": "Both contacts of the mandibular central incisor are in the incisal third and centered faciolingually, matching its strongly symmetric crown form.",
+      "commonTrap": "Do not import the maxillary central's incisal-to-junction step onto the mandibular central.",
+      "sourceRefs": [
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "DA REVIEW trj 2024 for canvas.ppt",
+          "locator": "slides 5 and 7"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.docx",
+          "locator": "Table 22, mandibular central incisor"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.docx",
+          "locator": "Table 8, permanent arch sequence Study Rule"
+        }
+      ],
+      "evidenceStatus": "course-verified"
+    },
+    {
+      "id": "mand-left-lateral-23",
+      "toothNumber": "23",
+      "toothName": "Mandibular left lateral incisor",
+      "arch": "mandibular",
+      "view": "facial",
+      "mesialContactTooth": "24",
+      "distalContactTooth": "22",
+      "mesialContactLocation": "incisal-third",
+      "distalContactLocation": "incisal-third",
+      "buccolingualContactPosition": {
+        "mesial": "middle-third",
+        "distal": "middle-third"
+      },
+      "acceptedTargetRegion": {
+        "mesialIncisocervical": [
+          "mesial-incisal-occlusal"
+        ],
+        "distalIncisocervical": [
+          "distal-incisal-occlusal"
+        ],
+        "mesialFaciolingual": [
+          "middle-third"
+        ],
+        "distalFaciolingual": [
+          "middle-third"
+        ]
+      },
+      "explanation": "Both mandibular lateral incisor contacts remain in the incisal third, although the distal contact is described as more cervical within that third. The contacts remain centered faciolingually.",
+      "commonTrap": "More cervical does not automatically mean the distal contact has crossed into the middle third.",
+      "sourceRefs": [
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.docx",
+          "locator": "Tables 17 and 22, mandibular lateral incisor"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "DA REVIEW trj 2024 for canvas.ppt",
+          "locator": "slides 5 and 7"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.docx",
+          "locator": "Table 8, permanent arch sequence Study Rule"
+        }
+      ],
+      "evidenceStatus": "course-verified"
+    },
+    {
+      "id": "mand-left-canine-22",
+      "toothNumber": "22",
+      "toothName": "Mandibular left canine",
+      "arch": "mandibular",
+      "view": "facial",
+      "mesialContactTooth": "23",
+      "distalContactTooth": "21",
+      "mesialContactLocation": "incisal-third",
+      "distalContactLocation": "incisal-middle-junction",
+      "buccolingualContactPosition": {
+        "mesial": "middle-third",
+        "distal": "middle-third"
+      },
+      "acceptedTargetRegion": {
+        "mesialIncisocervical": [
+          "mesial-incisal-occlusal"
+        ],
+        "distalIncisocervical": [
+          "distal-incisal-occlusal-middle-junction"
+        ],
+        "mesialFaciolingual": [
+          "middle-third"
+        ],
+        "distalFaciolingual": [
+          "middle-third"
+        ]
+      },
+      "explanation": "The mandibular canine has a mesial contact in the incisal third and a distal contact at the incisal-middle junction. Both are centered faciolingually in the course map.",
+      "commonTrap": "The distal crown bend does not move the contact all the way into the middle third.",
+      "sourceRefs": [
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "da 3 Mand C 2024.ppt",
+          "locator": "slide 6"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "DA REVIEW trj 2024 for canvas.ppt",
+          "locator": "slides 5 and 7"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.docx",
+          "locator": "Table 8, permanent arch sequence Study Rule"
+        }
+      ],
+      "evidenceStatus": "course-verified"
+    },
+    {
+      "id": "mand-left-first-premolar-21",
+      "toothNumber": "21",
+      "toothName": "Mandibular left first premolar",
+      "arch": "mandibular",
+      "view": "facial",
+      "mesialContactTooth": "22",
+      "distalContactTooth": "20",
+      "mesialContactLocation": "occlusal-middle-junction",
+      "distalContactLocation": "occlusal-middle-junction",
+      "buccolingualContactPosition": {
+        "mesial": "facial-third",
+        "distal": "facial-third"
+      },
+      "acceptedTargetRegion": {
+        "mesialIncisocervical": [
+          "mesial-incisal-occlusal-middle-junction"
+        ],
+        "distalIncisocervical": [
+          "distal-incisal-occlusal-middle-junction"
+        ],
+        "mesialFaciolingual": [
+          "facial-third"
+        ],
+        "distalFaciolingual": [
+          "facial-third"
+        ]
+      },
+      "explanation": "Both mandibular first premolar contacts are at the occlusal-middle junction and in the facial third faciolingually.",
+      "commonTrap": "The small lingual cusp does not pull the interproximal contact toward the lingual surface.",
+      "sourceRefs": [
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "da 5 Mand PM1 2021 9 2 a.ppt",
+          "locator": "slide 14"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "DA REVIEW trj 2024 for canvas.ppt",
+          "locator": "slide 7"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.docx",
+          "locator": "Table 8, permanent arch sequence Study Rule"
+        }
+      ],
+      "evidenceStatus": "course-verified"
+    },
+    {
+      "id": "mand-left-second-premolar-20",
+      "toothNumber": "20",
+      "toothName": "Mandibular left second premolar",
+      "arch": "mandibular",
+      "view": "facial",
+      "mesialContactTooth": "21",
+      "distalContactTooth": "19",
+      "mesialContactLocation": "occlusal-middle-junction",
+      "distalContactLocation": "occlusal-middle-junction",
+      "buccolingualContactPosition": {
+        "mesial": "facial-third",
+        "distal": "facial-third"
+      },
+      "acceptedTargetRegion": {
+        "mesialIncisocervical": [
+          "mesial-incisal-occlusal-middle-junction"
+        ],
+        "distalIncisocervical": [
+          "distal-incisal-occlusal-middle-junction"
+        ],
+        "mesialFaciolingual": [
+          "facial-third"
+        ],
+        "distalFaciolingual": [
+          "facial-third"
+        ]
+      },
+      "explanation": "The mandibular second premolar keeps both contacts at the occlusal-middle junction, with both contacts placed in the facial third faciolingually.",
+      "commonTrap": "A broad, molar-like occlusal table does not make its contact location molar-like in this course map.",
+      "sourceRefs": [
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "DA REVIEW trj 2024 for canvas.ppt",
+          "locator": "slides 5 and 7"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "da 5 Mand PM 2 2021 9 23 a.ppt",
+          "locator": "slides 5-16, tooth identity and proximal views"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.docx",
+          "locator": "Table 8, permanent arch sequence Study Rule"
+        }
+      ],
+      "evidenceStatus": "course-verified"
+    },
+    {
+      "id": "mand-left-first-molar-19",
+      "toothNumber": "19",
+      "toothName": "Mandibular left first molar",
+      "arch": "mandibular",
+      "view": "facial",
+      "mesialContactTooth": "20",
+      "distalContactTooth": "18",
+      "mesialContactLocation": "occlusal-middle-junction",
+      "distalContactLocation": "middle-third",
+      "buccolingualContactPosition": {
+        "mesial": "facial-third",
+        "distal": "facial-aspect-middle-third"
+      },
+      "acceptedTargetRegion": {
+        "mesialIncisocervical": [
+          "mesial-incisal-occlusal-middle-junction"
+        ],
+        "distalIncisocervical": [
+          "distal-middle"
+        ],
+        "mesialFaciolingual": [
+          "facial-third"
+        ],
+        "distalFaciolingual": [
+          "facial-aspect-middle-third"
+        ]
+      },
+      "explanation": "The mandibular first molar places its mesial contact at the occlusal-middle junction and its distal contact in the middle third. Faciolingually, the distal contact approaches the facial aspect of the middle third.",
+      "commonTrap": "Do not place the distal contact as high and facial as the mesial contact.",
+      "sourceRefs": [
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "da 7 Maand M1 2020.ppt",
+          "locator": "slide 6"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "DA REVIEW trj 2024 for canvas.ppt",
+          "locator": "slides 5 and 7"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.docx",
+          "locator": "Table 8, permanent arch sequence Study Rule"
+        }
+      ],
+      "evidenceStatus": "course-verified"
+    },
+    {
+      "id": "mand-left-second-molar-18",
+      "toothNumber": "18",
+      "toothName": "Mandibular left second molar",
+      "arch": "mandibular",
+      "view": "facial",
+      "mesialContactTooth": "19",
+      "distalContactTooth": "17",
+      "mesialContactLocation": "occlusal-middle-junction",
+      "distalContactLocation": "middle-third",
+      "buccolingualContactPosition": {
+        "mesial": "facial-aspect-middle-third",
+        "distal": "facial-aspect-middle-third"
+      },
+      "acceptedTargetRegion": {
+        "mesialIncisocervical": [
+          "mesial-incisal-occlusal-middle-junction"
+        ],
+        "distalIncisocervical": [
+          "distal-middle"
+        ],
+        "mesialFaciolingual": [
+          "facial-aspect-middle-third"
+        ],
+        "distalFaciolingual": [
+          "facial-aspect-middle-third"
+        ]
+      },
+      "explanation": "The mandibular second molar has its mesial contact at the occlusal-middle junction and distal contact in the middle third. Both contacts occupy the facial aspect of the middle third faciolingually.",
+      "commonTrap": "Its symmetric occlusal outline does not make the mesial and distal contacts equal in height.",
+      "sourceRefs": [
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "da 7 Maand M2 M3 2020 9 22 2020.ppt",
+          "locator": "slide 5"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "DA REVIEW trj 2024 for canvas.ppt",
+          "locator": "slides 5 and 7"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.docx",
+          "locator": "Table 8, permanent arch sequence Study Rule"
+        }
+      ],
+      "evidenceStatus": "course-verified"
+    },
+    {
+      "id": "mand-left-third-molar-17",
+      "toothNumber": "17",
+      "toothName": "Mandibular left third molar",
+      "arch": "mandibular",
+      "view": "occlusal",
+      "mesialContactTooth": "18",
+      "distalContactTooth": null,
+      "mesialContactLocation": null,
+      "distalContactLocation": null,
+      "buccolingualContactPosition": {
+        "mesial": null,
+        "distal": null
+      },
+      "acceptedTargetRegion": {
+        "mesialIncisocervical": [],
+        "distalIncisocervical": [],
+        "mesialFaciolingual": [],
+        "distalFaciolingual": []
+      },
+      "explanation": "Tooth #17 is terminal in the mandibular left arch. It contacts #18 mesially, but has no distal neighbor to form an interproximal contact in a complete permanent arch map.",
+      "commonTrap": "A terminal molar has a distal surface, but no distal interproximal contact without a distal neighbor.",
+      "sourceRefs": [
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "REHE 151 Dental Anatomy Course Mastery Guide.docx",
+          "locator": "Table 8, permanent arch sequence Study Rule"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "additional terminology 2023 A.pptx",
+          "locator": "slide 8, contact-area definition"
+        },
+        {
+          "courseCode": "REHE 151",
+          "sourceName": "da 7 Maand M2 M3 2020 9 22 2020.ppt",
+          "locator": "slides 25-28"
+        }
+      ],
+      "evidenceStatus": "course-verified"
+    }
+  ]
+}
