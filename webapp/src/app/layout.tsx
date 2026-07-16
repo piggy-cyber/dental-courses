@@ -46,14 +46,14 @@ export const metadata: Metadata = {
     title: "Fourth Canal",
     description:
       "A private, independent cohort workspace for lectures, transcripts, study guides, and course files.",
-    images: ["/brand/fourth-canal-social-preview.png"],
+    images: ["/brand/fourth-canal-social-preview-v2.png"],
   },
   twitter: {
     card: "summary_large_image",
     title: "Fourth Canal",
     description:
       "A private, independent cohort workspace for lectures, transcripts, study guides, and course files.",
-    images: ["/brand/fourth-canal-social-preview.png"],
+    images: ["/brand/fourth-canal-social-preview-v2.png"],
   },
   robots: {
     index: false,

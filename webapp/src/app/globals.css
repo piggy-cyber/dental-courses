@@ -704,6 +704,8 @@ html[data-theme="dark"] .fc-theme-toggle-active { background: #f2ede2; color: #0
 .fc-route-curtain[data-motion="less"] .fc-route-curtain-panels span { display: none; }
 .fc-route-curtain[data-motion="less"] .fc-route-curtain-panels span:first-child { display: block; animation-delay: 0s; }
 .fc-route-curtain[data-motion="less"] .fc-route-curtain-mark { display: none; }
+.fc-route-curtain[data-motion="less"].fc-route-curtain-closing .fc-route-curtain-panels span:first-child { animation-duration: .16s; }
+.fc-route-curtain[data-motion="less"].fc-route-curtain-opening .fc-route-curtain-panels span:first-child { animation-duration: .18s; }
 
 .fc-site [data-fc-reveal="true"] { transition: opacity .58s ease calc(var(--fc-reveal-index, 0) * 45ms), transform .72s cubic-bezier(.2,.8,.2,1) calc(var(--fc-reveal-index, 0) * 45ms); }
 .fc-site [data-fc-reveal="true"]:not([data-fc-revealed="true"]) { opacity: 0; transform: translateY(24px); }

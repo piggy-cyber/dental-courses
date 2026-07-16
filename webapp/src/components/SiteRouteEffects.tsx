@@ -2,9 +2,15 @@
 
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 export type SiteMotionMode = "full" | "less" | "off";
+type TransitionPhase = "idle" | "closing" | "covered" | "opening";
+
+type PendingNavigation = {
+  href: string;
+  sourceUrl: string;
+};
 
 const MOTION_KEY = "fourth-canal-motion";
 const MOTION_EVENT = "fourth-canal:motion-change";
@@ -31,11 +37,22 @@ export function SiteRouteEffects() {
   const pathname = usePathname();
   const router = useRouter();
   const [motion, setMotion] = useState<SiteMotionMode>("full");
-  const [phase, setPhase] = useState<"idle" | "closing" | "covered" | "opening">("idle");
+  const [phase, setPhase] = useState<TransitionPhase>("idle");
   const [destination, setDestination] = useState("Opening page");
   const timers = useRef<number[]>([]);
   const phaseRef = useRef(phase);
   const pathnameRef = useRef(pathname);
+  const pendingNavigation = useRef<PendingNavigation | null>(null);
+
+  const changePhase = useCallback((next: TransitionPhase) => {
+    phaseRef.current = next;
+    setPhase(next);
+  }, []);
+
+  const clearTimers = useCallback(() => {
+    timers.current.forEach((timer) => window.clearTimeout(timer));
+    timers.current = [];
+  }, []);
 
   useEffect(() => {
     phaseRef.current = phase;
@@ -51,6 +68,11 @@ export function SiteRouteEffects() {
       const next = customMode === "full" || customMode === "less" || customMode === "off"
         ? customMode
         : resolvedMotion();
+      if (next === "off") {
+        clearTimers();
+        pendingNavigation.current = null;
+        changePhase("idle");
+      }
       setMotion(next);
       document.documentElement.dataset.fcMotion = next;
     };
@@ -62,7 +84,7 @@ export function SiteRouteEffects() {
       window.removeEventListener(MOTION_EVENT, syncMotion);
       window.removeEventListener("storage", syncMotion);
     };
-  }, []);
+  }, [changePhase, clearTimers]);
 
   useEffect(() => {
     if (isGamePath(pathname)) return;
@@ -140,11 +162,6 @@ export function SiteRouteEffects() {
   }, [motion, pathname]);
 
   useEffect(() => {
-    const clearTimers = () => {
-      timers.current.forEach((timer) => window.clearTimeout(timer));
-      timers.current = [];
-    };
-
     const click = (event: MouseEvent) => {
       if (motion === "off" || phaseRef.current !== "idle" || isGamePath(pathnameRef.current)) return;
       if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
@@ -163,16 +180,42 @@ export function SiteRouteEffects() {
 
       event.preventDefault();
       clearTimers();
+      pendingNavigation.current = {
+        href: `${next.pathname}${next.search}${next.hash}`,
+        sourceUrl: `${current.pathname}${current.search}${current.hash}`,
+      };
       setDestination(target.textContent?.trim().replace(/\s+/g, " ") || "Opening page");
-      setPhase("closing");
+      changePhase("closing");
 
-      const closeDuration = motion === "less" ? 120 : 460;
-      const openDuration = motion === "less" ? 180 : 650;
+      const closeDuration = motion === "less" ? 170 : 720;
+      const openDuration = motion === "less" ? 200 : 800;
       timers.current.push(window.setTimeout(() => {
-        setPhase("covered");
-        router.push(`${next.pathname}${next.search}${next.hash}`);
-        timers.current.push(window.setTimeout(() => setPhase("opening"), motion === "less" ? 40 : 110));
-        timers.current.push(window.setTimeout(() => setPhase("idle"), openDuration));
+        changePhase("covered");
+        router.push(pendingNavigation.current?.href ?? `${next.pathname}${next.search}${next.hash}`);
+
+        const revealWhenReady = () => {
+          const pending = pendingNavigation.current;
+          if (!pending) return;
+          const currentUrl = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+
+          if (currentUrl !== pending.sourceUrl) {
+            clearTimers();
+            pendingNavigation.current = null;
+            window.requestAnimationFrame(() => {
+              changePhase("opening");
+              timers.current.push(window.setTimeout(() => changePhase("idle"), openDuration));
+            });
+            return;
+          }
+
+          timers.current.push(window.setTimeout(revealWhenReady, 40));
+        };
+
+        revealWhenReady();
+        timers.current.push(window.setTimeout(() => {
+          const pending = pendingNavigation.current;
+          if (pending) window.location.assign(pending.href);
+        }, 10000));
       }, closeDuration));
     };
 
@@ -181,7 +224,7 @@ export function SiteRouteEffects() {
       document.removeEventListener("click", click, true);
       clearTimers();
     };
-  }, [motion, router]);
+  }, [changePhase, clearTimers, motion, router]);
 
   if (isGamePath(pathname) || phase === "idle" || motion === "off") return null;
 
