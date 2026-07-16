@@ -35,6 +35,7 @@ export function SignInPanel() {
     <div className="space-y-4 text-left">
       <button
         type="button"
+        aria-label="Continue with Google"
         onClick={signInWithGoogle}
         disabled={busy}
         className="portal-button inline-flex w-full gap-3 px-4 py-2.5 disabled:opacity-60"

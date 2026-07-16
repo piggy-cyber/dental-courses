@@ -52,31 +52,6 @@ export default async function LoginHomePage({
               actually study.
             </p>
 
-            <div className="fc-name-meaning" id="meaning">
-              <span aria-hidden="true">04</span>
-              <div>
-                <strong>Why “Fourth Canal”? A 60-second anatomy lesson.</strong>
-                <div className="fc-name-facts">
-                  <article>
-                    <b>Inside a root</b>
-                    <p>A canal is a narrow space inside a tooth root that carries pulp—the tissue, blood vessels, and nerves that keep a tooth alive.</p>
-                  </article>
-                  <article>
-                    <b>The hidden fourth</b>
-                    <p>Upper first molars often have a second canal in the mesiobuccal root, called MB2. Pooled CBCT research finds it in about 7 in 10.</p>
-                  </article>
-                  <article>
-                    <b>Why it matters</b>
-                    <p>Root canal treatment must find, clean, and seal the infected canal system. Anatomy left untreated can let disease persist.</p>
-                  </article>
-                  <article>
-                    <b>Why it is our name</b>
-                    <p>It represents the discipline to keep looking when the obvious map is incomplete—the same habit we bring to missing study context.</p>
-                  </article>
-                </div>
-                <small>Prevalence varies by tooth, population, and detection method.</small>
-              </div>
-            </div>
           </div>
 
           <aside className="fc-entry-signin" aria-labelledby="signin-title">
@@ -119,6 +94,32 @@ export default async function LoginHomePage({
               <p>Independent and student-run. Official course and clinical guidance always controls.</p>
             </div>
           </aside>
+
+          <div className="fc-name-meaning" id="meaning">
+            <span aria-hidden="true">04</span>
+            <div>
+              <strong>Why “Fourth Canal”? A 60-second anatomy lesson.</strong>
+              <div className="fc-name-facts">
+                <article>
+                  <b>Inside a root</b>
+                  <p>A canal is a narrow space inside a tooth root that carries pulp—the tissue, blood vessels, and nerves that keep a tooth alive.</p>
+                </article>
+                <article>
+                  <b>The hidden fourth</b>
+                  <p>Upper first molars often have a second canal in the mesiobuccal root, called MB2. Pooled CBCT research finds it in about 7 in 10.</p>
+                </article>
+                <article>
+                  <b>Why it matters</b>
+                  <p>Root canal treatment must find, clean, and seal the infected canal system. Anatomy left untreated can let disease persist.</p>
+                </article>
+                <article>
+                  <b>Why it is our name</b>
+                  <p>It represents the discipline to keep looking when the obvious map is incomplete—the same habit we bring to missing study context.</p>
+                </article>
+              </div>
+              <small>Prevalence varies by tooth, population, and detection method.</small>
+            </div>
+          </div>
         </div>
 
         <SignInMicroscope />
