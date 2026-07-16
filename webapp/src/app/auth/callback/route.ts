@@ -1,18 +1,32 @@
-import { NextResponse } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
+import {
+  AUTH_RETURN_COOKIE,
+  authRedirectUrl,
+  clearAuthReturnCookie,
+  safeReturnPath,
+} from "@/lib/auth-redirect";
 import { createClient } from "@/lib/supabase/server";
 
-export async function GET(request: Request) {
+function redirectAfterAuth(requestUrl: string, returnPath: string) {
+  const response = NextResponse.redirect(authRedirectUrl(requestUrl, returnPath));
+  const clearCookie = clearAuthReturnCookie(requestUrl.startsWith("https://"));
+  response.cookies.set(clearCookie.name, clearCookie.value, clearCookie.options);
+  return response;
+}
+
+export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
   const token_hash = searchParams.get("token_hash");
   const type = searchParams.get("type");
+  const returnPath = safeReturnPath(request.cookies.get(AUTH_RETURN_COOKIE)?.value);
 
   const supabase = await createClient();
 
   if (code) {
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
-      return NextResponse.redirect(`${origin}/`);
+      return redirectAfterAuth(request.url, returnPath);
     }
   }
 
@@ -22,9 +36,11 @@ export async function GET(request: Request) {
       token_hash,
     });
     if (!error) {
-      return NextResponse.redirect(`${origin}/`);
+      return redirectAfterAuth(request.url, returnPath);
     }
   }
 
-  return NextResponse.redirect(`${origin}/?auth_error=1`);
+  const errorUrl = new URL("/", origin);
+  errorUrl.searchParams.set("auth_error", "1");
+  return NextResponse.redirect(errorUrl);
 }

@@ -28,11 +28,12 @@ function validateRound(input: GameRoundResult): string | null {
     return "That round identifier is not valid.";
   }
   if (!GAME_IDS.includes(input.gameId)) return "That game is not available.";
-  if (!isBoundedInteger(input.score, 0, 1_000_000)) return "That score is not valid.";
+  if (!isBoundedInteger(input.score, 0, 26_000)) return "That score is not valid.";
   if (!isBoundedInteger(input.correct, 0, 200)) return "That result is not valid.";
-  if (!isBoundedInteger(input.attempts, 0, 200) || input.correct > input.attempts) {
+  if (!isBoundedInteger(input.attempts, 1, 100) || input.correct > input.attempts) {
     return "That result is not valid.";
   }
+  if (input.score > input.correct * 260) return "That score is not valid.";
   if (!isBoundedInteger(input.bestStreak, 0, input.correct)) {
     return "That streak is not valid.";
   }
