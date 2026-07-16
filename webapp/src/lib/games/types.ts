@@ -1,4 +1,9 @@
-export const GAME_IDS = ["tooth-quest", "contact-area", "eruption-timeline"] as const;
+export const GAME_IDS = [
+  "tooth-quest",
+  "contact-area",
+  "eruption-timeline",
+  "root-canal-match",
+] as const;
 
 export type GameId = (typeof GAME_IDS)[number];
 

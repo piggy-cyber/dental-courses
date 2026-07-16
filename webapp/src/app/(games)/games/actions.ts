@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import eruptionCatalogJson from "@/data/games/eruption-data.json";
+import rootCanalCatalogJson from "@/data/games/root-canal-match-data.json";
 import toothCatalogJson from "@/data/games/tooth-data.json";
 import { getSessionProfile } from "@/lib/access";
 import { createClient } from "@/lib/supabase/server";
@@ -23,6 +24,11 @@ const CONTACT_MASTERY_PATTERN = /^contact-area\|(maxillary|mandibular)\|(anterio
 const eruptionCatalog = eruptionCatalogJson as EruptionCatalog;
 const validEruptionCodes = new Set(
   eruptionCatalog.records
+    .filter((record) => record.evidenceStatus === "course-verified")
+    .map((record) => record.id),
+);
+const validRootCanalRecordIds = new Set<string>(
+  rootCanalCatalogJson.records
     .filter((record) => record.evidenceStatus === "course-verified")
     .map((record) => record.id),
 );
@@ -64,7 +70,9 @@ function validateRound(input: GameRoundResult): string | null {
         ? validToothCodes.has(code)
         : input.gameId === "contact-area"
           ? CONTACT_MASTERY_PATTERN.test(code)
-          : validEruptionCodes.has(code);
+          : input.gameId === "eruption-timeline"
+            ? validEruptionCodes.has(code)
+            : validRootCanalRecordIds.has(code);
     if (!validMasteryCode) return "That mastery item is not recognized.";
     if (
       !entry ||
