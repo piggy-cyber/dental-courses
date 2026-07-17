@@ -60,6 +60,7 @@ type WeakArea = {
 
 type RootCanalMatchGameProps = {
   initialProgress: GameProgress | null;
+  canSaveProgress: boolean;
 };
 
 const MODE_OPTIONS: Array<{ id: Mode; label: string; eyebrow: string; description: string }> = [
@@ -233,7 +234,7 @@ function isPendingRound(value: unknown): value is GameRoundResult {
   return correct === round.correct && attempts === round.attempts;
 }
 
-export function RootCanalMatchGame({ initialProgress }: RootCanalMatchGameProps) {
+export function RootCanalMatchGame({ initialProgress, canSaveProgress }: RootCanalMatchGameProps) {
   const [mode, setMode] = useState<Mode>("study");
   const [difficulty, setDifficulty] = useState<RootCanalDifficulty>("basic");
   const [phase, setPhase] = useState<Phase>("playing");
@@ -263,6 +264,7 @@ export function RootCanalMatchGame({ initialProgress }: RootCanalMatchGameProps)
   const roundWeakAreas = useMemo(() => weakestAreas(round.masteryDelta), [round.masteryDelta]);
 
   const persistRound = useCallback(async (payload: GameRoundResult) => {
+    if (!canSaveProgress) return;
     storePendingRound(payload);
     setPendingRound(payload);
     setSaveError(null);
@@ -281,9 +283,10 @@ export function RootCanalMatchGame({ initialProgress }: RootCanalMatchGameProps)
     } finally {
       setSaving(false);
     }
-  }, []);
+  }, [canSaveProgress]);
 
   useEffect(() => {
+    if (!canSaveProgress) return undefined;
     let restoreTimer: ReturnType<typeof setTimeout> | null = null;
     try {
       const raw = sessionStorage.getItem(PENDING_ROUND_KEY);
@@ -298,7 +301,7 @@ export function RootCanalMatchGame({ initialProgress }: RootCanalMatchGameProps)
     return () => {
       if (restoreTimer) clearTimeout(restoreTimer);
     };
-  }, []);
+  }, [canSaveProgress]);
 
   function resetAnswer() {
     setSelectedOption(null);

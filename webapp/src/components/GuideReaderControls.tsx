@@ -4,17 +4,18 @@ import { useEffect, useRef, useState, type CSSProperties } from "react";
 import type { PublicGuideSection } from "@/lib/public-guides";
 
 type GuideTocProps = {
+  articleId: string;
   sections: PublicGuideSection[];
   courseHref: string;
 };
 
-export function GuideToc({ sections, courseHref }: GuideTocProps) {
+export function GuideToc({ articleId, sections, courseHref }: GuideTocProps) {
   const [activeId, setActiveId] = useState(sections[0]?.id ?? "");
   const [progress, setProgress] = useState(0);
   const frameRef = useRef(0);
 
   useEffect(() => {
-    const article = document.querySelector<HTMLElement>(".public-guide-body");
+    const article = document.getElementById(articleId);
     const headings = sections
       .map((section) => document.getElementById(section.id))
       .filter((heading): heading is HTMLElement => Boolean(heading));
@@ -49,7 +50,7 @@ export function GuideToc({ sections, courseHref }: GuideTocProps) {
       window.removeEventListener("scroll", schedule);
       window.removeEventListener("resize", schedule);
     };
-  }, [sections]);
+  }, [articleId, sections]);
 
   return (
     <aside

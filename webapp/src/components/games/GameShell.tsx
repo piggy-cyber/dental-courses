@@ -1,5 +1,6 @@
-import Link from "next/link";
 import type { ReactNode } from "react";
+import { BrandMark } from "@/components/BrandMark";
+import { GameNavigation } from "@/components/games/GameNavigation";
 import styles from "./GameShell.module.css";
 
 type GameShellProps = {
@@ -16,32 +17,27 @@ export function GameShell({ children, displayName, signedIn, hasD1Access }: Game
         Skip to game content
       </a>
       <header className={styles.header}>
-        <Link href="/games" className={styles.brand} aria-label="Fourth Canal games home">
-          <span className={styles.brandTile} aria-hidden="true">
-            FC
-          </span>
-          <span>
-            <span className={styles.wordmark}>Fourth Canal</span>
-            <span className={styles.sectionLabel}>Study Arcade</span>
-          </span>
-        </Link>
+        <div className={styles.brand}>
+          <BrandMark href="/games" inverse className={styles.brandMark} />
+          <span className={styles.sectionLabel}>Study Arcade</span>
+        </div>
 
-        <nav className={styles.nav} aria-label="Game navigation">
-          <Link href="/games">Games</Link>
-          <Link href="/grade-calculator">Calculator</Link>
-          <Link href="/guides">Guides</Link>
-          {hasD1Access && <Link href="/d1">D1 library</Link>}
-          {signedIn ? (
-            <>
-              <span className={styles.profileLink}>{displayName}</span>
-              <form action="/auth/signout" method="post">
-                <button type="submit">Sign out</button>
-              </form>
-            </>
-          ) : (
-            <Link href="/#account" className={styles.profileLink}>Sign in to save</Link>
-          )}
-        </nav>
+        <GameNavigation
+          className={styles.nav}
+          displayName={displayName}
+          hasD1Access={hasD1Access}
+          signedIn={signedIn}
+        />
+
+        <details className={styles.mobileMenu}>
+          <summary>Menu</summary>
+          <GameNavigation
+            className={styles.mobileNav}
+            displayName={displayName}
+            hasD1Access={hasD1Access}
+            signedIn={signedIn}
+          />
+        </details>
       </header>
       {children}
     </div>

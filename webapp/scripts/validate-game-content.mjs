@@ -481,31 +481,31 @@ for (const record of contactCatalog.records) {
   }
 }
 
-const challengeRecords = contactCatalog.records.filter(
+const contactChallengeRecords = contactCatalog.records.filter(
   (record) => record.evidenceStatus === "course-verified",
 );
 assert.equal(
-  challengeRecords.length,
+  contactChallengeRecords.length,
   contactCatalog.records.length,
   "only course-verified records may enter the current Challenge catalog",
 );
 assert.equal(
-  challengeRecords.filter((record) => record.distalContactTooth === null).length,
+  contactChallengeRecords.filter((record) => record.distalContactTooth === null).length,
   4,
   "Challenge must include verified terminal molars #1, #16, #17, and #32",
 );
 assert.deepEqual(
-  challengeRecords
+  contactChallengeRecords
     .filter((record) => record.distalContactTooth === null)
     .map((record) => record.toothNumber)
     .sort((a, b) => Number(a) - Number(b)),
   ["1", "16", "17", "32"],
   "only the four terminal third molars may lack a distal contact",
 );
-const tooth20 = challengeRecords.find((record) => record.toothNumber === "20");
+const tooth20 = contactChallengeRecords.find((record) => record.toothNumber === "20");
 assert.equal(tooth20.distalContactTooth, "19", "tooth #20 must contact #19 distally");
 for (const toothNumber of ["18", "19", "30", "31"]) {
-  const record = challengeRecords.find((item) => item.toothNumber === toothNumber);
+  const record = contactChallengeRecords.find((item) => item.toothNumber === toothNumber);
   for (const surface of ["mesial", "distal"]) {
     if (record.buccolingualContactPosition[surface] === "facial-aspect-middle-third") {
       assert.deepEqual(
@@ -517,7 +517,7 @@ for (const toothNumber of ["18", "19", "30", "31"]) {
   }
 }
 for (const toothNumber of ["3", "14"]) {
-  const record = challengeRecords.find((item) => item.toothNumber === toothNumber);
+  const record = contactChallengeRecords.find((item) => item.toothNumber === toothNumber);
   assert.equal(
     record.buccolingualContactPosition.mesial,
     "facial-to-central-groove",
@@ -527,7 +527,7 @@ for (const toothNumber of ["3", "14"]) {
   assert.match(record.explanation, /central groove/i, `${record.id} explanation must preserve contact breadth`);
 }
 assert.ok(
-  challengeRecords.some(
+  contactChallengeRecords.some(
     (record) =>
       record.mesialContactLocation &&
       record.distalContactLocation &&
@@ -536,8 +536,8 @@ assert.ok(
   "Challenge must support cervical contact comparisons",
 );
 assert.ok(
-  challengeRecords.some((record) => record.arch === "maxillary") &&
-    challengeRecords.some((record) => record.arch === "mandibular"),
+  contactChallengeRecords.some((record) => record.arch === "maxillary") &&
+    contactChallengeRecords.some((record) => record.arch === "mandibular"),
   "Challenge must cover both arches",
 );
 

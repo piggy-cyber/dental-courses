@@ -53,6 +53,7 @@ type Feedback = {
 
 type GvBlackSorterGameProps = {
   initialProgress: GameProgress | null;
+  canSaveProgress: boolean;
 };
 
 function emptyRound(): RoundState {
@@ -173,7 +174,7 @@ function findCase(caseId: string | undefined) {
   return catalog.cases.find((item) => item.id === caseId) ?? null;
 }
 
-export function GvBlackSorterGame({ initialProgress }: GvBlackSorterGameProps) {
+export function GvBlackSorterGame({ initialProgress, canSaveProgress }: GvBlackSorterGameProps) {
   const [mode, setMode] = useState<Mode>("study");
   const [phase, setPhase] = useState<Phase>("idle");
   const [round, setRound] = useState<RoundState>(emptyRound);
@@ -208,6 +209,7 @@ export function GvBlackSorterGame({ initialProgress }: GvBlackSorterGameProps) {
   );
 
   const persistRound = useCallback(async (payload: GameRoundResult) => {
+    if (!canSaveProgress) return;
     storePendingRound(payload);
     setPendingRound(payload);
     setSaveError(null);
@@ -226,7 +228,7 @@ export function GvBlackSorterGame({ initialProgress }: GvBlackSorterGameProps) {
     } finally {
       setSaving(false);
     }
-  }, []);
+  }, [canSaveProgress]);
 
   const finishRound = useCallback(
     (snapshot: RoundState, reason: string) => {
@@ -257,6 +259,7 @@ export function GvBlackSorterGame({ initialProgress }: GvBlackSorterGameProps) {
   );
 
   useEffect(() => {
+    if (!canSaveProgress) return undefined;
     let restoreTimer: ReturnType<typeof setTimeout> | null = null;
     try {
       const raw = sessionStorage.getItem(PENDING_ROUND_KEY);
@@ -271,7 +274,7 @@ export function GvBlackSorterGame({ initialProgress }: GvBlackSorterGameProps) {
     return () => {
       if (restoreTimer) clearTimeout(restoreTimer);
     };
-  }, []);
+  }, [canSaveProgress]);
 
   useEffect(
     () => () => {

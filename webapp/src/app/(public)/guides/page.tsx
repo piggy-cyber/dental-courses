@@ -32,7 +32,7 @@ export default function GuidesIndexPage() {
           </div>
           <div className="public-guides-list">
             {courses.map((course, index) => (
-              <Link href={`/guides/${course.slug}/textbook-companion`} key={course.code}>
+              <Link href={`/guides/${course.slug}`} key={course.code}>
                 <span className="public-guides-number">{String(index + 1).padStart(2, "0")}</span>
                 <span className="public-guides-code">{course.code}</span>
                 <span className="public-guides-title"><b>{course.title}</b><small>Opens the Textbook Companion · Mastery Guide one click away</small></span>

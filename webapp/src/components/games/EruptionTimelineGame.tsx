@@ -57,6 +57,7 @@ type SessionStats = {
 
 type EruptionTimelineGameProps = {
   initialProgress: GameProgress | null;
+  canSaveProgress: boolean;
 };
 
 const MODES: Array<{
@@ -322,7 +323,7 @@ function ToothGlyph({ type }: { type: EruptionToothType }) {
   );
 }
 
-export function EruptionTimelineGame({ initialProgress }: EruptionTimelineGameProps) {
+export function EruptionTimelineGame({ initialProgress, canSaveProgress }: EruptionTimelineGameProps) {
   const initialRound = useMemo(() => buildRound("permanent"), []);
   const [mode, setMode] = useState<TimelineMode>("permanent");
   const [experience, setExperience] = useState<ExperienceMode>("study");
@@ -363,6 +364,7 @@ export function EruptionTimelineGame({ initialProgress }: EruptionTimelineGamePr
   }, [timeLeft]);
 
   const persistRound = useCallback(async (payload: GameRoundResult) => {
+    if (!canSaveProgress) return;
     storePendingRound(payload);
     setPendingRound(payload);
     setSaveError(null);
@@ -381,7 +383,7 @@ export function EruptionTimelineGame({ initialProgress }: EruptionTimelineGamePr
     } finally {
       setSaving(false);
     }
-  }, []);
+  }, [canSaveProgress]);
 
   const finishAttempt = useCallback(
     (timedOut = false) => {
@@ -468,6 +470,7 @@ export function EruptionTimelineGame({ initialProgress }: EruptionTimelineGamePr
   }, [experience, finishAttempt, phase]);
 
   useEffect(() => {
+    if (!canSaveProgress) return undefined;
     let restoreTimer: ReturnType<typeof setTimeout> | null = null;
     try {
       const raw = sessionStorage.getItem(PENDING_ROUND_KEY);
@@ -483,7 +486,7 @@ export function EruptionTimelineGame({ initialProgress }: EruptionTimelineGamePr
     return () => {
       if (restoreTimer) clearTimeout(restoreTimer);
     };
-  }, []);
+  }, [canSaveProgress]);
 
   const bankItems = useMemo(
     () => round.items.filter((item) => !placement.includes(item.id)),

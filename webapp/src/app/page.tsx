@@ -115,7 +115,7 @@ export default async function PublicHomePage({
           </div>
           <div className="public-core-course-grid">
             {featured.map((course) => (
-              <Link href={`/guides/${course.slug}/textbook-companion`} key={course.code}>
+              <Link href={`/guides/${course.slug}`} key={course.code}>
                 <span>{course.code}</span>
                 <h3>{course.title}</h3>
                 <p>Course Mastery Guide + Textbook Companion</p>

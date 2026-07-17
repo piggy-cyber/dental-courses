@@ -3,17 +3,19 @@ import Image from "next/image";
 
 type BrandMarkProps = {
   className?: string;
+  href?: string;
   showWordmark?: boolean;
   inverse?: boolean;
 };
 
 export function BrandMark({
   className = "",
+  href = "/home",
   showWordmark = true,
   inverse = false,
 }: BrandMarkProps) {
   return (
-    <Link href="/home" aria-label="Fourth Canal home" className={`fc-brand-link ${className}`}>
+    <Link href={href} aria-label="Fourth Canal home" className={`fc-brand-link ${className}`}>
       <Image
         src={showWordmark
           ? inverse

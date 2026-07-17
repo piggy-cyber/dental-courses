@@ -61,6 +61,7 @@ type ReviewAnswer = {
 
 type ToothComparisonDuelProps = {
   initialProgress: GameProgress | null;
+  canSaveProgress: boolean;
 };
 
 function emptyStats(): RoundStats {
@@ -152,7 +153,7 @@ function isPendingRound(value: unknown): value is GameRoundResult {
   return correct === round.correct && attempts === round.attempts;
 }
 
-export function ToothComparisonDuel({ initialProgress }: ToothComparisonDuelProps) {
+export function ToothComparisonDuel({ initialProgress, canSaveProgress }: ToothComparisonDuelProps) {
   const pairOptions = useMemo(() => {
     const seen = new Set<string>();
     return QUESTIONS.flatMap((question) => {
@@ -268,6 +269,7 @@ export function ToothComparisonDuel({ initialProgress }: ToothComparisonDuelProp
   }, [answerResolved, currentQuestion, deadlineMs, mode, phase, resolveChallengeAnswer]);
 
   const persistRound = useCallback(async (payload: GameRoundResult) => {
+    if (!canSaveProgress) return;
     storePendingRound(payload);
     setPendingRound(payload);
     setSaving(true);
@@ -286,9 +288,10 @@ export function ToothComparisonDuel({ initialProgress }: ToothComparisonDuelProp
     } finally {
       setSaving(false);
     }
-  }, []);
+  }, [canSaveProgress]);
 
   useEffect(() => {
+    if (!canSaveProgress) return undefined;
     let retryTimer: number | null = null;
     try {
       const raw = sessionStorage.getItem(PENDING_ROUND_KEY);
@@ -308,7 +311,7 @@ export function ToothComparisonDuel({ initialProgress }: ToothComparisonDuelProp
     return () => {
       if (retryTimer !== null) window.clearTimeout(retryTimer);
     };
-  }, [persistRound]);
+  }, [canSaveProgress, persistRound]);
 
   const savedWeakAreas = useMemo(() => {
     if (!progress) return [];

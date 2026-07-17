@@ -15,7 +15,6 @@ import {
 import {
   GAME_IDS,
   progressFromRow,
-  type GameId,
   type GameRoundResult,
   type SaveGameRoundResult,
 } from "@/lib/games/types";

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { BrandMarkPublic } from "@/components/BrandMark";
 
 const PUBLIC_LINKS = [
-  { href: "/games", label: "Game" },
+  { href: "/games", label: "Games" },
   { href: "/grade-calculator", label: "Grade calculator" },
   { href: "/guides", label: "Study guides" },
   { href: "/about", label: "About" },

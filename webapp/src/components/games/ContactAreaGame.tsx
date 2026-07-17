@@ -64,6 +64,7 @@ type Feedback = {
 
 type ContactAreaGameProps = {
   initialProgress: GameProgress | null;
+  canSaveProgress: boolean;
 };
 
 type WeakDimension = "arch" | "segment" | "surface" | "region";
@@ -250,7 +251,7 @@ function WeakAreaGrid({ mastery, heading }: { mastery: MasteryMap; heading: stri
   );
 }
 
-export function ContactAreaGame({ initialProgress }: ContactAreaGameProps) {
+export function ContactAreaGame({ initialProgress, canSaveProgress }: ContactAreaGameProps) {
   const records = contactCatalog.records;
   const toothNames = useMemo(
     () => new Map(toothCatalog.teeth.map((tooth) => [tooth.code, tooth.name])),
@@ -283,6 +284,7 @@ export function ContactAreaGame({ initialProgress }: ContactAreaGameProps) {
   const savedAccuracy = progress ? accuracy(progress.totalCorrect, progress.totalAttempts) : null;
 
   const persistRound = useCallback(async (payload: GameRoundResult) => {
+    if (!canSaveProgress) return;
     storePendingRound(payload);
     setPendingRound(payload);
     setSaveError(null);
@@ -301,9 +303,10 @@ export function ContactAreaGame({ initialProgress }: ContactAreaGameProps) {
     } finally {
       setSaving(false);
     }
-  }, []);
+  }, [canSaveProgress]);
 
   useEffect(() => {
+    if (!canSaveProgress) return undefined;
     let restoreTimer: ReturnType<typeof setTimeout> | null = null;
     try {
       const raw = sessionStorage.getItem(PENDING_ROUND_KEY);
@@ -319,7 +322,7 @@ export function ContactAreaGame({ initialProgress }: ContactAreaGameProps) {
     return () => {
       if (restoreTimer) clearTimeout(restoreTimer);
     };
-  }, []);
+  }, [canSaveProgress]);
 
   useEffect(() => {
     if (mode !== "challenge" || phase !== "playing" || !question) return;

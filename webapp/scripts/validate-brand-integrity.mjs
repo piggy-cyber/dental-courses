@@ -30,6 +30,35 @@ for (const forbidden of ["Three Fourth Canal", "03 / 03", "PUBLIC STUDY DESK"]) 
   if (homePage.includes(forbidden)) failures.push(`Old three-strand copy remains: ${forbidden}`);
 }
 
+const gameShell = read("src/components/games/GameShell.tsx");
+if (!gameShell.includes('<BrandMark href="/games" inverse')) {
+  failures.push("Game shell is missing the approved inverse Fourth Canal wordmark.");
+}
+if (gameShell.includes("brandTile") || gameShell.includes(">FC<")) {
+  failures.push("Game shell has reintroduced the forbidden FC tile.");
+}
+
+const gameBrand = read("GAME_BRAND.md");
+for (const requiredToken of ["#091327", "#0F1E3A", "#F2EDE2", "#C86A3A", "#73D3C5"]) {
+  if (!gameBrand.includes(requiredToken)) failures.push(`Game brand guideline is missing ${requiredToken}.`);
+}
+if (!gameBrand.includes("four-strand") || !gameBrand.includes("three-strand")) {
+  failures.push("Game brand guideline is missing its four-strand safeguard.");
+}
+
+const gamesHub = read("src/app/(games)/games/page.tsx");
+for (const gameRoute of [
+  "/games/tooth-quest",
+  "/games/contact-area",
+  "/games/eruption-timeline",
+  "/games/root-canal-match",
+  "/games/tooth-comparison-duel",
+  "/games/gv-black-sorter",
+  "/games/micp-occlusion-trainer",
+]) {
+  if (!gamesHub.includes(gameRoute)) failures.push(`Arcade hub is missing ${gameRoute}.`);
+}
+
 const guides = JSON.parse(read("src/data/public-guides.json"));
 const guideHtml = guides.courses
   .flatMap((course) => Object.values(course.guides))
