@@ -7,6 +7,10 @@ type GameNavigationProps = {
   signedIn: boolean;
 };
 
+/**
+ * Compatibility navigation for archived game-shell consumers. The active game
+ * shell renders PublicHeader so all public routes share one visible menu.
+ */
 export function GameNavigation({
   className,
   displayName,

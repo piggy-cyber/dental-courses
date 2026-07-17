@@ -31,8 +31,8 @@ for (const forbidden of ["Three Fourth Canal", "03 / 03", "PUBLIC STUDY DESK"]) 
 }
 
 const gameShell = read("src/components/games/GameShell.tsx");
-if (!gameShell.includes('<BrandMark href="/" inverse')) {
-  failures.push("Game shell must use the approved inverse wordmark and return to public home.");
+if (!gameShell.includes('import { PublicHeader } from "@/components/PublicHeader";') || !gameShell.includes("<PublicHeader />")) {
+  failures.push("Game shell must use the shared public header for consistent navigation.");
 }
 if (gameShell.includes("brandTile") || gameShell.includes(">FC<")) {
   failures.push("Game shell has reintroduced the forbidden FC tile.");

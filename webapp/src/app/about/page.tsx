@@ -88,7 +88,11 @@ export default async function AboutPage() {
         </section>
 
         <section className={styles.origin} id="why">
-          <div className={styles.originNumber}>04</div>
+          {profile?.status === "approved" ? (
+            <FourthCanalEntrance />
+          ) : (
+            <div className={styles.originNumber} aria-hidden="true">04</div>
+          )}
           <div className={styles.originCopy}>
             <p className={styles.eyebrow}>Why Fourth Canal?</p>
             <h2>The extra canal that can hide in plain sight.</h2>
@@ -109,7 +113,6 @@ export default async function AboutPage() {
             The name is a reminder that the most useful layer is often the one nobody
             organized for you.
           </blockquote>
-          <FourthCanalEntrance enabled={profile?.status === "approved"} />
         </section>
 
         <section className={styles.principles} aria-labelledby="principles-title">
