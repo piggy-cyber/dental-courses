@@ -9,7 +9,6 @@ type ProfileUpdate = {
   username?: string | null;
   bio?: string | null;
   avatar_url?: string | null;
-  canvas_ics_url?: string | null;
 };
 
 export async function updateProfile(fields: ProfileUpdate): Promise<{ error?: string }> {
@@ -29,20 +28,36 @@ export async function updateProfile(fields: ProfileUpdate): Promise<{ error?: st
     if (taken) return { error: "That username is already taken." };
   }
 
-  if (fields.canvas_ics_url) {
-    const validationError = validateCanvasCalendarUrl(fields.canvas_ics_url);
-    if (validationError) return { error: validationError };
-  }
+  const allowed = {
+    name: fields.name?.trim().slice(0, 120) || null,
+    username: fields.username?.trim().toLowerCase() || null,
+    bio: fields.bio?.trim().slice(0, 280) || null,
+    avatar_url: fields.avatar_url ?? undefined,
+  };
 
   const { error } = await supabase
     .from("profiles")
-    .update(fields)
+    .update(allowed)
     .eq("id", user.id);
 
   if (error) return { error: error.message };
 
-  revalidatePath("/home");
   revalidatePath("/profile");
+  return {};
+}
+
+export async function updateWorkspaceCalendar(canvas_ics_url: string | null): Promise<{ error?: string }> {
+  const { profile, userId } = await (await import("@/lib/access")).getSessionProfile();
+  if (!profile || !userId || profile.status !== "approved") return { error: "Not found." };
+  if (canvas_ics_url) {
+    const validationError = validateCanvasCalendarUrl(canvas_ics_url);
+    if (validationError) return { error: validationError };
+  }
+  const supabase = await createClient();
+  const { error } = await supabase.from("profiles").update({ canvas_ics_url }).eq("id", userId);
+  if (error) return { error: error.message };
+  revalidatePath("/home");
+  revalidatePath("/workspace-settings");
   return {};
 }
 
@@ -78,14 +93,16 @@ export async function testGroupMeConnection(): Promise<
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return { ok: false, error: "Not signed in." };
+  const { profile: sessionProfile } = await (await import("@/lib/access")).getSessionProfile();
+  if (!sessionProfile || sessionProfile.status !== "approved") return { ok: false, error: "Not found." };
 
-  const { data: profile } = await supabase
+  const { data: groupMeProfile } = await supabase
     .from("profiles")
     .select("groupme_access_token")
     .eq("id", user.id)
     .single();
 
-  const token = profile?.groupme_access_token;
+  const token = groupMeProfile?.groupme_access_token;
   if (!token) return { ok: false, error: "GroupMe is not connected." };
 
   try {

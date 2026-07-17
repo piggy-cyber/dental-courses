@@ -16,6 +16,8 @@ const ALLOWED_RETURN_PREFIXES = [
   "/owner",
   "/preview-lab",
   "/profile",
+  "/signin",
+  "/workspace-settings",
   "/resource",
 ] as const;
 

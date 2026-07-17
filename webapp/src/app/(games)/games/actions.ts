@@ -135,8 +135,8 @@ export async function saveGameRound(input: GameRoundResult): Promise<SaveGameRou
   if (validationError) return { ok: false, error: validationError };
 
   const { profile, userId } = await getSessionProfile();
-  if (!profile || !userId || profile.id !== userId || profile.status !== "approved") {
-    return { ok: false, error: "An approved Fourth Canal account is required to save progress." };
+  if (!profile || !userId || profile.id !== userId) {
+    return { ok: false, error: "Sign in to save progress." };
   }
 
   const supabase = await createClient();

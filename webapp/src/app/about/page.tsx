@@ -2,6 +2,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { BrandMarkPublic } from "@/components/BrandMark";
 import { PublicHeader } from "@/components/PublicHeader";
+import { FourthCanalEntrance } from "@/components/FourthCanalEntrance";
+import { getSessionProfile } from "@/lib/access";
 import styles from "./AboutPage.module.css";
 
 export const metadata = {
@@ -25,16 +27,18 @@ const PRINCIPLES = [
   {
     number: "03",
     title: "Open first. Account second.",
-    copy: "The core tools work immediately. Approved student accounts add private progress saving without putting the public tools behind a login wall.",
+    copy: "The core tools work immediately. Signing in saves progress and preferences without putting the public tools behind a login wall.",
   },
   {
     number: "04",
     title: "Independent by design",
-    copy: "This is an independent student-run study tool, not an official university platform. The original D1 library remains a separate restricted workspace.",
+    copy: "This is an independent student-run study tool, not an official university platform.",
   },
 ] as const;
 
-export default function AboutPage() {
+export const dynamic = "force-dynamic";
+export default async function AboutPage() {
+  const { profile } = await getSessionProfile();
   return (
     <div className={`${styles.aboutPage} fc-site`} data-integrated-footer="true">
       <div className={styles.microscopyField} aria-hidden="true" />
@@ -105,6 +109,7 @@ export default function AboutPage() {
             The name is a reminder that the most useful layer is often the one nobody
             organized for you.
           </blockquote>
+          <FourthCanalEntrance enabled={profile?.status === "approved"} />
         </section>
 
         <section className={styles.principles} aria-labelledby="principles-title">

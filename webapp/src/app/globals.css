@@ -1768,3 +1768,9 @@ body.guide-table-open { overflow: hidden; }
   .guide-table-scroll:is([data-columns="2"]) td::before { content: attr(data-label); color: #0f1e3a; font-size: .66rem; font-weight: 780; }
   .guide-table-scroll:is([data-columns="3"], [data-columns="4"], [data-columns="5"], [data-columns="6"]) td { grid-template-columns: minmax(7rem, .42fr) minmax(0, 1fr); }
 }
+ .fc-fourth-entrance { margin: 2rem auto 0; text-align: center; }
+ .fc-fourth-entrance button { display: inline-flex; gap: 7px; align-items: end; padding: 12px; border: 1px solid #cfc8bb; background: transparent; cursor: pointer; }
+ .fc-fourth-entrance i { display: block; width: 3px; height: 40px; background: #0f1e3a; transform: skew(-7deg); transition: height .25s ease, background .25s ease; }
+ .fc-fourth-entrance i.active { height: 58px; background: #b35a2e; }
+ .fc-fourth-door { margin-top: 12px; color: #0f1e3a; }
+ .fc-fourth-door a { color: #b35a2e; font-weight: 700; }

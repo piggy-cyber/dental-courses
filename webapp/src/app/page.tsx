@@ -129,9 +129,9 @@ export default async function PublicHomePage({
         <section className="public-core-account" id="account" aria-labelledby="account-title">
           <div>
             <p className="eyebrow">Optional account</p>
-            <h2 id="account-title">Start studying now. Keep progress with an approved account.</h2>
+            <h2 id="account-title">Start studying now. Keep progress with an account.</h2>
             <p>
-              Public tools and guides work without an account. Approved student accounts add private progress saving and access to the original D1 course library.
+              Public tools and guides work without an account. Sign in to save progress and manage your profile.
             </p>
           </div>
           <aside>
@@ -150,7 +150,6 @@ export default async function PublicHomePage({
                 <p>Your public study progress can be saved to this account.</p>
                 <div>
                   <Link href="/games/tooth-quest">Continue to Tooth Quest</Link>
-                  {profile.status === "approved" && <Link href="/d1">Open private D1 library</Link>}
                 </div>
                 <form action="/auth/signout" method="post"><button>Sign out</button></form>
               </div>

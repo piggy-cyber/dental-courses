@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { getSessionProfile } from "@/lib/access";
 import { getShellCourses } from "@/lib/shell-courses";
 import { AppShell } from "@/components/AppShell";
@@ -16,7 +16,7 @@ export default async function ProtectedLayout({
   const { profile } = await getSessionProfile();
 
   if (!profile) redirect("/");
-  if (profile.status !== "approved") redirect("/");
+  if (profile.status !== "approved") notFound();
   const courses = await getShellCourses();
 
   return (

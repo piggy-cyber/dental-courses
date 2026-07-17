@@ -2,7 +2,7 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { authReturnCookie } from "@/lib/auth-redirect";
 
-// Refreshes the Supabase session cookie and keeps the legacy D1 workspace private.
+// Refreshes the Supabase session cookie and keeps the private workspace private.
 export async function proxy(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
 
@@ -37,6 +37,7 @@ export async function proxy(request: NextRequest) {
   const path = request.nextUrl.pathname;
   const isPublic =
     path === "/" ||
+    path === "/signin" ||
     path === "/ui-preview" ||
     path === "/about" ||
     path === "/legal" ||

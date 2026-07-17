@@ -10,6 +10,11 @@ const STATUS_STYLES: Record<Account["status"], string> = {
   pending: "bg-amber-50 text-amber-700 border-amber-200",
   revoked: "bg-rose-50 text-rose-700 border-rose-200",
 };
+const STATUS_LABEL: Record<Account["status"], string> = {
+  pending: "Public only",
+  approved: "Workspace access",
+  revoked: "Workspace revoked",
+};
 
 export function AccountRow({
   account,
@@ -60,7 +65,7 @@ export function AccountRow({
         <span
           className={`border px-3 py-1 text-xs font-semibold ${STATUS_STYLES[account.status]}`}
         >
-          {account.status}
+          {STATUS_LABEL[account.status]}
         </span>
         {!isSelf && (
           <>

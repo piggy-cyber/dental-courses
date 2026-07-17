@@ -7,10 +7,9 @@ type GameShellProps = {
   children: ReactNode;
   displayName: string | null;
   signedIn: boolean;
-  hasD1Access: boolean;
 };
 
-export function GameShell({ children, displayName, signedIn, hasD1Access }: GameShellProps) {
+export function GameShell({ children, displayName, signedIn }: GameShellProps) {
   return (
     <div className={styles.shell} data-game-shell="true">
       <a className={styles.skipLink} href="#game-content">
@@ -25,7 +24,6 @@ export function GameShell({ children, displayName, signedIn, hasD1Access }: Game
         <GameNavigation
           className={styles.nav}
           displayName={displayName}
-          hasD1Access={hasD1Access}
           signedIn={signedIn}
         />
 
@@ -34,7 +32,6 @@ export function GameShell({ children, displayName, signedIn, hasD1Access }: Game
           <GameNavigation
             className={styles.mobileNav}
             displayName={displayName}
-            hasD1Access={hasD1Access}
             signedIn={signedIn}
           />
         </details>

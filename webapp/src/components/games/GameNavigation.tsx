@@ -4,20 +4,17 @@ import { SitePrimaryLinks } from "@/components/SiteNavigation";
 type GameNavigationProps = {
   className: string;
   displayName: string | null;
-  hasD1Access: boolean;
   signedIn: boolean;
 };
 
 export function GameNavigation({
   className,
   displayName,
-  hasD1Access,
   signedIn,
 }: GameNavigationProps) {
   return (
     <nav className={className} aria-label="Main navigation">
       <SitePrimaryLinks />
-      {hasD1Access && <Link href="/d1">Student workspace</Link>}
       {signedIn ? (
         <>
           <span>{displayName}</span>
@@ -26,7 +23,7 @@ export function GameNavigation({
           </form>
         </>
       ) : (
-        <Link href="/#account">Student sign in</Link>
+        <Link href="/signin">Sign in</Link>
       )}
     </nav>
   );

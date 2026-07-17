@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { BrandMarkPublic } from "@/components/BrandMark";
 import { SitePrimaryLinks, SitePrimaryNavigation } from "@/components/SiteNavigation";
+import { getSessionProfile } from "@/lib/access";
 
-export function PublicHeader() {
+export async function PublicHeader() {
+  const { profile } = await getSessionProfile();
   return (
     <header className="public-core-header">
       <BrandMarkPublic />
@@ -13,9 +15,17 @@ export function PublicHeader() {
           <SitePrimaryLinks />
         </nav>
       </details>
-      <Link href="/#account" className="public-core-account-link">
-        Sign in <span aria-hidden="true">→</span>
-      </Link>
+      {profile ? (
+        <details className="public-core-account-link">
+          <summary>{profile.name ?? profile.username ?? "Account"}</summary>
+          <nav aria-label="Account">
+            <Link href="/profile">Profile</Link>
+            <Link href="/games">Saved progress</Link>
+            <Link href="/profile#appearance">Appearance</Link>
+            <form action="/auth/signout" method="post"><button>Sign out</button></form>
+          </nav>
+        </details>
+      ) : <Link href="/signin" className="public-core-account-link">Sign in <span aria-hidden="true">→</span></Link>}
     </header>
   );
 }

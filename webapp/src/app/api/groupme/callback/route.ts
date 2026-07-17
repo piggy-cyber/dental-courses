@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { GROUPME_OAUTH_COOKIE } from "@/lib/groupme-oauth";
 
 function profileRedirect(origin: string, query: string) {
-  return NextResponse.redirect(`${origin}/profile?${query}`);
+  return NextResponse.redirect(`${origin}/workspace-settings?${query}`);
 }
 
 export async function GET(request: Request) {
@@ -37,6 +37,8 @@ export async function GET(request: Request) {
   if (!user) {
     return profileRedirect(origin, "groupme=error&reason=not_signed_in");
   }
+  const { data: profile } = await supabase.from("profiles").select("status").eq("id", user.id).maybeSingle();
+  if (profile?.status !== "approved") return new NextResponse(null, { status: 404 });
 
   const { error } = await supabase
     .from("profiles")

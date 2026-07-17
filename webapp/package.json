@@ -10,6 +10,7 @@
     "validate:games": "node scripts/validate-game-content.mjs",
     "validate:brand": "node scripts/validate-brand-integrity.mjs",
     "validate:micp-placeholder": "node scripts/validate-micp-placeholder.mjs",
+    "validate:public-boundary": "node scripts/validate-public-boundary.mjs",
     "import:manifest": "node scripts/import-resource-manifest.mjs"
   },
   "dependencies": {

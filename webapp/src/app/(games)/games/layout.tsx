@@ -17,7 +17,6 @@ export default async function GamesLayout({ children }: { children: React.ReactN
     <GameShell
       displayName={displayName}
       signedIn={Boolean(profile)}
-      hasD1Access={profile?.status === "approved"}
     >
       {children}
     </GameShell>

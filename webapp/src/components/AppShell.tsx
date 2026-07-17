@@ -37,7 +37,7 @@ const STUDENT_LINKS = [
   { href: "/home", label: "Today" },
   { href: "/library", label: "Courses" },
   { href: "/contacts", label: "Contacts" },
-  { href: "/profile", label: "Profile" },
+  { href: "/workspace-settings", label: "Workspace settings" },
 ];
 
 const ADMIN_LINKS: Array<{
@@ -167,7 +167,7 @@ export function AppShell({ profile, courses, adminMode = false, children }: AppS
             </nav>
           </div>
 
-          <Link href="/profile" className="fc-profile-chip">
+          <Link href="/workspace-settings" className="fc-profile-chip">
             <UserAvatar name={profile.name} email={profile.email} avatarUrl={profile.avatar_url} size="sm" />
             <span><b>{displayName}</b><small>{profile.username ? `@${profile.username}` : profile.email}</small></span>
             <i aria-hidden="true">→</i>
@@ -185,9 +185,9 @@ export function AppShell({ profile, courses, adminMode = false, children }: AppS
             <i aria-hidden="true">→</i>
           </Link>
           <div className="fc-topbar-actions">
-            <Link href="/profile" className="fc-topbar-profile">
+            <Link href="/workspace-settings" className="fc-topbar-profile">
               <UserAvatar name={profile.name} email={profile.email} avatarUrl={profile.avatar_url} size="sm" />
-              <span>{profile.username ? `@${profile.username}` : "Profile"}</span>
+              <span>{profile.username ? `@${profile.username}` : "Settings"}</span>
             </Link>
             <form action="/auth/signout" method="post">
               <button className="fc-signout-button">Sign out</button>

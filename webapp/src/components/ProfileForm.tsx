@@ -12,7 +12,6 @@ export type ProfileFormData = {
   username: string | null;
   bio: string | null;
   avatar_url: string | null;
-  canvas_ics_url: string | null;
 };
 
 const USERNAME_RE = /^[a-z0-9_]{3,24}$/;
@@ -22,7 +21,6 @@ export function ProfileForm({ profile }: { profile: ProfileFormData }) {
   const [username, setUsername] = useState(profile.username ?? "");
   const [bio, setBio] = useState(profile.bio ?? "");
   const [avatarUrl, setAvatarUrl] = useState(profile.avatar_url);
-  const [canvasUrl, setCanvasUrl] = useState(profile.canvas_ics_url ?? "");
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -84,7 +82,6 @@ export function ProfileForm({ profile }: { profile: ProfileFormData }) {
       name: name.trim() || null,
       username: normalized || null,
       bio: bio.trim() || null,
-      canvas_ics_url: canvasUrl.trim() || null,
     });
 
     if (result.error) {
@@ -162,21 +159,6 @@ export function ProfileForm({ profile }: { profile: ProfileFormData }) {
           className="app-input mt-1 w-full px-3 py-2"
         />
         <span className="mt-1 block text-xs text-brand-muted">{bio.length}/280</span>
-      </label>
-
-      <label className="block">
-        <span className="text-sm font-medium text-brand-ink">Canvas calendar feed URL</span>
-        <input
-          type="url"
-          value={canvasUrl}
-          onChange={(e) => setCanvasUrl(e.target.value)}
-          placeholder="https://canvas.case.edu/feeds/calendars/user_...ics"
-          className="app-input mt-1 w-full px-3 py-2"
-        />
-        <span className="mt-1 block text-xs text-brand-muted">
-          Use the Canvas calendar feed URL ending in .ics. It is saved to your profile and shown
-          only on your homepage.
-        </span>
       </label>
 
       {error && (

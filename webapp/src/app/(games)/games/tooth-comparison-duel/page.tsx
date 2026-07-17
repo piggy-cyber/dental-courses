@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 export default async function ToothComparisonDuelPage() {
   const { profile, userId } = await getSessionProfile();
   const canSaveProgress = Boolean(
-    profile && userId && profile.id === userId && profile.status === "approved",
+    profile && userId && profile.id === userId,
   );
   const progress = canSaveProgress && userId
     ? await getGameProgress(userId, "tooth-comparison-duel")

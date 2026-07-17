@@ -12,6 +12,8 @@ export async function POST(request: Request) {
   if (!user) {
     return NextResponse.redirect(`${origin}/?auth_error=1`);
   }
+  const { data: profile } = await supabase.from("profiles").select("status").eq("id", user.id).maybeSingle();
+  if (profile?.status !== "approved") return new NextResponse(null, { status: 404 });
 
   const { error } = await supabase
     .from("profiles")
@@ -22,8 +24,8 @@ export async function POST(request: Request) {
     .eq("id", user.id);
 
   if (error) {
-    return NextResponse.redirect(`${origin}/profile?groupme=error&reason=disconnect_failed`);
+    return NextResponse.redirect(`${origin}/workspace-settings?groupme=error&reason=disconnect_failed`);
   }
 
-  return NextResponse.redirect(`${origin}/profile?groupme=disconnected`);
+  return NextResponse.redirect(`${origin}/workspace-settings?groupme=disconnected`);
 }

@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { getGroupMeAuthorizeUrl, getGroupMeClientId } from "@/lib/groupme";
 import { GROUPME_OAUTH_COOKIE, GROUPME_OAUTH_MAX_AGE } from "@/lib/groupme-oauth";
+import { getSessionProfile } from "@/lib/access";
 
 export async function GET(request: Request) {
   const clientId = getGroupMeClientId();
@@ -20,6 +21,8 @@ export async function GET(request: Request) {
     const origin = new URL(request.url).origin;
     return NextResponse.redirect(`${origin}/?auth_error=1`);
   }
+  const { profile } = await getSessionProfile();
+  if (!profile || profile.status !== "approved") return new NextResponse(null, { status: 404 });
 
   const state = randomUUID();
   const cookieStore = await cookies();

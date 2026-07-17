@@ -147,9 +147,9 @@ export function AccountsTable({
           className="app-input px-3 py-2 text-sm"
         >
           <option value="all">All statuses</option>
-          <option value="pending">Pending</option>
-          <option value="approved">Approved</option>
-          <option value="revoked">Revoked</option>
+          <option value="pending">Public only</option>
+          <option value="approved">Workspace access</option>
+          <option value="revoked">Workspace revoked</option>
         </select>
         <select
           value={graduationYear}

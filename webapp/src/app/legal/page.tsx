@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PublicHeader } from "@/components/PublicHeader";
-import { getSessionProfile } from "@/lib/access";
 
 export const metadata: Metadata = {
   title: "Legal Center",
@@ -20,9 +19,6 @@ const SECTIONS = [
 ] as const;
 
 export default async function LegalPage() {
-  const { profile } = await getSessionProfile();
-  const privateLibraryHref = profile?.status === "approved" ? "/d1" : null;
-
   return (
     <div className="fc-site app-shell-bg min-h-screen text-brand-ink">
       <PublicHeader />
@@ -64,13 +60,13 @@ export default async function LegalPage() {
             <p>
               The service may handle account details such as name, email address, Google profile
               image, saved game progress, role, access status, course access, support reports, and administrative notes.
-              If a user chooses to connect them, it may also handle a private Canvas calendar-feed
+              If a user chooses to connect them, it may also handle a connected calendar-feed
               URL and a GroupMe access token. Course files, transcripts, study materials, and access
               records are stored to operate the library.
             </p>
             <h2>Why the data is used</h2>
             <p>
-              Data is used to authenticate users, save study-game progress, control private-library access, organize course resources,
+              Data is used to authenticate users, save study-game progress, and operate connected services,
               display schedules, send requested class notifications, investigate reports, secure
               the service, and maintain continuity between student operators. Personal data is not
               sold.
@@ -94,12 +90,11 @@ export default async function LegalPage() {
 
           <section id="terms" className="app-card scroll-mt-24 p-6 prose-brand">
             <p className="eyebrow">02 / Terms and acceptable use</p>
-            <h2 className="mt-2">Public tools and private-library access</h2>
+            <h2 className="mt-2">Public tools and account access</h2>
             <p>
               Public games, calculators, and guides may be used without an account. Account-based
-              progress is personal. Access to the separate D1 library is revocable and limited to
-              approved users; an account may not be shared or used to give another person access
-              to restricted material.
+              progress is personal. Some operator and connected-service areas use additional access controls.
+              An account may not be shared or used to give another person access to restricted material.
             </p>
             <h2>Prohibited use</h2>
             <ul className="list-disc space-y-2 pl-5">
@@ -215,9 +210,6 @@ export default async function LegalPage() {
             <Link href="/" className="portal-button-primary px-5 py-2.5">
               Back to study desk
             </Link>
-            {privateLibraryHref && (
-              <Link href={privateLibraryHref} className="portal-button px-5 py-2.5">Private D1 library</Link>
-            )}
             <Link href="/about" className="portal-button px-5 py-2.5">
               About this site
             </Link>
