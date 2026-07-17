@@ -122,7 +122,7 @@ export default function GamesHubPage() {
       <aside className={styles.note}>
         <span className={styles.noteMarker} aria-hidden="true">04</span>
         <p>
-          Play without an account. Sign in only when you want progress saved privately. Fourth Canal games are study aids; official course and clinical guidance control.
+          Play without an account. Approved student accounts can save progress privately. Fourth Canal games are study aids; official course and clinical guidance control.
         </p>
       </aside>
     </main>

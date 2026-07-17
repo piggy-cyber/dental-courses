@@ -28,7 +28,7 @@ export function GameNavigation({
           </form>
         </>
       ) : (
-        <Link href="/#account">Sign in to save</Link>
+        <Link href="/#account">Student sign in</Link>
       )}
     </nav>
   );

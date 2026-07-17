@@ -24,7 +24,7 @@ const PRINCIPLES = [
   {
     number: "03",
     title: "Open first. Account second.",
-    copy: "The core tools work immediately. A free account only enters the picture when a student wants game progress saved.",
+    copy: "The core tools work immediately. Approved student accounts add private progress saving without putting the public tools behind a login wall.",
   },
   {
     number: "04",

@@ -50,7 +50,7 @@ export function SignInPanel() {
       </button>
 
       <p className="text-sm leading-relaxed text-brand-muted">
-        Use any Google account. Sign-in is only required to save progress or open private cohort material.
+        Sign in with Google. Approved student accounts can save progress and open private cohort material.
       </p>
 
       {error && (

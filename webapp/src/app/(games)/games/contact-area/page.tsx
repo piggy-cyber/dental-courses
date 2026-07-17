@@ -12,7 +12,9 @@ export const metadata: Metadata = {
 
 export default async function ContactAreaPage() {
   const { profile, userId } = await getSessionProfile();
-  const canSaveProgress = Boolean(profile && userId && profile.id === userId);
+  const canSaveProgress = Boolean(
+    profile && userId && profile.id === userId && profile.status === "approved",
+  );
   const progress = canSaveProgress && userId
     ? await getGameProgress(userId, "contact-area")
     : null;

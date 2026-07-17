@@ -129,9 +129,9 @@ export default async function PublicHomePage({
         <section className="public-core-account" id="account" aria-labelledby="account-title">
           <div>
             <p className="eyebrow">Optional account</p>
-            <h2 id="account-title">Use everything now. Sign in when you want it saved.</h2>
+            <h2 id="account-title">Start studying now. Keep progress with an approved account.</h2>
             <p>
-              Public tools and guides work without an account. Google sign-in adds private progress saving. The original D1 course library remains separate and restricted to approved students.
+              Public tools and guides work without an account. Approved student accounts add private progress saving and access to the original D1 course library.
             </p>
           </div>
           <aside>

@@ -543,7 +543,7 @@ export function ToothQuestGame({ initialProgress, canSaveProgress }: ToothQuestG
             <p>Your game works normally. Sign in when you want scores and mastery saved.</p>
           </div>
           <div className={styles.saveActions}>
-            <Link href="/#account">Sign in to save</Link>
+            <Link href="/#account">Approved students can sign in to save</Link>
           </div>
         </aside>
       ) : null}
