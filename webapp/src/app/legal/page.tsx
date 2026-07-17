@@ -59,24 +59,22 @@ export default async function LegalPage() {
             <h2 className="mt-2">What the site handles</h2>
             <p>
               The service may handle account details such as name, email address, Google profile
-              image, saved game progress, role, access status, course access, support reports, and administrative notes.
-              If a user chooses to connect them, it may also handle a connected calendar-feed
-              URL and a GroupMe access token. Course files, transcripts, study materials, and access
-              records are stored to operate the library.
+              image, saved game progress, appearance preferences, access status, support reports,
+              and administrative records. Optional account features may handle additional data
+              behind separate access controls.
             </p>
             <h2>Why the data is used</h2>
             <p>
-              Data is used to authenticate users, save study-game progress, and operate connected services,
-              display schedules, send requested class notifications, investigate reports, secure
-              the service, and maintain continuity between student operators. Personal data is not
-              sold.
+              Data is used to authenticate users, save game progress, remember preferences,
+              provide requested account features, investigate reports, secure the service, and
+              maintain continuity between student operators. Personal data is not sold.
             </p>
             <h2>Service providers and connected services</h2>
             <p>
-              The current service relies on Supabase for Google authentication, database services,
-              and file storage; Vercel for hosting; Canvas calendar feeds and GroupMe only when a
-              user connects them; and Open-Meteo for campus weather. Each provider may process the
-              limited data needed to deliver its service under its own terms.
+              The current service relies on Supabase for authentication and database services and
+              Vercel for hosting. Other providers may support optional account features. Each
+              provider may process the limited data needed to deliver its service under its own
+              terms.
             </p>
             <h2>Student and sensitive information</h2>
             <p>
@@ -94,7 +92,8 @@ export default async function LegalPage() {
             <p>
               Public games, calculators, and guides may be used without an account. Account-based
               progress is personal. Some operator and connected-service areas use additional access controls.
-              An account may not be shared or used to give another person access to restricted material.
+              An account may not be shared or used to give another person access to protected areas
+              or another person&apos;s data.
             </p>
             <h2>Prohibited use</h2>
             <ul className="list-disc space-y-2 pl-5">
@@ -153,7 +152,7 @@ export default async function LegalPage() {
             <h2 className="mt-2">Rights-holder reports</h2>
             <p>
               The site respects intellectual-property rights and will review credible removal
-              requests. A report should identify the material, its exact page or course location,
+              requests. A report should identify the material and its exact page URL,
               the rights claimed, the reporter&apos;s authority to act, contact information, and a
               good-faith statement that the complained-of use is not authorized.
             </p>
@@ -168,7 +167,7 @@ export default async function LegalPage() {
               <p className="font-bold text-brand-navy">How to report a concern</p>
               <p className="mt-1 text-brand-muted">
                 Use the signed-in report tool or contact the current site operator. Include the
-                course, lecture, filename, and exact page so access can be restricted quickly while
+                exact page URL and a clear description so the concern can be located quickly while
                 the request is reviewed.
               </p>
             </div>
@@ -195,10 +194,10 @@ export default async function LegalPage() {
             <h2 className="mt-2">Minimum operating safeguards</h2>
             <ul className="list-disc space-y-2 pl-5">
               <li>Use private storage, signed access, least-privilege accounts, and separate admin roles.</li>
-              <li>Never place passwords, access tokens, private feed URLs, or roster data in public pages or source code.</li>
+              <li>Never place passwords, access tokens, private identifiers, or personal records in public pages or source code.</li>
               <li>Record important admin actions and review access when student operators change.</li>
               <li>Disable former operators promptly and transfer ownership without sharing personal credentials.</li>
-              <li>Report suspected account compromise, exposed files, or incorrect access immediately.</li>
+              <li>Report suspected account compromise, exposed personal data, or incorrect access immediately.</li>
             </ul>
             <p>
               Policy, contact, retention, and provider details should be reviewed whenever the site

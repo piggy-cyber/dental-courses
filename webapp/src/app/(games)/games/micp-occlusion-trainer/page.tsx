@@ -3,7 +3,7 @@ import { MicpOcclusionTrainer } from "@/components/games/MicpOcclusionTrainer";
 
 export const metadata: Metadata = {
   title: "MICP Occlusion Trainer",
-  description: "A review-gated MICP relationship workspace for Fourth Canal students.",
+  description: "A review-gated MICP relationship study module.",
 };
 
 export default function MicpOcclusionTrainerPage() {

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { PublicHeader } from "@/components/PublicHeader";
 import { PublicSignalPanel } from "@/components/PublicSignalPanel";
+import { PublicAccountBenefits } from "@/components/PublicAccountBenefits";
 import { SignInPanel } from "@/components/SignInPanel";
 import { getSessionProfile } from "@/lib/access";
 import { getPublicGuideCourses } from "@/lib/public-guides";
@@ -56,17 +57,17 @@ export default async function PublicHomePage({
       <main>
         <section className="public-core-hero">
           <div className="public-core-hero-copy">
-            <p className="eyebrow">Fourth Canal · Dental study workspace</p>
+            <p className="eyebrow">Fourth Canal · Dental study tools</p>
             <h1><span>Look closer.</span><br /><em>The missing detail matters.</em></h1>
             <p className="public-core-lead">
-              Practice tooth identification, calculate the grade you need, and open {courses.length * 2} searchable course guides built to read cleanly on any screen.
+              Practice tooth identification, calculate the grade you need, and open searchable course guides built to read cleanly on any screen.
             </p>
             <div className="public-core-hero-actions">
               <Link href="/games/tooth-quest" className="public-core-primary-action">
                 Play Tooth Quest <span aria-hidden="true">→</span>
               </Link>
               <Link href="/guides" className="public-core-secondary-action">
-                Browse {courses.length} courses
+                Browse course guides
               </Link>
             </div>
           </div>
@@ -123,7 +124,7 @@ export default async function PublicHomePage({
               </Link>
             ))}
           </div>
-          <Link href="/guides" className="public-core-inline-link">View all {courses.length} courses <span aria-hidden="true">→</span></Link>
+          <Link href="/guides" className="public-core-inline-link">Open the course directory <span aria-hidden="true">→</span></Link>
         </section>
 
         <section className="public-core-account" id="account" aria-labelledby="account-title">
@@ -138,7 +139,8 @@ export default async function PublicHomePage({
             {!profile ? (
               <>
                 <h3>Save your progress</h3>
-                <p>Any Google account can create a Fourth Canal account.</p>
+                <p>Any Google account can create a Fourth Canal profile.</p>
+                <PublicAccountBenefits />
                 <SignInPanel />
                 {params.auth_error && <p className="fc-auth-error">Google sign-in failed. Please try again.</p>}
               </>

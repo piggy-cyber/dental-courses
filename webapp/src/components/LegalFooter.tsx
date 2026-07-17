@@ -26,8 +26,8 @@ export function LegalFooter() {
             Independent student-run study tool. Not affiliated with, endorsed by,
             sponsored by, or representative of Case Western Reserve University or
             its School of Dental Medicine. AI-assisted and student-created material
-            may be incomplete or inaccurate. Official university communications,
-            syllabi, Canvas, faculty instructions, and clinical guidance control.
+            may be incomplete or inaccurate. Official university, course, faculty,
+            and clinical guidance controls.
           </p>
         ) : (
           <p className="max-w-5xl text-xs leading-relaxed">

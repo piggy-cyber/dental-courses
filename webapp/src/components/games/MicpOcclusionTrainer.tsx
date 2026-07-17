@@ -243,7 +243,7 @@ function moduleStateFrom(dataset: MicpOcclusionDataset) {
     statusLabel: "Clinical map in review",
     heading: "MICP relationship data will be added next",
     explanation:
-      "The course decks, handout, companion chapter, border-movement materials, and transcript are being checked tooth by tooth before any relationship appears here.",
+      "The evidence set is being reviewed tooth by tooth before any relationship appears here.",
     heroCopy:
       "Explore the arch shell now. Reviewed tooth relationships will unlock the learning mechanic later.",
     selectionCopy:
