@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PublicHeader } from "@/components/PublicHeader";
+import { PublicSignalPanel } from "@/components/PublicSignalPanel";
 import { SignInPanel } from "@/components/SignInPanel";
 import { getSessionProfile } from "@/lib/access";
 import { getPublicGuideCourses } from "@/lib/public-guides";
@@ -55,10 +56,10 @@ export default async function PublicHomePage({
       <main>
         <section className="public-core-hero">
           <div className="public-core-hero-copy">
-            <p className="eyebrow">Open dental study tools</p>
-            <h1>Study the signal.<br />Skip the clutter.</h1>
+            <p className="eyebrow">Fourth Canal · Dental study workspace</p>
+            <h1><span>Look closer.</span><br /><em>The missing detail matters.</em></h1>
             <p className="public-core-lead">
-              A visual dental anatomy game, a fast grade calculator, and focused course guides—free to use, with an account only when you want progress saved.
+              Practice tooth identification, calculate the grade you need, and open {courses.length * 2} searchable course guides built to read cleanly on any screen.
             </p>
             <div className="public-core-hero-actions">
               <Link href="/games/tooth-quest" className="public-core-primary-action">
@@ -70,16 +71,23 @@ export default async function PublicHomePage({
             </div>
           </div>
 
-          <div className="public-core-signal" aria-label="Three Fourth Canal study tools">
-            <div className="public-core-signal-label"><span>PUBLIC STUDY DESK</span><b>03 / 03</b></div>
-            <div className="public-core-signal-lines" aria-hidden="true">
-              <i /><i /><i />
-            </div>
-            <ol>
-              <li><span>01</span><b>Game</b><small>Recall</small></li>
-              <li><span>02</span><b>Calculator</b><small>Plan</small></li>
-              <li><span>03</span><b>Guides</b><small>Understand</small></li>
-            </ol>
+          <PublicSignalPanel />
+        </section>
+
+        <section className="public-core-origin" id="why-fourth-canal" aria-labelledby="origin-title">
+          <div className="public-core-origin-number" aria-hidden="true">04</div>
+          <div>
+            <p className="eyebrow">Why Fourth Canal?</p>
+            <h2 id="origin-title">A case can look complete and still be missing a canal.</h2>
+          </div>
+          <div className="public-core-origin-copy">
+            <p>
+              In an upper molar, a second mesiobuccal canal—often called MB2—can be small, hidden by dentin, and difficult to locate. Finding the full canal system is part of treating the whole tooth.
+            </p>
+            <p>
+              The name is our study rule: look past the obvious answer, find the missing context, and connect it before moving on.
+            </p>
+            <Link href="/about#why">Read the story <span aria-hidden="true">→</span></Link>
           </div>
         </section>
 
@@ -107,7 +115,7 @@ export default async function PublicHomePage({
           </div>
           <div className="public-core-course-grid">
             {featured.map((course) => (
-              <Link href={`/guides/${course.slug}`} key={course.code}>
+              <Link href={`/guides/${course.slug}/textbook-companion`} key={course.code}>
                 <span>{course.code}</span>
                 <h3>{course.title}</h3>
                 <p>Course Mastery Guide + Textbook Companion</p>

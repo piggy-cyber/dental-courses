@@ -17,6 +17,14 @@ export function PublicHeader() {
           <Link key={link.href} href={link.href}>{link.label}</Link>
         ))}
       </nav>
+      <details className="public-core-mobile-menu">
+        <summary>Menu</summary>
+        <nav aria-label="Mobile navigation">
+          {PUBLIC_LINKS.map((link) => (
+            <Link key={link.href} href={link.href}>{link.label}</Link>
+          ))}
+        </nav>
+      </details>
       <Link href="/#account" className="public-core-account-link">
         Sign in <span aria-hidden="true">→</span>
       </Link>

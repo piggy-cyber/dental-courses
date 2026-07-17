@@ -17,10 +17,10 @@ export default function GuidesIndexPage() {
       <PublicHeader />
       <main className="public-guides-main">
         <header className="public-guides-hero">
-          <p className="eyebrow">Open course guides</p>
-          <h1>Read the guide.<br />Not the file format.</h1>
+          <p className="eyebrow">Course guides · {courses.length * 2} live webpages</p>
+          <h1>Choose the course.<br />Start with the full story.</h1>
           <p>
-            Every course is reduced to two useful paths: a focused Course Mastery Guide and a deeper Textbook Companion. Both are searchable, responsive webpages.
+            A course opens directly to its Textbook Companion for complete context. Switch to the Course Mastery Guide from the top or bottom whenever you want a faster review.
           </p>
           <div><span>{courses.length}</span><small>courses online</small></div>
         </header>
@@ -32,10 +32,10 @@ export default function GuidesIndexPage() {
           </div>
           <div className="public-guides-list">
             {courses.map((course, index) => (
-              <Link href={`/guides/${course.slug}`} key={course.code}>
+              <Link href={`/guides/${course.slug}/textbook-companion`} key={course.code}>
                 <span className="public-guides-number">{String(index + 1).padStart(2, "0")}</span>
                 <span className="public-guides-code">{course.code}</span>
-                <span className="public-guides-title"><b>{course.title}</b><small>Mastery Guide + Textbook Companion</small></span>
+                <span className="public-guides-title"><b>{course.title}</b><small>Opens the Textbook Companion · Mastery Guide one click away</small></span>
                 <span className="public-guides-arrow" aria-hidden="true">→</span>
               </Link>
             ))}

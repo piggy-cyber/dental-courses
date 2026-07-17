@@ -94,12 +94,17 @@ export default function AboutPage() {
           <div className={styles.originNumber}>04</div>
           <div className={styles.originCopy}>
             <p className={styles.eyebrow}>Why Fourth Canal?</p>
-            <h2>Look for what is easy to miss.</h2>
+            <h2>The extra canal that can hide in plain sight.</h2>
             <p>
-              Dentistry trains us to look beyond what appears complete. A fourth canal
-              can be the difference between a case that looks finished and one that
-              truly is. Fourth Canal follows the same idea: find the missing context,
-              connect it, and make it useful.
+              A maxillary first molar may contain a second mesiobuccal canal—MB2—beyond
+              the three canals students first expect. It can be narrow, covered by
+              dentin, and difficult to locate. Endodontic treatment depends on finding,
+              cleaning, and sealing the full canal system rather than stopping when the
+              tooth only looks complete.
+            </p>
+            <p>
+              Fourth Canal follows the same habit: look again, find the context that was
+              easy to miss, and connect it before moving on.
             </p>
           </div>
           <blockquote>

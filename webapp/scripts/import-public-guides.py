@@ -121,17 +121,41 @@ def render_cell(cell) -> str:
 
 
 def render_table(table) -> str:
-    rows: list[str] = []
-    for row in table.xpath("./thead/tr | ./tbody/tr | ./tr"):
+    source_rows = table.xpath("./thead/tr | ./tbody/tr | ./tr")
+    first_cells = source_rows[0].xpath("./th | ./td") if source_rows else []
+    has_header = len(source_rows) > 1 and len(first_cells) > 1 and all(
+        cell.tag.lower() == "th" or bool(cell.xpath(".//b | .//strong"))
+        for cell in first_cells
+    )
+    headers = [normalized_text(cell.text_content()) for cell in first_cells] if has_header else []
+    rendered_rows: list[str] = []
+
+    for row_index, row in enumerate(source_rows):
         cells: list[str] = []
-        for cell in row.xpath("./th | ./td"):
-            tag = "th" if cell.tag.lower() == "th" else "td"
+        for cell_index, cell in enumerate(row.xpath("./th | ./td")):
+            is_header_cell = has_header and row_index == 0
+            tag = "th" if is_header_cell or cell.tag.lower() == "th" else "td"
             color = cell.get("bgcolor", "").lower()
             style = f' style="--guide-cell-bg:{color}"' if HEX_COLOR_PATTERN.fullmatch(color) else ""
-            cells.append(f"<{tag}{style}>{render_cell(cell)}</{tag}>")
+            scope = ' scope="col"' if is_header_cell else ""
+            data_label = ""
+            if tag == "td" and cell_index < len(headers):
+                escaped_label = html_stdlib.escape(headers[cell_index], quote=True)
+                data_label = f' data-label="{escaped_label}"'
+            cells.append(f"<{tag}{scope}{style}{data_label}>{render_cell(cell)}</{tag}>")
         if cells:
-            rows.append(f"<tr>{''.join(cells)}</tr>")
-    return f"<div class=\"guide-table-scroll\"><table><tbody>{''.join(rows)}</tbody></table></div>"
+            rendered_rows.append(f"<tr>{''.join(cells)}</tr>")
+
+    if has_header:
+        head = f"<thead>{rendered_rows[0]}</thead>"
+        body_rows = rendered_rows[1:]
+    else:
+        head = ""
+        body_rows = rendered_rows
+    return (
+        "<div class=\"guide-table-scroll\"><table>"
+        f"{head}<tbody>{''.join(body_rows)}</tbody></table></div>"
+    )
 
 
 def iter_blocks(body) -> Iterator:
