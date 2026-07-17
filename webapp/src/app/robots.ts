@@ -5,15 +5,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: [
       {
         userAgent: "*",
-        allow: ["/", "/about", "/legal", "/games", "/grade-calculator", "/guides"],
-        disallow: [
-          "/admin",
-          "/api",
-          "/auth",
-          "/contacts",
-          "/course",
-          "/ui-preview",
-        ],
+        allow: "/",
       },
     ],
     sitemap: "https://fourthcanal.com/sitemap.xml",

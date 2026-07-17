@@ -15,4 +15,9 @@ for (const file of publicFiles) {
   const source = readFileSync(resolve(root, file), "utf8");
   for (const pattern of forbidden) assert(!pattern.test(source), `${file} exposes a private-workspace reference: ${pattern}`);
 }
+
+const robotsSource = readFileSync(resolve(root, "src/app/robots.ts"), "utf8");
+for (const privateRoute of ["/admin", "/contacts", "/course", "/d1", "/home", "/library", "/resource", "/workspace-settings"]) {
+  assert(!robotsSource.includes(privateRoute), `robots.ts publicly enumerates a private route: ${privateRoute}`);
+}
 console.log("Public access boundary validation passed.");
