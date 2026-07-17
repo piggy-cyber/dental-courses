@@ -7,6 +7,7 @@ const publicFiles = [
   "src/app/page.tsx",
   "src/app/about/page.tsx",
   "src/app/legal/page.tsx",
+  "src/app/not-found.tsx",
   "src/app/signin/page.tsx",
   "src/app/(public)/guides/page.tsx",
   "src/app/(games)/games/micp-occlusion-trainer/page.tsx",

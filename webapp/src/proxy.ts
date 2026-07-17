@@ -2,6 +2,27 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { authReturnCookie } from "@/lib/auth-redirect";
 
+const protectedPathPrefixes = [
+  "/admin",
+  "/api/admin",
+  "/api/groupme",
+  "/api/resource",
+  "/contacts",
+  "/course",
+  "/d1",
+  "/home",
+  "/library",
+  "/owner",
+  "/preview-lab",
+  "/profile",
+  "/resource",
+  "/workspace-settings",
+] as const;
+
+function matchesPathPrefix(path: string, prefix: string) {
+  return path === prefix || path.startsWith(`${prefix}/`);
+}
+
 // Refreshes the Supabase session cookie and keeps the private workspace private.
 export async function proxy(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
@@ -35,27 +56,14 @@ export async function proxy(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   const path = request.nextUrl.pathname;
-  const isPublic =
-    path === "/" ||
-    path === "/signin" ||
-    path === "/ui-preview" ||
-    path === "/about" ||
-    path === "/legal" ||
-    path === "/grade-calculator" ||
-    path === "/guides" ||
-    path.startsWith("/guides/") ||
-    path === "/games" ||
-    path.startsWith("/games/") ||
-    path === "/robots.txt" ||
-    path === "/sitemap.xml" ||
-    path === "/manifest.webmanifest" ||
-    path.startsWith("/opengraph-image") ||
-    path.startsWith("/auth");
+  const isProtectedPath = protectedPathPrefixes.some((prefix) =>
+    matchesPathPrefix(path, prefix)
+  );
   // Bot uploads authenticate with a Bearer API key inside the route handler,
   // not a session cookie, so let them through to be authorized there.
   const isBotApi = path.startsWith("/api/admin/course-resource");
 
-  if (!user && !isPublic && !isBotApi) {
+  if (!user && isProtectedPath && !isBotApi) {
     const url = request.nextUrl.clone();
     url.pathname = "/";
     url.search = "";
