@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { BrandMarkPublic } from "@/components/BrandMark";
+import { PublicHeader } from "@/components/PublicHeader";
 import styles from "./AboutPage.module.css";
 
 export const metadata = {
@@ -38,15 +39,7 @@ export default function AboutPage() {
     <div className={`${styles.aboutPage} fc-site`} data-integrated-footer="true">
       <div className={styles.microscopyField} aria-hidden="true" />
 
-      <header className={styles.header}>
-        <div className={styles.brandLink}>
-          <BrandMarkPublic />
-          <small>Dental education</small>
-        </div>
-        <Link href="/" className={styles.headerAction}>
-          Open the study desk <span aria-hidden="true">→</span>
-        </Link>
-      </header>
+      <PublicHeader />
 
       <main className={styles.main}>
         <section className={styles.hero}>

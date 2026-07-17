@@ -87,9 +87,8 @@ export function SiteRouteEffects() {
   }, [changePhase, clearTimers]);
 
   useEffect(() => {
-    if (isGamePath(pathname)) return;
-
     let frame = 0;
+    let resizeObserver: ResizeObserver | null = null;
     const update = () => {
       const travel = Math.max(document.documentElement.scrollHeight - window.innerHeight, 1);
       const progress = Math.min(Math.max(window.scrollY / travel, 0), 1);
@@ -107,10 +106,13 @@ export function SiteRouteEffects() {
     update();
     window.addEventListener("scroll", schedule, { passive: true });
     window.addEventListener("resize", schedule);
+    resizeObserver = new ResizeObserver(schedule);
+    resizeObserver.observe(document.body);
     return () => {
       window.cancelAnimationFrame(frame);
       window.removeEventListener("scroll", schedule);
       window.removeEventListener("resize", schedule);
+      resizeObserver?.disconnect();
     };
   }, [motion, pathname]);
 

@@ -127,6 +127,8 @@
 .nav button { cursor: pointer; }
 .nav a:hover,
 .nav button:hover { border-color: var(--arcade-line); color: var(--arcade-enamel); background: rgba(242, 237, 226, .04); }
+.nav a[aria-current="page"] { border-color: var(--arcade-line); color: var(--arcade-enamel); background: rgba(200, 106, 58, .1); }
+.nav a[aria-current="page"]::after { content: ""; width: 5px; height: 5px; margin-left: .42rem; background: var(--arcade-cyan); }
 .nav a:last-of-type { color: var(--arcade-cyan); }
 
 .nav a:focus-visible,
@@ -179,6 +181,7 @@
   text-decoration: none;
 }
 .mobileNav button { width: 100%; cursor: pointer; }
+.mobileNav a[aria-current="page"] { border-left: 3px solid var(--arcade-cyan); color: var(--arcade-enamel); background: rgba(200, 106, 58, .1); }
 .mobileNav form:last-child button,
 .mobileNav > *:last-child { border-bottom: 0; }
 

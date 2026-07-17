@@ -12,13 +12,13 @@ type GameShellProps = {
 
 export function GameShell({ children, displayName, signedIn, hasD1Access }: GameShellProps) {
   return (
-    <div className={styles.shell}>
+    <div className={styles.shell} data-game-shell="true">
       <a className={styles.skipLink} href="#game-content">
         Skip to game content
       </a>
       <header className={styles.header}>
         <div className={styles.brand}>
-          <BrandMark href="/games" inverse className={styles.brandMark} />
+          <BrandMark href="/" inverse className={styles.brandMark} />
           <span className={styles.sectionLabel}>Study Arcade</span>
         </div>
 

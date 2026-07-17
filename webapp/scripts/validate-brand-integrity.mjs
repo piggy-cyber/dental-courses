@@ -31,8 +31,8 @@ for (const forbidden of ["Three Fourth Canal", "03 / 03", "PUBLIC STUDY DESK"]) 
 }
 
 const gameShell = read("src/components/games/GameShell.tsx");
-if (!gameShell.includes('<BrandMark href="/games" inverse')) {
-  failures.push("Game shell is missing the approved inverse Fourth Canal wordmark.");
+if (!gameShell.includes('<BrandMark href="/" inverse')) {
+  failures.push("Game shell must use the approved inverse wordmark and return to public home.");
 }
 if (gameShell.includes("brandTile") || gameShell.includes(">FC<")) {
   failures.push("Game shell has reintroduced the forbidden FC tile.");
@@ -44,6 +44,18 @@ for (const requiredToken of ["#091327", "#0F1E3A", "#F2EDE2", "#C86A3A", "#73D3C
 }
 if (!gameBrand.includes("four-strand") || !gameBrand.includes("three-strand")) {
   failures.push("Game brand guideline is missing its four-strand safeguard.");
+}
+
+const globalCanalProgress = read("src/components/GlobalCanalProgress.tsx");
+const globalPathBlock = globalCanalProgress.match(/const CANAL_PATHS = \[([\s\S]*?)\] as const;/)?.[1] ?? "";
+const globalStrands = (globalPathBlock.match(/^\s*"M/gm) ?? []).length;
+if (globalStrands !== 4) {
+  failures.push(`Global progress mark has ${globalStrands} strands; expected 4.`);
+}
+
+const siteNavigation = read("src/components/SiteNavigation.tsx");
+for (const href of ['href: "/"', 'href: "/guides"', 'href: "/games"', 'href: "/grade-calculator"', 'href: "/about"']) {
+  if (!siteNavigation.includes(href)) failures.push(`Shared site navigation is missing ${href}.`);
 }
 
 const gamesHub = read("src/app/(games)/games/page.tsx");

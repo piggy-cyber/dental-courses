@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Bodoni_Moda, IBM_Plex_Mono, Inter, Source_Sans_3 } from "next/font/google";
 import { LegalFooter } from "@/components/LegalFooter";
+import { GlobalCanalProgress } from "@/components/GlobalCanalProgress";
 import { SiteRouteEffects } from "@/components/SiteRouteEffects";
 import "./globals.css";
 
@@ -92,6 +93,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         <SiteRouteEffects />
+        <GlobalCanalProgress />
         {children}
         <LegalFooter />
       </body>

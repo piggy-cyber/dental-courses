@@ -2,7 +2,11 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import type { Profile } from "@/lib/access";
 import { BrandMark } from "@/components/BrandMark";
-import { ActiveNavLink, LivingCanalIndicator } from "@/components/SiteNavigation";
+import {
+  ActiveNavLink,
+  SitePrimaryLinks,
+  SitePrimaryNavigation,
+} from "@/components/SiteNavigation";
 import { UserAvatar } from "@/components/UserAvatar";
 import {
   canOpenAdmin,
@@ -33,10 +37,7 @@ const STUDENT_LINKS = [
   { href: "/home", label: "Today" },
   { href: "/library", label: "Courses" },
   { href: "/contacts", label: "Contacts" },
-  { href: "/grade-calculator", label: "Grade Calculator" },
-  { href: "/games", label: "Games" },
   { href: "/profile", label: "Profile" },
-  { href: "/about", label: "About" },
 ];
 
 const ADMIN_LINKS: Array<{
@@ -119,8 +120,8 @@ export function AppShell({ profile, courses, adminMode = false, children }: AppS
         <div className="fc-rail-inner">
           <div className="fc-rail-brand">
             <BrandMark />
-            <p>{courseScopeLabel} lectures, transcripts, guides, and course files.</p>
-            <LivingCanalIndicator />
+            <p><b>{adminMode ? "Administration" : "Private workspace"}</b><br />{courseScopeLabel} lectures, transcripts, guides, and course files.</p>
+            <Link href="/" className="fc-rail-public-link">Public home <span aria-hidden="true">→</span></Link>
           </div>
 
           <div className="fc-rail-scroll sidebar-scroll">
@@ -177,9 +178,10 @@ export function AppShell({ profile, courses, adminMode = false, children }: AppS
       <div className="fc-shell-main">
         <header className="fc-topbar">
           <div className="fc-mobile-brand"><BrandMark /></div>
-          <Link href="/library" className="fc-search-entry">
+          <SitePrimaryNavigation className="fc-shell-site-nav" />
+          <Link href="/library" className="fc-search-entry" aria-label="Search the private course library">
             <span aria-hidden="true">⌕</span>
-            <span><b>Find study material</b><small>Search courses, lectures, transcripts, and files</small></span>
+            <span><b>Search private library</b><small>Courses, lectures, transcripts, and files</small></span>
             <i aria-hidden="true">→</i>
           </Link>
           <div className="fc-topbar-actions">
@@ -195,6 +197,9 @@ export function AppShell({ profile, courses, adminMode = false, children }: AppS
           <details className="fc-mobile-menu">
             <summary>Menu</summary>
             <nav aria-label="Mobile navigation">
+              <p className="fc-mobile-menu-label">Public site</p>
+              <SitePrimaryLinks />
+              <p className="fc-mobile-menu-label">{adminMode ? "Administration" : "Private workspace"}</p>
               <NavigationLinks links={navLinks} />
               {mayOpenAdmin && !adminMode && <ActiveNavLink href="/admin">Admin portal</ActiveNavLink>}
               {adminMode && <ActiveNavLink href="/home">Student workspace</ActiveNavLink>}

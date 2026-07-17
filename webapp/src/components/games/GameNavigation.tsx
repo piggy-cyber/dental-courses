@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SitePrimaryLinks } from "@/components/SiteNavigation";
 
 type GameNavigationProps = {
   className: string;
@@ -14,12 +15,9 @@ export function GameNavigation({
   signedIn,
 }: GameNavigationProps) {
   return (
-    <nav className={className} aria-label="Game navigation">
-      <Link href="/games">Games</Link>
-      <Link href="/grade-calculator">Grade calculator</Link>
-      <Link href="/guides">Study guides</Link>
-      <Link href="/about">About</Link>
-      {hasD1Access && <Link href="/d1">D1 library</Link>}
+    <nav className={className} aria-label="Main navigation">
+      <SitePrimaryLinks />
+      {hasD1Access && <Link href="/d1">Student workspace</Link>}
       {signedIn ? (
         <>
           <span>{displayName}</span>

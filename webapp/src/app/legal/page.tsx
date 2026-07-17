@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { BrandMarkPublic } from "@/components/BrandMark";
+import { PublicHeader } from "@/components/PublicHeader";
 import { getSessionProfile } from "@/lib/access";
 
 export const metadata: Metadata = {
@@ -25,16 +25,7 @@ export default async function LegalPage() {
 
   return (
     <div className="fc-site app-shell-bg min-h-screen text-brand-ink">
-      <header className="sticky top-0 z-10 border-b border-brand-line bg-brand-panel">
-        <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-3">
-          <BrandMarkPublic />
-          <div className="flex items-center gap-3">
-            <Link href="/" className="text-sm font-medium text-brand-muted hover:text-brand-navy">
-              Back to study desk
-            </Link>
-          </div>
-        </div>
-      </header>
+      <PublicHeader />
 
       <main className="mx-auto grid max-w-5xl gap-8 px-4 py-10 lg:grid-cols-[220px_minmax(0,1fr)]">
         <aside className="h-fit border border-brand-line bg-brand-panel p-4 lg:sticky lg:top-24">

@@ -10,7 +10,7 @@ type BrandMarkProps = {
 
 export function BrandMark({
   className = "",
-  href = "/home",
+  href = "/",
   showWordmark = true,
   inverse = false,
 }: BrandMarkProps) {
