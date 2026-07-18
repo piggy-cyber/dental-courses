@@ -10,6 +10,7 @@ import {
   hasFullCouncilAccess,
   type AdminPermission,
 } from "@/lib/admin-permissions";
+import { attemptSlackDelivery, recordAdminActivity } from "@/lib/communications";
 
 export async function requireAdminProfile(permission?: AdminPermission) {
   const { profile, userId } = await getSessionProfile();
@@ -96,6 +97,14 @@ export async function setAccountStatus(
   const { error } = await supabase.from("profiles").update(update).eq("id", userId);
   if (error) throw new Error(error.message);
 
+  await recordAdminActivity({
+    scope: "access",
+    severity: status === "revoked" ? "attention" : "info",
+    eventType: `access.account_${status}`,
+    referenceId: "account",
+    dashboardPath: `/admin/accounts/${userId}`,
+    profileId: userId,
+  });
   revalidateAdminPaths(userId);
 }
 
@@ -158,6 +167,14 @@ export async function setResourceCollectionGrants(userId: string, collectionIds:
     if (insertError) throw new Error(insertError.message);
   }
 
+  await recordAdminActivity({
+    scope: "access",
+    severity: "info",
+    eventType: "access.collection_access_updated",
+    referenceId: "account",
+    dashboardPath: `/admin/accounts/${userId}`,
+    profileId: userId,
+  });
   revalidateAdminPaths(userId);
   revalidatePath("/home");
   revalidatePath("/library");
@@ -279,6 +296,13 @@ export async function setRosterAccessApproval(rosterId: string, allowed: boolean
     p_allowed: allowed,
   });
   if (error) throw new Error(error.message);
+  await recordAdminActivity({
+    scope: "access",
+    severity: allowed ? "info" : "attention",
+    eventType: allowed ? "access.roster_allowed" : "access.roster_revoked",
+    referenceId: "roster",
+    dashboardPath: "/admin/roster",
+  });
   revalidateAdminPaths();
 }
 
@@ -290,6 +314,14 @@ export async function linkAccountToRoster(userId: string, rosterId: string) {
     p_roster_id: rosterId,
   });
   if (error) throw new Error(error.message);
+  await recordAdminActivity({
+    scope: "access",
+    severity: "info",
+    eventType: "access.account_linked_to_roster",
+    referenceId: "account",
+    dashboardPath: `/admin/accounts/${userId}`,
+    profileId: userId,
+  });
   revalidateAdminPaths(userId);
   revalidatePath("/home");
   revalidatePath("/library");
@@ -364,8 +396,26 @@ export async function updateReportStatus(
     .update(update)
     .eq("id", reportId);
   if (error) throw new Error(error.message);
+  await recordAdminActivity({
+    scope: "operations",
+    severity: status === "open" ? "attention" : "info",
+    eventType: `operations.report_${status}`,
+    referenceId: `report-${reportId}`,
+    dashboardPath: "/admin/operations",
+    reportId,
+  });
   revalidatePath("/admin");
   revalidatePath("/admin/operations");
+}
+
+export async function retrySlackDelivery(outboxId: number) {
+  await requireAdminProfile("communications.manage");
+  if (!Number.isSafeInteger(outboxId) || outboxId < 1) {
+    throw new Error("Choose a valid delivery record.");
+  }
+
+  await attemptSlackDelivery(outboxId);
+  revalidatePath("/admin/inbox");
 }
 
 export async function setCouncilAccess(input: {
@@ -473,6 +523,7 @@ function revalidateAdminPaths(accountId?: string) {
   revalidatePath("/admin/roster");
   revalidatePath("/admin/team");
   revalidatePath("/admin/operations");
+  revalidatePath("/admin/inbox");
   revalidatePath("/admin/courses");
   revalidatePath("/library");
   revalidatePath("/owner");
