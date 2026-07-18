@@ -1,7 +1,18 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { validatePublicSupportInput } from "@/lib/support";
 import { NextRequest } from "next/server";
-import { getRequestFingerprint } from "@/lib/support-server";
+import { getRequestFingerprint, getSupportServerConfig, verifyTurnstile } from "@/lib/support-server";
+
+const originalVercelEnv = process.env.VERCEL_ENV;
+const originalTurnstileSecret = process.env.TURNSTILE_SECRET_KEY;
+
+afterEach(() => {
+  vi.unstubAllGlobals();
+  if (originalVercelEnv === undefined) delete process.env.VERCEL_ENV;
+  else process.env.VERCEL_ENV = originalVercelEnv;
+  if (originalTurnstileSecret === undefined) delete process.env.TURNSTILE_SECRET_KEY;
+  else process.env.TURNSTILE_SECRET_KEY = originalTurnstileSecret;
+});
 
 const validInput = {
   category: "site",
@@ -44,5 +55,31 @@ describe("support rate-limit fingerprints", () => {
     expect(fingerprint).toMatch(/^[a-f0-9]{64}$/);
     expect(fingerprint).not.toContain("203.0.113.25");
     expect(getRequestFingerprint(request, "test-secret")).toBe(fingerprint);
+  });
+});
+
+describe("Turnstile production checks", () => {
+  it("refuses Cloudflare test secrets in production", () => {
+    process.env.VERCEL_ENV = "production";
+    process.env.TURNSTILE_SECRET_KEY = "1x0000000000000000000000000000000AA";
+
+    expect(getSupportServerConfig().turnstileSecret).toBeUndefined();
+  });
+
+  it("requires a successful response for the current request hostname", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(JSON.stringify({
+      success: true,
+      hostname: "example.com",
+    }), { status: 200 })));
+
+    const verified = await verifyTurnstile({
+      token: "verified-token",
+      secret: "real-secret",
+      request: new NextRequest("https://fourthcanal.com/api/support", {
+        headers: { "x-vercel-forwarded-for": "203.0.113.25" },
+      }),
+    });
+
+    expect(verified).toBe(false);
   });
 });
