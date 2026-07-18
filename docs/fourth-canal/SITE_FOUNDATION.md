@@ -46,7 +46,7 @@ values to source control. Configure the Turnstile widget to accept
 
 Release order after approval:
 
-1. Apply `webapp/supabase/migrations/20260718172014_public_support_foundation.sql` to the live Supabase project.
+1. Apply `webapp/supabase/migrations/20260718175551_public_support_foundation.sql` to the live Supabase project.
 2. Verify the new `resource_reports` fields, the private rate-limit table,
    function grants, RLS, and security advisors.
 3. Confirm a real Turnstile-protected support report appears in
