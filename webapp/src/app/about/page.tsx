@@ -3,7 +3,7 @@ import Image from "next/image";
 import { BrandMarkPublic } from "@/components/BrandMark";
 import { PublicHeader } from "@/components/PublicHeader";
 import { FourthCanalEntrance } from "@/components/FourthCanalEntrance";
-import { getSessionProfile } from "@/lib/access";
+import { getOptionalSessionProfile } from "@/lib/access";
 import styles from "./AboutPage.module.css";
 
 export const metadata = {
@@ -38,7 +38,7 @@ const PRINCIPLES = [
 
 export const dynamic = "force-dynamic";
 export default async function AboutPage() {
-  const { profile } = await getSessionProfile();
+  const { profile } = await getOptionalSessionProfile();
   return (
     <div className={`${styles.aboutPage} fc-site`} data-integrated-footer="true">
       <div className={styles.microscopyField} aria-hidden="true" />
@@ -131,6 +131,17 @@ export default async function AboutPage() {
           </div>
         </section>
 
+        <section className="app-card mx-auto max-w-5xl p-6 sm:p-8" aria-labelledby="editorial-title">
+          <p className="eyebrow">Editorial policy</p>
+          <h2 id="editorial-title" className="mt-2 text-2xl font-bold text-brand-navy">Student-built, source-aware, and correctable.</h2>
+          <p className="mt-3 max-w-3xl leading-relaxed text-brand-muted">
+            Rick Ahn — dental student, founder, and student editor of Fourth Canal. Public study tools and guides are prepared as independent student resources, with source context and clear limits rather than claims of university or faculty endorsement.
+          </p>
+          <p className="mt-3 max-w-3xl leading-relaxed text-brand-muted">
+            Content can be incomplete or need correction. Use official course materials, faculty direction, and clinical sources for decisions that matter, and <Link href="/support" className="font-semibold text-brand-blue underline">send a support report</Link> when something needs review.
+          </p>
+        </section>
+
         <section className={styles.closing}>
           <div>
             <p className={styles.eyebrow}>Open dental study desk</p>
@@ -153,6 +164,7 @@ export default async function AboutPage() {
           <Link href="/legal#terms">Terms</Link>
           <Link href="/legal#disclaimer">Disclaimer</Link>
           <Link href="/legal#ai">AI notice</Link>
+          <Link href="/support">Support</Link>
         </nav>
       </footer>
     </div>

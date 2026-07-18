@@ -4,12 +4,23 @@ import { getPublicGuideCourses } from "@/lib/public-guides";
 const origin = "https://fourthcanal.com";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const staticRoutes = ["", "/about", "/legal", "/games", "/games/tooth-quest", "/grade-calculator", "/guides"];
-  const guideRoutes = getPublicGuideCourses().flatMap((course) => [
-    `/guides/${course.slug}`,
-    `/guides/${course.slug}/${course.guides.mastery.slug}`,
-    `/guides/${course.slug}/${course.guides.textbook.slug}`,
-  ]);
+  const staticRoutes = [
+    "",
+    "/about",
+    "/legal",
+    "/support",
+    "/games",
+    "/games/tooth-quest",
+    "/games/contact-area",
+    "/games/eruption-timeline",
+    "/games/root-canal-match",
+    "/games/tooth-comparison-duel",
+    "/games/gv-black-sorter",
+    "/games/micp-occlusion-trainer",
+    "/grade-calculator",
+    "/guides",
+  ];
+  const guideRoutes = getPublicGuideCourses().map((course) => `/guides/${course.slug}`);
   return [...staticRoutes, ...guideRoutes].map((path) => ({
     url: `${origin}${path}`,
     lastModified: new Date("2026-07-16"),

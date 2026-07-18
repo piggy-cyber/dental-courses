@@ -782,7 +782,7 @@ html[data-theme="dark"] .fc-theme-toggle-active { background: #f2ede2; color: #0
 .fc-global-canal-progress button:hover .fc-global-canal-strand-4,
 .fc-global-canal-progress button:hover .fc-global-canal-fill { transform: translateX(2px) rotate(1.5deg); }
 .fc-global-canal-index { display: flex; align-items: baseline; gap: .24rem; }
-.fc-global-canal-index b { color: #b35a2e; font: 760 .6rem var(--font-fc-sans), sans-serif; }
+.fc-global-canal-index b { color: #8b3e1e; font: 760 .6rem var(--font-fc-sans), sans-serif; }
 .fc-global-canal-index small { color: #5e6265; font: 720 .42rem var(--font-fc-sans), sans-serif; letter-spacing: .08em; text-transform: uppercase; }
 .fc-global-canal-route {
   position: absolute;
@@ -1360,7 +1360,7 @@ html[data-theme="dark"] .fc-public-header { background: rgba(15,30,58,.92); }
 .public-core-signal { --signal-rotate-x: 0deg; --signal-rotate-y: 0deg; min-height: 520px; overflow: visible; padding: 0; border: 0; color: #f2ede2; background: transparent; box-shadow: none; perspective: 1200px; }
 .public-core-signal::before { display: none; }
 .public-core-signal-surface { position: relative; min-height: 520px; overflow: hidden; padding: 1.25rem; border: 1px solid #a99f91; border-radius: 6px; background: #0f1e3a; box-shadow: 0 26px 70px rgba(15,30,58,.2); transform: rotateX(var(--signal-rotate-x)) rotateY(var(--signal-rotate-y)); transform-style: preserve-3d; transition: transform .24s ease, box-shadow .24s ease; }
-.public-core-signal-surface::before { content: ""; position: absolute; inset: -7%; opacity: .14; background: url("/brand/fourth-canal-hero-brand-image-v2.png") 67% center / cover no-repeat; filter: contrast(1.12); animation: public-signal-field 16s ease-in-out infinite alternate; }
+.public-core-signal-surface::before { content: ""; position: absolute; inset: -7%; opacity: .14; background: url("/brand/fourth-canal-hero-brand-image-v2.avif") 67% center / cover no-repeat; filter: contrast(1.12); animation: public-signal-field 16s ease-in-out infinite alternate; }
 .public-core-signal-surface::after { content: "04"; position: absolute; right: -1rem; top: 2.2rem; color: transparent; font-family: var(--font-fc-display), Georgia, serif; font-size: 13rem; line-height: .8; opacity: .12; -webkit-text-stroke: 1px #f2ede2; transform: translateZ(15px); }
 .public-core-signal:hover .public-core-signal-surface { box-shadow: 0 38px 90px rgba(15,30,58,.28); }
 .public-core-signal-label { position: relative; z-index: 3; transform: translateZ(30px); }

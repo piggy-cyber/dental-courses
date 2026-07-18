@@ -5,6 +5,7 @@ import { GuideToc } from "@/components/GuideReaderControls";
 import { GuideTableEnhancer } from "@/components/GuideTableEnhancer";
 import { GuideWorkspace } from "@/components/GuideWorkspace";
 import { PublicHeader } from "@/components/PublicHeader";
+import { StructuredData } from "@/components/StructuredData";
 import { getPublicGuideCourse, getPublicGuideCourses } from "@/lib/public-guides";
 import type { GuideView } from "@/components/GuideViewToggle";
 
@@ -57,6 +58,17 @@ export default async function PublicCourseGuidePage({
   return (
     <div className="fc-site public-core-page public-guide-reader-page">
       <PublicHeader />
+      <StructuredData
+        data={{
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Home", item: "https://fourthcanal.com/" },
+            { "@type": "ListItem", position: 2, name: "Study guides", item: "https://fourthcanal.com/guides" },
+            { "@type": "ListItem", position: 3, name: `${course.code} ${course.title}`, item: `https://fourthcanal.com/guides/${course.slug}` },
+          ],
+        }}
+      />
       <main className="public-guide-reader-main">
         <nav className="public-core-breadcrumb" aria-label="Breadcrumb">
           <Link href="/guides">Guides</Link><span aria-hidden="true">/</span><span>{course.code}</span>

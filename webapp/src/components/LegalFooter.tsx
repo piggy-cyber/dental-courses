@@ -56,6 +56,12 @@ export function LegalFooter() {
             >
               About
             </Link>
+            <Link
+              href="/support"
+              className="font-medium underline-offset-4 hover:text-brand-navy hover:underline"
+            >
+              Support
+            </Link>
           </nav>
         </div>
       </div>

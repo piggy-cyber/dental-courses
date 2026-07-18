@@ -1,15 +1,19 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { preload } from "react-dom";
 import { PublicHeader } from "@/components/PublicHeader";
 import { PublicSignalPanel } from "@/components/PublicSignalPanel";
 import { PublicAccountBenefits } from "@/components/PublicAccountBenefits";
 import { SignInPanel } from "@/components/SignInPanel";
-import { getSessionProfile } from "@/lib/access";
+import { getOptionalSessionProfile } from "@/lib/access";
 import { getPublicGuideCourses } from "@/lib/public-guides";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
+  title: "Dental Study Tools for Students",
+  description:
+    "Fourth Canal offers dental students Tooth Quest, a grade calculator, and web-readable Course Mastery Guides and Textbook Companions.",
   alternates: { canonical: "/" },
 };
 
@@ -45,7 +49,11 @@ export default async function PublicHomePage({
 }: {
   searchParams: Promise<{ auth_error?: string }>;
 }) {
-  const [{ profile }, params] = await Promise.all([getSessionProfile(), searchParams]);
+  preload("/brand/fourth-canal-hero-brand-image-v2.avif", {
+    as: "image",
+    fetchPriority: "high",
+  });
+  const [{ profile }, params] = await Promise.all([getOptionalSessionProfile(), searchParams]);
   const courses = getPublicGuideCourses();
   const featuredCodes = new Set(["REHE 151", "DSPR 136", "HEWB 134", "REHE 120"]);
   const featured = courses.filter((course) => featuredCodes.has(course.code));
@@ -60,7 +68,7 @@ export default async function PublicHomePage({
             <p className="eyebrow">Fourth Canal · Dental study tools</p>
             <h1><span>Look closer.</span><br /><em>The missing detail matters.</em></h1>
             <p className="public-core-lead">
-              Practice tooth identification, calculate the grade you need, and open searchable course guides built to read cleanly on any screen.
+              Dental students can practice tooth identification, calculate the grade they need, and open searchable course guides built to read cleanly on any screen.
             </p>
             <div className="public-core-hero-actions">
               <Link href="/games/tooth-quest" className="public-core-primary-action">

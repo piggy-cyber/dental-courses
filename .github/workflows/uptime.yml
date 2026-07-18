@@ -1,0 +1,16 @@
+name: Production health check
+
+on:
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  health:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Fourth Canal health
+        run: curl --fail --retry 3 --retry-all-errors --max-time 20 https://fourthcanal.com/api/health
