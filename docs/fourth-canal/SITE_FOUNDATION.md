@@ -26,3 +26,37 @@ Make Fourth Canal a reliable, legitimate dental-student study platform before ex
 ## Deferred
 
 - Patient/family positioning, public clinical-consumer content, game redesign, automatic production deployment, and an architecture migration.
+
+## Production release gate
+
+The review preview is the release candidate. Do not promote it or apply the
+database migration until the owner explicitly approves both actions.
+
+Before that approval, the release operator must have configured these Vercel
+variables for Production (and Preview if a fully functional support-form
+rehearsal is required):
+
+- `NEXT_PUBLIC_TURNSTILE_SITE_KEY`
+- `TURNSTILE_SECRET_KEY`
+- `SUPPORT_RATE_LIMIT_SECRET`
+
+The existing `SUPABASE_SECRET_KEY` remains server-only. Never add any of these
+values to source control. Configure the Turnstile widget to accept
+`fourthcanal.com` and `www.fourthcanal.com` before enabling the live form.
+
+Release order after approval:
+
+1. Apply `webapp/supabase/migrations/20260718172014_public_support_foundation.sql` to the live Supabase project.
+2. Verify the new `resource_reports` fields, the private rate-limit table,
+   function grants, RLS, and security advisors.
+3. Confirm a real Turnstile-protected support report appears in
+   `/admin/operations`; verify that the stored record contains only the HMAC
+   fingerprint, not a raw IP address.
+4. Promote the already-tested Vercel preview, confirm `/api/health` returns
+   `200`, and recheck runtime errors.
+5. Verify the production domain in Google Search Console and submit
+   `https://fourthcanal.com/sitemap.xml` for indexing.
+
+The migration is forward-compatible with the old application code. If a web
+rollback is needed, roll back the Vercel deployment; do not reverse or delete
+support reports as part of the release response.
