@@ -7,7 +7,7 @@ import {
   getSupportServerConfig,
   verifyTurnstile,
 } from "@/lib/support-server";
-import { postBotMessage } from "@/lib/groupme";
+import { recordAdminActivity } from "@/lib/communications";
 
 export const runtime = "nodejs";
 
@@ -17,16 +17,6 @@ function errorResponse(
   status: number,
 ) {
   return NextResponse.json({ ok: false, code, message }, { status });
-}
-
-function supportAlert(input: { category: string; referenceId: string; pagePath: string | null }) {
-  return [
-    "New Fourth Canal support report",
-    `Type: ${input.category}`,
-    `Reference: ${input.referenceId}`,
-    input.pagePath ? `Page: ${input.pagePath}` : "Page: not supplied",
-    "Review: https://fourthcanal.com/admin/operations",
-  ].join("\n");
 }
 
 export async function POST(request: NextRequest) {
@@ -78,32 +68,35 @@ export async function POST(request: NextRequest) {
   }
 
   const referenceId = randomUUID();
-  const { error: insertError } = await admin.from("resource_reports").insert({
-    user_id: null,
-    category: validated.data.category,
-    message: validated.data.message,
-    reporter_name: validated.data.name,
-    reporter_email: validated.data.replyEmail,
-    source: "public_support",
-    page_path: validated.data.pagePath,
-    public_reference_id: referenceId,
-    request_fingerprint: fingerprint,
-  });
+  const { data: report, error: insertError } = await admin
+    .from("resource_reports")
+    .insert({
+      user_id: null,
+      category: validated.data.category,
+      message: validated.data.message,
+      reporter_name: validated.data.name,
+      reporter_email: validated.data.replyEmail,
+      source: "public_support",
+      page_path: validated.data.pagePath,
+      public_reference_id: referenceId,
+      request_fingerprint: fingerprint,
+    })
+    .select("id")
+    .single();
   if (insertError) {
     return errorResponse("service_unavailable", "Support is temporarily unavailable. Please try again later.", 503);
   }
 
-  const botId = process.env.GROUPME_ADMIN_BOT_ID?.trim();
-  if (botId) {
-    void postBotMessage(
-      botId,
-      supportAlert({
-        category: validated.data.category,
-        referenceId,
-        pagePath: validated.data.pagePath,
-      }),
-    ).catch(() => undefined);
-  }
+  await recordAdminActivity({
+    scope: "support",
+    severity: ["privacy", "copyright", "security"].includes(validated.data.category)
+      ? "urgent"
+      : "attention",
+    eventType: `support.${validated.data.category}`,
+    referenceId,
+    dashboardPath: "/admin/operations",
+    reportId: report.id,
+  });
 
   return NextResponse.json({ ok: true, referenceId }, { status: 201 });
 }

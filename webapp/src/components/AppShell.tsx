@@ -53,6 +53,7 @@ const ADMIN_LINKS: Array<{
   { href: "/admin/collections", label: "Collections", permission: "collections.manage" },
   { href: "/admin/courses", label: "Courses & files", permission: "courses.manage" },
   { href: "/admin/operations", label: "Operations", permission: "operations.manage" },
+  { href: "/admin/inbox", label: "Inbox", permission: "communications.manage" },
 ];
 
 function groupedCollections(courses: AppShellCourse[]) {

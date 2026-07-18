@@ -12,6 +12,7 @@ import {
   fileExtension,
 } from "@/lib/course-storage";
 import { notifyCourseContentBatch } from "@/lib/course-notify";
+import { recordAdminActivity } from "@/lib/communications";
 import {
   getCourseTemplate,
   lectureSlotTitle,
@@ -678,6 +679,14 @@ export async function finalizeUploadBatchNotify(
     fileCount,
     collectionId,
     collectionLabel: collection?.label ?? null,
+  });
+
+  await recordAdminActivity({
+    scope: "content",
+    severity: "info",
+    eventType: "content.release",
+    referenceId: courseCode,
+    dashboardPath: `/admin/courses/${encodeURIComponent(courseCode)}`,
   });
 
   // Marker event: lets inbox-clearing logic count assignments since the last post.

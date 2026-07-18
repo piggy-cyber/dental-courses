@@ -22,6 +22,8 @@ test("404 recovery, robots, and sitemap expose only public routes", async ({ pag
 });
 
 test("protected pages redirect without a session", async ({ page }) => {
-  await page.goto("/home");
-  await expect(page).toHaveURL(/\/$/);
+  for (const route of ["/home", "/admin/inbox"]) {
+    await page.goto(route);
+    await expect(page).toHaveURL(/\/$/);
+  }
 });
