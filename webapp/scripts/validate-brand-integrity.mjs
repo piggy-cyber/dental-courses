@@ -58,7 +58,13 @@ for (const href of ['href: "/"', 'href: "/guides"', 'href: "/games"', 'href: "/g
   if (!siteNavigation.includes(href)) failures.push(`Shared site navigation is missing ${href}.`);
 }
 
-const gamesHub = read("src/app/(games)/games/page.tsx");
+const gamesEntry = read("src/app/(games)/games/page.tsx");
+if (!gamesEntry.includes('redirect("/games/living-atlas")')) {
+  failures.push("Games entry route does not redirect to Living Atlas.");
+}
+
+const gamesHub = read("src/app/(games)/games/beta/page.tsx");
+if (!gamesHub.includes("Public beta")) failures.push("Arcade hub is missing its public beta label.");
 for (const gameRoute of [
   "/games/living-atlas",
   "/games/contact-area",

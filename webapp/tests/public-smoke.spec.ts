@@ -16,6 +16,16 @@ test("Living Atlas has a public preview while its workspace stays protected", as
   await expect(page).toHaveURL(/\/games\/living-atlas\?access=founder$/);
 });
 
+test("Games opens Living Atlas and keeps the arcade available as a public beta", async ({ page }) => {
+  await page.goto("/games");
+  await expect(page).toHaveURL(/\/games\/living-atlas$/);
+  await expect(page.getByRole("heading", { name: /study the detail/i })).toBeVisible();
+
+  await page.goto("/games/beta");
+  await expect(page.getByText("Public beta", { exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /train your eye/i })).toBeVisible();
+});
+
 test("404 recovery, robots, and sitemap expose only public routes", async ({ page, request }) => {
   await page.goto("/not-a-real-route");
   await expect(page.getByRole("heading", { name: /this page is missing/i })).toBeVisible();
@@ -27,6 +37,8 @@ test("404 recovery, robots, and sitemap expose only public routes", async ({ pag
   const sitemapText = await sitemap.text();
   expect(sitemapText).toContain("https://fourthcanal.com/support");
   expect(sitemapText).toContain("https://fourthcanal.com/games/living-atlas");
+  expect(sitemapText).toContain("https://fourthcanal.com/games/beta");
+  expect(sitemapText).not.toContain("<loc>https://fourthcanal.com/games</loc>");
   expect(sitemapText).not.toContain("/admin");
   expect(sitemapText).not.toContain("?view=");
 });

@@ -299,7 +299,7 @@ export function MicpOcclusionTrainer() {
     <main id="game-content" className={styles.page}>
       <header className={styles.hero}>
         <div>
-          <Link href="/games" className={styles.backLink}>
+          <Link href="/games/beta" className={styles.backLink}>
             <span aria-hidden="true">←</span> Study arcade
           </Link>
           <p className={styles.kicker}>Occlusion lab · Future module</p>
