@@ -10,7 +10,10 @@ export const metadata: Metadata = {
 };
 
 export default async function LivingAtlasWorkspaceLayout({ children }: { children: React.ReactNode }) {
-  const { profile, userId } = await getSessionProfile();
+  const { profile, userId } = await getSessionProfile().catch(() => ({
+    profile: null,
+    userId: null,
+  }));
   const isFounder = Boolean(
     userId &&
     profile &&
