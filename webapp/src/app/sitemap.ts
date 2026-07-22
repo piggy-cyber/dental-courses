@@ -10,6 +10,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/legal",
     "/support",
     "/games",
+    "/games/living-atlas",
     "/games/tooth-quest",
     "/games/contact-area",
     "/games/eruption-timeline",
@@ -25,6 +26,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     url: `${origin}${path}`,
     lastModified: new Date("2026-07-16"),
     changeFrequency: path.startsWith("/guides") ? "monthly" : "weekly",
-    priority: path === "" ? 1 : path === "/games/tooth-quest" ? 0.9 : 0.7,
+    priority: path === "" ? 1 : path === "/games/living-atlas" ? 0.9 : 0.7,
   }));
 }

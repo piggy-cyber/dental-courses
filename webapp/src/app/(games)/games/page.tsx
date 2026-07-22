@@ -5,12 +5,12 @@ export const dynamic = "force-dynamic";
 
 const games = [
   {
-    href: "/games/tooth-quest",
-    title: "Tooth Quest",
-    discipline: "Universal numbering",
-    description: "Move from arch position to tooth number and name until recognition becomes automatic.",
-    modes: ["Map", "Sprint", "Recall"],
-    status: "Play now",
+    href: "/games/living-atlas",
+    title: "Living Atlas",
+    discipline: "Cumulative dental learning",
+    description: "Combine fast recall, reviewed practice, focused repair queues, and visual progress in one evolving study workspace.",
+    modes: ["Recall", "Study", "Test"],
+    status: "Public preview",
   },
   {
     href: "/games/contact-area",

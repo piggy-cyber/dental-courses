@@ -60,7 +60,7 @@ for (const href of ['href: "/"', 'href: "/guides"', 'href: "/games"', 'href: "/g
 
 const gamesHub = read("src/app/(games)/games/page.tsx");
 for (const gameRoute of [
-  "/games/tooth-quest",
+  "/games/living-atlas",
   "/games/contact-area",
   "/games/eruption-timeline",
   "/games/root-canal-match",

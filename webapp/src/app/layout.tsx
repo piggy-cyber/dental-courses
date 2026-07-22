@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     template: "%s · Fourth Canal",
   },
   description:
-    "Dental study tools for students: Tooth Quest, a grade calculator, and web-readable course guides.",
+    "Dental study tools for students: Living Atlas, a grade calculator, and web-readable course guides.",
   manifest: "/manifest.webmanifest",
   openGraph: {
     type: "website",
@@ -48,14 +48,14 @@ export const metadata: Metadata = {
     siteName: "Fourth Canal",
     title: "Fourth Canal",
     description:
-      "Dental study tools for students: Tooth Quest, a grade calculator, and web-readable course guides.",
+      "Dental study tools for students: Living Atlas, a grade calculator, and web-readable course guides.",
     images: ["/brand/fourth-canal-social-preview-v2.png"],
   },
   twitter: {
     card: "summary_large_image",
     title: "Fourth Canal",
     description:
-      "Dental study tools for students: Tooth Quest, a grade calculator, and web-readable course guides.",
+      "Dental study tools for students: Living Atlas, a grade calculator, and web-readable course guides.",
     images: ["/brand/fourth-canal-social-preview-v2.png"],
   },
   robots: {

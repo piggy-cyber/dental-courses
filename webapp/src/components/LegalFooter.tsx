@@ -15,8 +15,9 @@ export function LegalFooter() {
   const pathname = usePathname();
   const isGame = pathname === "/games" || pathname.startsWith("/games/");
   const hasIntegratedFooter = pathname === "/about" || pathname === "/ui-preview";
+  const isIsolatedAtlasSession = pathname.startsWith("/games/living-atlas/runs/") || pathname.startsWith("/games/living-atlas/recall/");
 
-  if (hasIntegratedFooter) return null;
+  if (hasIntegratedFooter || isIsolatedAtlasSession) return null;
 
   return (
     <footer className={`${isGame ? "" : "fc-site"} site-legal-footer border-t border-brand-line bg-brand-panel text-brand-muted`}>

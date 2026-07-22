@@ -13,7 +13,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Dental Study Tools for Students",
   description:
-    "Fourth Canal offers dental students Tooth Quest, a grade calculator, and web-readable Course Mastery Guides and Textbook Companions.",
+    "Fourth Canal offers dental students Living Atlas, a grade calculator, and web-readable Course Mastery Guides and Textbook Companions.",
   alternates: { canonical: "/" },
 };
 
@@ -21,10 +21,10 @@ const CORE_TOOLS = [
   {
     number: "01",
     eyebrow: "Play",
-    title: "Tooth Quest",
-    detail: "Learn Universal tooth numbering on a visual arch, then test recall against the clock.",
-    href: "/games",
-    action: "Play the game",
+    title: "Living Atlas",
+    detail: "Preview fast recall, reviewed practice questions, focused repair queues, and visual progress.",
+    href: "/games/living-atlas",
+    action: "Explore Living Atlas",
   },
   {
     number: "02",
@@ -71,8 +71,8 @@ export default async function PublicHomePage({
               Dental students can practice tooth identification, calculate the grade they need, and open searchable course guides built to read cleanly on any screen.
             </p>
             <div className="public-core-hero-actions">
-              <Link href="/games/tooth-quest" className="public-core-primary-action">
-                Play Tooth Quest <span aria-hidden="true">→</span>
+              <Link href="/games/living-atlas" className="public-core-primary-action">
+                Explore Living Atlas <span aria-hidden="true">→</span>
               </Link>
               <Link href="/guides" className="public-core-secondary-action">
                 Browse course guides
@@ -159,7 +159,7 @@ export default async function PublicHomePage({
                 <p>{profile.email}</p>
                 <p>Your public study progress can be saved to this account.</p>
                 <div>
-                  <Link href="/games/tooth-quest">Continue to Tooth Quest</Link>
+                  <Link href="/games/living-atlas">Open Living Atlas</Link>
                 </div>
                 <form action="/auth/signout" method="post"><button>Sign out</button></form>
               </div>

@@ -26,6 +26,8 @@ function routeLabel(pathname: string) {
 
 export function GlobalCanalProgress() {
   const pathname = usePathname();
+  const isIsolatedAtlasSession = pathname.startsWith("/games/living-atlas/runs/") || pathname.startsWith("/games/living-atlas/recall/");
+  if (isIsolatedAtlasSession) return null;
   const isGame = pathname === "/games" || pathname.startsWith("/games/");
   const label = routeLabel(pathname);
 
