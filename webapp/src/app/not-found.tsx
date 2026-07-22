@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { PublicHeader } from "@/components/PublicHeader";
 
@@ -29,11 +30,14 @@ export default function NotFound() {
 
       <main className="public-not-found-main">
         <section className="public-not-found-hero" aria-labelledby="not-found-title">
-          <div className="public-not-found-signal" aria-hidden="true">
-            <span>404</span>
-            <div className="public-not-found-canals">
-              <i /><i /><i /><i />
-            </div>
+          <div className="public-not-found-atlas-art">
+            <Image
+              src="/brand/living-atlas-social-preview-v1.png"
+              alt="A white Holland Lop companion beside a dental study console"
+              fill
+              priority
+              sizes="(max-width: 760px) calc(100vw - 1.2rem), 42vw"
+            />
           </div>
 
           <div className="public-not-found-copy">

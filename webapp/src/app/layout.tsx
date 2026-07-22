@@ -42,6 +42,13 @@ export const metadata: Metadata = {
   description:
     "Dental study tools for students: Living Atlas, a grade calculator, and web-readable course guides.",
   manifest: "/manifest.webmanifest",
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "48x48", type: "image/x-icon" },
+      { url: "/brand/favicon-192.png", sizes: "192x192", type: "image/png" },
+    ],
+    apple: [{ url: "/brand/favicon-192.png", sizes: "192x192", type: "image/png" }],
+  },
   openGraph: {
     type: "website",
     url: "/",

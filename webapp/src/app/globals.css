@@ -1978,6 +1978,8 @@ body.guide-table-open { overflow: hidden; }
 /* A useful public dead end: recover through the four-strand system. */
 .public-not-found-main { width: min(1180px, calc(100% - 2rem)); margin: 0 auto; padding: clamp(3rem, 8vw, 7rem) 0; }
 .public-not-found-hero { min-height: min(620px, calc(100dvh - 160px)); display: grid; grid-template-columns: minmax(260px, .72fr) minmax(0, 1.28fr); align-items: center; gap: clamp(2rem, 7vw, 7rem); }
+.public-not-found-atlas-art { position: relative; min-height: 390px; overflow: hidden; border: 1px solid var(--brand-line); border-left: 5px solid var(--brand-teal); background: var(--brand-panel); }
+.public-not-found-atlas-art img { object-fit: cover; object-position: 68% center; }
 .public-not-found-signal { position: relative; min-height: 390px; display: grid; place-items: center; overflow: hidden; border: 1px solid var(--brand-line); border-left: 5px solid var(--brand-teal); background: var(--brand-panel); }
 .public-not-found-signal::after { position: absolute; inset: -20%; content: ""; background: repeating-linear-gradient(108deg, transparent 0 20px, rgba(15,30,58,.035) 21px 22px, transparent 23px 42px); animation: public-not-found-field 12s linear infinite; }
 .public-not-found-signal > span { position: relative; z-index: 1; color: transparent; font-family: var(--font-fc-display), Georgia, serif; font-size: clamp(7rem, 18vw, 13rem); font-weight: 400; line-height: .8; letter-spacing: -.1em; -webkit-text-stroke: 1px #8fb0aa; animation: public-not-found-number 4.8s ease-in-out infinite; }
@@ -2007,6 +2009,7 @@ body.guide-table-open { overflow: hidden; }
 @media (max-width: 760px) {
   .public-not-found-main { width: min(100% - 1.2rem, 1180px); padding-top: 2.4rem; }
   .public-not-found-hero { min-height: auto; grid-template-columns: 1fr; gap: 2.5rem; padding-bottom: 3rem; }
+  .public-not-found-atlas-art { min-height: 250px; }
   .public-not-found-signal { min-height: 250px; }
   .public-not-found-copy { order: -1; }
   .public-not-found-routes { grid-template-columns: 1fr; }
