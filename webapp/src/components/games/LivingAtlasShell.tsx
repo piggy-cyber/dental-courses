@@ -19,7 +19,7 @@ export function LivingAtlasShell({ children }: { children: ReactNode }) {
           <Link href="/games/living-atlas" className={styles.productName}>Living Atlas</Link>
           <span>D1–D3 Curriculum</span>
         </div>
-        <div className={styles.reviewPill}>Founder Library · Approved Source Edition</div>
+        <div className={styles.reviewPill}>Account Library · Beta</div>
       </header> : null}
       {!isIsolatedAtlasSession ? <nav className={styles.productNav} aria-label="Living Atlas sections">
         <Link href="/games/living-atlas" aria-current={inQuestionBanks ? "page" : undefined}>Question Banks</Link>

@@ -8,21 +8,15 @@ function duration(ms: number) {
   return seconds < 60 ? `${seconds}s` : `${Math.floor(seconds / 60)}m ${seconds % 60}s`;
 }
 
-export function LivingAtlasDashboardView({ dashboard }: { dashboard: LivingAtlasDashboard }) {
+export function LivingAtlasDashboardView({ dashboard, showFounderControls = false }: { dashboard: LivingAtlasDashboard; showFounderControls?: boolean }) {
   const course = dashboard.course ?? dashboard.courses[0];
   const sourceOnlyCourse = dashboard.recallProgress.totalCards > 0 && dashboard.progress.totalConcepts === 0;
   const recallCoverage = dashboard.recallProgress.totalCards
     ? Math.round((dashboard.recallProgress.ratedCards / dashboard.recallProgress.totalCards) * 100)
     : 0;
-  const courseGroups = Array.from(
-    dashboard.courses.reduce((groups, item) => {
-      const key = `${item.academicYear} · ${item.term}`;
-      groups.set(key, [...(groups.get(key) ?? []), item]);
-      return groups;
-    }, new Map<string, typeof dashboard.courses>()),
-  );
   return (
     <div className={styles.dashboardPage}>
+      <div className={styles.breadcrumb}><Link href="/games/living-atlas">Course catalogue</Link><span>›</span><strong>{course?.title ?? "Course workspace"}</strong></div>
       <section className={styles.dashboardHero}>
         <div>
           <p className={styles.eyebrow}>{course ? `${course.academicYear} · ${course.term} · ${course.code}` : "Founder Practice"}</p>
@@ -44,28 +38,6 @@ export function LivingAtlasDashboardView({ dashboard }: { dashboard: LivingAtlas
         </aside>
       </section>
 
-      <section className={styles.courseHierarchy} aria-label="Courses by dental year and semester">
-        {courseGroups.map(([label, items]) => (
-          <div key={label} className={styles.courseGroup}>
-            <div className={styles.courseGroupHeading}>
-              <p className={styles.eyebrow}>Dental curriculum</p>
-              <h2>{label}</h2>
-              <span>{items.reduce((sum, item) => sum + item.playableBankCount, 0)} available decks</span>
-            </div>
-            <div className={styles.courseShelf}>
-              {items.map((item) => (
-                <Link key={item.code} href={`/games/living-atlas/courses/${item.slug}`} className={`${styles.courseCard} ${item.code === course?.code ? styles.courseCardCurrent : ""}`}>
-                  <span>{item.academicYear} · {item.term}</span>
-                  <strong>{[item.code, ...item.relatedCodes].join(" + ")}</strong>
-                  <b>{item.title}</b>
-                  <small>{item.playableBankCount} available deck{item.playableBankCount === 1 ? "" : "s"}</small>
-                </Link>
-              ))}
-            </div>
-          </div>
-        ))}
-      </section>
-
       <section className={styles.sectionIntro}>
         <div>
           <p className={styles.eyebrow}>Question Banks</p>
@@ -74,8 +46,8 @@ export function LivingAtlasDashboardView({ dashboard }: { dashboard: LivingAtlas
         </div>
         <div className={styles.sectionActions}>
           <Link className={styles.secondaryButton} href="/games/living-atlas/performance">Lop’s field journal</Link>
-          <Link className={styles.secondaryButton} href="/games/living-atlas/review">Founder Review Lab</Link>
-          <Link className={styles.secondaryButton} href="/games/living-atlas/legacy">Legacy conversion record</Link>
+          {showFounderControls ? <Link className={styles.secondaryButton} href="/games/living-atlas/review">Founder Review Lab</Link> : null}
+          {showFounderControls ? <Link className={styles.secondaryButton} href="/games/living-atlas/legacy">Legacy conversion record</Link> : null}
           {dashboard.activeRun ? (
             <Link className={styles.primaryButton} href={`/games/living-atlas/runs/${dashboard.activeRun.id}`}>
               Continue session · {dashboard.activeRun.currentPosition}/{dashboard.activeRun.questionCount}

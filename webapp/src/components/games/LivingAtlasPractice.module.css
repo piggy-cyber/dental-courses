@@ -184,6 +184,77 @@
 .publicPreviewStatus aside > strong { color: var(--navy); font-size: .9rem; }
 .publicPreviewStatus aside .secondaryButton { justify-self: start; margin-top: .35rem; }
 
+.catalogueHero,
+.catalogueToolbar,
+.catalogueSummary,
+.catalogueCourses,
+.catalogueAccountNote,
+.catalogueEmpty,
+.accessPage { width: min(1180px, calc(100% - 2rem)); margin-inline: auto; }
+.catalogueHero { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(255px, .7fr); align-items: end; gap: clamp(1.25rem, 5vw, 4rem); padding: clamp(2.8rem, 7vw, 6.2rem) 0 1.35rem; }
+.catalogueHero h1 { max-width: 780px; margin-top: .45rem; color: var(--navy); font-size: clamp(2.65rem, 6.6vw, 5.9rem); font-weight: 880; letter-spacing: -.072em; line-height: .92; }
+.catalogueHero > div > p:last-child { max-width: 720px; margin-top: 1.1rem; color: var(--muted); font-size: clamp(.86rem, 1.5vw, 1.02rem); line-height: 1.65; }
+.catalogueCallout { display: grid; align-content: start; gap: .5rem; min-height: 195px; border: 1px solid #b9d8e7; border-radius: 18px; background: linear-gradient(145deg, #fff 0%, #eef8f6 100%); padding: 1.25rem; box-shadow: 0 18px 45px rgba(23, 55, 95, .07); }
+.catalogueCallout strong { color: var(--navy); font-size: 2.15rem; letter-spacing: -.06em; }
+.catalogueCallout > span { color: var(--muted); font-size: .72rem; line-height: 1.45; }
+.catalogueCallout .primaryButton { width: fit-content; margin-top: .7rem; }
+.catalogueSignedIn { margin-top: .75rem; border-radius: 8px; background: var(--teal-soft); color: var(--teal) !important; padding: .58rem .65rem; font-weight: 760; }
+
+.catalogueToolbar { display: grid; grid-template-columns: minmax(240px, 1.4fr) repeat(3, minmax(112px, .55fr)) auto; align-items: end; gap: .55rem; border: 1px solid var(--line); border-radius: 15px; background: var(--panel); padding: .78rem; box-shadow: 0 12px 30px rgba(23, 55, 95, .045); }
+.catalogueToolbar label { display: grid; gap: .35rem; color: var(--muted); font-size: .58rem; font-weight: 780; letter-spacing: .06em; text-transform: uppercase; }
+.catalogueToolbar input,
+.catalogueToolbar select { min-width: 0; height: 39px; border: 1px solid var(--line); border-radius: 8px; outline: none; background: var(--paper); color: var(--ink); padding: 0 .65rem; font-size: .72rem; font-weight: 620; text-transform: none; letter-spacing: normal; }
+.catalogueToolbar input:focus,
+.catalogueToolbar select:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(40, 120, 168, .13); }
+.catalogueViews { display: flex; height: 39px; align-items: stretch; overflow: hidden; border: 1px solid var(--line); border-radius: 8px; }
+.catalogueViews button { border: 0; border-right: 1px solid var(--line); background: var(--panel); color: var(--muted); padding: 0 .6rem; font-size: .65rem; font-weight: 780; cursor: pointer; }
+.catalogueViews button:last-child { border-right: 0; }
+.catalogueViews button[aria-pressed="true"] { background: var(--blue-soft); color: var(--navy); }
+.catalogueSummary { display: flex; flex-wrap: wrap; gap: .3rem .9rem; padding: .75rem .1rem; color: var(--muted); font-size: .66rem; }
+.catalogueSummary strong { color: var(--navy); }
+.catalogueCourses { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .75rem; padding-bottom: 1.4rem; }
+.catalogueCoursesList { grid-template-columns: 1fr; }
+.catalogueCourse { overflow: hidden; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); box-shadow: 0 12px 28px rgba(23, 55, 95, .045); }
+.catalogueCourseOpen { grid-column: 1 / -1; border-color: #a9cbdc; }
+.catalogueCourseButton { display: grid; width: 100%; min-height: 208px; gap: .3rem; border: 0; background: transparent; padding: 1rem; text-align: left; cursor: pointer; }
+.catalogueCourseButton:hover { background: #fbfdfe; }
+.catalogueCourseButton:focus-visible { outline: 3px solid rgba(40, 120, 168, .25); outline-offset: -3px; }
+.catalogueCourseMeta { color: var(--muted); font-size: .58rem; font-weight: 780; letter-spacing: .08em; text-transform: uppercase; }
+.catalogueCourseButton > strong { color: var(--blue); font-size: .63rem; letter-spacing: .06em; }
+.catalogueCourseButton h2 { color: var(--navy); font-size: 1.03rem; letter-spacing: -.035em; line-height: 1.15; }
+.catalogueCourseButton p { min-height: 42px; color: var(--muted); font-size: .66rem; line-height: 1.45; }
+.catalogueCourseButton footer { display: flex; flex-wrap: wrap; gap: .3rem .6rem; margin-top: auto; color: var(--muted); font-size: .6rem; font-weight: 710; }
+.catalogueCourseButton footer span:last-child { margin-left: auto; color: var(--blue); }
+.catalogueCoursesList .catalogueCourseButton { grid-template-columns: 122px minmax(185px, .55fr) minmax(220px, .9fr) minmax(0, 1.25fr) auto; align-items: center; min-height: 0; gap: 1rem; }
+.catalogueCoursesList .catalogueCourseButton p { min-height: 0; }
+.catalogueDecks { border-top: 1px solid var(--line); background: #fbfdfe; padding: 1rem; }
+.catalogueDeckHeading { display: flex; align-items: end; justify-content: space-between; gap: 1rem; padding: .1rem .1rem .8rem; }
+.catalogueDeckHeading h3 { margin-top: .2rem; color: var(--navy); font-size: 1.15rem; letter-spacing: -.035em; }
+.catalogueDecks ul { display: grid; gap: .45rem; list-style: none; padding: 0; }
+.catalogueDecks li { display: flex; align-items: center; justify-content: space-between; gap: 1rem; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); padding: .7rem .75rem; }
+.catalogueDecks li > div { display: grid; gap: .18rem; }
+.catalogueDecks li strong { color: var(--ink); font-size: .76rem; }
+.catalogueDecks li span { color: var(--muted); font-size: .6rem; }
+.catalogueUnavailable { border-radius: 999px; background: var(--paper); padding: .32rem .5rem; font-size: .56rem !important; font-weight: 780; }
+.catalogueEmpty { border: 1px dashed #b9c6cd; border-radius: 14px; background: rgba(255,255,255,.55); padding: 1.4rem; }
+.catalogueEmpty h2 { color: var(--navy); font-size: 1.1rem; }
+.catalogueEmpty p { margin-top: .35rem; color: var(--muted); font-size: .72rem; }
+.catalogueAccountNote { display: flex; align-items: end; justify-content: space-between; gap: 1rem; margin-bottom: 4rem; border: 1px solid #b9d8e7; border-radius: 15px; background: var(--blue-soft); padding: 1.25rem; }
+.catalogueAccountNote h2 { margin-top: .2rem; color: var(--navy); font-size: 1.25rem; letter-spacing: -.035em; }
+.catalogueAccountNote p:last-child { max-width: 700px; margin-top: .35rem; color: #49616e; font-size: .71rem; line-height: 1.55; }
+
+.accessPage { display: grid; grid-template-columns: minmax(0, 1.18fr) minmax(300px, .72fr); align-items: start; gap: clamp(1.25rem, 5vw, 4.5rem); padding: clamp(2.75rem, 8vw, 7rem) 0 5rem; }
+.accessCopy h1 { max-width: 750px; margin-top: .45rem; color: var(--navy); font-size: clamp(2.7rem, 6vw, 5.3rem); letter-spacing: -.07em; line-height: .93; }
+.accessCopy > p:not(.eyebrow) { max-width: 660px; margin-top: 1.1rem; color: var(--muted); font-size: .92rem; line-height: 1.65; }
+.accessCopy ul { display: grid; gap: .7rem; margin-top: 1.35rem; list-style: none; padding: 0; }
+.accessCopy li { display: grid; gap: .14rem; border-left: 3px solid var(--teal); padding: .25rem 0 .25rem .75rem; }
+.accessCopy li strong { color: var(--navy); font-size: .77rem; }
+.accessCopy li span { color: var(--muted); font-size: .68rem; line-height: 1.45; }
+.accessCopy .secondaryButton { margin-top: 1.4rem; }
+.accessPanel { display: grid; gap: .65rem; border: 1px solid #b9d8e7; border-radius: 18px; background: var(--panel); padding: clamp(1.15rem, 3vw, 1.7rem); box-shadow: 0 20px 48px rgba(23, 55, 95, .08); }
+.accessPanel h2 { color: var(--navy); font-size: 1.45rem; letter-spacing: -.045em; }
+.accessPanel > p:not(.eyebrow) { color: var(--muted); font-size: .72rem; line-height: 1.55; }
+
 .performancePage { width: min(1180px, 100%); margin: 0 auto; padding: clamp(1.25rem, 4vw, 3rem) clamp(1rem, 3vw, 2rem) 5rem; }
 .companionHero { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(260px, .75fr); align-items: center; gap: clamp(1rem, 4vw, 3rem); overflow: hidden; border: 1px solid #b9d8e7; border-radius: 18px; background: linear-gradient(135deg, #fff 0%, #f1f8f9 100%); padding: clamp(1.25rem, 4vw, 2.6rem); box-shadow: 0 18px 44px rgba(23, 55, 95, .07); }
 .companionCopy h1 { margin-top: .25rem; color: var(--navy); font-size: clamp(2rem, 5vw, 3.8rem); letter-spacing: -.06em; line-height: 1; }
@@ -580,6 +651,15 @@
   .companionStats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .collectibleGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .aidButtons { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .catalogueHero,
+  .accessPage { grid-template-columns: 1fr; }
+  .catalogueToolbar { grid-template-columns: minmax(190px, 1fr) repeat(2, minmax(110px, .5fr)); }
+  .catalogueToolbar > label:last-of-type { grid-column: span 2; }
+  .catalogueViews { justify-self: end; }
+  .catalogueCourses { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .catalogueCourseOpen { grid-column: 1 / -1; }
+  .catalogueCoursesList .catalogueCourseButton { grid-template-columns: 100px minmax(155px, .55fr) minmax(190px, .9fr) minmax(0, 1fr); }
+  .catalogueCoursesList .catalogueCourseButton footer { grid-column: 1 / -1; }
 }
 
 @media (max-width: 700px) {
@@ -643,6 +723,20 @@
   .publicPreviewFeatures article { min-height: 0; border-right: 0; border-bottom: 1px solid var(--line); }
   .publicPreviewFeatures article:last-child { border-bottom: 0; }
   .publicPreviewFeatures h2 { margin-top: .7rem; }
+  .catalogueHero { padding-top: 2.4rem; }
+  .catalogueToolbar { grid-template-columns: 1fr 1fr; }
+  .catalogueSearch { grid-column: 1 / -1; }
+  .catalogueToolbar > label:last-of-type { grid-column: auto; }
+  .catalogueViews { justify-self: stretch; }
+  .catalogueViews button { flex: 1; }
+  .catalogueCourses { grid-template-columns: 1fr; }
+  .catalogueCourseOpen { grid-column: auto; }
+  .catalogueCoursesList .catalogueCourseButton { display: grid; grid-template-columns: 1fr; gap: .3rem; }
+  .catalogueCoursesList .catalogueCourseButton footer { grid-column: auto; }
+  .catalogueDeckHeading,
+  .catalogueAccountNote { align-items: stretch; flex-direction: column; }
+  .catalogueDecks li { align-items: stretch; flex-direction: column; }
+  .catalogueDecks li .primaryButton { width: 100%; }
 }
 
 @media (prefers-reduced-motion: reduce) {

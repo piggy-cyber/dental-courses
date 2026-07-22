@@ -14,14 +14,7 @@ export default async function LivingAtlasWorkspaceLayout({ children }: { childre
     profile: null,
     userId: null,
   }));
-  const isFounder = Boolean(
-    userId &&
-    profile &&
-    profile.id === userId &&
-    profile.role === "owner" &&
-    profile.status === "approved",
-  );
-
-  if (!isFounder) redirect("/games/living-atlas?access=founder");
+  const hasUsableAccount = Boolean(userId && profile?.status !== "revoked");
+  if (!hasUsableAccount) redirect("/games/living-atlas/access");
   return <LivingAtlasShell>{children}</LivingAtlasShell>;
 }

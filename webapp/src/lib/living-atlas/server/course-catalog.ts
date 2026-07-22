@@ -29,6 +29,21 @@ export type LivingAtlasBankContext = LivingAtlasCourseContext & {
   sourceVersion: string;
 };
 
+export type LivingAtlasPublicCatalogueDeck = {
+  id: string | null;
+  title: string;
+  cardCount: number;
+  kind: "recall" | "practice";
+  available: boolean;
+};
+
+export type LivingAtlasPublicCatalogueCourse = LivingAtlasCourseContext & {
+  deckCount: number;
+  availableDeckCount: number;
+  cardCount: number;
+  decks: LivingAtlasPublicCatalogueDeck[];
+};
+
 type CourseCatalogRow = {
   course_code: string;
   slug: string;
@@ -46,6 +61,7 @@ type CourseAliasRow = {
 
 type BankRow = {
   id: string;
+  source_id: string | null;
   course_code: string | null;
   course_slug: string | null;
   title: string;
@@ -72,7 +88,7 @@ export async function listLivingAtlasCourses(admin: AdminClient = createAdminCli
   const [coursesResult, aliasesResult] = await Promise.all([
     admin
       .from("practice_course_catalog")
-      .select("course_code, slug, academic_year, term, status, description, courses(title)")
+      .select("course_code, slug, academic_year, term, status, description, courses!practice_course_catalog_course_code_fkey(title)")
       .neq("status", "retired")
       .order("sort_order")
       .order("course_code"),
@@ -100,10 +116,66 @@ export async function listLivingAtlasCourses(admin: AdminClient = createAdminCli
   });
 }
 
+/**
+ * Safe, public-facing course metadata. This deliberately returns neither card
+ * text, source answers, media URLs, learner progress, nor answer-key material.
+ */
+export async function getLivingAtlasPublicCatalogue(admin: AdminClient = createAdminClient()): Promise<LivingAtlasPublicCatalogueCourse[]> {
+  const [courses, sourceResult, bankResult] = await Promise.all([
+    listLivingAtlasCourses(admin),
+    admin
+      .from("practice_course_sources")
+      .select("course_code, source_id, status, sort_order, practice_sources!inner(id, deck, source_card_count)")
+      .neq("status", "archived")
+      .order("sort_order"),
+    admin
+      .from("practice_banks")
+      .select("id, course_code, source_id, title, bank_kind, provenance, status, source_card_count, question_count")
+      .neq("status", "archived"),
+  ]);
+  if (sourceResult.error || bankResult.error) throw new Error("The Living Atlas catalogue could not be loaded.");
+
+  const banks = (bankResult.data ?? []) as BankRow[];
+  const sourceRows = (sourceResult.data ?? []).map((row) => ({
+    courseCode: row.course_code as string,
+    sourceId: row.source_id as string,
+    source: Array.isArray(row.practice_sources) ? row.practice_sources[0] : row.practice_sources,
+  }));
+
+  return courses.map((course) => {
+    const decks = sourceRows
+      .filter((row) => row.courseCode === course.courseCode && row.source)
+      .map((row) => {
+        const source = row.source as { id: string; deck: string; source_card_count: number };
+        const bank = banks.find((candidate) => candidate.course_code === course.courseCode && candidate.source_id === source.id);
+        const available = Boolean(bank && isPubliclyAvailableBank(bank));
+        return {
+          id: bank?.id ?? null,
+          title: source.deck,
+          cardCount: bank?.question_count || bank?.source_card_count || source.source_card_count,
+          kind: bank?.bank_kind === "recall_practice" ? "recall" as const : "practice" as const,
+          available,
+        };
+      });
+    return {
+      ...course,
+      deckCount: decks.length,
+      availableDeckCount: decks.filter((deck) => deck.available).length,
+      cardCount: decks.reduce((total, deck) => total + deck.cardCount, 0),
+      decks,
+    };
+  });
+}
+
+function isPubliclyAvailableBank(bank: BankRow) {
+  return ["review", "published"].includes(bank.status)
+    && (bank.bank_kind === "recall_practice" || bank.provenance === "fourth_canal_original");
+}
+
 export async function getLivingAtlasCourseBySlug(courseSlug: string, admin: AdminClient = createAdminClient()): Promise<LivingAtlasCourseContext> {
   const { data, error } = await admin
     .from("practice_course_catalog")
-    .select("course_code, slug, academic_year, term, status, description, courses(title)")
+    .select("course_code, slug, academic_year, term, status, description, courses!practice_course_catalog_course_code_fkey(title)")
     .eq("slug", courseSlug)
     .neq("status", "retired")
     .maybeSingle();

@@ -204,6 +204,17 @@ function clampInt(value: unknown, fallback: number, minimum = 0, maximum = Numbe
 
 async function requireFounder() {
   const { profile, userId } = await getSessionProfile();
+  if (!userId) {
+    throw new Error("Create an account to practice in Living Atlas.");
+  }
+  if (profile?.status === "revoked") {
+    throw new Error("This account no longer has access to Living Atlas.");
+  }
+  return userId;
+}
+
+async function requireFounderOwner() {
+  const { profile, userId } = await getSessionProfile();
   if (!userId || !profile || profile.id !== userId) {
     throw new Error("Sign in with the founder account to access Living Atlas review.");
   }
@@ -1534,7 +1545,7 @@ export async function finishLivingAtlasRecall(input: { sessionId: string; active
 
 export async function getLivingAtlasLegacySessions(): Promise<LivingAtlasActionResult<LivingAtlasLegacySession[]>> {
   try {
-    const userId = await requireFounder();
+    const userId = await requireFounderOwner();
     const admin = createAdminClient();
     const { data, error } = await admin
       .from("practice_sessions")
@@ -2527,7 +2538,7 @@ export async function getLivingAtlasFounderReview(
   bankId: string = LIVING_ATLAS_OMAR_DERIVED_PILOT_BANK_ID,
 ): Promise<LivingAtlasActionResult<LivingAtlasFounderReview>> {
   try {
-    await requireFounder();
+    await requireFounderOwner();
     const admin = createAdminClient();
     const context = await resolveLivingAtlasFounderReviewContext(bankId, admin);
     if (context.bankKind === "recall_practice") throw new Error("Recall decks cannot enter founder MCQ review.");
@@ -2625,7 +2636,7 @@ export async function saveLivingAtlasFounderQuestion(
   action: "saved" | "approved" | "changes_requested" | "rejected",
 ): Promise<LivingAtlasActionResult<{ question: LivingAtlasFounderQuestion; summary: LivingAtlasFounderReview["summary"] }>> {
   try {
-    const userId = await requireFounder();
+    const userId = await requireFounderOwner();
     if (!REVIEW_ACTIONS.has(action)) throw new Error("That review action is invalid.");
     const patch = cleanReviewPatch(input);
     const admin = createAdminClient();
@@ -2692,7 +2703,7 @@ export async function saveLivingAtlasFounderQuestion(
 
 export async function approveLivingAtlasBankVersion(bankId: string): Promise<LivingAtlasActionResult<LivingAtlasFounderReview["summary"]>> {
   try {
-    const userId = await requireFounder();
+    const userId = await requireFounderOwner();
     const admin = createAdminClient();
     const context = await resolveLivingAtlasFounderReviewContext(bankId, admin);
     const questions = await getBankQuestions(context.bankVersionId, admin);
