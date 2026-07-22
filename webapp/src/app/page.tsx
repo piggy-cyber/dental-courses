@@ -1,15 +1,19 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { preload } from "react-dom";
 import { PublicHeader } from "@/components/PublicHeader";
 import { PublicSignalPanel } from "@/components/PublicSignalPanel";
 import { PublicAccountBenefits } from "@/components/PublicAccountBenefits";
 import { SignInPanel } from "@/components/SignInPanel";
-import { getSessionProfile } from "@/lib/access";
+import { getOptionalSessionProfile } from "@/lib/access";
 import { getPublicGuideCourses } from "@/lib/public-guides";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
+  title: "Dental Study Tools for Students",
+  description:
+    "Fourth Canal offers dental students Living Atlas, a grade calculator, and web-readable Course Mastery Guides and Textbook Companions.",
   alternates: { canonical: "/" },
 };
 
@@ -17,10 +21,10 @@ const CORE_TOOLS = [
   {
     number: "01",
     eyebrow: "Play",
-    title: "Tooth Quest",
-    detail: "Learn Universal tooth numbering on a visual arch, then test recall against the clock.",
-    href: "/games",
-    action: "Play the game",
+    title: "Living Atlas",
+    detail: "Preview fast recall, reviewed practice questions, focused repair queues, and visual progress.",
+    href: "/games/living-atlas",
+    action: "Explore Living Atlas",
   },
   {
     number: "02",
@@ -45,7 +49,11 @@ export default async function PublicHomePage({
 }: {
   searchParams: Promise<{ auth_error?: string }>;
 }) {
-  const [{ profile }, params] = await Promise.all([getSessionProfile(), searchParams]);
+  preload("/brand/fourth-canal-hero-brand-image-v2.avif", {
+    as: "image",
+    fetchPriority: "high",
+  });
+  const [{ profile }, params] = await Promise.all([getOptionalSessionProfile(), searchParams]);
   const courses = getPublicGuideCourses();
   const featuredCodes = new Set(["REHE 151", "DSPR 136", "HEWB 134", "REHE 120"]);
   const featured = courses.filter((course) => featuredCodes.has(course.code));
@@ -60,11 +68,11 @@ export default async function PublicHomePage({
             <p className="eyebrow">Fourth Canal · Dental study tools</p>
             <h1><span>Look closer.</span><br /><em>The missing detail matters.</em></h1>
             <p className="public-core-lead">
-              Practice tooth identification, calculate the grade you need, and open searchable course guides built to read cleanly on any screen.
+              Dental students can practice tooth identification, calculate the grade they need, and open searchable course guides built to read cleanly on any screen.
             </p>
             <div className="public-core-hero-actions">
-              <Link href="/games/tooth-quest" className="public-core-primary-action">
-                Play Tooth Quest <span aria-hidden="true">→</span>
+              <Link href="/games/living-atlas" className="public-core-primary-action">
+                Explore Living Atlas <span aria-hidden="true">→</span>
               </Link>
               <Link href="/guides" className="public-core-secondary-action">
                 Browse course guides
@@ -151,7 +159,7 @@ export default async function PublicHomePage({
                 <p>{profile.email}</p>
                 <p>Your public study progress can be saved to this account.</p>
                 <div>
-                  <Link href="/games/tooth-quest">Continue to Tooth Quest</Link>
+                  <Link href="/games/living-atlas">Open Living Atlas</Link>
                 </div>
                 <form action="/auth/signout" method="post"><button>Sign out</button></form>
               </div>

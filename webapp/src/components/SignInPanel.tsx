@@ -3,13 +3,33 @@
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 
-export function SignInPanel() {
+type SignInPanelProps = {
+  returnTo?: string;
+};
+
+export function SignInPanel({ returnTo }: SignInPanelProps) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   async function signInWithGoogle() {
     setBusy(true);
     setError(null);
+    const formData = new FormData();
+    formData.set(
+      "next",
+      returnTo ?? `${window.location.pathname}${window.location.search}`,
+    );
+    const returnPathResponse = await fetch("/auth/start", {
+      method: "POST",
+      headers: { Accept: "application/json" },
+      body: formData,
+    });
+    if (!returnPathResponse.ok) {
+      setError("Could not prepare the sign-in return path. Please try again.");
+      setBusy(false);
+      return;
+    }
+
     const supabase = createClient();
     const { data, error: authError } = await supabase.auth.signInWithOAuth({
       provider: "google",

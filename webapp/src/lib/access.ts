@@ -62,3 +62,23 @@ export async function getSessionProfile(): Promise<{
     userId: user.id,
   };
 }
+
+// Public pages should not fail closed merely because Auth or the profile lookup
+// is temporarily unavailable. Protected routes continue to use getSessionProfile.
+export async function getOptionalSessionProfile(): Promise<{
+  profile: Profile | null;
+  userId: string | null;
+}> {
+  return withOptionalSession(
+    () => getSessionProfile(),
+    { profile: null, userId: null },
+  );
+}
+
+export async function withOptionalSession<T>(operation: () => Promise<T>, fallback: T): Promise<T> {
+  try {
+    return await operation();
+  } catch {
+    return fallback;
+  }
+}

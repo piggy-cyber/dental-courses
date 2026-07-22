@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { ToothQuestGame } from "@/components/games/ToothQuestGame";
-import { getSessionProfile } from "@/lib/access";
+import { getOptionalSessionProfile } from "@/lib/access";
 import { getGameProgress } from "@/lib/games/progress";
 
 export const dynamic = "force-dynamic";
@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 };
 
 export default async function ToothQuestPage() {
-  const { profile, userId } = await getSessionProfile();
+  const { profile, userId } = await getOptionalSessionProfile();
   const canSaveProgress = Boolean(
     profile && userId && profile.id === userId,
   );

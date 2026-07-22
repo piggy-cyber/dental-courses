@@ -53,6 +53,11 @@
 
 .skipLink:focus { top: 1rem; }
 
+/* Living Atlas sessions are dedicated workspaces. Their own left rail is the
+   only navigation available until the learner saves or ends the session. */
+.shell:has([data-atlas-isolated-session="true"]) .skipLink,
+.shell:has([data-atlas-isolated-session="true"]) :global(.public-core-header) { display: none; }
+
 .header {
   position: sticky;
   top: 0;

@@ -1,0 +1,38 @@
+name: Site foundation checks
+
+on:
+  pull_request:
+  push:
+    branches: [main, codex/site-foundation]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: webapp
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.9.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: webapp/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint:ci
+      - run: pnpm typecheck
+      - run: pnpm test
+      - run: pnpm validate:games
+      - run: pnpm validate:brand
+      - run: pnpm validate:micp-placeholder
+      - run: pnpm validate:public-boundary
+      - run: pnpm audit --prod --audit-level=high
+      - run: pnpm build
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm test:e2e

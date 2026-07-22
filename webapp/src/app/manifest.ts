@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "Fourth Canal",
     short_name: "Fourth Canal",
     description:
-      "Open dental study tools, including Tooth Quest, a grade calculator, and course guides.",
+      "Open dental study tools, including Living Atlas, a grade calculator, and course guides.",
     start_url: "/",
     display: "browser",
     background_color: "#F2EDE2",

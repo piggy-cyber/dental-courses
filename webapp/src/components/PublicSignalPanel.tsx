@@ -7,8 +7,8 @@ const SIGNALS = [
   {
     number: "01",
     label: "Game",
-    detail: "Train tooth-number recall",
-    href: "/games/tooth-quest",
+    detail: "Explore Living Atlas",
+    href: "/games/living-atlas",
   },
   {
     number: "02",

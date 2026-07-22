@@ -10,6 +10,7 @@ export const SITE_LINKS = [
   { href: "/games", label: "Games" },
   { href: "/grade-calculator", label: "Grade calculator" },
   { href: "/about", label: "About" },
+  { href: "/support", label: "Support" },
 ] as const;
 
 function isActivePath(pathname: string, href: string) {

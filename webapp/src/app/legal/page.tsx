@@ -76,6 +76,13 @@ export default async function LegalPage() {
               provider may process the limited data needed to deliver its service under its own
               terms.
             </p>
+            <h2>Privacy-preserving measurement</h2>
+            <p>
+              The public pages use Vercel Web Analytics and Speed Insights to understand page
+              performance. Private, admin, auth, and API routes are excluded, and query parameters
+              are removed before an event is sent. To opt out on this browser, set the local storage
+              key <code>fourth-canal-analytics-opt-out</code> to <code>true</code>.
+            </p>
             <h2>Student and sensitive information</h2>
             <p>
               This is not an official university record system. Do not upload grades, patient
@@ -166,9 +173,9 @@ export default async function LegalPage() {
             <div className="portal-notice mt-5 p-4 text-sm">
               <p className="font-bold text-brand-navy">How to report a concern</p>
               <p className="mt-1 text-brand-muted">
-                Use the signed-in report tool or contact the current site operator. Include the
-                exact page URL and a clear description so the concern can be located quickly while
-                the request is reviewed.
+                Use the <Link href="/support" className="font-semibold text-brand-blue underline">support form</Link>.
+                Include the exact page URL and a clear description so the concern can be located
+                quickly while the request is reviewed.
               </p>
             </div>
           </section>
@@ -211,6 +218,9 @@ export default async function LegalPage() {
             </Link>
             <Link href="/about" className="portal-button px-5 py-2.5">
               About this site
+            </Link>
+            <Link href="/support" className="portal-button px-5 py-2.5">
+              Get support
             </Link>
           </div>
         </div>

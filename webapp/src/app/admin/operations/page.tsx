@@ -56,7 +56,7 @@ export default async function AdminOperationsPage() {
   const { data: problemReports } = await supabase
     .from("resource_reports")
     .select(
-      "id, message, category, status, course_code, admin_note, created_at, resolved_at, resources(name, course_code), profiles(email)"
+      "id, message, category, status, course_code, admin_note, created_at, resolved_at, source, reporter_name, reporter_email, page_path, public_reference_id, resources(name, course_code), profiles(email)"
     )
     .order("status", { ascending: true })
     .order("created_at", { ascending: false })
@@ -149,7 +149,7 @@ export default async function AdminOperationsPage() {
           <div>
             <h2 className="font-semibold text-brand-navy">Issue reports</h2>
             <p className="mt-1 text-sm text-brand-muted">
-              Student reports from course pages and the homepage. Open reports stay first.
+              Signed-in course reports and public support requests. Open reports stay first.
             </p>
           </div>
           <span className="border border-brand-line bg-brand-panel px-3 py-1 text-xs font-semibold text-brand-navy">
@@ -173,7 +173,16 @@ export default async function AdminOperationsPage() {
                     </p>
                     <p className="mt-0.5 text-xs uppercase tracking-wide text-brand-muted">
                       {String(row.category).replace("_", " ")}
+                      {row.source === "public_support" ? " · public support" : " · signed in"}
                     </p>
+                    {row.source === "public_support" && (
+                      <p className="mt-1 text-xs text-brand-muted">
+                        {row.reporter_name ?? "No name"}
+                        {row.reporter_email ? ` · ${row.reporter_email}` : " · no reply email"}
+                        {row.public_reference_id ? ` · ${row.public_reference_id}` : ""}
+                      </p>
+                    )}
+                    {row.page_path && <p className="mt-1 text-xs text-brand-muted">Page: {row.page_path}</p>}
                   </div>
                   <span
                     className={`border px-2 py-0.5 text-xs font-semibold ${

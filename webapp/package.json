@@ -2,18 +2,33 @@
   "name": "webapp",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "pnpm@11.9.0",
+  "engines": {
+    "node": "24.x",
+    "pnpm": "11.9.0"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "lint:ci": "eslint --max-warnings=0",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
     "validate:games": "node scripts/validate-game-content.mjs",
+    "validate:living-atlas-assets": "node scripts/validate-living-atlas-assets.mjs",
+    "validate:living-atlas-browser-boundary": "node scripts/validate-living-atlas-browser-boundary.mjs",
+    "validate:living-atlas-course-package": "node scripts/validate-living-atlas-course-package.mjs",
+    "validate:living-atlas-omar-d1": "node scripts/validate-living-atlas-omar-d1.mjs",
     "validate:brand": "node scripts/validate-brand-integrity.mjs",
     "validate:micp-placeholder": "node scripts/validate-micp-placeholder.mjs",
     "validate:public-boundary": "node scripts/validate-public-boundary.mjs",
     "import:manifest": "node scripts/import-resource-manifest.mjs"
   },
   "dependencies": {
+    "@vercel/analytics": "2.0.1",
+    "@vercel/speed-insights": "2.0.0",
     "@supabase/ssr": "^0.12.0",
     "@supabase/supabase-js": "^2.110.0",
     "next": "16.2.10",
@@ -22,13 +37,16 @@
     "react-dom": "19.2.4"
   },
   "devDependencies": {
+    "@playwright/test": "1.61.1",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.10",
+    "postcss": "8.5.19",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "4.1.10"
   }
 }

@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { BrandMarkPublic } from "@/components/BrandMark";
 import { SitePrimaryLinks, SitePrimaryNavigation } from "@/components/SiteNavigation";
-import { getSessionProfile } from "@/lib/access";
+import { getOptionalSessionProfile } from "@/lib/access";
 
 export async function PublicHeader() {
-  const { profile } = await getSessionProfile();
+  const { profile } = await getOptionalSessionProfile();
   return (
     <header className="public-core-header">
       <BrandMarkPublic />
