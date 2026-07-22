@@ -17,7 +17,7 @@ export function LivingAtlasShell({ children }: { children: ReactNode }) {
       {!isIsolatedAtlasSession ? <header className={styles.productHeader}>
         <div>
           <Link href="/games/living-atlas" className={styles.productName}>Living Atlas</Link>
-          <span>D1–D2 Curriculum</span>
+          <span>D1–D3 Curriculum</span>
         </div>
         <div className={styles.reviewPill}>Founder Library · Approved Source Edition</div>
       </header> : null}
