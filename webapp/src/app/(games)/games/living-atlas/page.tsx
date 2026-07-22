@@ -49,7 +49,7 @@ export default async function LivingAtlasPage() {
           </p>
           <div className={styles.publicPreviewActions}>
             <a href="#atlas-preview" className={styles.primaryButton}>Explore the preview</a>
-            <Link href="/games" className={styles.secondaryButton}>Browse study games</Link>
+            <Link href="/games/beta" className={styles.secondaryButton}>Browse beta study games</Link>
           </div>
         </div>
         <div className={styles.publicPreviewCompanion}>
@@ -82,7 +82,7 @@ export default async function LivingAtlasPage() {
             <>
               <strong>Preview access</strong>
               <p>This account can view the public preview. The working library remains limited to the approved founder account.</p>
-              <Link href="/games" className={styles.secondaryButton}>Return to study games</Link>
+              <Link href="/games/beta" className={styles.secondaryButton}>Browse beta study games</Link>
             </>
           )}
         </aside>

@@ -22,6 +22,25 @@
   text-transform: uppercase;
 }
 
+.betaNotice {
+  display: flex;
+  width: fit-content;
+  align-items: center;
+  gap: .7rem;
+  margin-bottom: 1.25rem;
+  border: 1px solid var(--arcade-cyan);
+  border-radius: 999px;
+  padding: .48rem .75rem;
+  color: var(--arcade-muted);
+  font-size: .72rem;
+}
+.betaNotice strong {
+  color: var(--arcade-enamel);
+  font-size: .64rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
 .hero h1 {
   max-width: 800px;
   margin-top: .8rem;

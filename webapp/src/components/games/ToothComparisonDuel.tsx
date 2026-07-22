@@ -444,7 +444,7 @@ export function ToothComparisonDuel({ initialProgress, canSaveProgress }: ToothC
             Put two look-alike teeth side by side. Commit to one, then use the full comparison grid to prove the identification.
           </p>
           <div className={styles.heroLinks}>
-            <Link href="/games">← Study Arcade</Link>
+            <Link href="/games/beta">← Study Arcade Beta</Link>
             <span>{QUESTIONS.length} authored comparison cards</span>
           </div>
         </div>
@@ -781,7 +781,7 @@ export function ToothComparisonDuel({ initialProgress, canSaveProgress }: ToothC
 
             <div className={styles.reviewActions}>
               <button type="button" onClick={() => resetToReady("study")}>Study one pair</button>
-              <Link href="/games">Back to Study Arcade</Link>
+              <Link href="/games/beta">Back to Study Arcade Beta</Link>
             </div>
           </section>
         )}

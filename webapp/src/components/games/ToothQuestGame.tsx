@@ -520,7 +520,7 @@ export function ToothQuestGame({ initialProgress, canSaveProgress }: ToothQuestG
     <main id="game-content" className={styles.page}>
       <header className={styles.hero}>
         <div>
-          <Link href="/games" className={styles.backLink}>
+          <Link href="/games/beta" className={styles.backLink}>
             <span aria-hidden="true">←</span> Study arcade
           </Link>
           <p className={styles.kicker}>Universal numbering lab · Game 01</p>
