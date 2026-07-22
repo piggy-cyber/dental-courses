@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   finishLivingAtlasRecall,
+  getLivingAtlasRecallMedia,
   saveAndExitLivingAtlasRecall,
   syncLivingAtlasRecallSession,
 } from "@/app/(games)/games/living-atlas/actions";
@@ -156,6 +157,28 @@ export function LivingAtlasRecallRunner({ initialView }: { initialView: LivingAt
   const updateCard = useCallback((cardPosition: number, update: Partial<LivingAtlasRecallCachedCard>) => {
     setLocalCards(cardsRef.current.map((card) => card.position === cardPosition ? { ...card, ...update } : card));
   }, [setLocalCards]);
+
+  useEffect(() => {
+    const requestedPositions = [position - 1, position, position + 1]
+      .filter((candidate) => candidate >= 1 && candidate <= initialView.session.cardCount)
+      .filter((candidate) => cardsRef.current.find((card) => card.position === candidate)?.card.imagePending);
+    if (!requestedPositions.length) return;
+    let cancelled = false;
+    void getLivingAtlasRecallMedia({ sessionId: initialView.session.id, positions: requestedPositions }).then((result) => {
+      if (cancelled || !result.ok) return;
+      const byPosition = new Map(result.value.map((item) => [item.position, item]));
+      setLocalCards(cardsRef.current.map((item) => {
+        const image = byPosition.get(item.position);
+        if (!image) return item;
+        return {
+          ...item,
+          card: { ...item.card, imagePlacement: image.imagePlacement, imagePending: false, imageAvailable: image.imageAvailable, imageUrl: image.imageUrl, imageCaption: image.imageCaption },
+          reveal: { ...item.reveal, imagePending: false, imageAvailable: image.imageAvailable, imageUrl: image.imageUrl, imageCaption: image.imageCaption },
+        };
+      }));
+    });
+    return () => { cancelled = true; };
+  }, [initialView.session.cardCount, initialView.session.id, position, setLocalCards]);
 
   const navigate = useCallback((nextPosition: number) => {
     if (nextPosition < 1 || nextPosition > initialView.session.cardCount || nextPosition === positionRef.current || finalizing) return;
@@ -387,7 +410,8 @@ export function LivingAtlasRecallRunner({ initialView }: { initialView: LivingAt
           <div className={styles.questionTaxonomy}><span>Immutable source card</span><span>Self-rated recall</span></div>
           <h1 ref={headingRef} tabIndex={-1}>{current.card.prompt}</h1>
           {showPromptImage ? <ClinicalImageViewer src={current.card.imageUrl!} alt="Source-card reference image" label="Reference image" caption={current.card.imageCaption} /> : null}
-          {current.card.hasImage && !showPromptImage && !showAnswerImage && current.card.imagePlacement === "prompt" ? <div className={styles.imageFallback}>The registered source image is temporarily unavailable.</div> : null}
+          {current.card.hasImage && current.card.imagePending && current.card.imagePlacement === "prompt" ? <div className={styles.imageFallback}>Loading private reference image…</div> : null}
+          {current.card.hasImage && !current.card.imagePending && !showPromptImage && !showAnswerImage && current.card.imagePlacement === "prompt" ? <div className={styles.imageFallback}>The registered source image is temporarily unavailable.</div> : null}
           {!current.revealed ? <section className={styles.recallRevealPanel}><p>Answer stays hidden until you are ready to check your recall.</p><button type="button" className={styles.primaryButton} disabled={finalizing} onClick={reveal} aria-keyshortcuts="Space">Reveal preserved answer <kbd>Space</kbd></button><p className={styles.recallShortcut}>The answer is ready locally. Press <kbd>Space</kbd> to flip instantly.</p></section> : <section className={styles.recallAnswerPanel}><p>Preserved answer</p><h2>{current.reveal.answer}</h2>{showAnswerImage ? <ClinicalImageViewer src={current.reveal.imageUrl ?? ""} alt="Source-card answer reference image" label="Answer reference image" caption={current.reveal.imageCaption ?? null} /> : null}<div className={styles.recallRatingRow}><span>How well did you recall it?</span><button type="button" className={styles.recallAgain} disabled={finalizing} onClick={() => rate("again")} aria-keyshortcuts="1">Again <kbd>1</kbd></button><button type="button" className={styles.recallLearning} disabled={finalizing} onClick={() => rate("learning")} aria-keyshortcuts="2">Learning <kbd>2</kbd></button><button type="button" className={styles.recallKnow} disabled={finalizing} onClick={() => rate("know_it")} aria-keyshortcuts="3">Know it <kbd>3</kbd></button></div><button type="button" className={styles.secondaryButton} disabled={finalizing} onClick={hide} aria-keyshortcuts="Space">Return to card prompt</button><p className={styles.recallDisclosure}>Again and Learning add this card to Recall Repair. This does not affect scored accuracy or the Holland Lop.</p></section>}
           <footer className={styles.questionFooter}><button type="button" className={styles.secondaryButton} disabled={position === 1 || finalizing} onClick={() => navigate(position - 1)}>Previous <kbd>←</kbd></button><button type="button" className={styles.secondaryButton} disabled={position === initialView.session.cardCount || finalizing} onClick={() => navigate(position + 1)}>Next card <kbd>→</kbd></button></footer>
         </div>

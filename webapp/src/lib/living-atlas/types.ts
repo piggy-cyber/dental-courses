@@ -134,10 +134,14 @@ export type LivingAtlasBankShelfItem = {
   averageTimeMs: number;
   activeEchoes: number;
   masteredConcepts: number;
+  recallRatedCount: number;
+  recallKnownCount: number;
+  recallRepairCount: number;
 };
 
 export type LivingAtlasCourseShelfItem = {
   code: string;
+  relatedCodes: string[];
   slug: string;
   title: string;
   academicYear: "D1" | "D2" | "D3" | "D4";
@@ -148,11 +152,19 @@ export type LivingAtlasCourseShelfItem = {
   playableBankCount: number;
 };
 
+export type LivingAtlasRecallProgress = {
+  totalCards: number;
+  ratedCards: number;
+  knownCards: number;
+  repairCards: number;
+};
+
 export type LivingAtlasDashboard = {
   course?: LivingAtlasCourseShelfItem;
   courses: LivingAtlasCourseShelfItem[];
   banks: LivingAtlasBankShelfItem[];
   progress: LivingAtlasProgress;
+  recallProgress: LivingAtlasRecallProgress;
   activeRun: LivingAtlasRunSummary | null;
 };
 
@@ -273,6 +285,8 @@ export type LivingAtlasRecallCard = {
   prompt: string;
   hasImage: boolean;
   imagePlacement: "prompt" | "answer" | "none";
+  /** True while the current, neighbouring card image is being signed on demand. */
+  imagePending: boolean;
   imageAvailable: boolean;
   imageUrl: string | null;
   imageCaption: string | null;
@@ -280,6 +294,7 @@ export type LivingAtlasRecallCard = {
 
 export type LivingAtlasRecallReveal = {
   answer: string;
+  imagePending: boolean;
   imageAvailable: boolean;
   imageUrl: string | null;
   imageCaption: string | null;

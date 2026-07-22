@@ -44,6 +44,7 @@ import type {
   LivingAtlasFounderReview,
   LivingAtlasMode,
   LivingAtlasProgress,
+  LivingAtlasRecallProgress,
   LivingAtlasRecallNavigatorItem,
   LivingAtlasRecallRating,
   LivingAtlasRecallRunView,
@@ -165,6 +166,7 @@ type RecallSourceQuestionRow = {
   original_question: string;
   original_answer: string;
   source_image_url: string | null;
+  image_storage_path: string | null;
   image_placement: string | null;
 };
 
@@ -704,7 +706,7 @@ async function getRecallSourceQuestions(sourceId: string, questionIds?: number[]
   const admin = createAdminClient();
   let query = admin
     .from("practice_questions")
-    .select("id, source_id, source_order, original_question, original_answer, source_image_url, image_placement")
+    .select("id, source_id, source_order, original_question, original_answer, source_image_url, image_storage_path, image_placement")
     .eq("source_id", sourceId)
     .order("source_order");
   if (questionIds?.length) query = query.in("id", questionIds);
@@ -731,19 +733,28 @@ async function signRecallImage(question: RecallSourceQuestionRow, revealAnswerIm
     return { imagePlacement, imageAvailable: false, imageUrl: null, imageCaption: null } as const;
   }
   const admin = createAdminClient();
-  const { data: asset, error } = await admin
-    .from("practice_media_assets")
-    .select("storage_bucket, storage_path, cache_status")
-    .eq("source_url", question.source_image_url)
-    .eq("cache_status", "cached")
-    .limit(1)
-    .maybeSingle();
-  if (error || !asset?.storage_path) {
+  let bucket = "living-atlas-review-assets";
+  let storagePath = question.image_storage_path;
+  if (!storagePath) {
+    const { data: asset, error } = await admin
+      .from("practice_media_assets")
+      .select("storage_bucket, storage_path, cache_status")
+      .eq("source_url", question.source_image_url)
+      .eq("cache_status", "cached")
+      .limit(1)
+      .maybeSingle();
+    if (error || !asset?.storage_path) {
+      return { imagePlacement, imageAvailable: false, imageUrl: null, imageCaption: null } as const;
+    }
+    bucket = asset.storage_bucket;
+    storagePath = asset.storage_path;
+  }
+  if (!storagePath) {
     return { imagePlacement, imageAvailable: false, imageUrl: null, imageCaption: null } as const;
   }
   const { data: signed, error: signError } = await admin.storage
-    .from(asset.storage_bucket)
-    .createSignedUrl(asset.storage_path, 60 * 10);
+    .from(bucket)
+    .createSignedUrl(storagePath, 60 * 10);
   return {
     imagePlacement,
     imageAvailable: !signError && Boolean(signed?.signedUrl),
@@ -778,13 +789,15 @@ async function presentRecallRun(userId: string, session: RecallSessionRow): Prom
     getRecallSourceQuestions(session.source_id, questionIds),
   ]);
   const sourceById = new Map(sourceQuestions.map((question) => [question.id, question]));
-  // Recall is authenticated source learning, not scored assessment delivery. Cache the
-  // private session deck here so a learner can flip locally with Space instead of waiting
-  // on a network round trip. Test Mode keeps answer keys out of its client payload.
-  const cachedCards = (await Promise.all(items.map(async (item) => {
+  // Recall is authenticated source learning, not scored assessment delivery. The text deck
+  // is cached locally for instant Space-to-flip behaviour. Images are signed only for the
+  // current card and its neighbours after the workspace opens, avoiding a signed URL burst
+  // for image-heavy decks.
+  const cachedCards = items.map((item) => {
     const source = sourceById.get(item.question_id);
     if (!source) throw new Error("A frozen recall source card is unavailable.");
-    const image = await signRecallImage(source, true);
+    const imagePlacement: "prompt" | "answer" | "none" = source.image_placement === "prompt" ? "prompt" : source.image_placement === "answer" ? "answer" : "none";
+    const imagePending = Boolean(source.source_image_url && imagePlacement !== "none");
     return {
       position: item.position,
       card: {
@@ -792,23 +805,25 @@ async function presentRecallRun(userId: string, session: RecallSessionRow): Prom
         sourceOrder: source.source_order,
         prompt: source.original_question,
         hasImage: Boolean(source.source_image_url),
-        imagePlacement: image.imagePlacement,
-        imageAvailable: image.imageAvailable,
-        imageUrl: image.imageUrl,
-        imageCaption: image.imageCaption,
+        imagePlacement,
+        imagePending,
+        imageAvailable: false,
+        imageUrl: null,
+        imageCaption: null,
       },
       reveal: {
         answer: source.original_answer,
-        imageAvailable: image.imageAvailable,
-        imageUrl: image.imageUrl,
-        imageCaption: image.imageCaption,
+        imagePending,
+        imageAvailable: false,
+        imageUrl: null,
+        imageCaption: null,
       },
       revealed: Boolean(item.revealed_at),
       rating: item.rating,
       needsRecall: states.get(item.question_id)?.needs_recall ?? false,
       activeTimeMs: clampInt(item.active_time_ms, 0),
     };
-  }))).sort((left, right) => left.position - right.position);
+  }).sort((left, right) => left.position - right.position);
   const navigator: LivingAtlasRecallNavigatorItem[] = items.map((item) => ({
     position: item.position,
     questionId: String(item.question_id),
@@ -824,6 +839,38 @@ async function presentRecallRun(userId: string, session: RecallSessionRow): Prom
     navigator,
     repairCount: Array.from(states.values()).filter((state) => state.needs_recall).length,
   };
+}
+
+/**
+ * Signs a deliberately small image window for a source-recall session. The
+ * browser already has the immutable text deck, but never waits for every deck
+ * image before rendering the first card.
+ */
+export async function getLivingAtlasRecallMedia(input: { sessionId: string; positions: number[] }): Promise<LivingAtlasActionResult<Array<{
+  position: number;
+  imagePlacement: "prompt" | "answer" | "none";
+  imageAvailable: boolean;
+  imageUrl: string | null;
+  imageCaption: string | null;
+}>>> {
+  try {
+    const userId = await requireFounder();
+    const positions = [...new Set(input.positions)].filter((position) => Number.isInteger(position) && position > 0).slice(0, 3);
+    if (!positions.length) return { ok: true, value: [] };
+    const session = await getRecallSession(userId, input.sessionId);
+    const items = (await listRecallSessionItems(session.id)).filter((item) => positions.includes(item.position));
+    const sources = await getRecallSourceQuestions(session.source_id, items.map((item) => item.question_id));
+    const sourceById = new Map(sources.map((source) => [source.id, source]));
+    const signed = await Promise.all(items.map(async (item) => {
+      const source = sourceById.get(item.question_id);
+      if (!source) throw new Error("A source image card is unavailable.");
+      const image = await signRecallImage(source, true);
+      return { position: item.position, ...image };
+    }));
+    return { ok: true, value: signed };
+  } catch (error) {
+    return { ok: false, error: asError(error, "The source image could not be loaded.") };
+  }
 }
 
 function isPlayableBankStatus(status: string) {
@@ -859,6 +906,7 @@ async function getCourseDashboard(userId: string, course: Awaited<ReturnType<typ
       term: catalogCourse.term,
       status: catalogCourse.status,
       description: catalogCourse.description,
+      relatedCodes: catalogCourse.relatedCourseCodes,
       bankCount: courseBanks.length,
       playableBankCount: courseBanks.filter((bank) => isPlayableBankStatus(bank.status)).length,
     };
@@ -880,16 +928,56 @@ async function getCourseDashboard(userId: string, course: Awaited<ReturnType<typ
   const attempted = new Set(responses.map((row) => row.variant_id)).size;
   const recent = responses.slice(0, 10);
   const averageTimeMs = responses.length ? Math.round(responses.reduce((sum, row) => sum + (row.response_time_ms ?? 0), 0) / responses.length) : 0;
-  const sourceRows = (sourceResult.data ?? []).map((row) => ({
+  let sourceRows = (sourceResult.data ?? []).map((row) => ({
     sourceId: row.source_id as string,
     sourceStatus: row.status as string,
     source: Array.isArray(row.practice_sources) ? row.practice_sources[0] : row.practice_sources,
   }));
+  // D2 is the explicit frozen source edition. Filtering through its import
+  // fingerprint keeps older, unrelated captures with a reused Quizlet ID off
+  // the course shelf without mutating that historic source material.
+  if (course.academicYear === "D2" && sourceRows.length) {
+    const { data: imports, error: importsError } = await admin
+      .from("practice_source_imports")
+      .select("source_id")
+      .eq("dataset_version", "omar-d2-source-edition-v1")
+      .in("source_id", sourceRows.map((row) => row.sourceId));
+    if (importsError) throw new Error("The D2 source edition could not be verified.");
+    const frozenSourceIds = new Set((imports ?? []).map((row) => row.source_id as string));
+    sourceRows = sourceRows.filter((row) => frozenSourceIds.has(row.sourceId));
+  }
+  const recallSourceIds = sourceRows.map((row) => row.sourceId);
+  const [{ data: recallQuestionRows, error: recallQuestionError }, { data: recallStateRows, error: recallStateError }] = await Promise.all([
+    recallSourceIds.length
+      ? admin.from("practice_questions").select("id, source_id").in("source_id", recallSourceIds)
+      : Promise.resolve({ data: [], error: null }),
+    admin.from("practice_recall_state").select("question_id, current_state, needs_recall").eq("user_id", userId),
+  ]);
+  if (recallQuestionError || recallStateError) throw new Error("Recall Practice progress could not be loaded.");
+  const recallStateByQuestion = new Map((recallStateRows ?? []).map((row) => [Number(row.question_id), row as RecallStateRow]));
+  const recallStatsBySource = new Map<string, { total: number; rated: number; known: number; repair: number }>();
+  for (const question of recallQuestionRows ?? []) {
+    const sourceId = question.source_id as string;
+    const state = recallStateByQuestion.get(Number(question.id));
+    const current = recallStatsBySource.get(sourceId) ?? { total: 0, rated: 0, known: 0, repair: 0 };
+    current.total += 1;
+    if (state?.current_state && state.current_state !== "new") current.rated += 1;
+    if (state?.current_state === "know_it") current.known += 1;
+    if (state?.needs_recall) current.repair += 1;
+    recallStatsBySource.set(sourceId, current);
+  }
+  const recallProgress: LivingAtlasRecallProgress = Array.from(recallStatsBySource.values()).reduce((total, source) => ({
+    totalCards: total.totalCards + source.total,
+    ratedCards: total.ratedCards + source.rated,
+    knownCards: total.knownCards + source.known,
+    repairCards: total.repairCards + source.repair,
+  }), { totalCards: 0, ratedCards: 0, knownCards: 0, repairCards: 0 });
   const banks = sourceRows.flatMap((row) => {
     const source = row.source as { id: string; deck: string; source_url: string | null; source_card_count: number; platform: string | null; author: string | null } | null;
     if (!source) return [];
     const bank = bankRows.find((candidate) => candidate.source_id === source.id);
     const playable = Boolean(bank && isPlayableBankStatus(bank.status));
+    const recallStats = recallStatsBySource.get(source.id) ?? { total: source.source_card_count, rated: 0, known: 0, repair: 0 };
     return [{
       id: bank?.id ?? source.id,
       title: source.deck,
@@ -904,6 +992,9 @@ async function getCourseDashboard(userId: string, course: Awaited<ReturnType<typ
       averageTimeMs: playable && bank?.id === context?.bankId ? averageTimeMs : 0,
       activeEchoes: playable && bank?.id === context?.bankId ? Array.from(states.values()).filter((state) => state.active_echo).length : 0,
       masteredConcepts: playable && bank?.id === context?.bankId ? progress.masteredConcepts : 0,
+      recallRatedCount: bank?.bank_kind === "recall_practice" ? recallStats.rated : 0,
+      recallKnownCount: bank?.bank_kind === "recall_practice" ? recallStats.known : 0,
+      recallRepairCount: bank?.bank_kind === "recall_practice" ? recallStats.repair : 0,
     }];
   });
   return {
@@ -911,6 +1002,7 @@ async function getCourseDashboard(userId: string, course: Awaited<ReturnType<typ
     courses: courseCards,
     banks,
     progress,
+    recallProgress,
     activeRun,
   };
 }

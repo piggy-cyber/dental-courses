@@ -6,6 +6,7 @@ type AdminClient = ReturnType<typeof createAdminClient>;
 
 export type LivingAtlasCourseContext = {
   courseCode: string;
+  relatedCourseCodes: string[];
   courseSlug: string;
   courseTitle: string;
   academicYear: "D1" | "D2" | "D3" | "D4";
@@ -38,6 +39,11 @@ type CourseCatalogRow = {
   courses: { title: string } | { title: string }[] | null;
 };
 
+type CourseAliasRow = {
+  course_code: string;
+  related_course_code: string;
+};
+
 type BankRow = {
   id: string;
   course_code: string | null;
@@ -63,17 +69,27 @@ function asCourseTitle(value: CourseCatalogRow["courses"]) {
 }
 
 export async function listLivingAtlasCourses(admin: AdminClient = createAdminClient()): Promise<LivingAtlasCourseContext[]> {
-  const { data, error } = await admin
-    .from("practice_course_catalog")
-    .select("course_code, slug, academic_year, term, status, description, courses(title)")
-    .neq("status", "retired")
-    .order("sort_order")
-    .order("course_code");
-  if (error) throw new Error("The Living Atlas course shelf could not be loaded.");
-  return (data ?? []).map((row) => {
+  const [coursesResult, aliasesResult] = await Promise.all([
+    admin
+      .from("practice_course_catalog")
+      .select("course_code, slug, academic_year, term, status, description, courses(title)")
+      .neq("status", "retired")
+      .order("sort_order")
+      .order("course_code"),
+    admin
+      .from("practice_course_aliases")
+      .select("course_code, related_course_code"),
+  ]);
+  if (coursesResult.error || aliasesResult.error) throw new Error("The Living Atlas course shelf could not be loaded.");
+  const aliasesByCourse = new Map<string, string[]>();
+  for (const row of (aliasesResult.data ?? []) as CourseAliasRow[]) {
+    aliasesByCourse.set(row.course_code, [...(aliasesByCourse.get(row.course_code) ?? []), row.related_course_code]);
+  }
+  return (coursesResult.data ?? []).map((row) => {
     const course = row as unknown as CourseCatalogRow;
     return {
       courseCode: course.course_code,
+      relatedCourseCodes: aliasesByCourse.get(course.course_code) ?? [],
       courseSlug: course.slug,
       courseTitle: asCourseTitle(course.courses),
       academicYear: course.academic_year,
@@ -93,8 +109,14 @@ export async function getLivingAtlasCourseBySlug(courseSlug: string, admin: Admi
     .maybeSingle();
   if (error || !data) throw new Error("That Living Atlas course is unavailable.");
   const course = data as unknown as CourseCatalogRow;
+  const { data: aliases, error: aliasError } = await admin
+    .from("practice_course_aliases")
+    .select("related_course_code")
+    .eq("course_code", course.course_code);
+  if (aliasError) throw new Error("That Living Atlas course is unavailable.");
   return {
     courseCode: course.course_code,
+    relatedCourseCodes: (aliases ?? []).map((row) => row.related_course_code as string),
     courseSlug: course.slug,
     courseTitle: asCourseTitle(course.courses),
     academicYear: course.academic_year,

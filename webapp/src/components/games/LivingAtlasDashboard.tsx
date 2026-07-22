@@ -10,6 +10,10 @@ function duration(ms: number) {
 
 export function LivingAtlasDashboardView({ dashboard }: { dashboard: LivingAtlasDashboard }) {
   const course = dashboard.course ?? dashboard.courses[0];
+  const sourceOnlyCourse = dashboard.recallProgress.totalCards > 0 && dashboard.progress.totalConcepts === 0;
+  const recallCoverage = dashboard.recallProgress.totalCards
+    ? Math.round((dashboard.recallProgress.ratedCards / dashboard.recallProgress.totalCards) * 100)
+    : 0;
   const courseGroups = Array.from(
     dashboard.courses.reduce((groups, item) => {
       const key = `${item.academicYear} · ${item.term}`;
@@ -25,11 +29,18 @@ export function LivingAtlasDashboardView({ dashboard }: { dashboard: LivingAtlas
           <h1>{course?.title ?? "Living Atlas"}</h1>
           <p>{course?.description ?? "Choose a course to open its organized question banks."}</p>
         </div>
-        <aside className={styles.heroStats} aria-label="Dental Anatomy progress">
-          <div><span>Coverage</span><strong>{dashboard.progress.coverage}%</strong></div>
-          <div><span>Recent accuracy</span><strong>{dashboard.progress.recentAccuracy}%</strong></div>
-          <div><span>Mastery</span><strong>{dashboard.progress.mastery}%</strong></div>
-          <div><span>Active Echoes</span><strong>{dashboard.progress.activeEchoes}</strong></div>
+        <aside className={styles.heroStats} aria-label={`${course?.title ?? "Course"} progress`}>
+          {sourceOnlyCourse ? <>
+            <div><span>Recall coverage</span><strong>{recallCoverage}%</strong></div>
+            <div><span>Know it</span><strong>{dashboard.recallProgress.knownCards}</strong></div>
+            <div><span>Recall Repair</span><strong>{dashboard.recallProgress.repairCards}</strong></div>
+            <div><span>Source cards</span><strong>{dashboard.recallProgress.totalCards}</strong></div>
+          </> : <>
+            <div><span>Coverage</span><strong>{dashboard.progress.coverage}%</strong></div>
+            <div><span>Recent accuracy</span><strong>{dashboard.progress.recentAccuracy}%</strong></div>
+            <div><span>Mastery</span><strong>{dashboard.progress.mastery}%</strong></div>
+            <div><span>Active Echoes</span><strong>{dashboard.progress.activeEchoes}</strong></div>
+          </>}
         </aside>
       </section>
 
@@ -39,15 +50,15 @@ export function LivingAtlasDashboardView({ dashboard }: { dashboard: LivingAtlas
             <div className={styles.courseGroupHeading}>
               <p className={styles.eyebrow}>Dental curriculum</p>
               <h2>{label}</h2>
-              <span>{items.reduce((sum, item) => sum + item.playableBankCount, 0)} approved banks</span>
+              <span>{items.reduce((sum, item) => sum + item.playableBankCount, 0)} available decks</span>
             </div>
             <div className={styles.courseShelf}>
               {items.map((item) => (
                 <Link key={item.code} href={`/games/living-atlas/courses/${item.slug}`} className={`${styles.courseCard} ${item.code === course?.code ? styles.courseCardCurrent : ""}`}>
                   <span>{item.academicYear} · {item.term}</span>
-                  <strong>{item.code}</strong>
+                  <strong>{[item.code, ...item.relatedCodes].join(" + ")}</strong>
                   <b>{item.title}</b>
-                  <small>{item.playableBankCount} approved bank{item.playableBankCount === 1 ? "" : "s"}</small>
+                  <small>{item.playableBankCount} available deck{item.playableBankCount === 1 ? "" : "s"}</small>
                 </Link>
               ))}
             </div>
@@ -86,10 +97,10 @@ export function LivingAtlasDashboardView({ dashboard }: { dashboard: LivingAtlas
               {bank.playable ? (
                 <>
                   <div className={styles.segmentedProgress} aria-label="Lecture 1 progress">
-                    <i style={{ width: `${Math.min(100, Math.round((bank.attemptedQuestions / bank.reviewQuestionCount) * 100))}%` }} />
+                    <i style={{ width: `${Math.min(100, Math.round(((bank.deliveryKind === "recall" ? bank.recallRatedCount : bank.attemptedQuestions) / bank.reviewQuestionCount) * 100))}%` }} />
                   </div>
                   <div className={styles.bankMetrics}>
-                    {bank.deliveryKind === "recall" ? <><span>Self-rated recall</span><span>Again and Learning build Recall Repair</span></> : <><span>{bank.attemptedQuestions} attempted</span><span>{bank.recentAccuracy}% recent accuracy</span><span>{duration(bank.averageTimeMs)} average</span><span>{bank.activeEchoes} Echoes</span></>}
+                    {bank.deliveryKind === "recall" ? <><span>{bank.recallRatedCount}/{bank.reviewQuestionCount} self-rated</span><span>{bank.recallKnownCount} Know it</span><span>{bank.recallRepairCount} Recall Repair</span></> : <><span>{bank.attemptedQuestions} attempted</span><span>{bank.recentAccuracy}% recent accuracy</span><span>{duration(bank.averageTimeMs)} average</span><span>{bank.activeEchoes} Echoes</span></>}
                   </div>
                 </>
               ) : null}
