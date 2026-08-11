@@ -68,6 +68,15 @@ describe("request proxy", () => {
     expect(response.headers.get("location")).toBeNull();
   });
 
+  it.each(["/calendar", "/api/calendar.ics"])("keeps the shared calendar public at %s", async (path) => {
+    mocks.getUser.mockResolvedValue({ data: { user: null }, error: null });
+
+    const response = await proxy(request(path));
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get("location")).toBeNull();
+  });
+
   it("clears an invalid Supabase session before redirecting a protected request", async () => {
     mocks.getUser.mockResolvedValue({
       data: { user: null },
