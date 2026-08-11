@@ -5,6 +5,7 @@ import {
   clearAuthReturnCookie,
   safeReturnPath,
 } from "@/lib/auth-redirect";
+import { recordAdminActivity } from "@/lib/communications";
 import { createClient } from "@/lib/supabase/server";
 
 function redirectAfterAuth(requestUrl: string, returnPath: string) {
@@ -26,6 +27,7 @@ export async function GET(request: NextRequest) {
   if (code) {
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
+      await recordSignInActivity(supabase);
       return redirectAfterAuth(request.url, returnPath);
     }
   }
@@ -36,6 +38,7 @@ export async function GET(request: NextRequest) {
       token_hash,
     });
     if (!error) {
+      await recordSignInActivity(supabase);
       return redirectAfterAuth(request.url, returnPath);
     }
   }
@@ -43,4 +46,20 @@ export async function GET(request: NextRequest) {
   const errorUrl = new URL("/", origin);
   errorUrl.searchParams.set("auth_error", "1");
   return NextResponse.redirect(errorUrl);
+}
+
+async function recordSignInActivity(supabase: Awaited<ReturnType<typeof createClient>>) {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return;
+
+  await recordAdminActivity({
+    scope: "access",
+    severity: "info",
+    eventType: "access.sign_in",
+    referenceId: "account",
+    dashboardPath: `/admin/accounts/${user.id}`,
+    profileId: user.id,
+  });
 }

@@ -36,6 +36,7 @@ type AppShellProps = {
 
 const STUDENT_LINKS = [
   { href: "/home", label: "Today" },
+  { href: "/clinic-duty", label: "Sim Clinic Duty" },
   { href: "/library", label: "Courses" },
   { href: "/contacts", label: "Contacts" },
   { href: "/workspace-settings", label: "Workspace settings" },
@@ -54,6 +55,8 @@ const ADMIN_LINKS: Array<{
   { href: "/admin/collections", label: "Collections", permission: "collections.manage" },
   { href: "/admin/courses", label: "Courses & files", permission: "courses.manage" },
   { href: "/admin/operations", label: "Operations", permission: "operations.manage" },
+  { href: "/admin/inbox", label: "Inbox", permission: "communications.manage" },
+  { href: "/admin/clinic-duty", label: "Sim Clinic Duty", permission: "clinic-duty.manage" },
 ];
 
 function groupedCollections(courses: AppShellCourse[]) {

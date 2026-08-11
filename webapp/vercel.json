@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/sim-clinic-photo-retention",
+      "schedule": "0 8 * * *"
+    }
+  ]
+}

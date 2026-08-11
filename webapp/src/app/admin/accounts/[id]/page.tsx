@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireAdminProfile } from "@/app/admin/actions";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { hasCumulativeCollectionAccess } from "@/lib/cohorts";
 import { AccountDetailForm } from "./AccountDetailForm";
 
@@ -50,6 +51,23 @@ export type AdminResourceCollection = {
   sort_order: number;
 };
 
+type AccountActivityEntry = {
+  event_id: number;
+  severity: "info" | "attention" | "urgent";
+  event_type: string;
+  event_created_at: string;
+  delivery_status: "pending" | "delivered" | "failed" | "disabled";
+  delivery_attempts: number;
+  delivery_error: string | null;
+};
+
+const DELIVERY_LABELS: Record<AccountActivityEntry["delivery_status"], string> = {
+  pending: "Pending",
+  delivered: "Delivered",
+  failed: "Failed",
+  disabled: "Disabled",
+};
+
 export default async function AdminAccountDetailPage({
   params,
 }: {
@@ -70,7 +88,7 @@ export default async function AdminAccountDetailPage({
   if (!accountRow) notFound();
   const account = accountRow as AccountDetail;
 
-  const [{ data: rosterRows }, { data: collections }, { data: grantRows }] = await Promise.all([
+  const [{ data: rosterRows }, { data: collections }, { data: grantRows }, { data: activityRows }] = await Promise.all([
     supabase
       .from("student_roster")
       .select(
@@ -90,6 +108,10 @@ export default async function AdminAccountDetailPage({
       .from("profile_resource_collection_grants")
       .select("collection_id")
       .eq("profile_id", account.id),
+    createAdminClient().rpc("get_profile_communications_history", {
+      p_profile_id: account.id,
+      p_limit: 30,
+    }),
   ]);
 
   const allRosterRows = (rosterRows as RosterMatch[] | null) ?? [];
@@ -137,6 +159,36 @@ export default async function AdminAccountDetailPage({
         automaticCollectionIds={automaticCollectionIds}
         manualGrantedCollectionIds={manualGrantedCollectionIds}
       />
+
+      <section className="app-card overflow-hidden">
+        <div className="portal-bar border-0 border-b border-brand-line px-4 py-3">
+          <h2 className="text-sm font-bold uppercase text-brand-navy">Private access history</h2>
+        </div>
+        {(activityRows as AccountActivityEntry[] | null)?.length ? (
+          <ul className="divide-y divide-brand-line">
+            {(activityRows as AccountActivityEntry[]).map((entry) => (
+              <li key={`${entry.event_id}-${entry.delivery_status}`} className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 text-sm">
+                <div>
+                  <p className="font-medium text-brand-navy">
+                    {entry.event_type.replace(/^access\./, "").replaceAll("_", " ")}
+                  </p>
+                  <p className="mt-0.5 text-xs text-brand-muted">
+                    {new Date(entry.event_created_at).toLocaleString()} · Slack {DELIVERY_LABELS[entry.delivery_status]}
+                    {entry.delivery_attempts > 0 ? ` · ${entry.delivery_attempts} attempt${entry.delivery_attempts === 1 ? "" : "s"}` : ""}
+                  </p>
+                </div>
+                {entry.delivery_error && (
+                  <span className="text-xs text-amber-700">{entry.delivery_error}</span>
+                )}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="px-4 py-5 text-sm text-brand-muted">
+            New sign-in and access changes will appear here.
+          </p>
+        )}
+      </section>
     </div>
   );
 }
