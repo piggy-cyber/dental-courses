@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import { notFound, redirect } from "next/navigation";
 import { getSessionProfile } from "@/lib/access";
+import { hasAdminPermission } from "@/lib/admin-permissions";
 import { getClinicDutyPortal } from "@/lib/clinic-duty";
 import { ClinicDutyPortalView } from "./ClinicDutyPortalView";
 
@@ -10,10 +12,20 @@ export const metadata: Metadata = {
 };
 
 export default async function ClinicDutyPage() {
-  const [{ profile }, portal] = await Promise.all([
-    getSessionProfile(),
-    getClinicDutyPortal(),
-  ]);
+  const { profile } = await getSessionProfile();
+  if (!profile) redirect("/");
+
+  const isEligibleStudent = Boolean(
+    profile.status === "approved"
+      && profile.roster_id
+      && profile.graduation_year === 2029
+      && profile.roster_access_approved
+  );
+  if (!isEligibleStudent && !hasAdminPermission(profile, "clinic-duty.manage")) {
+    notFound();
+  }
+
+  const portal = await getClinicDutyPortal();
 
   return (
     <ClinicDutyPortalView

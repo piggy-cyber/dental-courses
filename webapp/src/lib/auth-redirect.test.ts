@@ -5,6 +5,7 @@ import { withOptionalSession } from "@/lib/access";
 describe("auth return paths", () => {
   it("keeps a safe internal route", () => {
     expect(safeReturnPath("/games/tooth-quest?mode=sprint")).toBe("/games/tooth-quest?mode=sprint");
+    expect(safeReturnPath("/clinic-duty/2026-08-14")).toBe("/clinic-duty/2026-08-14");
   });
 
   it("rejects cross-origin and unapproved return paths", () => {
