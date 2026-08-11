@@ -2016,7 +2016,29 @@ body.guide-table-open { overflow: hidden; }
   .public-not-found-routes > a { min-height: 104px; }
 }
 
-/* Sim Clinic Duty — a calm, private accountability workspace. */
+/* Sim Clinic Duty — a calm accountability workspace. */
+.clinic-duty-showcase-page { min-height: 100vh; background: var(--brand-paper); }
+.clinic-duty-showcase-main { width: min(100% - 2rem, 1180px); margin: 0 auto; padding: 2rem 0 5rem; }
+.clinic-duty-showcase-stack { display: grid; gap: 1.25rem; }
+.clinic-duty-showcase-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid var(--brand-line); border-left: 1px solid var(--brand-line); }
+.clinic-duty-showcase-stats > div { min-height: 104px; display: grid; align-content: center; gap: .35rem; padding: 1rem; border-right: 1px solid var(--brand-line); border-bottom: 1px solid var(--brand-line); background: var(--brand-panel); }
+.clinic-duty-showcase-stats span { color: var(--brand-muted); font: 700 .58rem var(--font-mono-app), monospace; letter-spacing: .04em; text-transform: uppercase; }
+.clinic-duty-showcase-stats b { color: var(--brand-navy); font-family: var(--font-fc-display), Georgia, serif; font-size: 2rem; font-weight: 600; }
+.clinic-duty-showcase-controls { display: grid; grid-template-columns: minmax(260px, 1fr) minmax(190px, .55fr) minmax(170px, .45fr) auto; align-items: end; gap: .8rem; padding: 1rem; border: 1px solid var(--brand-line); background: var(--brand-panel); }
+.clinic-duty-showcase-controls h2 { margin-top: .2rem; color: var(--brand-navy); font-size: 1.15rem; font-weight: 750; }
+.clinic-duty-showcase-controls p:last-child { margin-top: .2rem; color: var(--brand-muted); font-size: .66rem; }
+.clinic-duty-showcase-controls label { display: grid; gap: .35rem; color: var(--brand-navy); font-size: .65rem; font-weight: 700; }
+.clinic-duty-showcase-controls select { min-height: 44px; width: 100%; padding: .55rem .65rem; }
+.clinic-duty-showcase-controls button { min-height: 44px; padding: .55rem .8rem; font-size: .68rem; }
+.clinic-duty-showcase-activation { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, .8fr); gap: 1.5rem 2rem; align-items: start; padding: clamp(1.3rem, 3vw, 2.2rem); border: 1px solid var(--brand-line); border-left: 5px solid var(--brand-teal); background: var(--brand-panel); }
+.clinic-duty-showcase-activation h2 { margin: .35rem 0 .65rem; color: var(--brand-navy); font-family: var(--font-fc-display), Georgia, serif; font-size: clamp(1.8rem, 3.5vw, 3rem); font-weight: 560; line-height: 1; letter-spacing: -.04em; }
+.clinic-duty-showcase-activation > div > p:last-child { max-width: 680px; color: var(--brand-muted); font-size: .78rem; line-height: 1.7; }
+.clinic-duty-showcase-activation ol { display: grid; border-top: 1px solid var(--brand-line); }
+.clinic-duty-showcase-activation li { display: grid; grid-template-columns: auto 1fr; gap: .75rem; align-items: start; padding: .75rem 0; border-bottom: 1px solid var(--brand-line); }
+.clinic-duty-showcase-activation li > span { width: 1.45rem; height: 1.45rem; display: grid; place-items: center; border-radius: 999px; color: white; background: var(--brand-teal); font: 700 .6rem var(--font-mono-app), monospace; }
+.clinic-duty-showcase-activation li p { color: var(--brand-muted); font-size: .69rem; line-height: 1.5; }
+.clinic-duty-showcase-activation li b { display: block; color: var(--brand-navy); }
+.clinic-duty-showcase-activation > a { grid-column: 1 / -1; width: max-content; }
 .clinic-duty-shell,
 .clinic-duty-detail { display: grid; gap: 1.25rem; }
 .clinic-duty-hero,
@@ -2129,6 +2151,9 @@ body.guide-table-open { overflow: hidden; }
 .clinic-duty-audit-list small { color: var(--brand-muted); font-size: .6rem; }
 
 @media (max-width: 900px) {
+  .clinic-duty-showcase-controls { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .clinic-duty-showcase-controls > div { grid-column: 1 / -1; }
+  .clinic-duty-showcase-activation { grid-template-columns: 1fr; }
   .clinic-duty-grid,
   .clinic-duty-detail-grid { grid-template-columns: 1fr; }
   .clinic-duty-admin-controls { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -2136,6 +2161,12 @@ body.guide-table-open { overflow: hidden; }
 }
 
 @media (max-width: 600px) {
+  .clinic-duty-showcase-main { width: min(100% - 1rem, 1180px); padding-top: 1rem; }
+  .clinic-duty-showcase-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .clinic-duty-showcase-controls { grid-template-columns: 1fr; }
+  .clinic-duty-showcase-controls > div { grid-column: 1; }
+  .clinic-duty-showcase-activation { padding: 1rem; }
+  .clinic-duty-showcase-activation > a { width: 100%; }
   .clinic-duty-hero,
   .clinic-duty-detail-hero { grid-template-columns: 1fr; align-items: start; gap: 1rem; padding: 1rem; }
   .clinic-duty-hero h1,

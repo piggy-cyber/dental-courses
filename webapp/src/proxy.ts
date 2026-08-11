@@ -20,6 +20,8 @@ const protectedPathPrefixes = [
   "/workspace-settings",
 ] as const;
 
+const publicPathPrefixes = ["/clinic-duty/showcase"] as const;
+
 function matchesPathPrefix(path: string, prefix: string) {
   return path === prefix || path.startsWith(`${prefix}/`);
 }
@@ -36,7 +38,8 @@ export async function proxy(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
 
   const path = request.nextUrl.pathname;
-  const isProtectedPath = protectedPathPrefixes.some((prefix) =>
+  const isPublicPath = publicPathPrefixes.some((prefix) => matchesPathPrefix(path, prefix));
+  const isProtectedPath = !isPublicPath && protectedPathPrefixes.some((prefix) =>
     matchesPathPrefix(path, prefix)
   );
   // Bot uploads authenticate with a Bearer API key inside the route handler,
