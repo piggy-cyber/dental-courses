@@ -5,6 +5,7 @@ const RETURN_ORIGIN = "https://return.fourthcanal.invalid";
 const MAX_RETURN_PATH_LENGTH = 2_048;
 const ALLOWED_RETURN_PREFIXES = [
   "/admin",
+  "/clinic-duty",
   "/contacts",
   "/course",
   "/d1",

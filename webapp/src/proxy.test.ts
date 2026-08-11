@@ -49,6 +49,16 @@ describe("request proxy", () => {
     expect(response.cookies.get("fc_auth_return_to")?.value).toBe("/home?tab=progress");
   });
 
+  it("fails closed for Sim Clinic Duty before rendering its protected RPC", async () => {
+    mocks.getUser.mockResolvedValue({ data: { user: null }, error: null });
+
+    const response = await proxy(request("/clinic-duty"));
+
+    expect(response.status).toBe(307);
+    expect(response.headers.get("location")).toBe("https://fourthcanal.com/");
+    expect(response.cookies.get("fc_auth_return_to")?.value).toBe("/clinic-duty");
+  });
+
   it("clears an invalid Supabase session before redirecting a protected request", async () => {
     mocks.getUser.mockResolvedValue({
       data: { user: null },

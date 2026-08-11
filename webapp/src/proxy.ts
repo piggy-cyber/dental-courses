@@ -8,6 +8,7 @@ const protectedPathPrefixes = [
   "/api/groupme",
   "/api/resource",
   "/contacts",
+  "/clinic-duty",
   "/course",
   "/d1",
   "/home",
