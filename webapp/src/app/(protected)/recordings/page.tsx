@@ -12,8 +12,10 @@ export const metadata: Metadata = {
 
 export default async function RecordingsPage() {
   const { profile } = await getSessionProfile();
+  if (!profile) return null;
+
   const canView =
-    canViewAllCourseData(profile) || currentCurriculumYear(profile?.graduation_year) === 2;
+    canViewAllCourseData(profile) || currentCurriculumYear(profile.graduation_year) === 2;
 
   if (!canView) notFound();
 
