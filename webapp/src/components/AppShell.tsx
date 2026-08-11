@@ -15,6 +15,7 @@ import {
   hasFullCouncilAccess,
   type AdminPermission,
 } from "@/lib/admin-permissions";
+import { currentCurriculumYear } from "@/lib/cohorts";
 
 export type AppShellCourse = {
   code: string;
@@ -109,10 +110,19 @@ export function AppShell({ profile, courses, adminMode = false, children }: AppS
     if (link.fullOnly) return hasFullCouncilAccess(profile);
     return !link.permission || hasAdminPermission(profile, link.permission);
   });
-  const navLinks = adminMode ? adminLinks : STUDENT_LINKS;
   const mayOpenAdmin = canOpenAdmin(profile);
   const managesCourseData = canViewAllCourseData(profile);
+  const canViewD2Recordings =
+    managesCourseData || currentCurriculumYear(profile.graduation_year) === 2;
   const courseScopeLabel = managesCourseData ? "Administrative" : "Your";
+  const studentLinks = canViewD2Recordings
+    ? [
+        STUDENT_LINKS[0],
+        { href: "/recordings", label: "D2 recordings" },
+        ...STUDENT_LINKS.slice(1),
+      ]
+    : STUDENT_LINKS;
+  const navLinks = adminMode ? adminLinks : studentLinks;
 
   return (
     <div className="fc-site fc-shell text-brand-ink">
