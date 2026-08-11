@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  buildClinicDutyShowcaseCalendar,
   buildClinicDutyShowcase,
   buildFall2026ShowcaseSnapshot,
 } from "@/lib/clinic-duty-showcase-shared";
@@ -82,5 +83,22 @@ describe("buildClinicDutyShowcase", () => {
       dateStatus: "closed",
       slots: [],
     });
+  });
+
+  it("places filtered duties into a Sunday-first calendar without inventing dates", () => {
+    const showcase = buildFall2026ShowcaseSnapshot();
+    const rickKey = showcase.dates
+      .flatMap((date) => date.slots)
+      .find((slot) => slot.name === "Rick Ahn")?.studentKey;
+    const rickSeptemberDates = showcase.dates.filter(
+      (date) => date.date.startsWith("2026-09")
+        && date.slots.some((slot) => slot.studentKey === rickKey),
+    );
+    const weeks = buildClinicDutyShowcaseCalendar(rickSeptemberDates, "2026-09");
+
+    expect(weeks).toHaveLength(5);
+    expect(weeks.every((week) => week.length === 7)).toBe(true);
+    expect(weeks.flat().filter(Boolean).map((date) => date?.date)).toEqual(["2026-09-26"]);
+    expect(weeks[3][6]?.date).toBe("2026-09-26");
   });
 });

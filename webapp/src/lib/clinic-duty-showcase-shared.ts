@@ -35,6 +35,38 @@ export type ClinicDutyShowcase = {
   dates: ClinicDutyShowcaseDate[];
 };
 
+export type ClinicDutyShowcaseCalendarWeek = Array<ClinicDutyShowcaseDate | null>;
+
+export function buildClinicDutyShowcaseCalendar(
+  dates: ClinicDutyShowcaseDate[],
+  month: string,
+): ClinicDutyShowcaseCalendarWeek[] {
+  if (!/^\d{4}-\d{2}$/.test(month)) return [];
+
+  const [year, zeroPaddedMonth] = month.split("-");
+  const monthIndex = Number(zeroPaddedMonth) - 1;
+  const firstWeekday = new Date(Date.UTC(Number(year), monthIndex, 1)).getUTCDay();
+  const daysInMonth = new Date(Date.UTC(Number(year), monthIndex + 1, 0)).getUTCDate();
+  const dateByDay = new Map(
+    dates
+      .filter((date) => date.date.startsWith(`${month}-`))
+      .map((date) => [Number(date.date.slice(-2)), date]),
+  );
+  const cells: Array<ClinicDutyShowcaseDate | null> = Array.from(
+    { length: firstWeekday },
+    () => null,
+  );
+
+  for (let day = 1; day <= daysInMonth; day += 1) {
+    cells.push(dateByDay.get(day) ?? null);
+  }
+  while (cells.length % 7 !== 0) cells.push(null);
+
+  return Array.from({ length: cells.length / 7 }, (_, index) =>
+    cells.slice(index * 7, index * 7 + 7),
+  );
+}
+
 export type ClinicDutyShowcaseTermRow = {
   id: string;
   slug: string;

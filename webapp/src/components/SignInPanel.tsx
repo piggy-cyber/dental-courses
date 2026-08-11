@@ -4,10 +4,14 @@ import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 
 type SignInPanelProps = {
+  description?: string;
   returnTo?: string;
 };
 
-export function SignInPanel({ returnTo }: SignInPanelProps) {
+export function SignInPanel({
+  description = "Sign in with Google to save progress and manage your profile.",
+  returnTo,
+}: SignInPanelProps) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -70,7 +74,7 @@ export function SignInPanel({ returnTo }: SignInPanelProps) {
       </button>
 
       <p className="text-sm leading-relaxed text-brand-muted">
-        Sign in with Google to save progress and manage your profile.
+        {description}
       </p>
 
       {error && (

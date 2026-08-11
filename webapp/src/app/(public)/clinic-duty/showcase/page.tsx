@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PublicHeader } from "@/components/PublicHeader";
+import { getOptionalSessionProfile } from "@/lib/access";
+import { hasAdminPermission } from "@/lib/admin-permissions";
 import { getClinicDutyShowcase } from "@/lib/clinic-duty-showcase";
 import { ClinicDutyShowcaseView } from "./ClinicDutyShowcaseView";
 
@@ -8,12 +10,27 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Sim Clinic Duty Showcase",
-  description: "Read-only Fall 2026 Sim Clinic Duty schedule showcase for the D2 class.",
+  description: "Public Fall 2026 Sim Clinic Duty calendar with protected student actions for the D2 class.",
   robots: { index: false, follow: false, noarchive: true },
 };
 
 export default async function ClinicDutyShowcasePage() {
-  const showcase = await getClinicDutyShowcase();
+  const [showcase, { profile }] = await Promise.all([
+    getClinicDutyShowcase(),
+    getOptionalSessionProfile(),
+  ]);
+  const canManageDuty = Boolean(
+    profile
+      && (
+        (
+          profile.status === "approved"
+          && profile.roster_id
+          && profile.graduation_year === 2029
+          && profile.roster_access_approved
+        )
+        || hasAdminPermission(profile, "clinic-duty.manage")
+      ),
+  );
 
   return (
     <div className="fc-site public-core-page clinic-duty-showcase-page">
@@ -26,7 +43,7 @@ export default async function ClinicDutyShowcasePage() {
         <div className="clinic-duty-shell">
           <header className="clinic-duty-hero">
             <div>
-              <p className="eyebrow">Student-run accountability · Read-only MVP</p>
+              <p className="eyebrow">Student-run accountability · Public schedule</p>
               <h1>Sim Clinic Duty</h1>
               <p>
                 A balanced Fall 2026 rotation assigns two D2 students to check the shared Lab and Sim Clinic spaces on every open date. No sign-in is needed to view this showcase.
@@ -40,12 +57,16 @@ export default async function ClinicDutyShowcasePage() {
           </header>
 
           <section className="clinic-duty-rulebar">
-            <p><b>Showcase mode:</b> schedule browsing works now. Trades, checklists, and photos remain protected until an account is linked.</p>
-            <span className="clinic-duty-status">Read only</span>
+            <p><b>Public schedule:</b> browse the calendar and filter by name without signing in. Personal checklists, releases, trades, claims, and photos stay protected.</p>
+            <span className="clinic-duty-status">Actions gated</span>
           </section>
 
           {showcase ? (
-            <ClinicDutyShowcaseView showcase={showcase} />
+            <ClinicDutyShowcaseView
+              showcase={showcase}
+              isSignedIn={Boolean(profile)}
+              canManageDuty={canManageDuty}
+            />
           ) : (
             <section className="clinic-duty-empty">
               The Fall 2026 schedule is not available for showcase yet.
