@@ -15,7 +15,7 @@ import {
   respondClinicDutyExchange,
 } from "./actions";
 
-type Tab = "mine" | "open" | "trades" | "schedule";
+export type ClinicDutyPortalTab = "mine" | "open" | "trades" | "schedule";
 
 const STATUS_LABELS: Record<ClinicDutyStatus, string> = {
   scheduled: "Scheduled",
@@ -161,13 +161,15 @@ function ExchangeRow({
 export function ClinicDutyPortalView({
   portal,
   displayName,
+  initialTab = "mine",
   referenceTime,
 }: {
   portal: ClinicDutyPortal;
   displayName: string;
+  initialTab?: ClinicDutyPortalTab;
   referenceTime: string;
 }) {
-  const [tab, setTab] = useState<Tab>("mine");
+  const [tab, setTab] = useState<ClinicDutyPortalTab>(initialTab);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [offeredSlotId, setOfferedSlotId] = useState("");
@@ -234,7 +236,7 @@ export function ClinicDutyPortalView({
           ["open", `Open Duties (${openReleases.length})`],
           ["trades", `Trade Requests (${visibleTrades.filter((trade) => trade.status === "open").length})`],
           ["schedule", "Full Schedule"],
-        ] as Array<[Tab, string]>).map(([id, label]) => (
+        ] as Array<[ClinicDutyPortalTab, string]>).map(([id, label]) => (
           <button key={id} type="button" data-active={tab === id} onClick={() => setTab(id)}>{label}</button>
         ))}
       </nav>

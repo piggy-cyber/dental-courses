@@ -2016,7 +2016,79 @@ body.guide-table-open { overflow: hidden; }
   .public-not-found-routes > a { min-height: 104px; }
 }
 
-/* Sim Clinic Duty — a calm, private accountability workspace. */
+/* Sim Clinic Duty — a calm accountability workspace. */
+.clinic-duty-showcase-page { min-height: 100vh; background: var(--brand-paper); }
+.shared-calendar-page { min-height: 100vh; background: var(--brand-paper); }
+.clinic-duty-showcase-main { width: min(100% - 2rem, 1180px); margin: 0 auto; padding: 2rem 0 5rem; }
+.clinic-duty-showcase-stack { display: grid; gap: 1.25rem; }
+.clinic-duty-showcase-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid var(--brand-line); border-left: 1px solid var(--brand-line); }
+.clinic-duty-showcase-stats > div { min-height: 104px; display: grid; align-content: center; gap: .35rem; padding: 1rem; border-right: 1px solid var(--brand-line); border-bottom: 1px solid var(--brand-line); background: var(--brand-panel); }
+.clinic-duty-showcase-stats span { color: var(--brand-muted); font: 700 .58rem var(--font-mono-app), monospace; letter-spacing: .04em; text-transform: uppercase; }
+.clinic-duty-showcase-stats b { color: var(--brand-navy); font-family: var(--font-fc-display), Georgia, serif; font-size: 2rem; font-weight: 600; }
+.clinic-duty-showcase-controls { display: grid; grid-template-columns: minmax(240px, 1fr) minmax(180px, .55fr) minmax(160px, .42fr) auto auto; align-items: end; gap: .8rem; padding: 1rem; border: 1px solid var(--brand-line); background: var(--brand-panel); }
+.clinic-duty-showcase-controls h2 { margin-top: .2rem; color: var(--brand-navy); font-size: 1.15rem; font-weight: 750; }
+.clinic-duty-showcase-controls p:last-child { margin-top: .2rem; color: var(--brand-muted); font-size: .66rem; }
+.clinic-duty-showcase-controls label { display: grid; gap: .35rem; color: var(--brand-navy); font-size: .65rem; font-weight: 700; }
+.clinic-duty-showcase-controls select { min-height: 44px; width: 100%; padding: .55rem .65rem; }
+.clinic-duty-showcase-controls button { min-height: 44px; padding: .55rem .8rem; font-size: .68rem; }
+.clinic-duty-showcase-view-toggle { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--brand-line); background: var(--brand-soft); }
+.clinic-duty-showcase-view-toggle button { min-width: 76px; border: 0; border-left: 1px solid var(--brand-line); color: var(--brand-muted); background: transparent; cursor: pointer; font-weight: 750; }
+.clinic-duty-showcase-view-toggle button:first-child { border-left: 0; }
+.clinic-duty-showcase-view-toggle button[aria-pressed="true"] { color: var(--brand-navy); background: var(--brand-panel); box-shadow: inset 0 -3px 0 var(--brand-teal); }
+.clinic-duty-reset-button { border: 1px solid var(--brand-line); color: var(--brand-blue); background: transparent; cursor: pointer; font-weight: 700; }
+.clinic-duty-showcase-actions { border: 1px solid var(--brand-line); background: var(--brand-panel); }
+.clinic-duty-showcase-actions-heading { display: flex; align-items: end; justify-content: space-between; gap: 1rem; padding: 1.15rem; border-bottom: 1px solid var(--brand-line); }
+.clinic-duty-showcase-actions-heading h2 { margin: .25rem 0 .35rem; color: var(--brand-navy); font-family: var(--font-fc-display), Georgia, serif; font-size: clamp(1.65rem, 3vw, 2.5rem); font-weight: 560; line-height: 1; letter-spacing: -.035em; }
+.clinic-duty-showcase-actions-heading p:last-child { max-width: 720px; color: var(--brand-muted); font-size: .72rem; line-height: 1.6; }
+.clinic-duty-showcase-action-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.clinic-duty-showcase-action-grid article { min-width: 0; display: grid; align-content: start; gap: .55rem; padding: 1rem; border-left: 1px solid var(--brand-line); }
+.clinic-duty-showcase-action-grid article:first-child { border-left: 0; }
+.clinic-duty-showcase-action-grid h3 { color: var(--brand-navy); font-size: .8rem; font-weight: 780; }
+.clinic-duty-showcase-action-grid p { min-height: 4.2em; color: var(--brand-muted); font-size: .65rem; line-height: 1.55; }
+.clinic-duty-protected-action { width: max-content; padding: .5rem .65rem; border: 1px solid var(--brand-navy); color: var(--brand-navy); background: transparent; font-size: .66rem; font-weight: 750; text-decoration: none; cursor: pointer; }
+.clinic-duty-protected-action:hover,
+.clinic-duty-protected-action:focus-visible { color: white; background: var(--brand-navy); outline: 2px solid var(--brand-teal); outline-offset: 2px; }
+.clinic-duty-protected-action.is-compact { margin-left: auto; }
+.clinic-duty-calendar-stack { display: grid; gap: 1.25rem; }
+.clinic-duty-calendar-month { min-width: 0; border: 1px solid var(--brand-line); background: var(--brand-panel); }
+.clinic-duty-calendar-month > header { display: flex; align-items: end; justify-content: space-between; gap: 1rem; padding: 1rem; border-bottom: 1px solid var(--brand-line); }
+.clinic-duty-calendar-month > header h3 { margin-top: .2rem; color: var(--brand-navy); font-family: var(--font-fc-display), Georgia, serif; font-size: 1.8rem; font-weight: 560; line-height: 1; }
+.clinic-duty-calendar-month > header > span { color: var(--brand-muted); font: 700 .58rem var(--font-mono-app), monospace; text-transform: uppercase; }
+.clinic-duty-calendar-scroll { max-width: 100%; overflow-x: auto; overscroll-behavior-inline: contain; }
+.clinic-duty-calendar { min-width: 910px; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); }
+.clinic-duty-calendar-weekday { padding: .55rem .65rem; border-left: 1px solid var(--brand-line); border-bottom: 1px solid var(--brand-line); color: var(--brand-muted); background: var(--brand-soft); font: 750 .56rem var(--font-mono-app), monospace; text-align: right; text-transform: uppercase; }
+.clinic-duty-calendar-weekday:first-child { border-left: 0; }
+.clinic-duty-calendar-day { min-width: 0; min-height: 146px; display: grid; grid-template-rows: auto 1fr auto; gap: .55rem; padding: .65rem; border-left: 1px solid var(--brand-line); border-bottom: 1px solid var(--brand-line); background: rgba(255,255,255,.44); }
+.clinic-duty-calendar-day:nth-child(7n + 1) { border-left: 0; }
+.clinic-duty-calendar-day.is-empty { background: rgba(234,230,220,.34); }
+.clinic-duty-calendar-day.is-closed { background: #f2f2f0; }
+.clinic-duty-calendar-date { display: flex; align-items: baseline; justify-content: space-between; gap: .45rem; }
+.clinic-duty-calendar-date b { color: var(--brand-navy); font-family: var(--font-fc-display), Georgia, serif; font-size: 1.25rem; font-weight: 620; }
+.clinic-duty-calendar-date span { color: var(--brand-muted); font: 700 .5rem var(--font-mono-app), monospace; text-transform: uppercase; }
+.clinic-duty-calendar-pair { display: grid; align-content: start; gap: .3rem; }
+.clinic-duty-calendar-pair > span { overflow: hidden; padding: .28rem .35rem; border-left: 3px solid var(--brand-teal); color: var(--brand-navy); background: var(--brand-soft); font-size: .58rem; font-weight: 680; text-overflow: ellipsis; white-space: nowrap; }
+.clinic-duty-calendar-pair > span.is-me { border-left-color: var(--brand-copper); background: #fff4ea; }
+.clinic-duty-calendar-action { width: 100%; min-height: 30px; padding: .35rem; border: 1px solid var(--brand-line); color: var(--brand-blue); background: transparent; font-size: .56rem; font-weight: 750; cursor: pointer; text-decoration: none; text-align: center; }
+.clinic-duty-calendar-action:hover,
+.clinic-duty-calendar-action:focus-visible { border-color: var(--brand-blue); background: white; outline: 2px solid var(--brand-teal); outline-offset: -2px; }
+.clinic-duty-access-backdrop { position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center; padding: 1rem; background: rgba(10,29,55,.72); backdrop-filter: blur(4px); }
+.clinic-duty-access-dialog { position: relative; width: min(100%, 520px); max-height: calc(100vh - 2rem); overflow-y: auto; padding: clamp(1.3rem, 4vw, 2rem); border: 1px solid var(--brand-line); border-top: 5px solid var(--brand-copper); background: var(--brand-panel); box-shadow: 0 24px 80px rgba(10,29,55,.28); }
+.clinic-duty-access-dialog h2 { margin: .35rem 2rem .65rem 0; color: var(--brand-navy); font-family: var(--font-fc-display), Georgia, serif; font-size: clamp(1.9rem, 7vw, 2.8rem); font-weight: 560; line-height: 1; letter-spacing: -.04em; }
+.clinic-duty-access-dialog > p:not(.eyebrow) { margin-bottom: 1.25rem; color: var(--brand-muted); font-size: .76rem; line-height: 1.65; }
+.clinic-duty-access-close { position: absolute; top: .65rem; right: .65rem; width: 2.25rem; height: 2.25rem; border: 1px solid var(--brand-line); color: var(--brand-navy); background: transparent; font-size: 1.25rem; cursor: pointer; }
+.clinic-duty-linking-message { display: grid; gap: .7rem; padding: 1rem; border: 1px solid #d8c9ae; background: #fff8e8; }
+.clinic-duty-linking-message b { color: var(--brand-navy); }
+.clinic-duty-linking-message p { color: var(--brand-muted); font-size: .72rem; line-height: 1.55; }
+.clinic-duty-linking-message a { width: max-content; }
+.clinic-duty-showcase-activation { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, .8fr); gap: 1.5rem 2rem; align-items: start; padding: clamp(1.3rem, 3vw, 2.2rem); border: 1px solid var(--brand-line); border-left: 5px solid var(--brand-teal); background: var(--brand-panel); }
+.clinic-duty-showcase-activation h2 { margin: .35rem 0 .65rem; color: var(--brand-navy); font-family: var(--font-fc-display), Georgia, serif; font-size: clamp(1.8rem, 3.5vw, 3rem); font-weight: 560; line-height: 1; letter-spacing: -.04em; }
+.clinic-duty-showcase-activation > div > p:last-child { max-width: 680px; color: var(--brand-muted); font-size: .78rem; line-height: 1.7; }
+.clinic-duty-showcase-activation ol { display: grid; border-top: 1px solid var(--brand-line); }
+.clinic-duty-showcase-activation li { display: grid; grid-template-columns: auto 1fr; gap: .75rem; align-items: start; padding: .75rem 0; border-bottom: 1px solid var(--brand-line); }
+.clinic-duty-showcase-activation li > span { width: 1.45rem; height: 1.45rem; display: grid; place-items: center; border-radius: 999px; color: white; background: var(--brand-teal); font: 700 .6rem var(--font-mono-app), monospace; }
+.clinic-duty-showcase-activation li p { color: var(--brand-muted); font-size: .69rem; line-height: 1.5; }
+.clinic-duty-showcase-activation li b { display: block; color: var(--brand-navy); }
+.clinic-duty-showcase-activation > a { grid-column: 1 / -1; width: max-content; }
 .clinic-duty-shell,
 .clinic-duty-detail { display: grid; gap: 1.25rem; }
 .clinic-duty-hero,
@@ -2128,7 +2200,96 @@ body.guide-table-open { overflow: hidden; }
 .clinic-duty-audit-list p,
 .clinic-duty-audit-list small { color: var(--brand-muted); font-size: .6rem; }
 
+/* Shared calendar — source-based so future class events use the same interface and feed. */
+.shared-calendar-stack { display: grid; gap: 1.25rem; }
+.shared-calendar-hero { border-left-color: var(--brand-copper); }
+.shared-calendar-rulebar-download { flex: 0 0 auto; padding: .45rem .65rem; border: 1px solid #8c6f46; color: #5e4930; background: rgba(255,255,255,.48); font-size: .65rem; font-weight: 760; text-decoration: none; white-space: nowrap; }
+.shared-calendar-rulebar-download:hover,
+.shared-calendar-rulebar-download:focus-visible { color: white; background: #5e4930; outline: 2px solid var(--brand-copper); outline-offset: 2px; }
+.shared-calendar-sources { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--brand-line); border-left: 1px solid var(--brand-line); }
+.shared-calendar-sources button { position: relative; min-height: 112px; display: grid; grid-template-columns: auto minmax(0,1fr); align-content: center; gap: .25rem .7rem; padding: 1rem; border: 0; border-right: 1px solid var(--brand-line); border-bottom: 1px solid var(--brand-line); color: var(--brand-navy); background: var(--brand-panel); font: inherit; text-align: left; cursor: pointer; }
+.shared-calendar-sources button::after { position: absolute; inset: auto .8rem .65rem; height: 2px; content: ""; background: var(--source-color); opacity: 0; transform: scaleX(.2); transform-origin: left; transition: opacity .2s ease, transform .2s ease; }
+.shared-calendar-sources button:hover::after,
+.shared-calendar-sources button:focus-visible::after,
+.shared-calendar-sources button[aria-pressed="true"]::after { opacity: 1; transform: scaleX(1); }
+.shared-calendar-sources button:focus-visible { outline: 2px solid var(--source-color); outline-offset: -2px; }
+.shared-calendar-sources button > span { width: .7rem; height: .7rem; margin-top: .12rem; border-radius: 999px; background: var(--source-color); }
+.shared-calendar-sources button b { font-size: .76rem; }
+.shared-calendar-sources button small { grid-column: 2; color: var(--brand-muted); font-size: .61rem; line-height: 1.45; }
+.shared-calendar-sources button[aria-pressed="true"] { background: var(--source-soft); }
+.tone-teal { --source-color: #278b83; --source-soft: #e8f2f0; }
+.tone-copper { --source-color: #b35a2e; --source-soft: #fff0e7; }
+.tone-slate { --source-color: #687782; --source-soft: #eef0f1; }
+.shared-calendar-actions { border: 1px solid var(--brand-line); background: var(--brand-panel); }
+.shared-calendar-actions > div:first-child { padding: 1.15rem; border-bottom: 1px solid var(--brand-line); }
+.shared-calendar-actions h2 { margin: .25rem 0 .35rem; color: var(--brand-navy); font-family: var(--font-fc-display), Georgia, serif; font-size: clamp(1.65rem, 3vw, 2.5rem); font-weight: 560; line-height: 1; letter-spacing: -.035em; }
+.shared-calendar-actions > div:first-child > p:last-child { max-width: 760px; color: var(--brand-muted); font-size: .72rem; line-height: 1.6; }
+.shared-calendar-action-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.shared-calendar-action-grid article { min-width: 0; display: grid; align-content: start; gap: .55rem; padding: 1rem; border-left: 1px solid var(--brand-line); }
+.shared-calendar-action-grid article:first-child { border-left: 0; }
+.shared-calendar-action-grid article > span { width: max-content; color: var(--brand-muted); font: 750 .52rem var(--font-mono-app), monospace; letter-spacing: .04em; text-transform: uppercase; }
+.shared-calendar-action-grid article.is-public > span { color: #236747; }
+.shared-calendar-action-grid h3 { color: var(--brand-navy); font-size: .8rem; font-weight: 780; }
+.shared-calendar-action-grid p { min-height: 4.2em; color: var(--brand-muted); font-size: .65rem; line-height: 1.55; }
+.shared-calendar-controls { display: grid; grid-template-columns: minmax(210px, 1fr) repeat(3, minmax(145px, .55fr)) auto; align-items: end; gap: .8rem; padding: 1rem; border: 1px solid var(--brand-line); background: var(--brand-panel); }
+.shared-calendar-controls-heading h2 { margin-top: .2rem; color: var(--brand-navy); font-size: 1.15rem; font-weight: 750; }
+.shared-calendar-controls-heading p:last-child { margin-top: .2rem; color: var(--brand-muted); font-size: .66rem; }
+.shared-calendar-controls label { display: grid; gap: .35rem; color: var(--brand-navy); font-size: .65rem; font-weight: 700; }
+.shared-calendar-controls select { min-height: 44px; width: 100%; padding: .55rem .65rem; }
+.shared-calendar-controls button { min-height: 44px; padding: .55rem .8rem; font-size: .68rem; }
+.shared-calendar-controls > .clinic-duty-reset-button { grid-column: 1 / -1; justify-self: end; }
+.shared-calendar-grid { min-width: 1120px; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); }
+.shared-calendar-day { min-width: 0; min-height: 254px; display: grid; align-content: start; gap: .5rem; padding: .55rem; border-left: 1px solid var(--brand-line); border-bottom: 1px solid var(--brand-line); background: rgba(255,255,255,.44); }
+.shared-calendar-day:nth-child(7n + 1) { border-left: 0; }
+.shared-calendar-day.is-empty { background: rgba(234,230,220,.34); }
+.shared-calendar-day.has-no-events { background: rgba(248,246,240,.58); }
+.shared-calendar-day-number { justify-self: end; color: var(--brand-navy); font-family: var(--font-fc-display), Georgia, serif; font-size: 1.1rem; font-weight: 620; }
+.shared-calendar-day-events { display: grid; align-content: start; gap: .45rem; }
+.shared-calendar-event { min-width: 0; display: grid; gap: .3rem; padding: .45rem; border: 1px solid var(--brand-line); border-left: 3px solid var(--source-color); background: var(--source-soft); }
+.shared-calendar-event.is-closed { opacity: .82; }
+.shared-calendar-event-heading { display: flex; align-items: baseline; justify-content: space-between; gap: .35rem; }
+.shared-calendar-event-heading > span { overflow: hidden; color: var(--source-color); font: 760 .47rem var(--font-mono-app), monospace; text-overflow: ellipsis; text-transform: uppercase; white-space: nowrap; }
+.shared-calendar-event-heading small { flex: 0 0 auto; color: var(--brand-muted); font: 650 .45rem var(--font-mono-app), monospace; }
+.shared-calendar-event > b { color: var(--brand-navy); font-size: .58rem; line-height: 1.28; }
+.shared-calendar-participants { display: grid; gap: .2rem; }
+.shared-calendar-participants span { overflow: hidden; color: var(--brand-navy); font-size: .53rem; font-weight: 670; text-overflow: ellipsis; white-space: nowrap; }
+.shared-calendar-participants span.is-selected { color: #7d3b1d; text-decoration: underline; text-decoration-color: var(--brand-copper); text-decoration-thickness: 2px; }
+.shared-calendar-event-action { min-height: 28px; display: grid; place-items: center; padding: .3rem; border: 1px solid color-mix(in srgb, var(--source-color), white 45%); color: var(--brand-navy); background: rgba(255,255,255,.55); font-size: .52rem; font-weight: 750; text-align: center; text-decoration: none; cursor: pointer; }
+.shared-calendar-event-action:hover,
+.shared-calendar-event-action:focus-visible { color: white; background: var(--source-color); outline: 2px solid white; outline-offset: -3px; }
+.shared-calendar-list { display: grid; gap: .75rem; }
+.shared-calendar-list-item { display: grid; grid-template-columns: minmax(140px,.38fr) minmax(0,1fr) auto; align-items: center; gap: 1rem; padding: 1rem; border: 1px solid var(--brand-line); border-left: 4px solid var(--source-color); background: var(--brand-panel); }
+.shared-calendar-list-item > div:first-child p { color: var(--brand-navy); font-family: var(--font-fc-display), Georgia, serif; font-size: 1.25rem; font-weight: 600; }
+.shared-calendar-list-item > div:first-child span { color: var(--brand-muted); font: 650 .58rem var(--font-mono-app), monospace; }
+.shared-calendar-source-label { color: var(--source-color); font: 760 .53rem var(--font-mono-app), monospace; text-transform: uppercase; }
+.shared-calendar-list-item h3 { margin: .15rem 0 .3rem; color: var(--brand-navy); font-size: .82rem; }
+.shared-calendar-list-item > div:nth-child(2) > p { color: var(--brand-muted); font-size: .65rem; line-height: 1.5; }
+.shared-calendar-list-item .shared-calendar-list-participants { color: var(--brand-navy) !important; font-weight: 730; }
+.shared-calendar-source-note { display: grid; grid-template-columns: minmax(240px,.55fr) minmax(0,1fr); gap: 2rem; padding: clamp(1.3rem,3vw,2.2rem); border: 1px solid var(--brand-line); border-left: 5px solid var(--brand-copper); background: var(--brand-panel); }
+.shared-calendar-source-note h2 { margin-top: .3rem; color: var(--brand-navy); font-family: var(--font-fc-display), Georgia, serif; font-size: clamp(1.8rem,3vw,2.8rem); font-weight: 560; line-height: 1; letter-spacing: -.04em; }
+.shared-calendar-source-note > div:last-child { display: grid; gap: .75rem; }
+.shared-calendar-source-note > div:last-child p { color: var(--brand-muted); font-size: .72rem; line-height: 1.65; }
+.shared-calendar-source-note b { color: var(--brand-navy); }
+
+@media (max-width: 1120px) and (min-width: 981px) {
+  .public-core-header { gap: 1rem; padding-inline: 1rem; }
+  .public-core-header nav { gap: .8rem; }
+  .public-core-header nav a { font-size: .66rem; }
+}
+
 @media (max-width: 900px) {
+  .shared-calendar-action-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .shared-calendar-action-grid article:nth-child(3) { border-left: 0; border-top: 1px solid var(--brand-line); }
+  .shared-calendar-action-grid article:nth-child(4) { border-top: 1px solid var(--brand-line); }
+  .shared-calendar-controls { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .shared-calendar-controls-heading { grid-column: 1 / -1; }
+  .shared-calendar-source-note { grid-template-columns: 1fr; }
+  .clinic-duty-showcase-controls { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .clinic-duty-showcase-controls > div { grid-column: 1 / -1; }
+  .clinic-duty-showcase-action-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .clinic-duty-showcase-action-grid article:nth-child(3) { border-left: 0; border-top: 1px solid var(--brand-line); }
+  .clinic-duty-showcase-action-grid article:nth-child(4) { border-top: 1px solid var(--brand-line); }
+  .clinic-duty-showcase-activation { grid-template-columns: 1fr; }
   .clinic-duty-grid,
   .clinic-duty-detail-grid { grid-template-columns: 1fr; }
   .clinic-duty-admin-controls { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -2136,6 +2297,39 @@ body.guide-table-open { overflow: hidden; }
 }
 
 @media (max-width: 600px) {
+  .shared-calendar-sources { grid-template-columns: 1fr; }
+  .shared-calendar-sources button { min-height: 96px; }
+  .shared-calendar-action-grid { grid-template-columns: 1fr; }
+  .shared-calendar-action-grid article,
+  .shared-calendar-action-grid article:nth-child(3),
+  .shared-calendar-action-grid article:nth-child(4) { border-left: 0; border-top: 1px solid var(--brand-line); }
+  .shared-calendar-action-grid article:first-child { border-top: 0; }
+  .shared-calendar-action-grid p { min-height: 0; }
+  .shared-calendar-controls { grid-template-columns: 1fr; }
+  .shared-calendar-controls-heading,
+  .shared-calendar-controls > .clinic-duty-reset-button { grid-column: 1; }
+  .shared-calendar-controls > .clinic-duty-reset-button { width: 100%; }
+  .shared-calendar-grid { min-width: 1000px; }
+  .shared-calendar-day { min-height: 236px; }
+  .shared-calendar-list-item { grid-template-columns: 1fr; align-items: start; }
+  .shared-calendar-list-item > a,
+  .shared-calendar-list-item > button { margin-left: 0 !important; }
+  .shared-calendar-source-note { gap: 1rem; padding: 1rem; }
+  .clinic-duty-showcase-main { width: min(100% - 1rem, 1180px); padding-top: 1rem; }
+  .clinic-duty-showcase-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .clinic-duty-showcase-controls { grid-template-columns: 1fr; }
+  .clinic-duty-showcase-controls > div { grid-column: 1; }
+  .clinic-duty-showcase-actions-heading { align-items: start; flex-direction: column; }
+  .clinic-duty-showcase-action-grid { grid-template-columns: 1fr; }
+  .clinic-duty-showcase-action-grid article,
+  .clinic-duty-showcase-action-grid article:nth-child(3),
+  .clinic-duty-showcase-action-grid article:nth-child(4) { border-left: 0; border-top: 1px solid var(--brand-line); }
+  .clinic-duty-showcase-action-grid article:first-child { border-top: 0; }
+  .clinic-duty-showcase-action-grid p { min-height: 0; }
+  .clinic-duty-calendar { min-width: 820px; }
+  .clinic-duty-calendar-day { min-height: 132px; }
+  .clinic-duty-showcase-activation { padding: 1rem; }
+  .clinic-duty-showcase-activation > a { width: 100%; }
   .clinic-duty-hero,
   .clinic-duty-detail-hero { grid-template-columns: 1fr; align-items: start; gap: 1rem; padding: 1rem; }
   .clinic-duty-hero h1,
