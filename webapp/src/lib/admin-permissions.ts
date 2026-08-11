@@ -37,6 +37,12 @@ export const ADMIN_PERMISSION_DEFINITIONS = [
     description: "Review private operational alerts and retry failed Slack deliveries.",
     href: "/admin/inbox",
   },
+  {
+    id: "clinic-duty.manage",
+    label: "Sim Clinic Duty",
+    description: "Correct duty dates, assignments, photo waivers, and completion records.",
+    href: "/admin/clinic-duty",
+  },
 ] as const;
 
 export type AdminPermission = (typeof ADMIN_PERMISSION_DEFINITIONS)[number]["id"];
