@@ -82,14 +82,15 @@ function initialMonth() {
   return new Date(2026, 7, 1);
 }
 
-export function D2RecordingCalendar() {
+export function D2RecordingCalendar({ initialEventId }: { initialEventId?: string }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [visibleMonth, setVisibleMonth] = useState(initialMonth);
   const [courseFilter, setCourseFilter] = useState<"all" | CourseId>("all");
   const [overrides, setOverrides] = useState<EventOverrides>({});
-  const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
-  const [draftStatus, setDraftStatus] = useState<RecordingStatus>("unknown");
-  const [draftModule, setDraftModule] = useState("");
+  const initialEvent = d2RecordingCalendar.events.find((event) => event.id === initialEventId);
+  const [selectedEventId, setSelectedEventId] = useState<string | null>(initialEvent?.id ?? null);
+  const [draftStatus, setDraftStatus] = useState<RecordingStatus>(initialEvent?.recordingStatus ?? "unknown");
+  const [draftModule, setDraftModule] = useState(initialEvent?.moduleName ?? "");
   const [draftNotes, setDraftNotes] = useState("");
   const [saveMessage, setSaveMessage] = useState("");
 
@@ -97,6 +98,19 @@ export function D2RecordingCalendar() {
     const timer = window.setTimeout(() => setOverrides(readOverrides()), 0);
     return () => window.clearTimeout(timer);
   }, []);
+
+  useEffect(() => {
+    if (!initialEvent) return;
+    const timer = window.setTimeout(() => {
+      setSelectedEventId(initialEvent.id);
+      setDraftStatus(initialEvent.recordingStatus);
+      setDraftModule(initialEvent.moduleName);
+      setDraftNotes("");
+      setSaveMessage("");
+      dialogRef.current?.showModal();
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, [initialEvent]);
 
   const events = useMemo(
     () =>

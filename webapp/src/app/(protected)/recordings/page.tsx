@@ -10,7 +10,13 @@ export const metadata: Metadata = {
   description: "Private D2 class and Echo360 recording schedule.",
 };
 
-export default async function RecordingsPage() {
+export default async function RecordingsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ event?: string | string[] }>;
+}) {
+  const eventParam = (await searchParams).event;
+  const initialEventId = Array.isArray(eventParam) ? eventParam[0] : eventParam;
   const { profile } = await getSessionProfile();
   if (!profile) return null;
 
@@ -19,5 +25,5 @@ export default async function RecordingsPage() {
 
   if (!canView) notFound();
 
-  return <D2RecordingCalendar />;
+  return <D2RecordingCalendar initialEventId={initialEventId} />;
 }

@@ -5,15 +5,18 @@ import { SharedCalendar, type SharedCalendarAccountAction } from "@/components/S
 import { getOptionalSessionProfile } from "@/lib/access";
 import { hasAdminPermission } from "@/lib/admin-permissions";
 import { getClinicDutyShowcase } from "@/lib/clinic-duty-showcase";
+import { d2RecordingCalendar } from "@/lib/d2-recording-calendar";
 import { buildSharedCalendar } from "@/lib/shared-calendar";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "D2 Calendar",
-  description: "The Fall 2026 Fourth Canal calendar for Sim Clinic Duty, Sealant Duty, and class closures.",
+  description: "The Fall 2026 Fourth Canal calendar for D2 classes, recording status, verified exams, clinic duties, and closures.",
   robots: { index: false, follow: false, noarchive: true },
 };
+
+const CALENDAR_SUBSCRIPTION_URL = "https://fourthcanal.com/api/calendar.ics";
 
 const ACCOUNT_ACTIONS: SharedCalendarAccountAction[] = [
   {
@@ -69,25 +72,27 @@ export default async function CalendarPage() {
               <p className="eyebrow">Fall 2026 · Public class calendar</p>
               <h1>D2 Calendar</h1>
               <p>
-                Sim Clinic Duty assignments, Sealant Duty and Clinic Shadowing rotations, and confirmed school closures in one place. Browse and download without signing in.
+                Published D2 classes, Echo360 recording status, verified exams, Sim Clinic Duty, Sealant rotations, and confirmed closures in one place.
               </p>
             </div>
             <div className="clinic-duty-hours">
-              <span>Sim Clinic</span><b>Mon–Sat</b>
-              <span>Sealant</span><b>Selected Mondays</b>
-              <span>Calendar</span><b>Aug 14–Dec 16</b>
+              <span>Classes</span><b>7 published courses</b>
+              <span>Verified exams</span><b>Sep 22 · Oct 27</b>
+              <span>Calendar</span><b>Aug 10–Dec 16</b>
             </div>
           </header>
 
           <section className="clinic-duty-rulebar">
-            <p><b>Public information:</b> dates, assigned names, group rotations, and completion status may be viewed without an account. Checklists, releases, trades, claims, and photos remain protected.</p>
+            <p><b>Public information:</b> class dates, recording status, exams, assigned names, group rotations, and completion status may be viewed without an account. Echo360 links and duty actions remain protected.</p>
             <a className="shared-calendar-rulebar-download" href="/api/calendar.ics">Download .ics</a>
           </section>
 
           {calendar ? (
             <>
-              <section className="clinic-duty-showcase-stats" aria-label="Calendar summary">
+              <section className="clinic-duty-showcase-stats shared-calendar-summary" aria-label="Calendar summary">
                 <div><span>D2 students</span><b>{calendar.summary.students}</b></div>
+                <div><span>Class blocks</span><b>{calendar.summary.classBlocks}</b></div>
+                <div><span>Verified exams</span><b>{calendar.summary.exams}</b></div>
                 <div><span>Sim Clinic dates</span><b>{calendar.summary.simClinicDates}</b></div>
                 <div><span>Sealant rotations</span><b>{calendar.summary.sealantRotations}</b></div>
                 <div><span>Confirmed closures</span><b>{calendar.summary.closures}</b></div>
@@ -95,6 +100,7 @@ export default async function CalendarPage() {
               <SharedCalendar
                 accountActions={ACCOUNT_ACTIONS}
                 calendar={calendar}
+                calendarSubscriptionUrl={CALENDAR_SUBSCRIPTION_URL}
                 isSignedIn={Boolean(profile)}
                 canManageDuty={canManageDuty}
               />
@@ -110,8 +116,10 @@ export default async function CalendarPage() {
             </div>
             <div>
               <p><b>Sim Clinic Duty</b> uses the current Fourth Canal assignment schedule. Each student remains responsible for their own station; the assigned pair covers shared spaces.</p>
+              <p><b>Classes + recordings</b> use the D2 schedule and Echo360 status checked August 11, 2026. Open a class block to see its module and recording status; linked D2 accounts can continue to the private class workspace for Canvas and Echo360 links.</p>
+              <p><b>Verified exams</b> currently include only the REHE 257 midterm on September 22 and final written examination on October 27 because those dates are explicitly listed in the provided Fall 2026 Prosth schedule.</p>
+              <p><b>Awaiting Canvas publication:</b> {d2RecordingCalendar.unpublishedCourses.map((course) => course.replace(/ \(\d+\/\d+\)$/, "")).join(", ")}. These courses are not shown as scheduled until their Canvas pages publish.</p>
               <p><b>Sealant Duty</b> follows the Fall 2026 D2 schedule updated August 7, 2026. That source provides Group A/B rotations, not individual student assignments, so the calendar stays group-level.</p>
-              <p><b>Expandable by design</b> means future club meetings, fundraisers, and other class events can be added as new sources without rebuilding the calendar interface or download feed.</p>
             </div>
           </section>
 

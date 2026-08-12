@@ -1,6 +1,12 @@
 import type { ClinicDutyShowcase } from "@/lib/clinic-duty-showcase-shared";
+import {
+  courses,
+  d2RecordingCalendar,
+  type D2RecordingEvent,
+  type RecordingStatus,
+} from "@/lib/d2-recording-calendar";
 
-export type SharedCalendarSourceTone = "teal" | "copper" | "slate";
+export type SharedCalendarSourceTone = "blue" | "gold" | "teal" | "copper" | "slate";
 
 export type SharedCalendarSource = {
   id: string;
@@ -46,6 +52,8 @@ export type SharedCalendarData = {
   events: SharedCalendarEvent[];
   summary: {
     students: number;
+    classBlocks: number;
+    exams: number;
     simClinicDates: number;
     sealantRotations: number;
     closures: number;
@@ -61,6 +69,20 @@ export type SharedCalendarDay = {
 export type SharedCalendarWeek = Array<SharedCalendarDay | null>;
 
 export const SHARED_CALENDAR_SOURCES: SharedCalendarSource[] = [
+  {
+    id: "class-recording",
+    label: "Classes + recordings",
+    shortLabel: "Class",
+    description: "Published D2 class blocks with Echo360 recording status and module details.",
+    tone: "blue",
+  },
+  {
+    id: "exam",
+    label: "Verified exams",
+    shortLabel: "Exam",
+    description: "Exam dates explicitly listed in a verified Fall 2026 course schedule.",
+    tone: "gold",
+  },
   {
     id: "sim-clinic",
     label: "Sim Clinic Duty",
@@ -83,6 +105,23 @@ export const SHARED_CALENDAR_SOURCES: SharedCalendarSource[] = [
     tone: "slate",
   },
 ];
+
+export const VERIFIED_FALL_2026_EXAMS = [
+  {
+    courseId: "REHE-257",
+    date: "2026-09-22",
+    title: "Midterm Exam + Project #1 Due",
+  },
+  {
+    courseId: "REHE-257",
+    date: "2026-10-27",
+    title: "Final Comprehensive Written Examination",
+  },
+] as const;
+
+const VERIFIED_EXAM_KEYS = new Set(
+  VERIFIED_FALL_2026_EXAMS.map((exam) => `${exam.courseId}|${exam.date}|${exam.title}`),
+);
 
 type SealantRotation = {
   date: string;
@@ -107,6 +146,50 @@ export const FALL_2026_SEALANT_ROTATIONS: readonly SealantRotation[] = [
 
 function easternUtcOffset(date: string) {
   return date >= "2026-11-01" ? "-05:00" : "-04:00";
+}
+
+function formatClockTime(time: string) {
+  const [hours, minutes] = time.split(":").map(Number);
+  const hour = hours % 12 || 12;
+  return `${hour}:${String(minutes).padStart(2, "0")} ${hours >= 12 ? "PM" : "AM"}`;
+}
+
+function recordingStatusDescription(status: RecordingStatus, event: D2RecordingEvent) {
+  if (status === "recorded") return "Recorded in Echo360.";
+  if (status === "scheduled" && event.recordingStart && event.recordingEnd) {
+    return `Echo360 recording scheduled for ${formatClockTime(event.recordingStart)}-${formatClockTime(event.recordingEnd)}.`;
+  }
+  if (status === "not-recorded") return "Marked as not recorded.";
+  if (status === "not-scheduled") return "No Echo360 recording is currently listed.";
+  return "Recording status still needs to be checked.";
+}
+
+function buildClassEvents() {
+  return d2RecordingCalendar.events.map((event): SharedCalendarEvent => {
+    const course = courses[event.courseId];
+    const isExam = VERIFIED_EXAM_KEYS.has(`${event.courseId}|${event.date}|${event.title}`);
+    const recording = recordingStatusDescription(event.recordingStatus, event);
+
+    return {
+      id: `class-${event.id}`,
+      sourceId: isExam ? "exam" : "class-recording",
+      title: `${course.code}: ${event.title}`,
+      date: event.date,
+      startsAt: `${event.date}T${event.classStart}:00${easternUtcOffset(event.date)}`,
+      endsAt: `${event.date}T${event.classEnd}:00${easternUtcOffset(event.date)}`,
+      allDay: false,
+      status: "scheduled",
+      participants: [],
+      description: `Module: ${event.moduleName}. ${recording} Source: ${event.source}.`,
+      action: {
+        label: "Open recording workspace",
+        href: `/recordings?event=${encodeURIComponent(event.id)}`,
+        requiresLinkedD2: true,
+        promptTitle: `Open ${course.code} class details`,
+        promptDescription: "Sign in with a linked D2 account to open the module details and available Canvas or Echo360 links.",
+      },
+    };
+  });
 }
 
 function buildSealantEvents(): SharedCalendarEvent[] {
@@ -176,7 +259,9 @@ export function buildSharedCalendar(showcase: ClinicDutyShowcase): SharedCalenda
   });
 
   const sealantEvents = buildSealantEvents();
-  const events = [...clinicEvents, ...sealantEvents].sort((a, b) =>
+  const classEvents = buildClassEvents();
+  const examEvents = classEvents.filter((event) => event.sourceId === "exam");
+  const events = [...classEvents, ...clinicEvents, ...sealantEvents].sort((a, b) =>
     a.startsAt.localeCompare(b.startsAt) || a.sourceId.localeCompare(b.sourceId),
   );
 
@@ -188,6 +273,8 @@ export function buildSharedCalendar(showcase: ClinicDutyShowcase): SharedCalenda
     events,
     summary: {
       students: showcase.summary.students,
+      classBlocks: classEvents.length - examEvents.length,
+      exams: examEvents.length,
       simClinicDates: showcase.summary.openDates,
       sealantRotations: sealantEvents.length,
       closures: showcase.summary.closedDates,

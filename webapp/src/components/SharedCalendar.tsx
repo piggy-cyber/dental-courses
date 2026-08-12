@@ -126,18 +126,34 @@ function EventAction({
 function CalendarEvent({
   canManageDuty,
   event,
+  openDetails,
   selectedStudentKey,
   setAccessPrompt,
   source,
 }: {
   canManageDuty: boolean;
   event: SharedCalendarEvent;
+  openDetails: (event: SharedCalendarEvent) => void;
   selectedStudentKey: string;
   setAccessPrompt: (prompt: AccessPrompt) => void;
   source: SharedCalendarSource;
 }) {
+  const hasClassDetails = event.sourceId === "class-recording" || event.sourceId === "exam";
+
   return (
-    <article className={`shared-calendar-event tone-${source.tone}${event.status === "closed" ? " is-closed" : ""}`}>
+    <article
+      className={`shared-calendar-event tone-${source.tone}${event.status === "closed" ? " is-closed" : ""}${hasClassDetails ? " has-details" : ""}`}
+      role={hasClassDetails ? "button" : undefined}
+      tabIndex={hasClassDetails ? 0 : undefined}
+      aria-label={hasClassDetails ? `View details for ${event.title}` : undefined}
+      onClick={hasClassDetails ? () => openDetails(event) : undefined}
+      onKeyDown={hasClassDetails ? (keyboardEvent) => {
+        if (keyboardEvent.key === "Enter" || keyboardEvent.key === " ") {
+          keyboardEvent.preventDefault();
+          openDetails(event);
+        }
+      } : undefined}
+    >
       <div className="shared-calendar-event-heading">
         <span>{source.shortLabel}</span>
         <small><EventTime event={event} /></small>
@@ -152,7 +168,7 @@ function CalendarEvent({
           ))}
         </div>
       )}
-      {event.action && (
+      {event.action && !hasClassDetails && (
         <EventAction
           action={event.action}
           canManageDuty={canManageDuty}
@@ -160,6 +176,7 @@ function CalendarEvent({
           setAccessPrompt={setAccessPrompt}
         />
       )}
+      {hasClassDetails && <span className="shared-calendar-detail-cue">View details →</span>}
     </article>
   );
 }
@@ -167,11 +184,13 @@ function CalendarEvent({
 export function SharedCalendar({
   accountActions,
   calendar,
+  calendarSubscriptionUrl,
   canManageDuty,
   isSignedIn,
 }: {
   accountActions: SharedCalendarAccountAction[];
   calendar: SharedCalendarData;
+  calendarSubscriptionUrl: string;
   canManageDuty: boolean;
   isSignedIn: boolean;
 }) {
@@ -180,7 +199,11 @@ export function SharedCalendar({
   const [month, setMonth] = useState("all");
   const [viewMode, setViewMode] = useState<ViewMode>("calendar");
   const [accessPrompt, setAccessPrompt] = useState<AccessPrompt | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<SharedCalendarEvent | null>(null);
+  const [copyFeedback, setCopyFeedback] = useState("");
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const detailCloseButtonRef = useRef<HTMLButtonElement>(null);
+  const calendarLinkRef = useRef<HTMLInputElement>(null);
 
   const students = useMemo(() => {
     const byKey = new Map<string, string>();
@@ -223,6 +246,28 @@ export function SharedCalendar({
     return () => window.removeEventListener("keydown", closeOnEscape);
   }, [accessPrompt]);
 
+  useEffect(() => {
+    if (!selectedEvent) return;
+    detailCloseButtonRef.current?.focus();
+    function closeOnEscape(event: KeyboardEvent) {
+      if (event.key === "Escape") setSelectedEvent(null);
+    }
+    window.addEventListener("keydown", closeOnEscape);
+    return () => window.removeEventListener("keydown", closeOnEscape);
+  }, [selectedEvent]);
+
+  async function copyCalendarLink() {
+    try {
+      if (!navigator.clipboard?.writeText) throw new Error("Clipboard unavailable");
+      await navigator.clipboard.writeText(calendarSubscriptionUrl);
+      setCopyFeedback("Calendar link copied.");
+    } catch {
+      calendarLinkRef.current?.focus();
+      calendarLinkRef.current?.select();
+      setCopyFeedback("The link is selected. Use Copy on your device.");
+    }
+  }
+
   return (
     <div className="shared-calendar-stack">
       <section className="shared-calendar-sources" aria-label="Calendar sources">
@@ -251,8 +296,21 @@ export function SharedCalendar({
           <article className="is-public">
             <span>Public</span>
             <h3>Full D2 calendar</h3>
-            <p>Download Sim Clinic, Sealant, and closure dates with a 24-hour reminder.</p>
+            <p>Classes, recording status, exams, duties, and closures—with a 24-hour reminder.</p>
             <a className="clinic-duty-protected-action" href="/api/calendar.ics">Download all (.ics) →</a>
+            <label className="shared-calendar-copy-label" htmlFor="shared-calendar-subscription">Calendar subscription link</label>
+            <div className="shared-calendar-copy-row">
+              <input
+                ref={calendarLinkRef}
+                id="shared-calendar-subscription"
+                type="text"
+                readOnly
+                value={calendarSubscriptionUrl}
+                onFocus={(event) => event.currentTarget.select()}
+              />
+              <button type="button" onClick={copyCalendarLink}>Copy link</button>
+            </div>
+            <small className="shared-calendar-copy-feedback" role="status" aria-live="polite">{copyFeedback}</small>
           </article>
           {accountActions.map((action) => (
             <article key={action.label}>
@@ -346,6 +404,7 @@ export function SharedCalendar({
                                 key={event.id}
                                 canManageDuty={canManageDuty}
                                 event={event}
+                                openDetails={setSelectedEvent}
                                 selectedStudentKey={studentKey}
                                 setAccessPrompt={setAccessPrompt}
                                 source={sourceForEvent(calendar.sources, event)}
@@ -395,6 +454,32 @@ export function SharedCalendar({
           })}
           {visibleEvents.length === 0 && <p className="clinic-duty-empty">No events match these filters.</p>}
         </section>
+      )}
+
+      {selectedEvent && (
+        <div className="clinic-duty-access-backdrop" onMouseDown={() => setSelectedEvent(null)}>
+          <section
+            className="clinic-duty-access-dialog shared-calendar-detail-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="shared-calendar-detail-title"
+            onMouseDown={(event) => event.stopPropagation()}
+          >
+            <button ref={detailCloseButtonRef} type="button" className="clinic-duty-access-close" aria-label="Close class details" onClick={() => setSelectedEvent(null)}>×</button>
+            <p className="eyebrow">{sourceForEvent(calendar.sources, selectedEvent).label}</p>
+            <h2 id="shared-calendar-detail-title">{selectedEvent.title}</h2>
+            <p className="shared-calendar-detail-time">{formatDate(selectedEvent.date)} · <EventTime event={selectedEvent} /></p>
+            <p>{selectedEvent.description}</p>
+            {selectedEvent.action && (
+              <EventAction
+                action={selectedEvent.action}
+                canManageDuty={canManageDuty}
+                className="portal-button"
+                setAccessPrompt={setAccessPrompt}
+              />
+            )}
+          </section>
+        </div>
       )}
 
       {accessPrompt && (
