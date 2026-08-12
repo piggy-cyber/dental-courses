@@ -32,7 +32,8 @@ export default async function ClinicDutyPage({
       && profile.graduation_year === 2029
       && profile.roster_access_approved
   );
-  if (!isEligibleStudent && !hasAdminPermission(profile, "clinic-duty.manage")) {
+  const canManageSchedule = hasAdminPermission(profile, "clinic-duty.manage");
+  if (!isEligibleStudent && !canManageSchedule) {
     notFound();
   }
 
@@ -44,6 +45,7 @@ export default async function ClinicDutyPage({
       displayName={profile?.name ?? profile?.email?.split("@")[0] ?? "Student"}
       initialTab={initialTab}
       referenceTime={new Date().toISOString()}
+      canManageSchedule={canManageSchedule}
     />
   );
 }

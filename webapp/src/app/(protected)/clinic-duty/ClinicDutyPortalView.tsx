@@ -163,11 +163,13 @@ export function ClinicDutyPortalView({
   displayName,
   initialTab = "mine",
   referenceTime,
+  canManageSchedule = false,
 }: {
   portal: ClinicDutyPortal;
   displayName: string;
   initialTab?: ClinicDutyPortalTab;
   referenceTime: string;
+  canManageSchedule?: boolean;
 }) {
   const [tab, setTab] = useState<ClinicDutyPortalTab>(initialTab);
   const [error, setError] = useState<string | null>(null);
@@ -227,7 +229,10 @@ export function ClinicDutyPortalView({
 
       <section className="clinic-duty-rulebar">
         <p><b>Shared-space standard:</b> leave floors, surfaces, sinks, and pathways free of debris before it dries.</p>
-        {portal.viewer.rosterId && <a href="/api/clinic-duty/calendar.ics" className="portal-link">Download my calendar (.ics)</a>}
+        <div className="clinic-duty-rulebar-actions">
+          {portal.viewer.rosterId && <a href="/api/clinic-duty/calendar.ics" className="portal-link">Download my calendar (.ics)</a>}
+          {canManageSchedule && <Link href="/admin/clinic-duty" className="portal-link">Manage schedule →</Link>}
+        </div>
       </section>
 
       <nav className="clinic-duty-tabs" aria-label="Sim Clinic Duty views">
@@ -331,6 +336,10 @@ export function ClinicDutyPortalView({
 
       {tab === "schedule" && (
         <section className="app-card overflow-hidden">
+          <div className="clinic-duty-admin-section-bar">
+            <div><p className="eyebrow">Linked-user schedule</p><h2>Date and assigned accounts</h2></div>
+            {canManageSchedule && <Link href="/admin/clinic-duty" className="clinic-duty-protected-action">Edit schedule →</Link>}
+          </div>
           <div className="clinic-duty-table-wrap">
             <table className="portal-table clinic-duty-table">
               <thead><tr><th>Date</th><th>Hours</th><th>Duty pair</th><th>Status</th></tr></thead>

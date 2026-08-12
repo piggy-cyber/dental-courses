@@ -2,11 +2,19 @@ import type { ClinicDutyShowcase } from "@/lib/clinic-duty-showcase-shared";
 import {
   courses,
   d2RecordingCalendar,
+  type CourseId,
   type D2RecordingEvent,
   type RecordingStatus,
 } from "@/lib/d2-recording-calendar";
+import {
+  d2CanvasCalendar,
+  type CanvasEventKind,
+  type D2CanvasCalendarEvent,
+} from "@/lib/d2-canvas-calendar";
 
 export type SharedCalendarSourceTone = "blue" | "gold" | "teal" | "copper" | "slate";
+export type SharedCalendarEventKind = CanvasEventKind | "sim-clinic" | "sealant" | "closure";
+export type SharedCalendarRecordingStatus = RecordingStatus | "not-found" | null;
 
 export type SharedCalendarSource = {
   id: string;
@@ -28,6 +36,7 @@ export type SharedCalendarAction = {
   requiresLinkedD2: boolean;
   promptTitle: string;
   promptDescription: string;
+  external?: boolean;
 };
 
 export type SharedCalendarEvent = {
@@ -41,18 +50,31 @@ export type SharedCalendarEvent = {
   status: "scheduled" | "closed";
   participants: SharedCalendarParticipant[];
   description: string;
-  action: SharedCalendarAction | null;
+  actions: SharedCalendarAction[];
+  courseCode: string | null;
+  courseName: string | null;
+  eventKind: SharedCalendarEventKind;
+  location: string | null;
+  moduleName: string | null;
+  recordingStatus: SharedCalendarRecordingStatus;
+  recordingStart: string | null;
+  recordingEnd: string | null;
+  canvasUrl: string | null;
+  echoUrl: string | null;
+  sourceProvenance: string[];
+  alternateSchedule: string | null;
 };
 
 export type SharedCalendarData = {
   label: string;
   startsOn: string;
   endsOn: string;
+  canvasSnapshotDownloadedAt: string;
   sources: SharedCalendarSource[];
   events: SharedCalendarEvent[];
   summary: {
     students: number;
-    classBlocks: number;
+    courseEvents: number;
     exams: number;
     simClinicDates: number;
     sealantRotations: number;
@@ -71,16 +93,16 @@ export type SharedCalendarWeek = Array<SharedCalendarDay | null>;
 export const SHARED_CALENDAR_SOURCES: SharedCalendarSource[] = [
   {
     id: "class-recording",
-    label: "Classes + recordings",
-    shortLabel: "Class",
-    description: "Published D2 class blocks with Echo360 recording status and module details.",
+    label: "D2 course events",
+    shortLabel: "Course",
+    description: "Canvas lectures, labs, competencies, and Zoom sessions with Echo360 status.",
     tone: "blue",
   },
   {
     id: "exam",
-    label: "Verified exams",
+    label: "Canvas exams",
     shortLabel: "Exam",
-    description: "Exam dates explicitly listed in a verified Fall 2026 course schedule.",
+    description: "Final and midterm exam blocks published in the D2 Canvas calendar.",
     tone: "gold",
   },
   {
@@ -106,22 +128,14 @@ export const SHARED_CALENDAR_SOURCES: SharedCalendarSource[] = [
   },
 ];
 
-export const VERIFIED_FALL_2026_EXAMS = [
-  {
-    courseId: "REHE-257",
-    date: "2026-09-22",
-    title: "Midterm Exam + Project #1 Due",
-  },
-  {
-    courseId: "REHE-257",
-    date: "2026-10-27",
-    title: "Final Comprehensive Written Examination",
-  },
-] as const;
-
-const VERIFIED_EXAM_KEYS = new Set(
-  VERIFIED_FALL_2026_EXAMS.map((exam) => `${exam.courseId}|${exam.date}|${exam.title}`),
-);
+export const CANVAS_FALL_2026_EXAMS = d2CanvasCalendar.events
+  .filter((event) => event.eventKind === "exam")
+  .map((event) => ({
+    uid: event.uid,
+    courseCode: event.courseCode,
+    date: event.date,
+    title: event.title,
+  }));
 
 type SealantRotation = {
   date: string;
@@ -144,8 +158,15 @@ export const FALL_2026_SEALANT_ROTATIONS: readonly SealantRotation[] = [
   { date: "2026-11-30", sealantGroup: null, restorativeGroup: null },
 ] as const;
 
+const COURSE_ENTRIES = Object.entries(courses) as Array<[CourseId, (typeof courses)[CourseId]]>;
+const COURSE_BY_CODE = new Map(COURSE_ENTRIES.map(([id, course]) => [course.code, { id, course }]));
+
 function easternUtcOffset(date: string) {
   return date >= "2026-11-01" ? "-05:00" : "-04:00";
+}
+
+function localClassIso(date: string, time: string) {
+  return `${date}T${time}:00${easternUtcOffset(date)}`;
 }
 
 function formatClockTime(time: string) {
@@ -154,42 +175,153 @@ function formatClockTime(time: string) {
   return `${hour}:${String(minutes).padStart(2, "0")} ${hours >= 12 ? "PM" : "AM"}`;
 }
 
-function recordingStatusDescription(status: RecordingStatus, event: D2RecordingEvent) {
+function recordingStatusDescription(status: SharedCalendarRecordingStatus, event?: D2RecordingEvent) {
   if (status === "recorded") return "Recorded in Echo360.";
-  if (status === "scheduled" && event.recordingStart && event.recordingEnd) {
+  if (status === "scheduled" && event?.recordingStart && event.recordingEnd) {
     return `Echo360 recording scheduled for ${formatClockTime(event.recordingStart)}-${formatClockTime(event.recordingEnd)}.`;
   }
-  if (status === "not-recorded") return "Marked as not recorded.";
-  if (status === "not-scheduled") return "No Echo360 recording is currently listed.";
+  if (status === "not-recorded") return "Echo360 marks this class as not recorded.";
+  if (status === "not-scheduled") return "Echo360 explicitly lists no recording for this class.";
+  if (status === "not-found") return "No matching Echo360 schedule was found.";
   return "Recording status still needs to be checked.";
 }
 
-function buildClassEvents() {
-  return d2RecordingCalendar.events.map((event): SharedCalendarEvent => {
-    const course = courses[event.courseId];
-    const isExam = VERIFIED_EXAM_KEYS.has(`${event.courseId}|${event.date}|${event.title}`);
-    const recording = recordingStatusDescription(event.recordingStatus, event);
+function eventKindForEcho(event: D2RecordingEvent): CanvasEventKind {
+  if (/\b(final exam|midterm)\b/i.test(event.title)) return "exam";
+  if (/\bcompetency\b/i.test(event.title)) return "competency";
+  if (/\b(lab|hololens)\b/i.test(event.title)) return "lab";
+  if (/\[zoom\]/i.test(event.title)) return "zoom";
+  return "class";
+}
+
+function classActions(canvasEvent: D2CanvasCalendarEvent | null, echoEvent: D2RecordingEvent | null) {
+  const courseEntry = echoEvent
+    ? { id: echoEvent.courseId, course: courses[echoEvent.courseId] }
+    : canvasEvent ? COURSE_BY_CODE.get(canvasEvent.courseCode) : undefined;
+  const courseCode = courseEntry?.course.code ?? canvasEvent?.courseCode ?? "D2";
+  const actions: SharedCalendarAction[] = [];
+  const promptDescription = "Sign in with a linked D2 account to open protected Canvas and Echo360 class links.";
+
+  if (echoEvent) {
+    actions.push({
+      label: "Open class workspace",
+      href: `/recordings?event=${encodeURIComponent(echoEvent.id)}`,
+      requiresLinkedD2: true,
+      promptTitle: `Open ${courseCode} class details`,
+      promptDescription,
+    });
+  }
+  const canvasUrl = canvasEvent?.canvasUrl ?? echoEvent?.canvasUrl ?? courseEntry?.course.canvasUrl;
+  if (canvasUrl) {
+    actions.push({
+      label: canvasEvent?.canvasUrl ? "Open Canvas event" : "Open Canvas course",
+      href: canvasUrl,
+      requiresLinkedD2: true,
+      promptTitle: `Open ${courseCode} in Canvas`,
+      promptDescription,
+      external: true,
+    });
+  }
+  if (echoEvent?.echoUrl) {
+    actions.push({
+      label: "Open Echo360",
+      href: echoEvent.echoUrl,
+      requiresLinkedD2: true,
+      promptTitle: `Open ${courseCode} in Echo360`,
+      promptDescription,
+      external: true,
+    });
+  }
+  return actions;
+}
+
+function alternateScheduleFor(canvasEvent: D2CanvasCalendarEvent, echoEvent: D2RecordingEvent | null) {
+  if (!echoEvent || !canvasEvent.classStart || !canvasEvent.classEnd) return null;
+  if (canvasEvent.classStart === echoEvent.classStart && canvasEvent.classEnd === echoEvent.classEnd) return null;
+  return `${formatClockTime(echoEvent.classStart)}-${formatClockTime(echoEvent.classEnd)} in the course/Echo source`;
+}
+
+function buildCourseEvents() {
+  const echoByKey = new Map<string, D2RecordingEvent>(
+    d2RecordingCalendar.events.map((event) => {
+      const courseCode = courses[event.courseId].code;
+      return [`${courseCode}|${event.date}|${event.classStart}`, event] as const;
+    }),
+  );
+  const matchedEchoIds = new Set<string>();
+
+  const canvasEvents = d2CanvasCalendar.events.map((canvasEvent): SharedCalendarEvent => {
+    const courseEntry = COURSE_BY_CODE.get(canvasEvent.courseCode);
+    const matchKey = `${canvasEvent.courseCode}|${canvasEvent.date}|${canvasEvent.classStart ?? "all-day"}`;
+    const echoEvent = echoByKey.get(matchKey) ?? null;
+    if (echoEvent) matchedEchoIds.add(echoEvent.id);
+
+    const recordingStatus: SharedCalendarRecordingStatus = echoEvent?.recordingStatus ?? "not-found";
+    const recording = recordingStatusDescription(recordingStatus, echoEvent ?? undefined);
+    const moduleName = echoEvent?.moduleName ?? null;
+    const sourceProvenance = [d2CanvasCalendar.sourceLabel];
+    if (echoEvent) sourceProvenance.push(echoEvent.source);
 
     return {
-      id: `class-${event.id}`,
-      sourceId: isExam ? "exam" : "class-recording",
-      title: `${course.code}: ${event.title}`,
-      date: event.date,
-      startsAt: `${event.date}T${event.classStart}:00${easternUtcOffset(event.date)}`,
-      endsAt: `${event.date}T${event.classEnd}:00${easternUtcOffset(event.date)}`,
-      allDay: false,
+      id: echoEvent ? `class-${echoEvent.id}` : `canvas-${canvasEvent.uid.replace(/[^a-zA-Z0-9-]/g, "-")}`,
+      sourceId: canvasEvent.eventKind === "exam" ? "exam" : "class-recording",
+      title: `${canvasEvent.courseCode}: ${canvasEvent.title}`,
+      date: canvasEvent.date,
+      startsAt: canvasEvent.startsAt,
+      endsAt: canvasEvent.endsAt,
+      allDay: canvasEvent.allDay,
       status: "scheduled",
       participants: [],
-      description: `Module: ${event.moduleName}. ${recording} Source: ${event.source}.`,
-      action: {
-        label: "Open recording workspace",
-        href: `/recordings?event=${encodeURIComponent(event.id)}`,
-        requiresLinkedD2: true,
-        promptTitle: `Open ${course.code} class details`,
-        promptDescription: "Sign in with a linked D2 account to open the module details and available Canvas or Echo360 links.",
-      },
+      description: `${moduleName ? `Module: ${moduleName}. ` : "Module not mapped yet. "}${recording}`,
+      actions: classActions(canvasEvent, echoEvent),
+      courseCode: canvasEvent.courseCode,
+      courseName: courseEntry?.course.name ?? canvasEvent.courseCode,
+      eventKind: canvasEvent.eventKind,
+      location: canvasEvent.location,
+      moduleName,
+      recordingStatus,
+      recordingStart: echoEvent?.recordingStart ?? null,
+      recordingEnd: echoEvent?.recordingEnd ?? null,
+      canvasUrl: canvasEvent.canvasUrl,
+      echoUrl: echoEvent?.echoUrl ?? null,
+      sourceProvenance,
+      alternateSchedule: alternateScheduleFor(canvasEvent, echoEvent),
     };
   });
+
+  const echoOnlyEvents = d2RecordingCalendar.events
+    .filter((event) => !matchedEchoIds.has(event.id))
+    .map((event): SharedCalendarEvent => {
+      const course = courses[event.courseId];
+      const eventKind = eventKindForEcho(event);
+      return {
+        id: `class-${event.id}`,
+        sourceId: eventKind === "exam" ? "exam" : "class-recording",
+        title: `${course.code}: ${event.title}`,
+        date: event.date,
+        startsAt: localClassIso(event.date, event.classStart),
+        endsAt: localClassIso(event.date, event.classEnd),
+        allDay: false,
+        status: "scheduled",
+        participants: [],
+        description: `Module: ${event.moduleName}. ${recordingStatusDescription(event.recordingStatus, event)} Canvas calendar event not found in the static snapshot.`,
+        actions: classActions(null, event),
+        courseCode: course.code,
+        courseName: course.name,
+        eventKind,
+        location: null,
+        moduleName: event.moduleName,
+        recordingStatus: event.recordingStatus,
+        recordingStart: event.recordingStart,
+        recordingEnd: event.recordingEnd,
+        canvasUrl: event.canvasUrl,
+        echoUrl: event.echoUrl,
+        sourceProvenance: [event.source],
+        alternateSchedule: null,
+      };
+    });
+
+  return [...canvasEvents, ...echoOnlyEvents];
 }
 
 function buildSealantEvents(): SharedCalendarEvent[] {
@@ -202,15 +334,27 @@ function buildSealantEvents(): SharedCalendarEvent[] {
       sourceId: "sealant-duty",
       title: "Sealant Duty + Clinic Shadowing",
       date: rotation.date,
-      startsAt: `${rotation.date}T13:00:00${easternUtcOffset(rotation.date)}`,
-      endsAt: `${rotation.date}T16:50:00${easternUtcOffset(rotation.date)}`,
+      startsAt: localClassIso(rotation.date, "13:00"),
+      endsAt: localClassIso(rotation.date, "16:50"),
       allDay: false,
       status: "scheduled",
       participants: rotation.sealantGroup
         ? [{ key: `sealant-group-${rotation.sealantGroup.toLowerCase()}`, label: `Group ${rotation.sealantGroup}`, kind: "group" as const }]
         : [],
       description: groupDescription,
-      action: null,
+      actions: [],
+      courseCode: null,
+      courseName: null,
+      eventKind: "sealant",
+      location: null,
+      moduleName: null,
+      recordingStatus: null,
+      recordingStart: null,
+      recordingEnd: null,
+      canvasUrl: null,
+      echoUrl: null,
+      sourceProvenance: ["Fall 2026 D2 schedule updated August 7, 2026"],
+      alternateSchedule: null,
     };
   });
 }
@@ -229,7 +373,19 @@ export function buildSharedCalendar(showcase: ClinicDutyShowcase): SharedCalenda
         status: "closed",
         participants: [],
         description: duty.closureReason ?? "Sim Clinic Duty is closed.",
-        action: null,
+        actions: [],
+        courseCode: null,
+        courseName: null,
+        eventKind: "closure",
+        location: null,
+        moduleName: null,
+        recordingStatus: null,
+        recordingStart: null,
+        recordingEnd: null,
+        canvasUrl: null,
+        echoUrl: null,
+        sourceProvenance: ["Fourth Canal Sim Clinic Duty schedule"],
+        alternateSchedule: null,
       };
     }
 
@@ -248,20 +404,32 @@ export function buildSharedCalendar(showcase: ClinicDutyShowcase): SharedCalenda
         kind: "student" as const,
       })),
       description: "The assigned pair checks shared Lab and Sim Clinic spaces; each student remains responsible for their own station.",
-      action: {
+      actions: [{
         label: "Change duty",
         href: `/clinic-duty?view=mine&date=${duty.date}`,
         requiresLinkedD2: true,
         promptTitle: `Change responsibility for ${duty.date}`,
         promptDescription: "Sign in to release this date or offer a trade. Responsibility stays with the original student until a valid claim or accepted trade transfers it.",
-      },
+      }],
+      courseCode: null,
+      courseName: null,
+      eventKind: "sim-clinic",
+      location: "Sim Clinic",
+      moduleName: null,
+      recordingStatus: null,
+      recordingStart: null,
+      recordingEnd: null,
+      canvasUrl: null,
+      echoUrl: null,
+      sourceProvenance: ["Fourth Canal Sim Clinic Duty schedule"],
+      alternateSchedule: null,
     };
   });
 
   const sealantEvents = buildSealantEvents();
-  const classEvents = buildClassEvents();
-  const examEvents = classEvents.filter((event) => event.sourceId === "exam");
-  const events = [...classEvents, ...clinicEvents, ...sealantEvents].sort((a, b) =>
+  const courseEvents = buildCourseEvents();
+  const examEvents = courseEvents.filter((event) => event.eventKind === "exam");
+  const events = [...courseEvents, ...clinicEvents, ...sealantEvents].sort((a, b) =>
     a.startsAt.localeCompare(b.startsAt) || a.sourceId.localeCompare(b.sourceId),
   );
 
@@ -269,11 +437,12 @@ export function buildSharedCalendar(showcase: ClinicDutyShowcase): SharedCalenda
     label: "Fall 2026 D2 Calendar",
     startsOn: showcase.term.startsOn,
     endsOn: showcase.term.endsOn,
+    canvasSnapshotDownloadedAt: d2CanvasCalendar.downloadedAt,
     sources: SHARED_CALENDAR_SOURCES,
     events,
     summary: {
       students: showcase.summary.students,
-      classBlocks: classEvents.length - examEvents.length,
+      courseEvents: courseEvents.length,
       exams: examEvents.length,
       simClinicDates: showcase.summary.openDates,
       sealantRotations: sealantEvents.length,
@@ -355,6 +524,16 @@ function foldIcsLine(line: string) {
   return output;
 }
 
+function recordingCategory(status: SharedCalendarRecordingStatus) {
+  if (!status) return null;
+  if (status === "not-found") return "No Echo schedule found";
+  if (status === "not-scheduled") return "Not scheduled for recording";
+  if (status === "not-recorded") return "Not recorded";
+  if (status === "recorded") return "Recorded";
+  if (status === "scheduled") return "Echo scheduled";
+  return "Recording status unknown";
+}
+
 export function buildSharedCalendarIcs(
   calendar: SharedCalendarData,
   generatedAt: Date = new Date(),
@@ -365,6 +544,12 @@ export function buildSharedCalendarIcs(
     const description = people
       ? `${people}. ${event.description}`
       : event.description;
+    const categories = [
+      source?.label ?? "Fourth Canal",
+      event.courseCode,
+      event.eventKind,
+      recordingCategory(event.recordingStatus),
+    ].filter((value): value is string => Boolean(value));
     const lines = [
       "BEGIN:VEVENT",
       `UID:${event.id}@fourthcanal.com`,
@@ -377,10 +562,11 @@ export function buildSharedCalendarIcs(
         : `DTEND:${formatIcsDateTime(event.endsAt)}`,
       `SUMMARY:${escapeIcs(event.title)}`,
       `DESCRIPTION:${escapeIcs(description)}`,
-      `CATEGORIES:${escapeIcs(source?.label ?? "Fourth Canal")}`,
+      `CATEGORIES:${categories.map(escapeIcs).join(",")}`,
       "URL:https://fourthcanal.com/calendar",
     ];
 
+    if (event.location) lines.push(`LOCATION:${escapeIcs(event.location)}`);
     if (event.status === "scheduled") {
       lines.push(
         "BEGIN:VALARM",

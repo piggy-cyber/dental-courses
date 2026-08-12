@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState, useTransition } from "react";
+import { Fragment, useMemo, useState, useTransition } from "react";
 import type { ClinicDutyAdmin } from "@/lib/clinic-duty";
 import {
   overrideClinicDutySlot,
@@ -154,6 +154,7 @@ export function ClinicDutyAdminConsole({ data }: { data: ClinicDutyAdmin }) {
   const [notice, setNotice] = useState<string | null>(null);
   const [publishPhrase, setPublishPhrase] = useState("");
   const [dateFilter, setDateFilter] = useState<"all" | "open" | "closed" | "completed" | "overdue">("all");
+  const [editingDateId, setEditingDateId] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const today = new Intl.DateTimeFormat("en-CA", { timeZone: "America/New_York" }).format(new Date());
 
@@ -187,7 +188,7 @@ export function ClinicDutyAdminConsole({ data }: { data: ClinicDutyAdmin }) {
         <div className="clinic-duty-admin-title">
           <div>
             <h1>Sim Clinic Duty</h1>
-            <p>Calendar corrections, assignment exceptions, private photo waivers, overdue review, and audit history.</p>
+            <p>A manager schedule for reviewing every date and assigned account, then correcting assignments, hours, closures, and exceptions.</p>
           </div>
           <Link href="/clinic-duty" className="portal-button px-4 py-2 text-sm font-semibold">Student view</Link>
         </div>
@@ -235,16 +236,42 @@ export function ClinicDutyAdminConsole({ data }: { data: ClinicDutyAdmin }) {
             <option value="overdue">Overdue</option>
           </select>
         </div>
-        <div className="clinic-duty-admin-dates">
-          {visibleDates.map((date) => (
-            <details key={date.id}>
-              <summary>
-                <span><b>{formatDate(date.date)}</b><small>{date.slots.map((slot) => slot.assigneeName).join(" + ") || date.closureReason || "No assignments"}</small></span>
-                <span className="clinic-duty-status">{date.submissionStatus ?? date.status}{date.photoWaived ? " · photo waived" : ""}</span>
-              </summary>
-              <DateControls date={date} roster={data.workload} pending={isPending} run={run} />
-            </details>
-          ))}
+        <div className="clinic-duty-table-wrap">
+          <table className="portal-table clinic-duty-table clinic-duty-manager-table">
+            <thead>
+              <tr><th>Date</th><th>Hours</th><th>Assigned accounts</th><th>Status</th><th><span className="sr-only">Actions</span></th></tr>
+            </thead>
+            <tbody>
+              {visibleDates.map((date) => {
+                const isEditing = editingDateId === date.id;
+                return (
+                  <Fragment key={date.id}>
+                    <tr>
+                      <td data-label="Date"><b>{formatDate(date.date)}</b></td>
+                      <td data-label="Hours">{localInput(date.opensAt).slice(11)}–{localInput(date.closesAt).slice(11)}</td>
+                      <td data-label="Assigned accounts">
+                        <div className="clinic-duty-manager-assignees">
+                          {date.slots.length > 0 ? date.slots.map((slot) => {
+                            const rosterEntry = data.workload.find((student) => student.rosterId === slot.assigneeRosterId);
+                            return <span key={slot.id}><b>{slot.assigneeName}</b><small>{rosterEntry?.status === "signed_in" ? "Account linked" : "Roster assigned"}</small></span>;
+                          }) : <span>{date.closureReason || "No assignments"}</span>}
+                        </div>
+                      </td>
+                      <td data-label="Status"><span className="clinic-duty-status">{date.submissionStatus ?? date.status}{date.photoWaived ? " · photo waived" : ""}</span></td>
+                      <td data-label="Action"><button type="button" className="clinic-duty-text-button" aria-expanded={isEditing} onClick={() => setEditingDateId(isEditing ? null : date.id)}>{isEditing ? "Close editor" : "Edit shift"}</button></td>
+                    </tr>
+                    {isEditing && (
+                      <tr className="clinic-duty-manager-edit-row">
+                        <td colSpan={5} data-label="Edit shift">
+                          <DateControls date={date} roster={data.workload} pending={isPending} run={run} />
+                        </td>
+                      </tr>
+                    )}
+                  </Fragment>
+                );
+              })}
+            </tbody>
+          </table>
         </div>
       </section>
 

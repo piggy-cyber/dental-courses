@@ -1,61 +1,64 @@
 import { describe, expect, it } from "vitest";
 import { buildFall2026ShowcaseSnapshot } from "@/lib/clinic-duty-showcase-shared";
+import { d2RecordingCalendar } from "@/lib/d2-recording-calendar";
 import {
   buildSharedCalendar,
   buildSharedCalendarIcs,
   buildSharedCalendarMonth,
+  CANVAS_FALL_2026_EXAMS,
   FALL_2026_SEALANT_ROTATIONS,
-  VERIFIED_FALL_2026_EXAMS,
 } from "@/lib/shared-calendar";
 
 describe("shared Fall 2026 D2 calendar", () => {
   const calendar = buildSharedCalendar(buildFall2026ShowcaseSnapshot());
+  const courseEvents = calendar.events.filter((event) => event.courseCode);
 
-  it("combines classes, verified exams, Sim Clinic, closures, and Sealant rotations", () => {
+  it("merges all Canvas, Echo360, duty, rotation, and closure events", () => {
     expect(calendar.summary).toEqual({
       students: 82,
-      classBlocks: 72,
-      exams: 2,
+      courseEvents: 118,
+      exams: 6,
       simClinicDates: 104,
       sealantRotations: 12,
       closures: 3,
     });
-    expect(calendar.events).toHaveLength(193);
-    expect(new Set(calendar.events.map((event) => event.id)).size).toBe(193);
-    expect(calendar.events.filter((event) => event.sourceId === "class-recording")).toHaveLength(72);
-    expect(calendar.events.filter((event) => event.sourceId === "exam")).toHaveLength(2);
+    expect(calendar.events).toHaveLength(237);
+    expect(new Set(calendar.events.map((event) => event.id)).size).toBe(237);
+    expect(calendar.events.filter((event) => event.sourceId === "class-recording")).toHaveLength(112);
+    expect(calendar.events.filter((event) => event.sourceId === "exam")).toHaveLength(6);
     expect(calendar.events.filter((event) => event.sourceId === "sim-clinic")).toHaveLength(104);
     expect(calendar.events.filter((event) => event.sourceId === "sealant-duty")).toHaveLength(12);
     expect(calendar.events.filter((event) => event.sourceId === "academic-closure")).toHaveLength(3);
   });
 
-  it("uses only the two exams explicitly listed in the verified Prosth schedule", () => {
-    expect(VERIFIED_FALL_2026_EXAMS).toEqual([
-      {
-        courseId: "REHE-257",
-        date: "2026-09-22",
-        title: "Midterm Exam + Project #1 Due",
-      },
-      {
-        courseId: "REHE-257",
-        date: "2026-10-27",
-        title: "Final Comprehensive Written Examination",
-      },
+  it("preserves every existing Echo event ID while adding only the missing Canvas events", () => {
+    const ids = new Set(calendar.events.map((event) => event.id));
+
+    expect(d2RecordingCalendar.events.every((event) => ids.has(`class-${event.id}`))).toBe(true);
+    expect(courseEvents.filter((event) => event.id.startsWith("canvas-"))).toHaveLength(44);
+    expect(courseEvents.filter((event) => event.recordingStatus === "recorded")).toHaveLength(2);
+    expect(courseEvents.filter((event) => event.recordingStatus === "scheduled")).toHaveLength(68);
+    expect(courseEvents.filter((event) => event.recordingStatus === "not-scheduled")).toHaveLength(4);
+    expect(courseEvents.filter((event) => event.recordingStatus === "not-found")).toHaveLength(44);
+  });
+
+  it("uses all six Canvas exam blocks and lets Canvas control the displayed time", () => {
+    expect(CANVAS_FALL_2026_EXAMS.map((exam) => [exam.courseCode, exam.date, exam.title])).toEqual([
+      ["HWDP 232", "2026-09-09", "R&B: Final Exam"],
+      ["REMA 261", "2026-09-17", "Ortho: Final Exam"],
+      ["REHE 257", "2026-09-22", "ProsthoTech: Midterm, Finish Project"],
+      ["HWDP 245", "2026-09-28", "MS: Final Exam"],
+      ["REHE 257", "2026-10-27", "ProsthoTech: Final Exam"],
+      ["REHE 262", "2026-11-05", "BP Resto: Final Exam"],
     ]);
-    expect(calendar.events.filter((event) => event.sourceId === "exam")).toMatchObject([
-      {
-        date: "2026-09-22",
-        title: "REHE 257: Midterm Exam + Project #1 Due",
-        startsAt: "2026-09-22T13:00:00-04:00",
-        endsAt: "2026-09-22T16:45:00-04:00",
-      },
-      {
-        date: "2026-10-27",
-        title: "REHE 257: Final Comprehensive Written Examination",
-        startsAt: "2026-10-27T13:00:00-04:00",
-        endsAt: "2026-10-27T16:45:00-04:00",
-      },
-    ]);
+
+    expect(calendar.events.find((event) => event.title === "REHE 257: ProsthoTech: Final Exam")).toMatchObject({
+      startsAt: "2026-10-27T17:00:00.000Z",
+      endsAt: "2026-10-27T19:00:00.000Z",
+      moduleName: "Session 25",
+      recordingStatus: "not-scheduled",
+      alternateSchedule: "1:00 PM-4:45 PM in the course/Echo source",
+    });
   });
 
   it("preserves the official Sealant group sequence without inventing a group on November 30", () => {
@@ -85,23 +88,29 @@ describe("shared Fall 2026 D2 calendar", () => {
 
     expect(august).toHaveLength(6);
     expect(august.every((week) => week.length === 7)).toBe(true);
-    expect(august31?.events.map((event) => event.sourceId).sort()).toEqual(["sealant-duty", "sim-clinic"]);
+    expect(august31?.events.map((event) => event.sourceId)).toEqual(expect.arrayContaining([
+      "class-recording",
+      "sealant-duty",
+      "sim-clinic",
+    ]));
   });
 
-  it("exports every public event as a standards-shaped ICS file with 24-hour reminders", () => {
-    const ics = buildSharedCalendarIcs(calendar, new Date("2026-08-11T16:00:00Z"));
+  it("exports all 237 stable events with recording categories and reminders", () => {
+    const ics = buildSharedCalendarIcs(calendar, new Date("2026-08-12T16:00:00Z"));
     const lines = ics.split("\r\n");
+    const unfolded = ics.replace(/\r\n[ \t]/g, "");
+    const uids = [...ics.matchAll(/^UID:(.+)$/gm)].map((match) => match[1]);
 
-    expect(ics.match(/BEGIN:VEVENT/g)).toHaveLength(193);
-    expect(ics.match(/BEGIN:VALARM/g)).toHaveLength(190);
-    expect(ics).toContain("SUMMARY:REHE 257: Midterm Exam + Project #1 Due");
-    expect(ics).toContain("SUMMARY:REHE 257: Final Comprehensive Written Examination");
-    expect(ics).toContain("CATEGORIES:Classes + recordings");
-    expect(ics).toContain("CATEGORIES:Verified exams");
+    expect(ics.match(/BEGIN:VEVENT/g)).toHaveLength(237);
+    expect(ics.match(/BEGIN:VALARM/g)).toHaveLength(234);
+    expect(new Set(uids).size).toBe(237);
+    expect(unfolded).toContain("SUMMARY:REHE 257: ProsthoTech: Midterm\\, Finish Project");
+    expect(unfolded).toContain("SUMMARY:REHE 262: BP Resto: Final Exam");
+    expect(unfolded).toContain("CATEGORIES:D2 course events,HWDP 232,class,Recorded");
+    expect(unfolded).toContain("No Echo schedule found");
     expect(ics).toContain("SUMMARY:Sealant Duty + Clinic Shadowing");
     expect(ics).toContain("SUMMARY:Sim Clinic Duty");
     expect(ics).toContain("DTSTART;VALUE=DATE:20260907");
-    expect(ics).toContain("DTEND;VALUE=DATE:20260908");
     expect(ics).toContain("X-WR-CALNAME:Fall 2026 D2 Calendar");
     expect(ics.endsWith("END:VCALENDAR\r\n")).toBe(true);
     expect(lines.every((line) => new TextEncoder().encode(line).length <= 75)).toBe(true);
