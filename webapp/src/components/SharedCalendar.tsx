@@ -429,100 +429,6 @@ export function SharedCalendar({
 
   return (
     <div className="shared-calendar-stack">
-      <section className="shared-calendar-sources" aria-label="Calendar sources">
-        {calendar.sources.map((source) => {
-          const count = calendar.events.filter((event) => event.sourceId === source.id).length;
-          return (
-            <article key={source.id} className={`tone-${source.tone}`}>
-              <span aria-hidden="true" />
-              <b>{source.label}</b>
-              <strong>{count}</strong>
-              <small>{source.description}</small>
-            </article>
-          );
-        })}
-      </section>
-
-      <section className="shared-calendar-actions" aria-labelledby="calendar-actions-title">
-        <div>
-          <p className="eyebrow">Calendar access</p>
-          <h2 id="calendar-actions-title">One calendar. Your next day at a glance.</h2>
-          <p>Subscribe to all 237 events or use your linked D2 account to manage an assigned duty.</p>
-        </div>
-        <div className="shared-calendar-action-grid">
-          <article className="is-public">
-            <span>Public</span>
-            <h3>Full D2 calendar</h3>
-            <p>Classes, recording status, exams, duties, and closures—with a 24-hour reminder.</p>
-            <a className="clinic-duty-protected-action" href="/api/calendar.ics">Download all (.ics) →</a>
-            <label className="shared-calendar-copy-label" htmlFor="shared-calendar-subscription">Calendar subscription link</label>
-            <div className="shared-calendar-copy-row">
-              <input ref={calendarLinkRef} id="shared-calendar-subscription" type="text" readOnly value={calendarSubscriptionUrl} onFocus={(event) => event.currentTarget.select()} />
-              <button type="button" onClick={copyCalendarLink}>Copy link</button>
-            </div>
-            <small className="shared-calendar-copy-feedback" role="status" aria-live="polite">{copyFeedback}</small>
-          </article>
-          {accountActions.map((action) => (
-            <article key={action.label}>
-              <span>{canManageDuty ? "Linked" : "Sign in"}</span>
-              <h3>{action.label}</h3>
-              <p>{action.description}</p>
-              <AccountAction
-                canManageDuty={canManageDuty}
-                className="clinic-duty-protected-action"
-                href={action.href}
-                label={`${action.label} →`}
-                prompt={{ title: action.title, description: action.description, returnTo: action.returnTo ?? action.href }}
-                setAccessPrompt={setAccessPrompt}
-              />
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="shared-calendar-controls" aria-label="Filter the D2 calendar">
-        <div className="shared-calendar-controls-heading">
-          <p className="eyebrow">Find an event</p>
-          <h2>{visibleEvents.length} event{visibleEvents.length === 1 ? "" : "s"} in this view</h2>
-        </div>
-        <label>
-          Course
-          <select className="app-input" value={courseCode} onChange={(event) => setCourseCode(event.target.value)}>
-            <option value="all">All courses + duties</option>
-            {courseCodes.map((code) => <option key={code} value={code}>{code}</option>)}
-          </select>
-        </label>
-        <label>
-          Event type
-          <select className="app-input" value={eventKind} onChange={(event) => setEventKind(event.target.value)}>
-            <option value="all">All event types</option>
-            {eventKinds.map((kind) => <option key={kind} value={kind}>{EVENT_KIND_LABELS[kind]}</option>)}
-          </select>
-        </label>
-        <label>
-          Recording
-          <select className="app-input" value={recordingFilter} onChange={(event) => setRecordingFilter(event.target.value as RecordingFilter)}>
-            <option value="all">All recording states</option>
-            <option value="recorded">Recorded</option>
-            <option value="scheduled">Echo scheduled</option>
-            <option value="pending">Confirmation pending</option>
-            <option value="not-scheduled">Not scheduled / recorded</option>
-            <option value="not-found">No Echo schedule found</option>
-          </select>
-        </label>
-        <details className="shared-calendar-more-filters">
-          <summary>More filters</summary>
-          <label>
-            Student duty
-            <select className="app-input" value={studentKey} onChange={(event) => setStudentKey(event.target.value)}>
-              <option value="all">All {students.length} students</option>
-              {students.map((student) => <option key={student.key} value={student.key}>{student.label}</option>)}
-            </select>
-          </label>
-        </details>
-        {filtersActive && <button type="button" className="clinic-duty-reset-button" onClick={resetFilters}>Reset filters</button>}
-      </section>
-
       <section className="shared-calendar-month" aria-labelledby="shared-calendar-month-title">
         <header className="shared-calendar-month-header">
           <div>
@@ -536,6 +442,52 @@ export function SharedCalendar({
             <button type="button" disabled={currentMonthIndex === months.length - 1} onClick={() => navigateMonth(1)} aria-label="Next month"><span>Next</span> →</button>
           </div>
         </header>
+
+        <details className="shared-calendar-filter-panel">
+          <summary>
+            <span>Filters</span>
+            <small>{filtersActive ? "Filtered" : "All events"} · {visibleEvents.length} shown</small>
+          </summary>
+          <section className="shared-calendar-controls" aria-label="Filter the D2 calendar">
+            <label>
+              Course
+              <select className="app-input" value={courseCode} onChange={(event) => setCourseCode(event.target.value)}>
+                <option value="all">All courses + duties</option>
+                {courseCodes.map((code) => <option key={code} value={code}>{code}</option>)}
+              </select>
+            </label>
+            <label>
+              Event type
+              <select className="app-input" value={eventKind} onChange={(event) => setEventKind(event.target.value)}>
+                <option value="all">All event types</option>
+                {eventKinds.map((kind) => <option key={kind} value={kind}>{EVENT_KIND_LABELS[kind]}</option>)}
+              </select>
+            </label>
+            <label>
+              Recording
+              <select className="app-input" value={recordingFilter} onChange={(event) => setRecordingFilter(event.target.value as RecordingFilter)}>
+                <option value="all">All recording states</option>
+                <option value="recorded">Recorded</option>
+                <option value="scheduled">Echo scheduled</option>
+                <option value="pending">Confirmation pending</option>
+                <option value="not-scheduled">Not scheduled / recorded</option>
+                <option value="not-found">No Echo schedule found</option>
+              </select>
+            </label>
+            <label>
+              Student duty
+              <select className="app-input" value={studentKey} onChange={(event) => setStudentKey(event.target.value)}>
+                <option value="all">All {students.length} students</option>
+                {students.map((student) => <option key={student.key} value={student.key}>{student.label}</option>)}
+              </select>
+            </label>
+            {filtersActive && <button type="button" className="clinic-duty-reset-button" onClick={resetFilters}>Reset filters</button>}
+          </section>
+        </details>
+
+        <div className="shared-calendar-course-legend" aria-label="Course color key">
+          {courseCodes.map((code) => <span key={code} className={courseClass(code)}><i aria-hidden="true" />{code}</span>)}
+        </div>
 
         <div className="shared-calendar-grid" role="grid" aria-label={`${monthLabel(displayedMonth)} D2 calendar`}>
           {WEEKDAYS.map((weekday) => <div role="columnheader" key={weekday} className="clinic-duty-calendar-weekday">{weekday}</div>)}
@@ -596,6 +548,62 @@ export function SharedCalendar({
           </div>
         </section>
       </section>
+
+      <details className="shared-calendar-supporting-info">
+        <summary>Calendar sources, subscription, and duty access</summary>
+        <div>
+          <section className="shared-calendar-sources" aria-label="Calendar sources">
+            {calendar.sources.map((source) => {
+              const count = calendar.events.filter((event) => event.sourceId === source.id).length;
+              return (
+                <article key={source.id} className={`tone-${source.tone}`}>
+                  <span aria-hidden="true" />
+                  <b>{source.label}</b>
+                  <strong>{count}</strong>
+                  <small>{source.description}</small>
+                </article>
+              );
+            })}
+          </section>
+
+          <section className="shared-calendar-actions" aria-labelledby="calendar-actions-title">
+            <div>
+              <p className="eyebrow">Calendar access</p>
+              <h2 id="calendar-actions-title">Subscribe or manage duty access.</h2>
+              <p>Subscribe to all 237 events or use your linked D2 account to manage an assigned duty.</p>
+            </div>
+            <div className="shared-calendar-action-grid">
+              <article className="is-public">
+                <span>Public</span>
+                <h3>Full D2 calendar</h3>
+                <p>Classes, recording status, exams, duties, and closures—with a 24-hour reminder.</p>
+                <a className="clinic-duty-protected-action" href="/api/calendar.ics">Download all (.ics) →</a>
+                <label className="shared-calendar-copy-label" htmlFor="shared-calendar-subscription">Calendar subscription link</label>
+                <div className="shared-calendar-copy-row">
+                  <input ref={calendarLinkRef} id="shared-calendar-subscription" type="text" readOnly value={calendarSubscriptionUrl} onFocus={(event) => event.currentTarget.select()} />
+                  <button type="button" onClick={copyCalendarLink}>Copy link</button>
+                </div>
+                <small className="shared-calendar-copy-feedback" role="status" aria-live="polite">{copyFeedback}</small>
+              </article>
+              {accountActions.map((action) => (
+                <article key={action.label}>
+                  <span>{canManageDuty ? "Linked" : "Sign in"}</span>
+                  <h3>{action.label}</h3>
+                  <p>{action.description}</p>
+                  <AccountAction
+                    canManageDuty={canManageDuty}
+                    className="clinic-duty-protected-action"
+                    href={action.href}
+                    label={`${action.label} →`}
+                    prompt={{ title: action.title, description: action.description, returnTo: action.returnTo ?? action.href }}
+                    setAccessPrompt={setAccessPrompt}
+                  />
+                </article>
+              ))}
+            </div>
+          </section>
+        </div>
+      </details>
 
       {selectedEvent && (
         <div className="clinic-duty-access-backdrop" onMouseDown={() => setSelectedEvent(null)}>

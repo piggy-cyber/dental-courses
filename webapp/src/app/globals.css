@@ -82,13 +82,6 @@
 .shared-calendar-recording-badge.is-not-scheduled,
 .shared-calendar-recording-badge.is-not-found { color: #687782; background: #f2f2f0; }
 .shared-calendar-more-button { min-height: 26px; padding: .25rem; border: 1px dashed var(--brand-line); color: var(--brand-blue); background: transparent; font-size: .5rem; font-weight: 750; cursor: pointer; }
-.course-hwdp-232 { --source-color: #286da4; --source-soft: #eaf3fa; }
-.course-hwdp-245 { --source-color: #7357a6; --source-soft: #f1edfa; }
-.course-rehe-257 { --source-color: #b35a2e; --source-soft: #fff0e7; }
-.course-rehe-262 { --source-color: #278b83; --source-soft: #e8f4f2; }
-.course-rehe-259 { --source-color: #a84462; --source-soft: #faedf1; }
-.course-rehe-264 { --source-color: #9b6814; --source-soft: #fff5dc; }
-.course-rema-261 { --source-color: #4f7a3c; --source-soft: #eff6eb; }
 .shared-calendar-day-agenda { border-top: 4px solid var(--brand-navy); }
 .shared-calendar-day-agenda > header { display: flex; align-items: end; justify-content: space-between; gap: 1rem; padding: 1rem; border-bottom: 1px solid var(--brand-line); background: var(--brand-soft); }
 .shared-calendar-day-agenda h3 { margin-top: .25rem; color: var(--brand-navy); font-family: var(--font-fc-display), Georgia, serif; font-size: 1.6rem; font-weight: 580; }
@@ -198,7 +191,7 @@
 .lab-projects-coverage > header { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 1rem; padding: 1.15rem; border-bottom: 1px solid var(--brand-line); }
 .lab-projects-coverage h2 { margin-top: .25rem; color: var(--brand-navy); font-family: var(--font-fc-display), Georgia, serif; font-size: clamp(1.75rem, 4vw, 2.6rem); font-weight: 560; line-height: 1; letter-spacing: -.035em; }
 .lab-projects-coverage-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
-.lab-projects-coverage-grid article { --source-color: var(--brand-blue); min-width: 0; min-height: 180px; display: flex; flex-direction: column; padding: 1rem; border-left: 1px solid var(--brand-line); border-top: 4px solid var(--source-color); }
+.lab-projects-coverage-grid article { min-width: 0; min-height: 180px; display: flex; flex-direction: column; padding: 1rem; border-left: 1px solid var(--brand-line); border-top: 4px solid var(--source-color, var(--brand-blue)); }
 .lab-projects-coverage-grid article:first-child { border-left: 0; }
 .lab-projects-coverage-grid article > span { color: var(--source-color); font: 760 .58rem var(--font-mono-app), monospace; }
 .lab-projects-coverage-grid h3 { margin: auto 0 .45rem; color: var(--brand-navy); font-size: 1rem; }
@@ -226,7 +219,7 @@
 .lab-projects-day > header h2 { margin-top: .35rem; color: var(--brand-navy); font-family: var(--font-fc-display), Georgia, serif; font-size: 1.42rem; font-weight: 580; line-height: 1.08; letter-spacing: -.025em; }
 .lab-projects-day > header > b { color: var(--brand-muted); font: 700 .54rem var(--font-mono-app), monospace; text-transform: uppercase; }
 .lab-projects-day-list { min-width: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
-.lab-project-card { --source-color: var(--brand-blue); min-width: 0; height: 100%; display: flex; flex-direction: column; gap: .75rem; padding: 1rem; border-left: 4px solid var(--source-color); border-bottom: 1px solid var(--brand-line); background: var(--brand-panel); scroll-margin-top: 6rem; }
+.lab-project-card { min-width: 0; height: 100%; display: flex; flex-direction: column; gap: .75rem; padding: 1rem; border-left: 4px solid var(--source-color, var(--brand-blue)); border-bottom: 1px solid var(--brand-line); background: var(--source-soft, var(--brand-panel)); scroll-margin-top: 6rem; }
 .lab-project-card:nth-child(even) { border-left-width: 1px; box-shadow: inset 4px 0 0 var(--source-color); }
 .lab-project-card.is-earlier { background: color-mix(in srgb, var(--brand-panel), var(--brand-soft) 24%); }
 .lab-project-card-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: .75rem; }
@@ -2484,6 +2477,13 @@ body.guide-table-open { overflow: hidden; }
 .tone-teal { --source-color: #278b83; --source-soft: #e8f2f0; }
 .tone-copper { --source-color: #b35a2e; --source-soft: #fff0e7; }
 .tone-slate { --source-color: #687782; --source-soft: #eef0f1; }
+.course-hwdp-232 { --source-color: #286da4; --source-soft: #eaf3fa; }
+.course-hwdp-245 { --source-color: #7357a6; --source-soft: #f1edfa; }
+.course-rehe-257 { --source-color: #b35a2e; --source-soft: #fff0e7; }
+.course-rehe-262 { --source-color: #278b83; --source-soft: #e8f4f2; }
+.course-rehe-259 { --source-color: #a84462; --source-soft: #faedf1; }
+.course-rehe-264 { --source-color: #9b6814; --source-soft: #fff5dc; }
+.course-rema-261 { --source-color: #4f7a3c; --source-soft: #eff6eb; }
 .shared-calendar-actions { border: 1px solid var(--brand-line); background: var(--brand-panel); }
 .shared-calendar-actions > div:first-child { padding: 1.15rem; border-bottom: 1px solid var(--brand-line); }
 .shared-calendar-actions h2 { margin: .25rem 0 .35rem; color: var(--brand-navy); font-family: var(--font-fc-display), Georgia, serif; font-size: clamp(1.65rem, 3vw, 2.5rem); font-weight: 560; line-height: 1; letter-spacing: -.035em; }
@@ -2690,4 +2690,169 @@ body.guide-table-open { overflow: hidden; }
   .shared-calendar-day,
   .shared-calendar-day.has-no-events,
   .shared-calendar-day.is-empty { min-height: 52px; }
+}
+
+/* Compact schedule entry points: working calendars come before supporting information. */
+.shared-calendar-compact-header,
+.lab-projects-compact-header { min-width: 0; display: flex; align-items: center; justify-content: space-between; gap: 1.25rem; padding: .85rem 1rem; border: 1px solid var(--brand-line); border-left: 4px solid var(--brand-copper); background: var(--brand-panel); }
+.shared-calendar-compact-header h1,
+.lab-projects-compact-header h1 { margin: .16rem 0 .25rem; color: var(--brand-navy); font-family: var(--font-fc-display), Georgia, serif; font-size: clamp(2rem, 5vw, 3rem); font-weight: 550; line-height: .95; letter-spacing: -.045em; }
+.shared-calendar-compact-header > div:first-child > p:last-child,
+.lab-projects-compact-header > div:first-child > p:last-child { color: var(--brand-muted); font-size: .7rem; line-height: 1.45; }
+.shared-calendar-compact-actions,
+.lab-projects-compact-links { flex: 0 0 auto; display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: .45rem; }
+.shared-calendar-compact-actions a,
+.lab-projects-compact-links a { min-height: 38px; display: inline-flex; align-items: center; padding: .45rem .65rem; border: 1px solid var(--brand-line); color: var(--brand-blue); background: var(--brand-soft); font-size: .62rem; font-weight: 760; text-decoration: none; }
+.shared-calendar-compact-actions a:hover,
+.shared-calendar-compact-actions a:focus-visible,
+.lab-projects-compact-links a:hover,
+.lab-projects-compact-links a:focus-visible { border-color: var(--brand-blue); outline: 2px solid var(--brand-teal); outline-offset: 2px; }
+.lab-projects-compact-links span { color: var(--brand-muted); font: 700 .56rem var(--font-mono-app), monospace; }
+.lab-projects-compact-header .lab-projects-hero-date { margin: 0 0 .32rem; padding: 0; border: 0; background: transparent; }
+
+.shared-calendar-stack { gap: .8rem; }
+.shared-calendar-filter-panel,
+.shared-calendar-supporting-info,
+.lab-projects-filter-panel,
+.lab-projects-supporting-info { overflow: hidden; border: 1px solid var(--brand-line); background: var(--brand-panel); }
+.shared-calendar-filter-panel > summary,
+.shared-calendar-supporting-info > summary,
+.lab-projects-filter-panel > summary,
+.lab-projects-supporting-info > summary { min-height: 44px; display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .65rem .85rem; color: var(--brand-navy); background: var(--brand-soft); font-size: .66rem; font-weight: 780; cursor: pointer; list-style-position: inside; }
+.shared-calendar-filter-panel > summary small,
+.lab-projects-filter-panel > summary small { color: var(--brand-muted); font: 700 .52rem var(--font-mono-app), monospace; }
+.shared-calendar-filter-panel[open] > summary,
+.shared-calendar-supporting-info[open] > summary,
+.lab-projects-filter-panel[open] > summary,
+.lab-projects-supporting-info[open] > summary { border-bottom: 1px solid var(--brand-line); }
+.shared-calendar-filter-panel .shared-calendar-controls { grid-template-columns: repeat(4, minmax(0, 1fr)); padding: .8rem; border: 0; }
+.shared-calendar-filter-panel .shared-calendar-controls > .clinic-duty-reset-button { grid-column: 1 / -1; }
+.shared-calendar-supporting-info > div,
+.lab-projects-supporting-info > div { display: grid; gap: .8rem; padding: .8rem; }
+.shared-calendar-public-note { padding-block: .65rem; }
+.shared-calendar-course-legend,
+.lab-projects-course-legend { display: flex; flex-wrap: wrap; gap: .32rem; padding: .5rem .8rem; border-bottom: 1px solid var(--brand-line); background: var(--brand-panel); }
+.shared-calendar-course-legend span,
+.lab-projects-course-legend span { display: inline-flex; align-items: center; gap: .3rem; padding: .22rem .38rem; border: 1px solid color-mix(in srgb, var(--source-color, var(--brand-blue)), var(--brand-line) 55%); color: var(--source-color, var(--brand-blue)); background: var(--source-soft, var(--brand-soft)); font: 760 .45rem var(--font-mono-app), monospace; }
+.shared-calendar-course-legend i,
+.lab-projects-course-legend i { width: .45rem; height: .45rem; border-radius: 999px; background: var(--source-color); }
+
+.lab-projects-stack { gap: .8rem; }
+.lab-projects-today { align-items: stretch; padding: .85rem 1rem; }
+.lab-projects-today-copy { min-width: 0; }
+.lab-projects-today h2 { font-size: clamp(1.45rem, 3vw, 1.9rem); }
+.lab-projects-today-sessions { display: grid; gap: .4rem; margin-top: .65rem; }
+.lab-projects-today-sessions article { min-width: 0; display: grid; gap: .18rem; padding: .55rem .65rem; border-left: 4px solid var(--source-color, var(--brand-blue)); background: var(--source-soft, var(--brand-panel)); }
+.lab-projects-today-sessions span { color: var(--source-color); font: 760 .48rem var(--font-mono-app), monospace; text-transform: uppercase; }
+.lab-projects-today-sessions b { color: var(--brand-navy); font-size: .72rem; }
+.lab-projects-today-sessions small { color: var(--brand-muted); font: 650 .53rem var(--font-mono-app), monospace; }
+.lab-projects-no-lab-today { display: grid; gap: .18rem; margin-top: .45rem; }
+.lab-projects-no-lab-today b { color: var(--brand-navy); font-size: .78rem; }
+.lab-projects-no-lab-today span { color: var(--brand-muted); font-size: .62rem; line-height: 1.45; }
+.lab-projects-view-actions { flex: 0 0 auto; display: flex; align-items: end; justify-content: flex-end; gap: .45rem; }
+.lab-projects-view-actions > button { min-height: 40px; padding: .48rem .65rem; }
+.lab-projects-view-actions > button:disabled { opacity: .45; cursor: not-allowed; }
+.lab-projects-view-switch { display: grid; grid-template-columns: repeat(2, 1fr); border: 1px solid var(--brand-line); }
+.lab-projects-view-switch button { min-height: 40px; padding: .48rem .7rem; border: 0; border-left: 1px solid var(--brand-line); color: var(--brand-navy); background: transparent; font-size: .62rem; font-weight: 760; cursor: pointer; }
+.lab-projects-view-switch button:first-child { border-left: 0; }
+.lab-projects-view-switch button[aria-pressed="true"] { color: white; background: var(--brand-navy); }
+.lab-projects-filter-panel .lab-projects-controls { grid-template-columns: repeat(3, minmax(0, 1fr)) auto; padding: .8rem; border: 0; }
+.lab-projects-filter-panel .lab-projects-controls > .clinic-duty-reset-button { align-self: end; min-height: 44px; padding: .55rem .75rem; }
+
+.lab-projects-month { min-width: 0; overflow: hidden; border: 1px solid var(--brand-line); background: var(--brand-panel); scroll-margin-top: 5rem; }
+.lab-projects-month-header { display: flex; align-items: end; justify-content: space-between; gap: 1rem; padding: .8rem 1rem; border-bottom: 1px solid var(--brand-line); }
+.lab-projects-month-header h2 { margin-top: .2rem; color: var(--brand-navy); font-family: var(--font-fc-display), Georgia, serif; font-size: clamp(1.65rem, 4vw, 2.35rem); font-weight: 570; line-height: 1; letter-spacing: -.035em; }
+.lab-projects-month-header > div:first-child > p:last-child { margin-top: .25rem; color: var(--brand-muted); font-size: .6rem; }
+.lab-projects-month-navigation { display: grid; grid-template-columns: repeat(3, auto); border: 1px solid var(--brand-line); }
+.lab-projects-month-navigation button { min-height: 40px; padding: .5rem .7rem; border: 0; border-left: 1px solid var(--brand-line); color: var(--brand-navy); background: transparent; font-size: .62rem; font-weight: 750; cursor: pointer; }
+.lab-projects-month-navigation button:first-child { border-left: 0; }
+.lab-projects-month-navigation button.is-today { color: white; background: var(--brand-navy); }
+.lab-projects-month-navigation button:disabled { color: #aaa; background: var(--brand-soft); cursor: not-allowed; }
+.lab-projects-month-grid { min-width: 0; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); }
+.lab-projects-month-grid > [role="columnheader"] { padding: .45rem; border-bottom: 1px solid var(--brand-line); color: var(--brand-muted); background: var(--brand-soft); font: 730 .5rem var(--font-mono-app), monospace; text-align: center; text-transform: uppercase; }
+.lab-projects-month-day { min-width: 0; min-height: 138px; display: grid; grid-template-rows: auto 1fr; gap: .35rem; padding: .42rem; border-left: 1px solid var(--brand-line); border-bottom: 1px solid var(--brand-line); background: rgba(255,255,255,.42); }
+.lab-projects-month-day:nth-child(7n + 1) { border-left: 0; }
+.lab-projects-month-day.is-empty { background: rgba(234,230,220,.34); }
+.lab-projects-month-day.has-no-sessions { background: rgba(248,246,240,.58); }
+.lab-projects-month-day.is-selected { box-shadow: inset 0 0 0 2px var(--brand-teal); }
+.lab-projects-month-day.is-today { background: #fff9e8; box-shadow: inset 0 0 0 2px var(--brand-copper); }
+.lab-projects-month-day.is-today.is-selected { box-shadow: inset 0 0 0 2px var(--brand-copper), inset 0 0 0 5px #fff9e8, inset 0 0 0 7px var(--brand-teal); }
+.lab-projects-month-day > button { min-width: 0; min-height: 28px; display: flex; align-items: center; justify-content: flex-end; gap: .3rem; padding: 0; border: 0; color: var(--brand-navy); background: transparent; cursor: pointer; }
+.lab-projects-month-day > button:focus-visible { outline: 2px solid var(--brand-teal); outline-offset: 2px; }
+.lab-projects-month-day-number { font-family: var(--font-fc-display), Georgia, serif; font-size: 1rem; font-weight: 620; }
+.lab-projects-month-today-badge { order: -1; padding: .16rem .26rem; color: #7d3b1d; background: #fff0e7; font: 760 .4rem var(--font-mono-app), monospace; text-transform: uppercase; }
+.lab-projects-month-count { color: var(--brand-muted); font: 700 .44rem var(--font-mono-app), monospace; }
+.lab-projects-month-dots { display: none; }
+.lab-projects-month-previews { min-width: 0; display: grid; align-content: start; gap: .28rem; }
+.lab-projects-month-previews button { min-width: 0; display: grid; gap: .1rem; padding: .32rem; border: 1px solid var(--brand-line); border-left: 3px solid var(--source-color, var(--brand-blue)); color: inherit; background: var(--source-soft, var(--brand-soft)); text-align: left; cursor: pointer; }
+.lab-projects-month-previews span { color: var(--source-color); font: 760 .39rem var(--font-mono-app), monospace; }
+.lab-projects-month-previews b { overflow: hidden; color: var(--brand-navy); font-size: .5rem; line-height: 1.25; text-overflow: ellipsis; white-space: nowrap; }
+.lab-projects-month-previews small { color: var(--brand-blue); font: 720 .45rem var(--font-mono-app), monospace; }
+.lab-projects-selected-day { border-top: 4px solid var(--brand-navy); }
+.lab-projects-selected-day > header { display: flex; align-items: end; justify-content: space-between; gap: 1rem; padding: .8rem 1rem; border-bottom: 1px solid var(--brand-line); background: var(--brand-soft); }
+.lab-projects-selected-day h3 { margin-top: .2rem; color: var(--brand-navy); font-family: var(--font-fc-display), Georgia, serif; font-size: 1.45rem; font-weight: 580; }
+.lab-projects-selected-day > header > span { color: var(--brand-muted); font: 750 .52rem var(--font-mono-app), monospace; text-transform: uppercase; }
+.lab-projects-selected-day-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.lab-projects-selected-day-empty { grid-column: 1 / -1; padding: 1.25rem; color: var(--brand-muted); font-size: .67rem; text-align: center; }
+
+@media (max-width: 900px) {
+  .shared-calendar-filter-panel .shared-calendar-controls { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .lab-projects-today { flex-direction: column; }
+  .lab-projects-view-actions { justify-content: flex-start; }
+  .lab-projects-filter-panel .lab-projects-controls { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .lab-projects-filter-panel .lab-projects-controls > .clinic-duty-reset-button { grid-column: 1 / -1; }
+  .lab-projects-selected-day-list { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 600px) {
+  .shared-calendar-compact-header,
+  .lab-projects-compact-header { align-items: stretch; flex-direction: column; gap: .7rem; padding: .75rem; }
+  .shared-calendar-compact-header h1,
+  .lab-projects-compact-header h1 { font-size: 2.15rem; }
+  .shared-calendar-compact-actions,
+  .lab-projects-compact-links { justify-content: flex-start; }
+  .shared-calendar-filter-panel > summary,
+  .shared-calendar-supporting-info > summary,
+  .lab-projects-filter-panel > summary,
+  .lab-projects-supporting-info > summary { align-items: flex-start; flex-direction: column; gap: .15rem; }
+  .shared-calendar-filter-panel .shared-calendar-controls { grid-template-columns: repeat(2, minmax(0, 1fr)); padding: .65rem; }
+  .shared-calendar-filter-panel .shared-calendar-controls > .clinic-duty-reset-button { grid-column: 1 / -1; width: 100%; }
+  .lab-projects-today { padding: .75rem; }
+  .lab-projects-view-actions { display: grid; grid-template-columns: 1fr 1fr; }
+  .lab-projects-view-switch { grid-column: 1 / -1; }
+  .lab-projects-view-actions > button { width: 100%; }
+  .lab-projects-filter-panel .lab-projects-controls { grid-template-columns: 1fr; padding: .65rem; }
+  .lab-projects-filter-panel .lab-projects-controls > .clinic-duty-reset-button { grid-column: 1; width: 100%; }
+  .lab-projects-month-header { align-items: stretch; flex-direction: column; padding: .7rem; }
+  .lab-projects-month-navigation { grid-template-columns: repeat(3, 1fr); }
+  .lab-projects-month-navigation button { min-width: 0; padding-inline: .35rem; }
+  .lab-projects-month-grid > [role="columnheader"] { overflow: hidden; padding: .38rem .08rem; font-size: .43rem; }
+  .shared-calendar-course-legend,
+  .lab-projects-course-legend { flex-wrap: nowrap; overflow-x: auto; padding: .42rem .55rem; scrollbar-width: thin; }
+  .shared-calendar-course-legend span,
+  .lab-projects-course-legend span { flex: 0 0 auto; }
+  .lab-projects-month-day,
+  .lab-projects-month-day.has-no-sessions,
+  .lab-projects-month-day.is-empty { min-height: 56px; display: block; padding: .18rem; }
+  .lab-projects-month-day > button { min-height: 50px; display: grid; grid-template-columns: 1fr auto; grid-template-rows: auto 1fr; align-items: start; gap: .06rem; padding: .1rem; }
+  .lab-projects-month-day-number { justify-self: start; font-size: .75rem; }
+  .lab-projects-month-today-badge { max-width: 100%; overflow: hidden; font-size: .32rem; text-overflow: ellipsis; }
+  .lab-projects-month-count { justify-self: end; }
+  .lab-projects-month-dots { grid-column: 1 / -1; display: flex; align-self: end; justify-content: center; gap: 2px; }
+  .lab-projects-month-dots i { width: 4px; height: 4px; border-radius: 999px; background: var(--source-color, var(--brand-blue)); }
+  .lab-projects-month-previews { display: none; }
+  .lab-projects-selected-day > header { align-items: flex-start; flex-direction: column; gap: .35rem; padding: .7rem; }
+  .lab-projects-selected-day h3 { font-size: 1.2rem; }
+}
+
+@media (max-width: 350px) {
+  .shared-calendar-filter-panel .shared-calendar-controls { grid-template-columns: 1fr; }
+  .lab-projects-view-actions { grid-template-columns: 1fr; }
+  .lab-projects-view-switch { grid-column: 1; }
+  .lab-projects-month-navigation button span { display: none; }
+  .lab-projects-month-today-badge { display: none; }
+  .lab-projects-month-day,
+  .lab-projects-month-day.has-no-sessions,
+  .lab-projects-month-day.is-empty { min-height: 50px; }
+  .lab-projects-month-day > button { min-height: 44px; }
 }

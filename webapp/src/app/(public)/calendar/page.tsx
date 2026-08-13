@@ -38,6 +38,16 @@ function easternToday() {
   return `${values.year}-${values.month}-${values.day}`;
 }
 
+function formatToday(date: string) {
+  return new Intl.DateTimeFormat("en-US", {
+    timeZone: "UTC",
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  }).format(new Date(`${date}T12:00:00Z`));
+}
+
 export default async function CalendarPage() {
   const [showcase, { profile }] = await Promise.all([
     getClinicDutyShowcase(),
@@ -67,39 +77,20 @@ export default async function CalendarPage() {
         </nav>
 
         <div className="clinic-duty-shell">
-          <header className="clinic-duty-hero shared-calendar-hero">
+          <header className="shared-calendar-compact-header">
             <div>
-              <p className="eyebrow">Fall 2026 · Public class calendar</p>
+              <p className="eyebrow" aria-current="date">Today · {formatToday(today)} · Eastern</p>
               <h1>D2 Calendar</h1>
-              <p>
-                Published D2 classes, Echo360 recording status, verified exams, Sim Clinic Duty, Sealant rotations, and confirmed closures in one place.
-              </p>
+              <p>Classes, Echo360 status, exams, duties, and closures—one month at a time.</p>
             </div>
-            <div className="clinic-duty-hours">
-              <span>Classes</span><b>7 published courses</b>
-              <span>Canvas exams</span><b>6 published</b>
-              <span>Calendar</span><b>Aug 10–Dec 16</b>
+            <div className="shared-calendar-compact-actions">
+              <Link href="/lab-projects">Lab projects</Link>
+              <a href="/api/calendar.ics">Download .ics</a>
             </div>
           </header>
 
-          <section className="clinic-duty-rulebar">
-            <p><b>Public information:</b> class dates, recording status, exams, assigned names, group rotations, and completion status may be viewed without an account. Echo360 links and duty actions remain protected.</p>
-            <div className="clinic-duty-rulebar-actions">
-              <Link className="shared-calendar-rulebar-download" href="/lab-projects">Lab projects</Link>
-              <a className="shared-calendar-rulebar-download" href="/api/calendar.ics">Download .ics</a>
-            </div>
-          </section>
-
           {calendar ? (
             <>
-              <section className="clinic-duty-showcase-stats shared-calendar-summary" aria-label="Calendar summary">
-                <div><span>D2 students</span><b>{calendar.summary.students}</b></div>
-                <div><span>Course events</span><b>{calendar.summary.courseEvents}</b></div>
-                <div><span>Canvas exams</span><b>{calendar.summary.exams}</b></div>
-                <div><span>Sim Clinic dates</span><b>{calendar.summary.simClinicDates}</b></div>
-                <div><span>Sealant rotations</span><b>{calendar.summary.sealantRotations}</b></div>
-                <div><span>Confirmed closures</span><b>{calendar.summary.closures}</b></div>
-              </section>
               <SharedCalendar
                 accountActions={ACCOUNT_ACTIONS}
                 calendar={calendar}
@@ -108,6 +99,17 @@ export default async function CalendarPage() {
                 canManageDuty={canManageDuty}
                 initialToday={today}
               />
+              <section className="clinic-duty-showcase-stats shared-calendar-summary" aria-label="Calendar summary">
+                <div><span>D2 students</span><b>{calendar.summary.students}</b></div>
+                <div><span>Course events</span><b>{calendar.summary.courseEvents}</b></div>
+                <div><span>Canvas exams</span><b>{calendar.summary.exams}</b></div>
+                <div><span>Sim Clinic dates</span><b>{calendar.summary.simClinicDates}</b></div>
+                <div><span>Sealant rotations</span><b>{calendar.summary.sealantRotations}</b></div>
+                <div><span>Confirmed closures</span><b>{calendar.summary.closures}</b></div>
+              </section>
+              <section className="clinic-duty-rulebar shared-calendar-public-note">
+                <p><b>Public information:</b> dates, recording status, exams, assigned names, rotations, and completion status are visible without an account. Echo360 links and duty actions remain protected.</p>
+              </section>
             </>
           ) : (
             <section className="clinic-duty-empty">The Fall 2026 calendar is not available yet.</section>

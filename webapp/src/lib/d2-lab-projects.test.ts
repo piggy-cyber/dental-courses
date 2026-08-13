@@ -1,8 +1,10 @@
 import { describe, expect, it } from "vitest";
 import {
+  buildD2LabProjectMonth,
   d2LabProjectCourseGaps,
   d2LabProjectSessions,
   d2LabProjectsSummary,
+  getD2LabProjectSelectedDate,
 } from "@/lib/d2-lab-projects";
 
 describe("D2 lab projects", () => {
@@ -42,5 +44,15 @@ describe("D2 lab projects", () => {
 
   it("does not expose a private local source path", () => {
     expect(JSON.stringify({ d2LabProjectSessions, d2LabProjectCourseGaps })).not.toContain("/Users/");
+  });
+
+  it("builds a bounded month calendar and selects today first", () => {
+    const august = buildD2LabProjectMonth(d2LabProjectSessions, "2026-08");
+    expect(august).toHaveLength(6);
+    expect(august.flat()).toHaveLength(42);
+    expect(august.flat().filter(Boolean)).toHaveLength(31);
+    expect(august.flat().find((day) => day?.date === "2026-08-18")?.sessions).toHaveLength(2);
+    expect(getD2LabProjectSelectedDate("2026-08", "2026-08-13", d2LabProjectSessions)).toBe("2026-08-13");
+    expect(getD2LabProjectSelectedDate("2026-09", "2026-08-13", d2LabProjectSessions)).toBe("2026-09-01");
   });
 });

@@ -82,50 +82,17 @@ export default async function LabProjectsPage() {
         </nav>
 
         <div className="clinic-duty-shell">
-          <header className="clinic-duty-hero lab-projects-hero">
+          <header className="lab-projects-compact-header">
             <div>
               <p className="lab-projects-hero-date" aria-current="date">Today · {formatHeroDate(today)} · Eastern</p>
-              <p className="eyebrow">Fall 2026 · D2 project tracker</p>
-              <h1>Lab projects, in order.</h1>
-              <p>
-                Today and future lab sections, competencies, lecture topics, and daily project tasks in one chronological list. Previous dates stay tucked away until you ask to see them.
-              </p>
+              <h1>D2 Lab Projects</h1>
+              <p>Today’s lab first, with a month calendar and a detailed chronological list.</p>
             </div>
-            <div className="clinic-duty-hours">
-              <span>Today</span><b>{formatHeroDate(today)}</b>
-              <span>Published sessions</span><b>{d2LabProjectsSummary.sessions}</b>
-              <span>Lab courses</span><b>{d2LabProjectsSummary.courses}</b>
-              <span>Detailed sessions</span><b>{d2LabProjectsSummary.detailedSessions}</b>
+            <div className="lab-projects-compact-links">
+              <Link href="/calendar">Full D2 calendar</Link>
+              <span>{d2LabProjectsSummary.sessions} published sessions</span>
             </div>
           </header>
-
-          <section className="clinic-duty-rulebar lab-projects-rulebar">
-            <p><b>Source boundary:</b> “Project details pending” means the date and section are published, but the saved Canvas calendar does not name that day’s project. This page does not guess.</p>
-            <Link href="/calendar">Open calendar →</Link>
-          </section>
-
-          <section className="clinic-duty-showcase-stats lab-projects-summary" aria-label="Lab projects summary">
-            <div><span>Chronological sessions</span><b>{d2LabProjectsSummary.sessions}</b></div>
-            <div><span>Project steps listed</span><b>{d2LabProjectsSummary.projectTasks}</b></div>
-            <div><span>Lab topics published</span><b>{d2LabProjectsSummary.publishedTopics}</b></div>
-            <div><span>Topics still pending</span><b>{d2LabProjectsSummary.scheduleOnlySessions}</b></div>
-          </section>
-
-          <section className="lab-projects-coverage" aria-labelledby="lab-projects-coverage-title">
-            <header>
-              <p className="eyebrow">What is available</p>
-              <h2 id="lab-projects-coverage-title">Three courses have dated lab sections.</h2>
-            </header>
-            <div className="lab-projects-coverage-grid">
-              {COURSE_COVERAGE.map((course) => (
-                <article key={course.courseCode} className={`course-${course.courseCode.toLowerCase().replaceAll(" ", "-")}`}>
-                  <span>{course.courseCode}</span>
-                  <h3>{course.title}</h3>
-                  <p>{course.description}</p>
-                </article>
-              ))}
-            </div>
-          </section>
 
           <D2LabProjects
             canOpenCanvas={canOpenCanvas}
@@ -133,6 +100,38 @@ export default async function LabProjectsPage() {
             isSignedIn={Boolean(profile)}
             sessions={d2LabProjectSessions}
           />
+
+          <details className="lab-projects-supporting-info">
+            <summary>Schedule coverage and source details</summary>
+            <div>
+              <section className="clinic-duty-rulebar lab-projects-rulebar">
+                <p><b>Source boundary:</b> “Project details pending” means the date and section are published, but the saved Canvas calendar does not name that day’s project. This page does not guess.</p>
+              </section>
+
+              <section className="clinic-duty-showcase-stats lab-projects-summary" aria-label="Lab projects summary">
+                <div><span>Chronological sessions</span><b>{d2LabProjectsSummary.sessions}</b></div>
+                <div><span>Project steps listed</span><b>{d2LabProjectsSummary.projectTasks}</b></div>
+                <div><span>Lab topics published</span><b>{d2LabProjectsSummary.publishedTopics}</b></div>
+                <div><span>Topics still pending</span><b>{d2LabProjectsSummary.scheduleOnlySessions}</b></div>
+              </section>
+
+              <section className="lab-projects-coverage" aria-labelledby="lab-projects-coverage-title">
+                <header>
+                  <p className="eyebrow">What is available</p>
+                  <h2 id="lab-projects-coverage-title">Three courses have dated lab sections.</h2>
+                </header>
+                <div className="lab-projects-coverage-grid">
+                  {COURSE_COVERAGE.map((course) => (
+                    <article key={course.courseCode} className={`course-${course.courseCode.toLowerCase().replaceAll(" ", "-")}`}>
+                      <span>{course.courseCode}</span>
+                      <h3>{course.title}</h3>
+                      <p>{course.description}</p>
+                    </article>
+                  ))}
+                </div>
+              </section>
+            </div>
+          </details>
 
           <section className="shared-calendar-source-note lab-projects-source-note" aria-labelledby="lab-projects-source-title">
             <div>

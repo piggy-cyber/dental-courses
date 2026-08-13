@@ -34,6 +34,12 @@ export type D2LabProjectCourseGap = {
   note: string;
 };
 
+export type D2LabProjectMonthDay = {
+  date: string;
+  day: number;
+  sessions: D2LabProjectSession[];
+};
+
 const COURSE_ENTRIES = Object.entries(courses) as Array<[CourseId, (typeof courses)[CourseId]]>;
 const COURSE_BY_CODE = new Map(COURSE_ENTRIES.map(([, course]) => [course.code, course]));
 
@@ -142,3 +148,31 @@ export const d2LabProjectsSummary = {
   scheduleOnlySessions: d2LabProjectSessions.filter((session) => session.detailStatus === "schedule-only").length,
   projectTasks: d2LabProjectSessions.reduce((total, session) => total + session.projectTasks.length, 0),
 };
+
+export function buildD2LabProjectMonth(sessions: D2LabProjectSession[], month: string) {
+  const [year, monthNumber] = month.split("-").map(Number);
+  const daysInMonth = new Date(Date.UTC(year, monthNumber, 0)).getUTCDate();
+  const leadingDays = new Date(Date.UTC(year, monthNumber - 1, 1)).getUTCDay();
+  const sessionsByDate = new Map<string, D2LabProjectSession[]>();
+
+  for (const session of sessions) {
+    if (!session.date.startsWith(`${month}-`)) continue;
+    const dateSessions = sessionsByDate.get(session.date) ?? [];
+    dateSessions.push(session);
+    sessionsByDate.set(session.date, dateSessions);
+  }
+
+  const days: Array<D2LabProjectMonthDay | null> = Array.from({ length: leadingDays }, () => null);
+  for (let day = 1; day <= daysInMonth; day += 1) {
+    const date = `${month}-${String(day).padStart(2, "0")}`;
+    days.push({ date, day, sessions: sessionsByDate.get(date) ?? [] });
+  }
+  while (days.length % 7 !== 0) days.push(null);
+
+  return Array.from({ length: days.length / 7 }, (_, index) => days.slice(index * 7, index * 7 + 7));
+}
+
+export function getD2LabProjectSelectedDate(month: string, today: string, sessions: D2LabProjectSession[]) {
+  if (today.startsWith(`${month}-`)) return today;
+  return sessions.find((session) => session.date.startsWith(`${month}-`))?.date ?? `${month}-01`;
+}
