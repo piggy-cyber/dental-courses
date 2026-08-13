@@ -84,7 +84,10 @@ export default async function CalendarPage() {
 
           <section className="clinic-duty-rulebar">
             <p><b>Public information:</b> class dates, recording status, exams, assigned names, group rotations, and completion status may be viewed without an account. Echo360 links and duty actions remain protected.</p>
-            <a className="shared-calendar-rulebar-download" href="/api/calendar.ics">Download .ics</a>
+            <div className="clinic-duty-rulebar-actions">
+              <Link className="shared-calendar-rulebar-download" href="/lab-projects">Lab projects</Link>
+              <a className="shared-calendar-rulebar-download" href="/api/calendar.ics">Download .ics</a>
+            </div>
           </section>
 
           {calendar ? (

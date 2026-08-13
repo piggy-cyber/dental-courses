@@ -7,6 +7,7 @@ import type { ReactNode } from "react";
 export const SITE_LINKS = [
   { href: "/", label: "Home" },
   { href: "/calendar", label: "Calendar" },
+  { href: "/lab-projects", label: "Lab projects" },
   { href: "/guides", label: "Study guides" },
   { href: "/games", label: "Games" },
   { href: "/grade-calculator", label: "Grade calculator" },
