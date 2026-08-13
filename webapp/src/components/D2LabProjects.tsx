@@ -8,8 +8,6 @@ import type {
   D2LabProjectSession,
 } from "@/lib/d2-lab-projects";
 
-type TimingFilter = "all" | "upcoming";
-
 const DETAIL_LABELS: Record<D2LabProjectDetailStatus, string> = {
   detailed: "Projects + topics published",
   "topic-only": "Lab topic published",
@@ -74,7 +72,7 @@ export function D2LabProjects({
   const [courseCode, setCourseCode] = useState("all");
   const [section, setSection] = useState("all");
   const [detailStatus, setDetailStatus] = useState<"all" | D2LabProjectDetailStatus>("all");
-  const [timing, setTiming] = useState<TimingFilter>("all");
+  const [showPrevious, setShowPrevious] = useState(false);
   const [accessSession, setAccessSession] = useState<D2LabProjectSession | null>(null);
 
   useEffect(() => {
@@ -98,12 +96,23 @@ export function D2LabProjects({
     [sessions],
   );
 
-  const visibleSessions = useMemo(() => sessions.filter((session) => (
+  const filteredSessions = useMemo(() => sessions.filter((session) => (
     (courseCode === "all" || session.courseCode === courseCode)
     && (section === "all" || session.section === section)
     && (detailStatus === "all" || session.detailStatus === detailStatus)
-    && (timing === "all" || session.date >= today)
-  )), [courseCode, detailStatus, section, sessions, timing, today]);
+  )), [courseCode, detailStatus, section, sessions]);
+
+  const previousDateCount = useMemo(
+    () => new Set(filteredSessions.filter((session) => session.date < today).map((session) => session.date)).size,
+    [filteredSessions, today],
+  );
+
+  const visibleSessions = useMemo(
+    () => showPrevious
+      ? filteredSessions
+      : filteredSessions.filter((session) => session.date >= today),
+    [filteredSessions, showPrevious, today],
+  );
 
   const sessionsByDate = useMemo(() => {
     const dates = new Map<string, D2LabProjectSession[]>();
@@ -116,13 +125,14 @@ export function D2LabProjects({
   }, [visibleSessions]);
 
   const nextSession = visibleSessions.find((session) => session.date >= today) ?? null;
-  const filtersActive = courseCode !== "all" || section !== "all" || detailStatus !== "all" || timing !== "all";
+  const sessionsToday = filteredSessions.filter((session) => session.date === today).length;
+  const filtersActive = courseCode !== "all" || section !== "all" || detailStatus !== "all" || showPrevious;
 
   function resetFilters() {
     setCourseCode("all");
     setSection("all");
     setDetailStatus("all");
-    setTiming("all");
+    setShowPrevious(false);
   }
 
   function jumpToNextSession() {
@@ -132,11 +142,33 @@ export function D2LabProjects({
 
   return (
     <div className="lab-projects-stack">
+      <section className="lab-projects-today" aria-current="date">
+        <div>
+          <p className="eyebrow">Today · Eastern time</p>
+          <h2>{formatDate(today)}</h2>
+          <p>
+            {sessionsToday > 0
+              ? `${sessionsToday} lab session${sessionsToday === 1 ? "" : "s"} scheduled today.`
+              : "No lab sessions are scheduled today. Your next published dates are below."}
+          </p>
+        </div>
+        <button
+          type="button"
+          className="clinic-duty-reset-button"
+          aria-controls="lab-projects-timeline"
+          aria-expanded={showPrevious}
+          disabled={previousDateCount === 0}
+          onClick={() => setShowPrevious((current) => !current)}
+        >
+          {showPrevious ? "Hide previous dates" : `Show previous dates (${previousDateCount})`}
+        </button>
+      </section>
+
       <section className="lab-projects-controls" aria-label="Filter lab projects">
         <div className="lab-projects-controls-heading">
-          <p className="eyebrow">Chronological work list</p>
-          <h2>{visibleSessions.length} session{visibleSessions.length === 1 ? "" : "s"}</h2>
-          <p>All dates remain visible by default. Earlier sessions are never marked complete automatically.</p>
+          <p className="eyebrow">Today + upcoming</p>
+          <h2>{visibleSessions.length} visible session{visibleSessions.length === 1 ? "" : "s"}</h2>
+          <p>Previous dates stay hidden until you choose to show them. Earlier sessions are never marked complete automatically.</p>
         </div>
         <label>
           Course
@@ -163,20 +195,13 @@ export function D2LabProjects({
             <option value="schedule-only">Project details pending</option>
           </select>
         </label>
-        <label>
-          Timing
-          <select className="app-input" value={timing} onChange={(event) => setTiming(event.target.value as TimingFilter)}>
-            <option value="all">All dates</option>
-            <option value="upcoming">Today + upcoming</option>
-          </select>
-        </label>
         <div className="lab-projects-control-actions">
           <button type="button" className="clinic-duty-protected-action" disabled={!nextSession} onClick={jumpToNextSession}>Jump to next</button>
           {filtersActive && <button type="button" className="clinic-duty-reset-button" onClick={resetFilters}>Reset</button>}
         </div>
       </section>
 
-      <section className="lab-projects-timeline" aria-label="D2 lab projects in chronological order">
+      <section id="lab-projects-timeline" className="lab-projects-timeline" aria-label="D2 lab projects in chronological order">
         {sessionsByDate.map(([date, dateSessions]) => {
           const timingLabel = timingForDate(date, today);
           return (

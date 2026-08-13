@@ -32,8 +32,10 @@ function easternToday() {
 function formatHeroDate(date: string) {
   return new Intl.DateTimeFormat("en-US", {
     timeZone: "UTC",
-    month: "short",
+    weekday: "long",
+    month: "long",
     day: "numeric",
+    year: "numeric",
   }).format(new Date(`${date}T12:00:00Z`));
 }
 
@@ -82,17 +84,18 @@ export default async function LabProjectsPage() {
         <div className="clinic-duty-shell">
           <header className="clinic-duty-hero lab-projects-hero">
             <div>
+              <p className="lab-projects-hero-date" aria-current="date">Today · {formatHeroDate(today)} · Eastern</p>
               <p className="eyebrow">Fall 2026 · D2 project tracker</p>
               <h1>Lab projects, in order.</h1>
               <p>
-                Every published lab section, competency, lecture topic, and daily project task in one chronological list. Filter by course or Group A/B, then jump to the next scheduled session.
+                Today and future lab sections, competencies, lecture topics, and daily project tasks in one chronological list. Previous dates stay tucked away until you ask to see them.
               </p>
             </div>
             <div className="clinic-duty-hours">
+              <span>Today</span><b>{formatHeroDate(today)}</b>
               <span>Published sessions</span><b>{d2LabProjectsSummary.sessions}</b>
               <span>Lab courses</span><b>{d2LabProjectsSummary.courses}</b>
               <span>Detailed sessions</span><b>{d2LabProjectsSummary.detailedSessions}</b>
-              <span>Today</span><b>{formatHeroDate(today)} · Eastern</b>
             </div>
           </header>
 

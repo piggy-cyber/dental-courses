@@ -190,6 +190,7 @@
 /* D2 lab projects — chronological project, topic, and competency view. */
 .lab-projects-page { min-height: 100vh; overflow-x: clip; background: var(--brand-paper); }
 .lab-projects-stack { display: grid; gap: 1.25rem; }
+.lab-projects-hero-date { width: fit-content; margin: 0 0 .85rem; padding: .45rem .65rem; border: 1px solid color-mix(in srgb, var(--brand-copper), var(--brand-line) 45%); color: #74471f; background: color-mix(in srgb, var(--brand-panel), var(--brand-copper) 8%); font: 760 .62rem var(--font-mono-app), monospace; letter-spacing: .025em; }
 .lab-projects-rulebar a,
 .lab-projects-rulebar a:visited { flex: 0 0 auto; color: #5e4930; font-weight: 780; text-decoration: underline; text-underline-offset: 3px; }
 .lab-projects-summary { grid-template-columns: repeat(4, minmax(0, 1fr)); }
@@ -202,7 +203,12 @@
 .lab-projects-coverage-grid article > span { color: var(--source-color); font: 760 .58rem var(--font-mono-app), monospace; }
 .lab-projects-coverage-grid h3 { margin: auto 0 .45rem; color: var(--brand-navy); font-size: 1rem; }
 .lab-projects-coverage-grid p { margin: 0; color: var(--brand-muted); font-size: .67rem; line-height: 1.55; }
-.lab-projects-controls { display: grid; grid-template-columns: minmax(230px, 1.1fr) repeat(4, minmax(135px, .55fr)); align-items: end; gap: .8rem; padding: 1rem; border: 1px solid var(--brand-line); background: var(--brand-panel); }
+.lab-projects-today { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem 1.15rem; border: 1px solid color-mix(in srgb, var(--brand-copper), var(--brand-line) 45%); box-shadow: inset 5px 0 0 var(--brand-copper); background: color-mix(in srgb, var(--brand-panel), var(--brand-copper) 5%); }
+.lab-projects-today h2 { margin-top: .22rem; color: var(--brand-navy); font-family: var(--font-fc-display), Georgia, serif; font-size: clamp(1.55rem, 4vw, 2.2rem); font-weight: 580; line-height: 1.05; letter-spacing: -.03em; }
+.lab-projects-today p:last-child { margin-top: .3rem; color: var(--brand-muted); font-size: .66rem; line-height: 1.5; }
+.lab-projects-today button { flex: 0 0 auto; min-height: 42px; padding: .55rem .75rem; }
+.lab-projects-today button:disabled { opacity: .45; cursor: not-allowed; }
+.lab-projects-controls { display: grid; grid-template-columns: minmax(230px, 1.1fr) repeat(3, minmax(135px, .55fr)); align-items: end; gap: .8rem; padding: 1rem; border: 1px solid var(--brand-line); background: var(--brand-panel); }
 .lab-projects-controls-heading h2 { margin-top: .2rem; color: var(--brand-navy); font-size: 1.15rem; font-weight: 750; }
 .lab-projects-controls-heading p:last-child { max-width: 390px; margin-top: .2rem; color: var(--brand-muted); font-size: .62rem; line-height: 1.5; }
 .lab-projects-controls label { min-width: 0; display: grid; gap: .35rem; color: var(--brand-navy); font-size: .62rem; font-weight: 750; }
@@ -268,6 +274,8 @@
   .lab-projects-coverage-grid article { min-height: 145px; border-left: 0; border-top-width: 4px; border-bottom: 1px solid var(--brand-line); }
   .lab-projects-coverage-grid article:last-child { border-bottom: 0; }
   .lab-projects-controls { grid-template-columns: 1fr; padding: .8rem; }
+  .lab-projects-today { align-items: stretch; flex-direction: column; padding: .85rem; }
+  .lab-projects-today button { width: 100%; }
   .lab-projects-controls-heading,
   .lab-projects-control-actions { grid-column: 1; }
   .lab-projects-control-actions { display: grid; grid-template-columns: 1fr 1fr; }
