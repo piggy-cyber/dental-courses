@@ -82,7 +82,7 @@
 .shared-calendar-recording-badge.is-not-scheduled,
 .shared-calendar-recording-badge.is-not-found { color: #687782; background: #f2f2f0; }
 .shared-calendar-more-button { min-height: 26px; padding: .25rem; border: 1px dashed var(--brand-line); color: var(--brand-blue); background: transparent; font-size: .5rem; font-weight: 750; cursor: pointer; }
-.shared-calendar-day-agenda { border-top: 4px solid var(--brand-navy); }
+.shared-calendar-day-agenda { border-top: 4px solid var(--brand-navy); scroll-margin-top: 5rem; }
 .shared-calendar-day-agenda > header { display: flex; align-items: end; justify-content: space-between; gap: 1rem; padding: 1rem; border-bottom: 1px solid var(--brand-line); background: var(--brand-soft); }
 .shared-calendar-day-agenda h3 { margin-top: .25rem; color: var(--brand-navy); font-family: var(--font-fc-display), Georgia, serif; font-size: 1.6rem; font-weight: 580; }
 .shared-calendar-day-agenda > header > span { color: var(--brand-muted); font: 750 .55rem var(--font-mono-app), monospace; text-transform: uppercase; }

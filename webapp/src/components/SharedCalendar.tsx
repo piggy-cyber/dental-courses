@@ -305,6 +305,8 @@ export function SharedCalendar({
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const detailCloseButtonRef = useRef<HTMLButtonElement>(null);
   const calendarLinkRef = useRef<HTMLInputElement>(null);
+  const dayAgendaRef = useRef<HTMLElement>(null);
+  const dayAgendaHeadingRef = useRef<HTMLHeadingElement>(null);
 
   const students = useMemo(() => {
     const byKey = new Map<string, string>();
@@ -404,6 +406,14 @@ export function SharedCalendar({
   function chooseDate(date: string) {
     setSelectedDate(date);
     setFollowsToday(date === today && date.startsWith(`${displayedMonth}-`));
+  }
+
+  function openDayAgenda(date: string) {
+    chooseDate(date);
+    window.requestAnimationFrame(() => {
+      dayAgendaRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      dayAgendaHeadingRef.current?.focus({ preventScroll: true });
+    });
   }
 
   function resetFilters() {
@@ -514,18 +524,27 @@ export function SharedCalendar({
                   {visibleDayEvents.map((event) => (
                     <CalendarEvent key={event.id} event={event} openDetails={setSelectedEvent} source={sourceForEvent(calendar.sources, event)} today={today} />
                   ))}
-                  {moreCount > 0 && <button type="button" className="shared-calendar-more-button" onClick={() => chooseDate(day.date)}>+{moreCount} more</button>}
+                  {moreCount > 0 && (
+                    <button
+                      type="button"
+                      className="shared-calendar-more-button"
+                      aria-controls="selected-day-agenda"
+                      onClick={() => openDayAgenda(day.date)}
+                    >
+                      +{moreCount} more
+                    </button>
+                  )}
                 </div>
               </div>
             );
           }))}
         </div>
 
-        <section className="shared-calendar-day-agenda" aria-labelledby="selected-day-heading">
+        <section ref={dayAgendaRef} id="selected-day-agenda" className="shared-calendar-day-agenda" aria-labelledby="selected-day-heading">
           <header>
             <div>
               <p className="eyebrow">Selected day{selectedDate === today ? " · Today" : ""}</p>
-              <h3 id="selected-day-heading">{formatDate(selectedDate, true)}</h3>
+              <h3 ref={dayAgendaHeadingRef} id="selected-day-heading" tabIndex={-1}>{formatDate(selectedDate, true)}</h3>
             </div>
             <span>{selectedDayEvents.length} event{selectedDayEvents.length === 1 ? "" : "s"}</span>
           </header>
