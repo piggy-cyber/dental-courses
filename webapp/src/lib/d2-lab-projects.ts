@@ -42,6 +42,29 @@ export type D2LabProjectMonthDay = {
 
 const COURSE_ENTRIES = Object.entries(courses) as Array<[CourseId, (typeof courses)[CourseId]]>;
 const COURSE_BY_CODE = new Map(COURSE_ENTRIES.map(([, course]) => [course.code, course]));
+const FIXED_PROSTHO_PROJECT_1_CANVAS_URL = "https://canvas.case.edu/calendar?include_contexts=course_53683&month=08&year=2026#calendar_event_361603";
+
+const FIXED_PROSTHO_PROJECT_DAYS: ReadonlyArray<{
+  date: string;
+  morning?: D2LabProjectSession["section"];
+  afternoon?: D2LabProjectSession["section"];
+  title?: string;
+}> = [
+  { date: "2026-08-14", morning: "Group A", afternoon: "Group B", title: "Project 1" },
+  { date: "2026-08-21", morning: "Group B", afternoon: "Group A" },
+  { date: "2026-08-28", morning: "Whole class" },
+  { date: "2026-09-04", morning: "Group B", afternoon: "Group A" },
+  { date: "2026-09-11", morning: "Group A", afternoon: "Group B" },
+  { date: "2026-09-18", morning: "Group B", afternoon: "Group A" },
+  { date: "2026-09-25", morning: "Group A", afternoon: "Group B" },
+  { date: "2026-10-02", morning: "Group B", afternoon: "Group A" },
+  { date: "2026-10-09", morning: "Group A", afternoon: "Group B" },
+  { date: "2026-10-16", morning: "Group B", afternoon: "Group A" },
+  { date: "2026-10-23", morning: "Group A", afternoon: "Group B" },
+  { date: "2026-10-30", morning: "Group B", afternoon: "Group A" },
+  { date: "2026-11-13", morning: "Group A", afternoon: "Group B" },
+  { date: "2026-12-04", afternoon: "Whole class", title: "Remediation" },
+];
 
 function cleanTitle(title: string) {
   return title.replace(/^[^:]+:\s*/, "");
@@ -87,6 +110,47 @@ function buildProsthSessions(): D2LabProjectSession[] {
     });
 }
 
+function fixedProsthSession(
+  date: string,
+  section: D2LabProjectSession["section"],
+  startsAt: string,
+  endsAt: string,
+  title = "Fixed Prosthodontics project work",
+) {
+  const course = courses["REHE-259"];
+  const sourceProvenance = ["Fall 2026 D2 course schedule updated August 7, 2026"];
+  if (date === "2026-08-14") {
+    sourceProvenance.push("Canvas calendar event 361603 supplied August 13, 2026");
+    sourceProvenance.push("Student calendar screenshot supplied August 13, 2026 (Project 1 label)");
+  }
+
+  return {
+    id: `lab-fixed-${date}-${startsAt.replace(":", "")}-${section.toLowerCase().replaceAll(" ", "-")}`,
+    date,
+    startsAt,
+    endsAt,
+    courseCode: course.code,
+    courseName: course.name,
+    section,
+    title,
+    kind: "project-work",
+    location: "Sim Clinic",
+    moduleName: null,
+    lectureTopics: [],
+    projectTasks: [],
+    detailStatus: "schedule-only",
+    canvasUrl: date === "2026-08-14" ? FIXED_PROSTHO_PROJECT_1_CANVAS_URL : course.canvasUrl,
+    sourceProvenance,
+  } satisfies D2LabProjectSession;
+}
+
+export const d2FixedProsthProjectSessions = FIXED_PROSTHO_PROJECT_DAYS.flatMap((day) => {
+  const sessions: D2LabProjectSession[] = [];
+  if (day.morning) sessions.push(fixedProsthSession(day.date, day.morning, "09:00", "11:50", day.title));
+  if (day.afternoon) sessions.push(fixedProsthSession(day.date, day.afternoon, "13:00", "15:50", day.title));
+  return sessions;
+});
+
 function isCanvasLabSession(event: D2CanvasCalendarEvent) {
   return event.courseCode !== "REHE 257"
     && (event.eventKind === "lab" || event.eventKind === "competency");
@@ -122,6 +186,7 @@ function buildCanvasLabSessions(): D2LabProjectSession[] {
 
 export const d2LabProjectSessions = [
   ...buildProsthSessions(),
+  ...d2FixedProsthProjectSessions,
   ...buildCanvasLabSessions(),
 ].sort((a, b) => (
   a.date.localeCompare(b.date)

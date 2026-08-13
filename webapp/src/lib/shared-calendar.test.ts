@@ -16,15 +16,15 @@ describe("shared Fall 2026 D2 calendar", () => {
   it("merges all Canvas, Echo360, duty, rotation, and closure events", () => {
     expect(calendar.summary).toEqual({
       students: 82,
-      courseEvents: 118,
+      courseEvents: 144,
       exams: 6,
       simClinicDates: 104,
       sealantRotations: 12,
       closures: 3,
     });
-    expect(calendar.events).toHaveLength(237);
-    expect(new Set(calendar.events.map((event) => event.id)).size).toBe(237);
-    expect(calendar.events.filter((event) => event.sourceId === "class-recording")).toHaveLength(112);
+    expect(calendar.events).toHaveLength(263);
+    expect(new Set(calendar.events.map((event) => event.id)).size).toBe(263);
+    expect(calendar.events.filter((event) => event.sourceId === "class-recording")).toHaveLength(138);
     expect(calendar.events.filter((event) => event.sourceId === "exam")).toHaveLength(6);
     expect(calendar.events.filter((event) => event.sourceId === "sim-clinic")).toHaveLength(104);
     expect(calendar.events.filter((event) => event.sourceId === "sealant-duty")).toHaveLength(12);
@@ -39,7 +39,12 @@ describe("shared Fall 2026 D2 calendar", () => {
     expect(courseEvents.filter((event) => event.recordingStatus === "recorded")).toHaveLength(2);
     expect(courseEvents.filter((event) => event.recordingStatus === "scheduled")).toHaveLength(68);
     expect(courseEvents.filter((event) => event.recordingStatus === "not-scheduled")).toHaveLength(4);
-    expect(courseEvents.filter((event) => event.recordingStatus === "not-found")).toHaveLength(44);
+    expect(courseEvents.filter((event) => event.recordingStatus === "not-found")).toHaveLength(70);
+    expect(calendar.events.filter((event) => event.date === "2026-08-14" && event.courseCode === "REHE 259")).toEqual(expect.arrayContaining([
+      expect.objectContaining({ title: "REHE 259: BP Fixed: Intro, Occlusal Adjustments", eventKind: "class", recordingStatus: "scheduled" }),
+      expect.objectContaining({ title: "REHE 259: Project 1 - Group A", eventKind: "lab", startsAt: "2026-08-14T09:00:00-04:00" }),
+      expect.objectContaining({ title: "REHE 259: Project 1 - Group B", eventKind: "lab", startsAt: "2026-08-14T13:00:00-04:00" }),
+    ]));
   });
 
   it("uses all six Canvas exam blocks and lets Canvas control the displayed time", () => {
@@ -95,17 +100,18 @@ describe("shared Fall 2026 D2 calendar", () => {
     ]));
   });
 
-  it("exports all 237 stable events with recording categories and reminders", () => {
+  it("exports all 263 stable events with recording categories and reminders", () => {
     const ics = buildSharedCalendarIcs(calendar, new Date("2026-08-12T16:00:00Z"));
     const lines = ics.split("\r\n");
     const unfolded = ics.replace(/\r\n[ \t]/g, "");
     const uids = [...ics.matchAll(/^UID:(.+)$/gm)].map((match) => match[1]);
 
-    expect(ics.match(/BEGIN:VEVENT/g)).toHaveLength(237);
-    expect(ics.match(/BEGIN:VALARM/g)).toHaveLength(234);
-    expect(new Set(uids).size).toBe(237);
+    expect(ics.match(/BEGIN:VEVENT/g)).toHaveLength(263);
+    expect(ics.match(/BEGIN:VALARM/g)).toHaveLength(260);
+    expect(new Set(uids).size).toBe(263);
     expect(unfolded).toContain("SUMMARY:REHE 257: ProsthoTech: Midterm\\, Finish Project");
     expect(unfolded).toContain("SUMMARY:REHE 262: BP Resto: Final Exam");
+    expect(unfolded).toContain("SUMMARY:REHE 259: Project 1 - Group A");
     expect(unfolded).toContain("CATEGORIES:D2 course events,HWDP 232,class,Recorded");
     expect(unfolded).toContain("No Echo schedule found");
     expect(ics).toContain("SUMMARY:Sealant Duty + Clinic Shadowing");

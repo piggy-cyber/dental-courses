@@ -51,6 +51,11 @@ const COURSE_COVERAGE = [
     description: "All published Group A/B lab and competency dates. Daily project names are not present in the saved Canvas calendar.",
   },
   {
+    courseCode: "REHE 259",
+    title: "Basic Procedures in Fixed Prosthodontics II",
+    description: "All official Group A/B project blocks from the Fall 2026 D2 schedule. Project 1 is identified from the supplied calendar; later task names are still pending.",
+  },
+  {
     courseCode: "HWDP 245",
     title: "Musculoskeletal System",
     description: "Published Anatomy Lab and HoloLens topics with Group A/B times.",
@@ -118,7 +123,7 @@ export default async function LabProjectsPage() {
               <section className="lab-projects-coverage" aria-labelledby="lab-projects-coverage-title">
                 <header>
                   <p className="eyebrow">What is available</p>
-                  <h2 id="lab-projects-coverage-title">Three courses have dated lab sections.</h2>
+                  <h2 id="lab-projects-coverage-title">Four courses have dated lab sections.</h2>
                 </header>
                 <div className="lab-projects-coverage-grid">
                   {COURSE_COVERAGE.map((course) => (
@@ -142,7 +147,7 @@ export default async function LabProjectsPage() {
               {d2LabProjectCourseGaps.map((course) => (
                 <p key={course.courseCode}><b>{course.courseCode} · {course.courseName}:</b> {course.note}</p>
               ))}
-              <p><b>Saved source date:</b> Canvas calendar snapshot downloaded August 10, 2026. The Prosth details come from the 2026 REHE 257/267 schedule. Reimporting a newer Canvas file can add newly published lab dates, but project names still require a course schedule or module source.</p>
+              <p><b>Saved source date:</b> Canvas calendar snapshot downloaded August 10, 2026. REHE 257 details come from its 2026 course schedule; REHE 259 project blocks come from the official Fall 2026 D2 schedule updated August 7. Reimporting a newer Canvas file can add newly published lab dates, but project names still require a course schedule or module source.</p>
             </div>
           </section>
 

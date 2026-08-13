@@ -589,7 +589,7 @@ export function SharedCalendar({
             <div>
               <p className="eyebrow">Calendar access</p>
               <h2 id="calendar-actions-title">Subscribe or manage duty access.</h2>
-              <p>Subscribe to all 237 events or use your linked D2 account to manage an assigned duty.</p>
+              <p>Subscribe to all {calendar.events.length} events or use your linked D2 account to manage an assigned duty.</p>
             </div>
             <div className="shared-calendar-action-grid">
               <article className="is-public">

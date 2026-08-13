@@ -116,7 +116,9 @@ function LabProjectCard({
 
       {session.detailStatus === "schedule-only" && (
         <p className="lab-project-pending-note">
-          The lab date and section are published, but the daily project/topic is not named in the saved Canvas calendar. Check the Canvas event or course module before this lab.
+          {session.title === "Project 1"
+            ? "Project 1 is identified, but its required steps and deliverables are not available in the saved sources. Check the Canvas event or course module before this lab."
+            : "The lab date and section are published, but the daily project/topic is not named in the saved Canvas calendar. Check the Canvas event or course module before this lab."}
         </p>
       )}
 

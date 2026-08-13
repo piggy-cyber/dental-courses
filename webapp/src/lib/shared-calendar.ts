@@ -11,6 +11,7 @@ import {
   type CanvasEventKind,
   type D2CanvasCalendarEvent,
 } from "@/lib/d2-canvas-calendar";
+import { d2FixedProsthProjectSessions } from "@/lib/d2-lab-projects";
 
 export type SharedCalendarSourceTone = "blue" | "gold" | "teal" | "copper" | "slate";
 export type SharedCalendarEventKind = CanvasEventKind | "sim-clinic" | "sealant" | "closure";
@@ -324,6 +325,45 @@ function buildCourseEvents() {
   return [...canvasEvents, ...echoOnlyEvents];
 }
 
+function buildFixedProsthProjectEvents(): SharedCalendarEvent[] {
+  return d2FixedProsthProjectSessions.map((session) => ({
+    id: `class-${session.id}`,
+    sourceId: "class-recording",
+    title: `${session.courseCode}: ${session.title} - ${session.section}`,
+    date: session.date,
+    startsAt: localClassIso(session.date, session.startsAt),
+    endsAt: localClassIso(session.date, session.endsAt ?? session.startsAt),
+    allDay: false,
+    status: "scheduled",
+    participants: session.section === "Whole class" ? [] : [{
+      key: `fixed-prostho-${session.section.toLowerCase().replaceAll(" ", "-")}`,
+      label: session.section,
+      kind: "group" as const,
+    }],
+    description: "Fixed Prosthodontics project/lab block from the official Fall 2026 D2 schedule. Project task details have not been published in the saved Canvas sources. No matching Echo360 capture was found for this lab block.",
+    actions: session.canvasUrl ? [{
+      label: session.date === "2026-08-14" ? "Open Canvas project event" : "Open Canvas course",
+      href: session.canvasUrl,
+      requiresLinkedD2: true,
+      promptTitle: `Open ${session.courseCode} in Canvas`,
+      promptDescription: "Sign in with a linked D2 account to open protected Canvas course links.",
+      external: true,
+    }] : [],
+    courseCode: session.courseCode,
+    courseName: session.courseName,
+    eventKind: "lab",
+    location: session.location,
+    moduleName: session.moduleName,
+    recordingStatus: "not-found",
+    recordingStart: null,
+    recordingEnd: null,
+    canvasUrl: session.canvasUrl,
+    echoUrl: null,
+    sourceProvenance: session.sourceProvenance,
+    alternateSchedule: null,
+  }));
+}
+
 function buildSealantEvents(): SharedCalendarEvent[] {
   return FALL_2026_SEALANT_ROTATIONS.map((rotation) => {
     const groupDescription = rotation.sealantGroup
@@ -427,7 +467,7 @@ export function buildSharedCalendar(showcase: ClinicDutyShowcase): SharedCalenda
   });
 
   const sealantEvents = buildSealantEvents();
-  const courseEvents = buildCourseEvents();
+  const courseEvents = [...buildCourseEvents(), ...buildFixedProsthProjectEvents()];
   const examEvents = courseEvents.filter((event) => event.eventKind === "exam");
   const events = [...courseEvents, ...clinicEvents, ...sealantEvents].sort((a, b) =>
     a.startsAt.localeCompare(b.startsAt) || a.sourceId.localeCompare(b.sourceId),
