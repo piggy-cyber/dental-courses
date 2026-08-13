@@ -411,7 +411,7 @@ export function SharedCalendar({
   function openDayAgenda(date: string) {
     chooseDate(date);
     window.requestAnimationFrame(() => {
-      dayAgendaRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      dayAgendaRef.current?.scrollIntoView({ behavior: "auto", block: "start" });
       dayAgendaHeadingRef.current?.focus({ preventScroll: true });
     });
   }
