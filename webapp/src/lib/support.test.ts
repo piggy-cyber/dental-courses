@@ -82,4 +82,23 @@ describe("Turnstile production checks", () => {
 
     expect(verified).toBe(false);
   });
+
+  it("can bind a successful token to one form action", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(JSON.stringify({
+      success: true,
+      hostname: "fourthcanal.com",
+      action: "different_form",
+    }), { status: 200 })));
+
+    const verified = await verifyTurnstile({
+      token: "verified-token",
+      secret: "real-secret",
+      request: new NextRequest("https://fourthcanal.com/api/lab-help-queue", {
+        headers: { "x-vercel-forwarded-for": "203.0.113.25" },
+      }),
+      expectedAction: "lab_help_queue_submit",
+    });
+
+    expect(verified).toBe(false);
+  });
 });

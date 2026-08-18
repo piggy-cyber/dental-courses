@@ -16,8 +16,9 @@ export function LegalFooter() {
   const isGame = pathname === "/games" || pathname.startsWith("/games/");
   const hasIntegratedFooter = pathname === "/about" || pathname === "/ui-preview";
   const isIsolatedAtlasSession = pathname.startsWith("/games/living-atlas/runs/") || pathname.startsWith("/games/living-atlas/recall/");
+  const isStandaloneLabQueue = pathname === "/lab-help-queue";
 
-  if (hasIntegratedFooter || isIsolatedAtlasSession) return null;
+  if (hasIntegratedFooter || isIsolatedAtlasSession || isStandaloneLabQueue) return null;
 
   return (
     <footer className={`${isGame ? "" : "fc-site"} site-legal-footer border-t border-brand-line bg-brand-panel text-brand-muted`}>

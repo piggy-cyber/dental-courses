@@ -19,6 +19,10 @@ function isGamePath(pathname: string) {
   return pathname === "/games" || pathname.startsWith("/games/");
 }
 
+function routeEffectsDisabled(pathname: string) {
+  return isGamePath(pathname) || pathname === "/lab-help-queue";
+}
+
 function resolvedMotion(): SiteMotionMode {
   const saved = window.localStorage.getItem(MOTION_KEY);
   if (saved === "full" || saved === "less" || saved === "off") return saved;
@@ -117,7 +121,7 @@ export function SiteRouteEffects() {
   }, [motion, pathname]);
 
   useEffect(() => {
-    if (isGamePath(pathname)) return;
+    if (routeEffectsDisabled(pathname)) return;
     let observer: IntersectionObserver | null = null;
     const frame = window.requestAnimationFrame(() => {
       const items = Array.from(
@@ -154,7 +158,7 @@ export function SiteRouteEffects() {
   }, [motion, pathname]);
 
   useEffect(() => {
-    if (motion !== "full" || isGamePath(pathname)) return;
+    if (motion !== "full" || routeEffectsDisabled(pathname)) return;
     const move = (event: PointerEvent) => {
       document.documentElement.style.setProperty("--fc-pointer-x", `${event.clientX}px`);
       document.documentElement.style.setProperty("--fc-pointer-y", `${event.clientY}px`);
@@ -165,7 +169,7 @@ export function SiteRouteEffects() {
 
   useEffect(() => {
     const click = (event: MouseEvent) => {
-      if (motion === "off" || phaseRef.current !== "idle" || isGamePath(pathnameRef.current)) return;
+      if (motion === "off" || phaseRef.current !== "idle" || routeEffectsDisabled(pathnameRef.current)) return;
       if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
       const target = event.target instanceof Element ? event.target.closest<HTMLAnchorElement>("a[href]") : null;
       if (!target || target.target === "_blank" || target.hasAttribute("download") || target.dataset.fcTransition === "off") return;
@@ -173,7 +177,7 @@ export function SiteRouteEffects() {
       const next = new URL(target.href, window.location.href);
       if (
         next.origin !== window.location.origin ||
-        isGamePath(next.pathname) ||
+        routeEffectsDisabled(next.pathname) ||
         next.pathname.startsWith("/api/") ||
         next.pathname.startsWith("/auth/")
       ) return;
@@ -228,7 +232,7 @@ export function SiteRouteEffects() {
     };
   }, [changePhase, clearTimers, motion, router]);
 
-  if (isGamePath(pathname) || phase === "idle" || motion === "off") return null;
+  if (routeEffectsDisabled(pathname) || phase === "idle" || motion === "off") return null;
 
   return (
     <div className={`fc-route-curtain fc-route-curtain-${phase}`} data-motion={motion} aria-hidden="true">

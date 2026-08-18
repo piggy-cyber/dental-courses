@@ -1,6 +1,10 @@
 {
   "crons": [
     {
+      "path": "/api/cron/lab-help-queue-retention",
+      "schedule": "17 9 * * *"
+    },
+    {
       "path": "/api/cron/sim-clinic-photo-retention",
       "schedule": "0 8 * * *"
     }

@@ -44,19 +44,25 @@ export async function verifyTurnstile(input: {
   token: string;
   secret: string;
   request: NextRequest;
+  expectedAction?: string;
 }): Promise<boolean> {
+  const clientIp = getClientIp(input.request);
   const response = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: new URLSearchParams({
       secret: input.secret,
       response: input.token,
-      ...(getClientIp(input.request) ? { remoteip: getClientIp(input.request)! } : {}),
+      ...(clientIp ? { remoteip: clientIp } : {}),
     }),
     cache: "no-store",
+    signal: AbortSignal.timeout(5_000),
   });
 
   if (!response.ok) return false;
-  const result = (await response.json()) as { success?: boolean; hostname?: string };
-  return result.success === true && result.hostname === new URL(input.request.url).hostname;
+  const result = (await response.json()) as { success?: boolean; hostname?: string; action?: string };
+  const localDummyKey = !isProductionRuntime() && TURNSTILE_TEST_SECRETS.has(input.secret);
+  return result.success === true
+    && (localDummyKey || result.hostname === new URL(input.request.url).hostname)
+    && (localDummyKey || !input.expectedAction || result.action === input.expectedAction);
 }

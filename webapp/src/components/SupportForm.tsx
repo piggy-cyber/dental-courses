@@ -17,6 +17,10 @@ declare global {
           callback: (token: string) => void;
           "expired-callback": () => void;
           "error-callback": () => void;
+          action?: string;
+          appearance?: "always" | "execute" | "interaction-only";
+          size?: "normal" | "compact" | "flexible";
+          theme?: "light" | "dark" | "auto";
         },
       ) => string;
       reset: (widgetId?: string) => void;
