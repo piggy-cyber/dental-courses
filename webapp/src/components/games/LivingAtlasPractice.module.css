@@ -41,8 +41,8 @@
   font-family: var(--font-fc-sans), Inter, sans-serif;
 }
 
-:global([data-game-shell="true"]:has(.atlasRoot)) { background: var(--paper); color: var(--ink); }
-:global([data-game-shell="true"]:has(.atlasRoot))::before { display: none; }
+:global([data-game-shell="true"]):has(.atlasRoot) { background: var(--paper); color: var(--ink); }
+:global([data-game-shell="true"]):has(.atlasRoot)::before { display: none; }
 .atlasRoot h1,
 .atlasRoot h2 { font-family: var(--font-fc-sans), Inter, sans-serif !important; }
 .atlasRoot button,
