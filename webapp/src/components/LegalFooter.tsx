@@ -14,7 +14,10 @@ const LEGAL_LINKS = [
 export function LegalFooter() {
   const pathname = usePathname();
   const isGame = pathname === "/games" || pathname.startsWith("/games/");
-  const hasIntegratedFooter = pathname === "/about" || pathname === "/ui-preview";
+  const hasIntegratedFooter =
+    pathname === "/about" ||
+    pathname === "/ui-preview" ||
+    pathname === "/visilearn/privacy";
   const isIsolatedAtlasSession = pathname.startsWith("/games/living-atlas/runs/") || pathname.startsWith("/games/living-atlas/recall/");
   const isStandaloneLabQueue = pathname === "/lab-help-queue";
 

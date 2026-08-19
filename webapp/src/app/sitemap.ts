@@ -8,6 +8,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "",
     "/about",
     "/legal",
+    "/visilearn/privacy",
     "/support",
     "/games/living-atlas",
     "/games/beta",
@@ -24,7 +25,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const guideRoutes = getPublicGuideCourses().map((course) => `/guides/${course.slug}`);
   return [...staticRoutes, ...guideRoutes].map((path) => ({
     url: `${origin}${path}`,
-    lastModified: new Date("2026-07-16"),
+    lastModified: new Date(path === "/visilearn/privacy" ? "2026-08-19" : "2026-07-16"),
     changeFrequency: path.startsWith("/guides") ? "monthly" : "weekly",
     priority: path === "" ? 1 : path === "/games/living-atlas" ? 0.9 : 0.7,
   }));
