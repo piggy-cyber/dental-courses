@@ -1,6 +1,7 @@
 import "server-only";
 
 import { createHash, randomBytes } from "node:crypto";
+import type { User } from "@supabase/supabase-js";
 import type { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient as createServerClient } from "@/lib/supabase/server";
@@ -143,8 +144,15 @@ export function setQueueGuestCookie(response: NextResponse, request: NextRequest
 }
 
 export async function getQueueProfile(): Promise<QueueProfile | null> {
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) return null;
   const supabase = await createServerClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  let user: User | null;
+  try {
+    const result = await supabase.auth.getUser();
+    user = result.data.user;
+  } catch {
+    return null;
+  }
   const providers = Array.isArray(user?.app_metadata?.providers) ? user.app_metadata.providers : [];
   const hasGoogleIdentity = user?.app_metadata?.provider === "google" || providers.includes("google");
   if (!user?.email || user.is_anonymous || !hasGoogleIdentity) return null;
@@ -200,6 +208,9 @@ export async function setQueueLobbyClosed(
 }
 
 export async function getQueueHome(profile: QueueProfile | null, token: string | null) {
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+    return { lobbies: [], guestLobby: null, promotionRequests: [] };
+  }
   const admin = createAdminClient();
   let lobbies: QueueLobby[] = [];
   let promotionRequests: QueueAdminPromotionRequest[] = [];
