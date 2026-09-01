@@ -474,6 +474,7 @@ export function mapQueueDatabaseError(message: string): QueueServerError {
     QUEUE_LOBBY_CLOSED: ["lobby_closed", "This lobby is closed and is not accepting new guests or staff."],
     QUEUE_ACTIVE_ENTRIES: ["active_entries", "Finish, cancel, or reassign every waiting and active guest before closing this lobby."],
     QUEUE_LOBBY_NOT_FOUND: ["lobby_not_found", "This lobby does not exist.", 404],
+    QUEUE_RESOURCE_LOBBY_MISMATCH: ["resource_not_found", "That queue item does not belong to this lobby.", 404],
   };
   const key = Object.keys(known).find((candidate) => message.includes(candidate));
   if (!key) return new QueueServerError("database_error", "The queue changed before this action completed. Refresh and try again.", 409);

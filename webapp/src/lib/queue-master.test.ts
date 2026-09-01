@@ -8,6 +8,7 @@ import {
   normalizeQueueText,
   projectQueueGuestStaffCards,
   QUEUE_ACTIVE_LOBBY_LIMIT,
+  shouldRefetchQueueSnapshot,
 } from "@/lib/queue-master";
 
 describe("QueueMaster contracts", () => {
@@ -84,5 +85,13 @@ describe("QueueMaster contracts", () => {
     ];
 
     expect(countQueueWaitingAhead(entries, entries[3])).toBe(1);
+  });
+
+  it("refetches only for a newer revision from the same lobby", () => {
+    expect(shouldRefetchQueueSnapshot({ lobby_id: "lobby-a", revision: 8 }, "lobby-a", 7)).toBe(true);
+    expect(shouldRefetchQueueSnapshot({ lobby_id: "lobby-a", revision: 7 }, "lobby-a", 7)).toBe(false);
+    expect(shouldRefetchQueueSnapshot({ lobby_id: "lobby-b", revision: 9 }, "lobby-a", 7)).toBe(false);
+    expect(shouldRefetchQueueSnapshot({ lobby_id: "lobby-a", revision: "9", guest_name: "Private" }, "lobby-a", 7)).toBe(false);
+    expect(shouldRefetchQueueSnapshot(null, "lobby-a", 7)).toBe(false);
   });
 });

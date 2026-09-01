@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { shouldRefetchQueueSnapshot } from "@/lib/queue-master";
 import { createClient } from "@/lib/supabase/client";
 
 type QueueApiError = { message?: string };
@@ -48,8 +49,9 @@ export function useQueueSnapshot<T extends { lobby: { id: string; revision: numb
     const channel = supabase
       .channel(`queue:${snapshot.lobby.id}`)
       .on("broadcast", { event: "queue_changed" }, ({ payload }) => {
-        const revision = typeof payload?.revision === "number" ? payload.revision : 0;
-        if (revision > latestRevision.current) void refresh(true);
+        if (shouldRefetchQueueSnapshot(payload, snapshot.lobby.id, latestRevision.current)) {
+          void refresh(true);
+        }
       })
       .subscribe((status) => {
         if (status === "SUBSCRIBED") void refresh(true);

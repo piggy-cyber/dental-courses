@@ -130,6 +130,11 @@ export type QueueDisplaySnapshot = {
 
 export type QueueSnapshot = QueueGuestSnapshot | QueueAdminSnapshot | QueueDisplaySnapshot | QueueStaffSnapshot;
 
+export type QueueChangedEvent = {
+  lobby_id: string;
+  revision: number;
+};
+
 export type QueueGuestAction =
   | { type: "check_in"; firstName: string; location: string; membershipId: string }
   | { type: "start_helping"; entryId: string }
@@ -192,6 +197,18 @@ export function isQueueMemberOnline(lastSeenAt: string | null, now = Date.now())
 }
 
 export const isQueueCandidateOnline = isQueueMemberOnline;
+
+export function shouldRefetchQueueSnapshot(
+  payload: unknown,
+  lobbyId: string,
+  latestRevision: number,
+): payload is QueueChangedEvent {
+  if (!payload || typeof payload !== "object") return false;
+  const event = payload as Partial<QueueChangedEvent>;
+  return event.lobby_id === lobbyId
+    && Number.isSafeInteger(event.revision)
+    && (event.revision ?? 0) > latestRevision;
+}
 
 export function projectQueueGuestStaffCards(staff: QueueDisplayStaffCard[]): QueueStaffCard[] {
   return staff.map((card) => ({

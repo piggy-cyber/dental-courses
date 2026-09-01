@@ -46,6 +46,10 @@ create table public.queue_admin_promotion_requests (
 create unique index queue_admin_promotion_requests_one_pending_idx
   on public.queue_admin_promotion_requests (lobby_id, candidate_profile_id)
   where status = 'pending';
+create index queue_admin_promotion_requests_lobby_idx
+  on public.queue_admin_promotion_requests (lobby_id, created_at desc);
+create index queue_admin_promotion_requests_candidate_id_idx
+  on public.queue_admin_promotion_requests (candidate_id);
 create index queue_admin_promotion_requests_candidate_idx
   on public.queue_admin_promotion_requests (candidate_profile_id, status, created_at desc);
 create index queue_admin_promotion_requests_owner_idx
@@ -157,6 +161,7 @@ $$;
 
 create or replace function public.queue_staff_candidate_heartbeat(
   p_candidate_id uuid,
+  p_lobby_id uuid,
   p_profile_id uuid
 )
 returns void
@@ -167,7 +172,10 @@ as $$
 begin
   update public.queue_staff_candidates
   set last_seen_at = now(), updated_at = now()
-  where id = p_candidate_id and profile_id = p_profile_id and left_at is null;
+  where id = p_candidate_id
+    and lobby_id = p_lobby_id
+    and profile_id = p_profile_id
+    and left_at is null;
   if not found then
     raise exception 'QUEUE_CANDIDATE_FORBIDDEN' using errcode = 'P0001';
   end if;
@@ -176,6 +184,7 @@ $$;
 
 create or replace function public.queue_leave_staff_pool(
   p_candidate_id uuid,
+  p_lobby_id uuid,
   p_profile_id uuid
 )
 returns void
@@ -187,7 +196,7 @@ declare
   candidate public.queue_staff_candidates;
 begin
   select * into candidate from public.queue_staff_candidates
-  where id = p_candidate_id for update;
+  where id = p_candidate_id and lobby_id = p_lobby_id for update;
   if candidate.id is null or candidate.profile_id <> p_profile_id or candidate.left_at is not null then
     raise exception 'QUEUE_CANDIDATE_FORBIDDEN' using errcode = 'P0001';
   end if;
@@ -207,6 +216,7 @@ $$;
 
 create or replace function public.queue_request_admin_promotion(
   p_candidate_id uuid,
+  p_lobby_id uuid,
   p_owner_profile_id uuid
 )
 returns public.queue_admin_promotion_requests
@@ -219,7 +229,7 @@ declare
   request_row public.queue_admin_promotion_requests;
 begin
   select * into candidate from public.queue_staff_candidates
-  where id = p_candidate_id for update;
+  where id = p_candidate_id and lobby_id = p_lobby_id for update;
   if candidate.id is null or candidate.left_at is not null then
     raise exception 'QUEUE_CANDIDATE_UNAVAILABLE' using errcode = 'P0001';
   end if;
@@ -267,6 +277,7 @@ $$;
 
 create or replace function public.queue_cancel_admin_promotion(
   p_request_id uuid,
+  p_lobby_id uuid,
   p_owner_profile_id uuid
 )
 returns void
@@ -278,7 +289,7 @@ declare
   request_row public.queue_admin_promotion_requests;
 begin
   select * into request_row from public.queue_admin_promotion_requests
-  where id = p_request_id for update;
+  where id = p_request_id and lobby_id = p_lobby_id for update;
   if request_row.id is null or request_row.status <> 'pending' then
     raise exception 'QUEUE_PROMOTION_NOT_PENDING' using errcode = 'P0001';
   end if;
@@ -300,6 +311,7 @@ $$;
 
 create or replace function public.queue_respond_admin_promotion(
   p_request_id uuid,
+  p_lobby_id uuid,
   p_candidate_profile_id uuid,
   p_accept boolean,
   p_display_name text
@@ -315,7 +327,7 @@ declare
   membership public.queue_memberships;
 begin
   select * into request_row from public.queue_admin_promotion_requests
-  where id = p_request_id for update;
+  where id = p_request_id and lobby_id = p_lobby_id for update;
   if request_row.id is null or request_row.candidate_profile_id <> p_candidate_profile_id then
     raise exception 'QUEUE_PROMOTION_FORBIDDEN' using errcode = 'P0001';
   end if;
@@ -411,19 +423,19 @@ end;
 $$;
 
 revoke all on function public.queue_join_staff_pool(uuid, uuid, text, text) from public, anon, authenticated;
-revoke all on function public.queue_staff_candidate_heartbeat(uuid, uuid) from public, anon, authenticated;
-revoke all on function public.queue_leave_staff_pool(uuid, uuid) from public, anon, authenticated;
-revoke all on function public.queue_request_admin_promotion(uuid, uuid) from public, anon, authenticated;
-revoke all on function public.queue_cancel_admin_promotion(uuid, uuid) from public, anon, authenticated;
-revoke all on function public.queue_respond_admin_promotion(uuid, uuid, boolean, text) from public, anon, authenticated;
+revoke all on function public.queue_staff_candidate_heartbeat(uuid, uuid, uuid) from public, anon, authenticated;
+revoke all on function public.queue_leave_staff_pool(uuid, uuid, uuid) from public, anon, authenticated;
+revoke all on function public.queue_request_admin_promotion(uuid, uuid, uuid) from public, anon, authenticated;
+revoke all on function public.queue_cancel_admin_promotion(uuid, uuid, uuid) from public, anon, authenticated;
+revoke all on function public.queue_respond_admin_promotion(uuid, uuid, uuid, boolean, text) from public, anon, authenticated;
 revoke all on function public.purge_queue_staff_pool_data() from public, anon, authenticated;
 
 grant execute on function public.queue_join_staff_pool(uuid, uuid, text, text) to service_role;
-grant execute on function public.queue_staff_candidate_heartbeat(uuid, uuid) to service_role;
-grant execute on function public.queue_leave_staff_pool(uuid, uuid) to service_role;
-grant execute on function public.queue_request_admin_promotion(uuid, uuid) to service_role;
-grant execute on function public.queue_cancel_admin_promotion(uuid, uuid) to service_role;
-grant execute on function public.queue_respond_admin_promotion(uuid, uuid, boolean, text) to service_role;
+grant execute on function public.queue_staff_candidate_heartbeat(uuid, uuid, uuid) to service_role;
+grant execute on function public.queue_leave_staff_pool(uuid, uuid, uuid) to service_role;
+grant execute on function public.queue_request_admin_promotion(uuid, uuid, uuid) to service_role;
+grant execute on function public.queue_cancel_admin_promotion(uuid, uuid, uuid) to service_role;
+grant execute on function public.queue_respond_admin_promotion(uuid, uuid, uuid, boolean, text) to service_role;
 grant execute on function public.purge_queue_staff_pool_data() to service_role;
 
 comment on table public.queue_staff_candidates is

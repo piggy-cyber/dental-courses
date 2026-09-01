@@ -39,13 +39,14 @@ export async function POST(
       if (!isQueueUuid(payload.candidateId)) return invalidAction();
       const { error } = await admin.rpc(
         payload.type === "heartbeat" ? "queue_staff_candidate_heartbeat" : "queue_leave_staff_pool",
-        { p_candidate_id: payload.candidateId, p_profile_id: profile.id },
+        { p_candidate_id: payload.candidateId, p_lobby_id: lobby.id, p_profile_id: profile.id },
       );
       if (error) throw mapQueueDatabaseError(error.message);
     } else if (payload.type === "accept" || payload.type === "decline") {
       if (!isQueueUuid(payload.requestId)) return invalidAction();
       const { error } = await admin.rpc("queue_respond_admin_promotion", {
         p_request_id: payload.requestId,
+        p_lobby_id: lobby.id,
         p_candidate_profile_id: profile.id,
         p_accept: payload.type === "accept",
         p_display_name: profile.name,

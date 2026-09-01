@@ -49,7 +49,7 @@ describe("QueueMaster migration security contract", () => {
     const broadcastBody = migration.match(/perform realtime\.send\(([\s\S]*?)\);/)?.[1] ?? "";
     expect(broadcastBody).toContain("'lobby_id'");
     expect(broadcastBody).toContain("'revision'");
-    expect(broadcastBody).not.toMatch(/guest|email|location|session/i);
+    expect(broadcastBody).not.toMatch(/guest|email|location|session|candidate|request|token|name/i);
   });
 
   it("does not alter Fourth Canal roles or the lab help queue", () => {
@@ -72,17 +72,27 @@ describe("QueueMaster migration security contract", () => {
     expect(staffPool).toMatch(/queue_admin_promotion_requests_one_pending_idx[\s\S]*where status = 'pending'/);
     expect(staffPool).toContain("now() + interval '24 hours'");
     expect(staffPool).toContain("candidate.last_seen_at < now() - interval '45 seconds'");
+    expect(staffPool).toMatch(/queue_request_admin_promotion[\s\S]*queue_staff_candidates[\s\S]*for update/);
     expect(staffPool).toMatch(/queue_respond_admin_promotion[\s\S]*insert into public\.queue_memberships[\s\S]*accepting_guests[\s\S]*false/);
+  });
+
+  it("indexes staff-pool ownership and foreign-key lookups", () => {
+    expect(staffPool).toContain("queue_staff_candidates_lobby_presence_idx");
+    expect(staffPool).toContain("queue_staff_candidates_profile_idx");
+    expect(staffPool).toContain("queue_admin_promotion_requests_lobby_idx");
+    expect(staffPool).toContain("queue_admin_promotion_requests_candidate_id_idx");
+    expect(staffPool).toContain("queue_admin_promotion_requests_candidate_idx");
+    expect(staffPool).toContain("queue_admin_promotion_requests_owner_idx");
   });
 
   it("keeps all staff pool functions service-only", () => {
     for (const signature of [
       "queue_join_staff_pool(uuid, uuid, text, text)",
-      "queue_staff_candidate_heartbeat(uuid, uuid)",
-      "queue_leave_staff_pool(uuid, uuid)",
-      "queue_request_admin_promotion(uuid, uuid)",
-      "queue_cancel_admin_promotion(uuid, uuid)",
-      "queue_respond_admin_promotion(uuid, uuid, boolean, text)",
+      "queue_staff_candidate_heartbeat(uuid, uuid, uuid)",
+      "queue_leave_staff_pool(uuid, uuid, uuid)",
+      "queue_request_admin_promotion(uuid, uuid, uuid)",
+      "queue_cancel_admin_promotion(uuid, uuid, uuid)",
+      "queue_respond_admin_promotion(uuid, uuid, uuid, boolean, text)",
     ]) expect(staffPool).toContain(`revoke all on function public.${signature} from public, anon, authenticated;`);
   });
 
@@ -105,5 +115,15 @@ describe("QueueMaster migration security contract", () => {
     expect(lifecycle).toContain("set accepting_guests = false");
     expect(lifecycle).toContain("revoke all on function public.queue_set_lobby_closed(uuid, uuid, boolean)");
     expect(lifecycle).toContain("grant execute on function public.queue_set_lobby_closed(uuid, uuid, boolean)");
+    for (const signature of [
+      "queue_call_entry_scoped(uuid, uuid, uuid)",
+      "queue_transition_entry_scoped(uuid, uuid, text, text, uuid, uuid)",
+      "queue_manage_waiting_entry_scoped(uuid, uuid, uuid, uuid, bigint)",
+      "queue_remove_membership_scoped(uuid, uuid, uuid)",
+    ]) {
+      expect(lifecycle).toContain(`revoke all on function public.${signature}`);
+      expect(lifecycle).toContain(`grant execute on function public.${signature}`);
+    }
+    expect(lifecycle).toContain("QUEUE_RESOURCE_LOBBY_MISMATCH");
   });
 });

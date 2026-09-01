@@ -42,6 +42,8 @@ QueueMaster is the public Fourth Canal homepage and a self-contained application
 
 All database mutations advance the lobby revision and publish `queue_changed` with only `lobby_id` and `revision`. Names, emails, locations, tokens, session IDs, candidate IDs, and request IDs are never broadcast. Each client refetches its role-specific server snapshot after a broadcast, reconnect, or polling fallback. Anonymous guest snapshots contain availability and the guest's own active entry, but omit other guests' active-session details.
 
+Every entry, membership, candidate, and promotion action is also checked against the lobby slug in the URL inside the same database transaction. A valid resource ID from another lobby is rejected rather than being acted on through the wrong route.
+
 ## Offline and retention behavior
 
 - After 45 seconds without a heartbeat, new guest joins for that admin stop.

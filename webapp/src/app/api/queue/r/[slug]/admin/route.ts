@@ -42,14 +42,19 @@ export async function POST(
       if (error) throw mapQueueDatabaseError(error.message);
     } else if (payload.type === "call") {
       if (!isQueueUuid(payload.entryId)) return invalidAction();
-      const { error } = await admin.rpc("queue_call_entry", { p_entry_id: payload.entryId, p_actor_profile_id: profile.id });
+      const { error } = await admin.rpc("queue_call_entry_scoped", {
+        p_lobby_id: lobby.id,
+        p_entry_id: payload.entryId,
+        p_actor_profile_id: profile.id,
+      });
       if (error) throw mapQueueDatabaseError(error.message);
     } else if (["start_helping", "finish", "cancel", "no_show"].includes(payload.type)) {
       if (!("entryId" in payload) || !isQueueUuid(payload.entryId)) return invalidAction();
       const toStatus = payload.type === "start_helping" ? "helping"
         : payload.type === "finish" ? "completed"
           : payload.type === "cancel" ? "cancelled" : "no_show";
-      const { error } = await admin.rpc("queue_transition_entry", {
+      const { error } = await admin.rpc("queue_transition_entry_scoped", {
+        p_lobby_id: lobby.id,
         p_entry_id: payload.entryId,
         p_to_status: toStatus,
         p_actor_kind: "staff",
@@ -61,7 +66,8 @@ export async function POST(
       if (!isQueueUuid(payload.entryId)) return invalidAction();
       if (payload.type === "reassign" && !isQueueUuid(payload.membershipId)) return invalidAction();
       if (payload.type === "reorder" && (!Number.isSafeInteger(payload.sortPosition) || payload.sortPosition < 1)) return invalidAction();
-      const { error } = await admin.rpc("queue_manage_waiting_entry", {
+      const { error } = await admin.rpc("queue_manage_waiting_entry_scoped", {
+        p_lobby_id: lobby.id,
         p_entry_id: payload.entryId,
         p_actor_profile_id: profile.id,
         p_assigned_membership_id: payload.type === "reassign" ? payload.membershipId : null,
@@ -73,6 +79,7 @@ export async function POST(
       if (!isQueueUuid(payload.candidateId)) return invalidAction();
       const { error } = await admin.rpc("queue_request_admin_promotion", {
         p_candidate_id: payload.candidateId,
+        p_lobby_id: lobby.id,
         p_owner_profile_id: profile.id,
       });
       if (error) throw mapQueueDatabaseError(error.message);
@@ -81,13 +88,15 @@ export async function POST(
       if (!isQueueUuid(payload.requestId)) return invalidAction();
       const { error } = await admin.rpc("queue_cancel_admin_promotion", {
         p_request_id: payload.requestId,
+        p_lobby_id: lobby.id,
         p_owner_profile_id: profile.id,
       });
       if (error) throw mapQueueDatabaseError(error.message);
     } else if (payload.type === "remove_staff") {
       if (membership.role !== "owner") return ownerRequired();
       if (!isQueueUuid(payload.membershipId)) return invalidAction();
-      const { error } = await admin.rpc("queue_remove_membership", {
+      const { error } = await admin.rpc("queue_remove_membership_scoped", {
+        p_lobby_id: lobby.id,
         p_membership_id: payload.membershipId,
         p_owner_profile_id: profile.id,
       });

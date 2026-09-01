@@ -1,7 +1,7 @@
 begin;
 
 create extension if not exists pgtap with schema extensions;
-select plan(10);
+select plan(12);
 
 insert into auth.users (id, email, aud, role, raw_app_meta_data, raw_user_meta_data)
 values
@@ -39,9 +39,19 @@ select public.queue_join_lobby(
   (select id from public.queue_memberships where lobby_id = (select id from public.queue_lobbies where slug = 'lifecycle-two') and role = 'owner')
 );
 
+select throws_ok(
+  $$select public.queue_call_entry_scoped((select id from public.queue_lobbies where slug = 'lifecycle-three'), (select id from public.queue_entries where guest_session_id = '72000000-0000-4000-8000-000000000001' and status = 'waiting'), '71000000-0000-4000-8000-000000000001')$$,
+  'P0001', 'QUEUE_RESOURCE_LOBBY_MISMATCH', 'entry actions reject a mismatched route lobby'
+);
+select throws_ok(
+  $$select public.queue_transition_entry_scoped((select id from public.queue_lobbies where slug = 'lifecycle-three'), (select id from public.queue_entries where guest_session_id = '72000000-0000-4000-8000-000000000001' and status = 'waiting'), 'cancelled', 'guest', null, '72000000-0000-4000-8000-000000000001')$$,
+  'P0001', 'QUEUE_RESOURCE_LOBBY_MISMATCH', 'guest actions reject a mismatched route lobby'
+);
+
 select throws_ok($$select public.queue_set_lobby_closed((select id from public.queue_lobbies where slug = 'lifecycle-two'), '71000000-0000-4000-8000-000000000001', true)$$, 'P0001', 'QUEUE_ACTIVE_ENTRIES', 'active guests prevent closing');
 
-select public.queue_transition_entry(
+select public.queue_transition_entry_scoped(
+  (select id from public.queue_lobbies where slug = 'lifecycle-two'),
   (select id from public.queue_entries where guest_session_id = '72000000-0000-4000-8000-000000000001' and status = 'waiting'),
   'cancelled', 'guest', null, '72000000-0000-4000-8000-000000000001'
 );
