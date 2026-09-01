@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
-import { createAdminClient } from "@/lib/supabase/admin";
+import { createAdminClient, getSupabaseAdminKey } from "@/lib/supabase/admin";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function GET() {
   let database = false;
-  if (process.env.SUPABASE_SECRET_KEY?.trim()) {
+  if (getSupabaseAdminKey()) {
     try {
       const admin = createAdminClient();
       const { error } = await admin.from("profiles").select("id", { head: true, count: "exact" }).limit(1);
