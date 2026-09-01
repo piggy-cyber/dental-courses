@@ -4,8 +4,8 @@ import { QueueHome } from "@/components/queue/QueueHome";
 import { getQueueHome, getQueueProfile, QUEUE_GUEST_COOKIE } from "@/lib/queue-master-server";
 
 export const metadata: Metadata = {
-  title: "QueueMaster Pilot",
-  description: "Real-time physical-space queues by Fourth Canal.",
+  title: { absolute: "QueueMaster" },
+  description: "The quiet, fair, and organized way to manage student questions and classroom help queues.",
   robots: "noindex, nofollow, noarchive",
 };
 

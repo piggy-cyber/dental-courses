@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { QueueGuest } from "@/components/queue/QueueGuest";
 
 export const metadata: Metadata = {
-  title: "Join Queue",
+  title: { absolute: "Join Queue · QueueMaster" },
   robots: "noindex, nofollow, noarchive",
 };
 

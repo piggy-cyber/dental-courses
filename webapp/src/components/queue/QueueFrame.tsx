@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { GraduationCap } from "lucide-react";
 import type { ReactNode } from "react";
 import styles from "./queue.module.css";
 
@@ -7,10 +8,13 @@ export function QueueFrame({ children, wide = false }: { children: ReactNode; wi
     <main className={styles.page}>
       <header className={styles.siteHeader}>
         <Link href="/queue" className={styles.brand}>
-          <span>IV</span>
-          <div><strong>QueueMaster</strong><small>by Fourth Canal</small></div>
+          <GraduationCap size={28} aria-hidden="true" />
+          <strong>QueueMaster</strong>
         </Link>
-        <Link href="/legal" className={styles.backLink}>Privacy &amp; terms</Link>
+        <nav className={styles.frameNav}>
+          <Link href="/queue">Home</Link>
+          <Link href="/legal">Privacy &amp; terms</Link>
+        </nav>
       </header>
       <div className={wide ? styles.wide : styles.container}>{children}</div>
     </main>

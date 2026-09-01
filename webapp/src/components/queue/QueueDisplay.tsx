@@ -13,7 +13,7 @@ export function QueueDisplay({ slug }: { slug: string }) {
   return (
     <main className={styles.display}>
       <header>
-        <div><p>QueueMaster · Fourth Canal</p><h1>{snapshot.lobby.name}</h1></div>
+        <div><p>QueueMaster · Classroom Display</p><h1>{snapshot.lobby.name}</h1></div>
         <span>Live · {snapshot.waiting.length} waiting</span>
       </header>
       <section className={styles.displayStaff}>

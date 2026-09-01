@@ -148,3 +148,166 @@
   .display { padding: 1rem; }
   .display > header { align-items: flex-start; flex-direction: column; gap: .8rem; }
 }
+
+/* QueueMaster product theme — mirrors the approved Gemini classroom concept. */
+.page {
+  min-height: 100vh;
+  color: #0f172a;
+  background: #f8fafc;
+  font-family: var(--font-fc-sans), ui-sans-serif, system-ui, sans-serif;
+}
+.siteHeader {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  min-height: 64px;
+  padding: 0 clamp(1rem, 4vw, 3rem);
+  border-bottom: 1px solid #e2e8f0;
+  background: #fff;
+}
+.brand {
+  gap: .5rem;
+  color: #059669;
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -.025em;
+}
+.frameNav { display: flex; align-items: center; gap: 1.5rem; }
+.frameNav a {
+  color: #475569;
+  font-size: .82rem;
+  font-weight: 650;
+  text-decoration: none;
+}
+.frameNav a:hover { color: #0f172a; }
+.container, .wide { padding-top: clamp(2.5rem, 6vw, 5rem); }
+.hero h1, .lobbyHeading h1, .adminHeader h1 {
+  color: #0f172a;
+  font-family: var(--font-fc-sans), ui-sans-serif, system-ui, sans-serif;
+  font-weight: 850;
+  letter-spacing: -.055em;
+}
+.hero > p:last-child, .lobbyHeading > p:last-child, .adminHeader > div > p:last-child { color: #64748b; font-size: 1rem; }
+.eyebrow { color: #047857; font-family: var(--font-fc-sans), ui-sans-serif, system-ui, sans-serif; font-size: .68rem; letter-spacing: .08em; }
+.panel {
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  border-radius: 1.5rem;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, .06);
+}
+.sectionHeading { border-color: #e2e8f0; padding: 1.2rem 1.35rem; }
+.sectionHeading h2 { color: #0f172a; font-size: 1.4rem; }
+.sectionHeading > span {
+  border: 0;
+  border-radius: .75rem;
+  color: #047857;
+  background: #d1fae5;
+  font-family: var(--font-fc-sans), ui-sans-serif, system-ui, sans-serif;
+}
+.resumeCard {
+  border: 1px solid #a7f3d0;
+  border-radius: 1rem;
+  box-shadow: inset 5px 0 0 #10b981;
+  color: #0f172a;
+  background: #ecfdf5;
+}
+.resumeCard span, .resumeCard small { color: #047857; }
+.signInBlock p, .empty { color: #64748b; font-size: .82rem; }
+.createForm, .checkInForm, .inviteForm { border-color: #e2e8f0; padding: 1.35rem; }
+.createForm label, .checkInForm label, .inviteForm label { color: #334155; font-size: .74rem; }
+.createForm input, .checkInForm input, .inviteForm input, .queueTable select {
+  min-height: 46px;
+  border-color: #cbd5e1;
+  border-radius: .75rem;
+  color: #0f172a;
+  background: #fff;
+}
+.createForm input:focus, .checkInForm input:focus, .inviteForm input:focus, .queueTable select:focus {
+  border-color: #10b981;
+  outline: 3px solid #d1fae5;
+}
+.primaryButton, .secondaryButton, .acceptingButton, .headerActions a, .headerActions button {
+  min-height: 44px;
+  border-radius: .75rem;
+  font-size: .72rem;
+  font-weight: 750;
+}
+.primaryButton { border-color: #059669; color: #fff; background: #059669; }
+.primaryButton:hover { background: #047857; }
+.secondaryButton, .headerActions a { border-color: #cbd5e1; color: #334155; background: #fff; }
+.acceptingButton { border-color: #86efac; color: #166534; background: #dcfce7; }
+.lobbyList article, .queueTable > article, .inviteList > p { border-color: #e2e8f0; }
+.lobbyList strong, .queueTable strong, .membershipGrid strong { color: #0f172a; }
+.lobbyList small, .queueTable small, .membershipGrid small, .membershipGrid span, .inviteList span { color: #64748b; }
+.lobbyList nav a { color: #059669; }
+.notice {
+  border-color: #e2e8f0;
+  border-radius: 1rem;
+  color: #475569;
+  background: #fff;
+}
+.error { border-color: #fecaca; color: #991b1b; background: #fef2f2; }
+.staffPicker button {
+  border-color: #e2e8f0;
+  color: #0f172a;
+  background: #fff;
+}
+.staffPicker button:disabled { color: #94a3b8; background: #f8fafc; }
+.staffPicker button.selectedStaff { box-shadow: inset 0 0 0 3px #10b981; background: #ecfdf5; }
+.staffPicker button strong { color: #0f172a; }
+.onlineDot { background: #22c55e; }
+.offlineDot { background: #94a3b8; }
+.guestStatus {
+  border-color: #e2e8f0;
+  border-radius: 1.5rem;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, .06);
+}
+.guestStatus h2 {
+  color: #0f172a;
+  font-family: var(--font-fc-sans), ui-sans-serif, system-ui, sans-serif;
+  font-weight: 850;
+}
+.guestStatus.greenState {
+  border-color: #22c55e;
+  box-shadow: inset 0 8px 0 #16a34a;
+  color: #14532d;
+  background: #bbf7d0;
+}
+.guestStatus.greenState h2, .guestStatus.greenState .eyebrow { color: #14532d; }
+.activePanel { border-color: #86efac; box-shadow: inset 0 5px 0 #16a34a; background: #dcfce7; }
+.activeLocation {
+  color: #0f172a;
+  font-family: var(--font-fc-sans), ui-sans-serif, system-ui, sans-serif;
+  font-weight: 800;
+}
+.qrBlock svg, .qrPlaceholder { border-color: #e2e8f0; border-radius: .75rem; }
+.queueTable > article > b {
+  border-radius: .65rem;
+  background: #0f172a;
+  font-family: var(--font-fc-sans), ui-sans-serif, system-ui, sans-serif;
+}
+.rowActions button, .membershipGrid button {
+  border-color: #cbd5e1;
+  border-radius: .55rem;
+  color: #334155;
+  background: #fff;
+}
+.membershipGrid article { border-color: #e2e8f0; }
+.membershipGrid .offlineWarning { background: #fffbeb; }
+.display { color: #f8fafc; background: #0f172a; font-family: var(--font-fc-sans), ui-sans-serif, system-ui, sans-serif; }
+.display > header { border-color: #334155; }
+.display > header p { color: #6ee7b7; font-family: var(--font-fc-sans), ui-sans-serif, system-ui, sans-serif; }
+.display > header h1 { font-family: var(--font-fc-sans), ui-sans-serif, system-ui, sans-serif; font-weight: 850; }
+.displayStaff article { border-color: #475569; border-radius: 1.25rem; background: #1e293b; }
+.displayStaff strong { font-family: var(--font-fc-sans), ui-sans-serif, system-ui, sans-serif; font-weight: 850; }
+.displayStaff article.displayActive { border-color: #4ade80; color: #14532d; background: #86efac; }
+.displayWaiting { overflow: hidden; border-color: #475569; border-radius: 1.25rem; }
+.displayWaiting > h2, .displayWaiting article { border-color: #475569; }
+
+@media (max-width: 600px) {
+  .siteHeader { padding: 0 1rem; }
+  .frameNav { gap: .8rem; }
+  .frameNav a:first-child { display: none; }
+}
