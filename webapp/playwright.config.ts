@@ -11,8 +11,8 @@ export default defineConfig({
   webServer: process.env.PLAYWRIGHT_BASE_URL
     ? undefined
     : {
-        command: "pnpm start",
-        url: baseURL,
+        command: "node_modules/.bin/next start",
+        url: `${baseURL}/legal`,
         reuseExistingServer: !process.env.CI,
         timeout: 120_000,
       },

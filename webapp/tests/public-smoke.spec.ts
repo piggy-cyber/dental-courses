@@ -1,51 +1,48 @@
 import { expect, test } from "@playwright/test";
 
-test("public navigation and grade calculator are usable", async ({ page }) => {
-  await page.goto("/");
-  await expect(page.getByRole("heading", { name: /look closer/i })).toBeVisible();
-  await page.getByRole("link", { name: /grade calculator/i }).first().click();
-  await expect(page.getByRole("heading", { name: /know where you stand/i })).toBeVisible();
+test("QueueMaster is the production entry point", async ({ request }) => {
+  const response = await request.get("/", { maxRedirects: 0 });
+  expect(response.status()).toBe(307);
+  expect(response.headers().location).toBe("/queue");
 });
 
-test("Living Atlas has a public preview while its workspace stays protected", async ({ page }) => {
-  await page.goto("/games/living-atlas");
-  await expect(page.getByRole("heading", { name: /study the detail/i })).toBeVisible();
-  await expect(page.getByText(/the working question library is not/i)).toBeVisible();
-
-  await page.goto("/games/living-atlas/performance");
-  await expect(page).toHaveURL(/\/games\/living-atlas\?access=founder$/);
+test("former Fourth Canal pages are no longer published", async ({ request }) => {
+  for (const route of [
+    "/about",
+    "/admin",
+    "/calendar",
+    "/games",
+    "/grade-calculator",
+    "/guides",
+    "/home",
+    "/support",
+  ]) {
+    const response = await request.get(route, { maxRedirects: 0 });
+    expect(response.status()).toBe(307);
+    expect(response.headers().location).toBe("/queue");
+  }
 });
 
-test("Games opens Living Atlas and keeps the arcade available as a public beta", async ({ page }) => {
-  await page.goto("/games");
-  await expect(page).toHaveURL(/\/games\/living-atlas$/);
-  await expect(page.getByRole("heading", { name: /study the detail/i })).toBeVisible();
+test("required legal and extension privacy pages remain published", async ({ page }) => {
+  await page.goto("/legal");
+  await expect(page.getByRole("heading", { name: /legal center/i })).toBeVisible();
 
-  await page.goto("/games/beta");
-  await expect(page.getByText("Public beta", { exact: true })).toBeVisible();
-  await expect(page.getByRole("heading", { name: /train your eye/i })).toBeVisible();
+  await page.goto("/visilearn/privacy");
+  await expect(page.getByRole("heading", { name: /privacy policy/i })).toBeVisible();
 });
 
-test("404 recovery, robots, and sitemap expose only public routes", async ({ page, request }) => {
-  await page.goto("/not-a-real-route");
-  await expect(page.getByRole("heading", { name: /this page is missing/i })).toBeVisible();
-  await expect(page.getByRole("link", { name: /return home/i })).toBeVisible();
-
+test("robots and sitemap reflect the pilot publication boundary", async ({ request }) => {
   const [robots, sitemap] = await Promise.all([request.get("/robots.txt"), request.get("/sitemap.xml")]);
   await expect(robots).toBeOK();
   await expect(sitemap).toBeOK();
-  const sitemapText = await sitemap.text();
-  expect(sitemapText).toContain("https://fourthcanal.com/support");
-  expect(sitemapText).toContain("https://fourthcanal.com/games/living-atlas");
-  expect(sitemapText).toContain("https://fourthcanal.com/games/beta");
-  expect(sitemapText).not.toContain("<loc>https://fourthcanal.com/games</loc>");
-  expect(sitemapText).not.toContain("/admin");
-  expect(sitemapText).not.toContain("?view=");
-});
 
-test("protected pages redirect without a session", async ({ page }) => {
-  for (const route of ["/home", "/admin/inbox"]) {
-    await page.goto(route);
-    await expect(page).toHaveURL(/\/$/);
-  }
+  const robotsText = await robots.text();
+  expect(robotsText).toContain("Disallow: /");
+
+  const sitemapText = await sitemap.text();
+  expect(sitemapText).toContain("https://fourthcanal.com/legal");
+  expect(sitemapText).toContain("https://fourthcanal.com/visilearn/privacy");
+  expect(sitemapText).not.toContain("https://fourthcanal.com/support");
+  expect(sitemapText).not.toContain("https://fourthcanal.com/games");
+  expect(sitemapText).not.toContain("https://fourthcanal.com/guides");
 });
