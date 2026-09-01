@@ -3,6 +3,7 @@ import {
   getQueueAdminSnapshot,
   getQueueDisplaySnapshot,
   getQueueGuestSnapshot,
+  getQueueStaffSnapshot,
   queueErrorResponse,
   requireQueueProfile,
 } from "@/lib/queue-master-server";
@@ -20,6 +21,8 @@ export async function GET(
       ? await getQueueDisplaySnapshot(slug)
       : view === "admin"
         ? await getQueueAdminSnapshot(slug, await requireQueueProfile())
+        : view === "staff"
+          ? await getQueueStaffSnapshot(slug, await requireQueueProfile())
         : await getQueueGuestSnapshot(slug, request.cookies.get("fc_queue_guest")?.value ?? null);
     return NextResponse.json(snapshot, { headers: { "Cache-Control": "private, no-store" } });
   } catch (error) {

@@ -9,6 +9,8 @@ export const QUEUE_ENTRY_STATUSES = [
 
 export type QueueEntryStatus = (typeof QUEUE_ENTRY_STATUSES)[number];
 export type QueueMembershipRole = "owner" | "admin";
+export type QueuePromotionRequestStatus = "pending" | "accepted" | "declined" | "cancelled" | "expired";
+export const QUEUE_ACTIVE_LOBBY_LIMIT = 3;
 
 export type QueueLobby = {
   id: string;
@@ -17,6 +19,12 @@ export type QueueLobby = {
   ownerProfileId: string;
   revision: number;
   createdAt: string;
+  closedAt: string | null;
+};
+
+export type QueueLobbyLifecycleAction = {
+  type: "close" | "reopen";
+  lobbyId: string;
 };
 
 export type QueueMembership = {
@@ -52,6 +60,9 @@ export type QueueStaffCard = Pick<
   "id" | "displayName" | "acceptingGuests" | "isOnline" | "isAvailable"
 > & {
   waitingCount: number;
+};
+
+export type QueueDisplayStaffCard = QueueStaffCard & {
   activeEntry: QueueEntry | null;
 };
 
@@ -63,11 +74,32 @@ export type QueueGuestSnapshot = {
   waitingAhead: number;
 };
 
-export type QueueAdminInvitation = {
+export type QueueStaffCandidate = {
   id: string;
+  lobbyId: string;
+  profileId: string;
+  displayName: string;
   email: string;
-  claimedAt: string | null;
-  revokedAt: string | null;
+  joinedAt: string;
+  lastSeenAt: string;
+  leftAt: string | null;
+  isOnline: boolean;
+};
+
+export type QueueAdminPromotionRequest = {
+  id: string;
+  lobbyId: string;
+  lobbyName: string;
+  lobbySlug: string;
+  candidateId: string;
+  candidateProfileId: string;
+  candidateName: string;
+  candidateEmail: string;
+  requestedByOwnerProfileId: string;
+  status: QueuePromotionRequestStatus;
+  expiresAt: string;
+  respondedAt: string | null;
+  cancelledAt: string | null;
   createdAt: string;
 };
 
@@ -76,18 +108,32 @@ export type QueueAdminSnapshot = {
   lobby: QueueLobby;
   me: QueueMembership;
   memberships: QueueMembership[];
-  invitations: QueueAdminInvitation[];
+  candidates: QueueStaffCandidate[];
+  promotionRequests: QueueAdminPromotionRequest[];
   entries: QueueEntry[];
+};
+
+export type QueueStaffSnapshot = {
+  kind: "staff";
+  lobby: QueueLobby;
+  candidate: QueueStaffCandidate | null;
+  membership: QueueMembership | null;
+  promotionRequests: QueueAdminPromotionRequest[];
 };
 
 export type QueueDisplaySnapshot = {
   kind: "display";
   lobby: QueueLobby;
-  staff: QueueStaffCard[];
+  staff: QueueDisplayStaffCard[];
   waiting: QueueEntry[];
 };
 
-export type QueueSnapshot = QueueGuestSnapshot | QueueAdminSnapshot | QueueDisplaySnapshot;
+export type QueueSnapshot = QueueGuestSnapshot | QueueAdminSnapshot | QueueDisplaySnapshot | QueueStaffSnapshot;
+
+export type QueueChangedEvent = {
+  lobby_id: string;
+  revision: number;
+};
 
 export type QueueGuestAction =
   | { type: "check_in"; firstName: string; location: string; membershipId: string }
@@ -104,14 +150,20 @@ export type QueueAdminAction =
   | { type: "no_show"; entryId: string }
   | { type: "reassign"; entryId: string; membershipId: string }
   | { type: "reorder"; entryId: string; sortPosition: number }
-  | { type: "invite"; email: string }
-  | { type: "revoke_invite"; invitationId: string }
+  | { type: "request_promotion"; candidateId: string }
+  | { type: "cancel_promotion"; requestId: string }
   | { type: "remove_staff"; membershipId: string };
+
+export type QueueStaffAction =
+  | { type: "join" }
+  | { type: "leave"; candidateId: string }
+  | { type: "accept"; requestId: string }
+  | { type: "decline"; requestId: string }
+  | { type: "heartbeat"; candidateId: string };
 
 export const QUEUE_ONLINE_WINDOW_MS = 45_000;
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function isQueueUuid(value: unknown): value is string {
   return typeof value === "string" && UUID_PATTERN.test(value);
@@ -124,11 +176,6 @@ export function normalizeQueueText(value: unknown, maximum: number): string | nu
     return null;
   }
   return normalized;
-}
-
-export function normalizeQueueEmail(value: unknown): string | null {
-  const email = normalizeQueueText(value, 254)?.toLowerCase() ?? null;
-  return email && EMAIL_PATTERN.test(email) ? email : null;
 }
 
 export function createQueueSlug(name: string, suffix = ""): string {
@@ -147,6 +194,42 @@ export function isQueueMemberOnline(lastSeenAt: string | null, now = Date.now())
   if (!lastSeenAt) return false;
   const seenAt = Date.parse(lastSeenAt);
   return Number.isFinite(seenAt) && now - seenAt <= QUEUE_ONLINE_WINDOW_MS && seenAt <= now + 5_000;
+}
+
+export const isQueueCandidateOnline = isQueueMemberOnline;
+
+export function shouldRefetchQueueSnapshot(
+  payload: unknown,
+  lobbyId: string,
+  latestRevision: number,
+): payload is QueueChangedEvent {
+  if (!payload || typeof payload !== "object") return false;
+  const event = payload as Partial<QueueChangedEvent>;
+  return event.lobby_id === lobbyId
+    && Number.isSafeInteger(event.revision)
+    && (event.revision ?? 0) > latestRevision;
+}
+
+export function projectQueueGuestStaffCards(staff: QueueDisplayStaffCard[]): QueueStaffCard[] {
+  return staff.map((card) => ({
+    id: card.id,
+    displayName: card.displayName,
+    acceptingGuests: card.acceptingGuests,
+    isOnline: card.isOnline,
+    isAvailable: card.isAvailable,
+    waitingCount: card.waitingCount,
+  }));
+}
+
+export function countQueueWaitingAhead(
+  entries: ReadonlyArray<Pick<QueueEntry, "status" | "assignedMembershipId" | "sortPosition">>,
+  current: Pick<QueueEntry, "assignedMembershipId" | "sortPosition">,
+): number {
+  return entries.filter((entry) => (
+    entry.status === "waiting"
+      && entry.assignedMembershipId === current.assignedMembershipId
+      && entry.sortPosition < current.sortPosition
+  )).length;
 }
 
 export function canQueueTransition(from: QueueEntryStatus, to: QueueEntryStatus): boolean {

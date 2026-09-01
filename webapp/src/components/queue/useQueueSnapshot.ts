@@ -1,13 +1,19 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { shouldRefetchQueueSnapshot } from "@/lib/queue-master";
 import { createClient } from "@/lib/supabase/client";
 
 type QueueApiError = { message?: string };
 
+const hasRealtimeConfig = Boolean(
+  process.env.NEXT_PUBLIC_SUPABASE_URL
+    && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+);
+
 export function useQueueSnapshot<T extends { lobby: { id: string; revision: number } }>(
   slug: string,
-  view: "guest" | "admin" | "display",
+  view: "guest" | "admin" | "display" | "staff",
 ) {
   const [snapshot, setSnapshot] = useState<T | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -43,13 +49,14 @@ export function useQueueSnapshot<T extends { lobby: { id: string; revision: numb
   }, [refresh]);
 
   useEffect(() => {
-    if (!snapshot?.lobby.id) return;
+    if (!snapshot?.lobby.id || !hasRealtimeConfig) return;
     const supabase = createClient();
     const channel = supabase
       .channel(`queue:${snapshot.lobby.id}`)
       .on("broadcast", { event: "queue_changed" }, ({ payload }) => {
-        const revision = typeof payload?.revision === "number" ? payload.revision : 0;
-        if (revision > latestRevision.current) void refresh(true);
+        if (shouldRefetchQueueSnapshot(payload, snapshot.lobby.id, latestRevision.current)) {
+          void refresh(true);
+        }
       })
       .subscribe((status) => {
         if (status === "SUBSCRIBED") void refresh(true);
@@ -62,7 +69,7 @@ export function useQueueSnapshot<T extends { lobby: { id: string; revision: numb
 
 export async function sendQueueAction(
   slug: string,
-  audience: "guest" | "admin",
+  audience: "guest" | "admin" | "staff",
   action: object,
 ) {
   const response = await fetch(`/api/queue/r/${encodeURIComponent(slug)}/${audience}`, {

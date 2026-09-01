@@ -2,10 +2,10 @@ import type { MetadataRoute } from "next";
 const origin = "https://fourthcanal.com";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  return ["/legal", "/visilearn/privacy"].map((path) => ({
+  return ["/", "/queue/about", "/queue/instructions", "/queue/privacy", "/queue/terms", "/visilearn/privacy"].map((path) => ({
     url: `${origin}${path}`,
-    lastModified: new Date(path === "/visilearn/privacy" ? "2026-08-19" : "2026-07-16"),
+    lastModified: new Date(path === "/visilearn/privacy" ? "2026-08-19" : "2026-09-01"),
     changeFrequency: "yearly" as const,
-    priority: 0.2,
+    priority: path === "/" ? 1 : 0.3,
   }));
 }

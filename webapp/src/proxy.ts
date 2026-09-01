@@ -60,9 +60,9 @@ export async function proxy(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
 
   const path = request.nextUrl.pathname;
-  if (path === "/" || !isPublishedPage(path)) {
+  if (path !== "/" && !isPublishedPage(path)) {
     const url = request.nextUrl.clone();
-    url.pathname = "/queue";
+    url.pathname = "/";
     url.search = "";
     return NextResponse.redirect(url);
   }

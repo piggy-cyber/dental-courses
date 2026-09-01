@@ -34,13 +34,13 @@ const brandDisplay = Bodoni_Moda({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://fourthcanal.com"),
-  applicationName: "Fourth Canal",
+  applicationName: "QueueMaster",
   title: {
-    default: "Fourth Canal",
-    template: "%s · Fourth Canal",
+    default: "QueueMaster by Fourth Canal",
+    template: "%s · QueueMaster",
   },
   description:
-    "Dental study tools for students: Living Atlas, a grade calculator, and web-readable course guides.",
+    "A quiet, fair, and organized way to manage classroom questions, office hours, and help queues.",
   manifest: "/manifest.webmanifest",
   icons: {
     icon: [
@@ -52,17 +52,17 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     url: "/",
-    siteName: "Fourth Canal",
-    title: "Fourth Canal",
+    siteName: "QueueMaster",
+    title: "QueueMaster by Fourth Canal",
     description:
-      "Dental study tools for students: Living Atlas, a grade calculator, and web-readable course guides.",
+      "A quiet, fair, and organized way to manage classroom questions, office hours, and help queues.",
     images: ["/brand/fourth-canal-social-preview-v2.png"],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Fourth Canal",
+    title: "QueueMaster by Fourth Canal",
     description:
-      "Dental study tools for students: Living Atlas, a grade calculator, and web-readable course guides.",
+      "A quiet, fair, and organized way to manage classroom questions, office hours, and help queues.",
     images: ["/brand/fourth-canal-social-preview-v2.png"],
   },
   robots: {
@@ -111,15 +111,15 @@ export default function RootLayout({
               "@type": "Organization",
               name: "Fourth Canal",
               url: "https://fourthcanal.com",
-              description: "Independent dental-student study tools and web-readable course guides.",
+              description: "Independent creator and operator of QueueMaster.",
             },
             {
               "@context": "https://schema.org",
               "@type": "WebSite",
-              name: "Fourth Canal",
+              name: "QueueMaster",
               url: "https://fourthcanal.com",
               inLanguage: "en-US",
-              description: "Dental study tools for students.",
+              description: "A realtime queue for classrooms, office hours, labs, and shared spaces.",
             },
           ]}
         />

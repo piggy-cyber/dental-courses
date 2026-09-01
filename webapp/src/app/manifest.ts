@@ -2,14 +2,14 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Fourth Canal",
-    short_name: "Fourth Canal",
+    name: "QueueMaster by Fourth Canal",
+    short_name: "QueueMaster",
     description:
-      "Open dental study tools, including Living Atlas, a grade calculator, and course guides.",
+      "A quiet, fair, and organized way to manage classroom questions and help queues.",
     start_url: "/",
     display: "browser",
-    background_color: "#F2EDE2",
-    theme_color: "#0F1E3A",
+    background_color: "#F8FAFC",
+    theme_color: "#059669",
     icons: [
       {
         src: "/brand/favicon.svg",

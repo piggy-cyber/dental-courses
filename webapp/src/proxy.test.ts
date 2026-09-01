@@ -36,18 +36,18 @@ describe("request proxy", () => {
     const response = await proxy(request("/games/tooth-quest"));
 
     expect(response.status).toBe(307);
-    expect(response.headers.get("location")).toBe("https://fourthcanal.com/queue");
+    expect(response.headers.get("location")).toBe("https://fourthcanal.com/");
     expect(mocks.createServerClient).not.toHaveBeenCalled();
   });
 
   it("makes QueueMaster the production home", async () => {
     const response = await proxy(request("/?from=old-home"));
 
-    expect(response.status).toBe(307);
-    expect(response.headers.get("location")).toBe("https://fourthcanal.com/queue");
+    expect(response.status).toBe(200);
+    expect(response.headers.get("location")).toBeNull();
   });
 
-  it.each(["/queue", "/queue/r/front-desk/join", "/legal", "/visilearn/privacy"])(
+  it.each(["/queue", "/queue/about", "/queue/instructions", "/queue/support", "/queue/dashboard", "/queue/features", "/queue/use-cases", "/queue/pricing", "/queue/how-it-works", "/queue/privacy", "/queue/terms", "/queue/r/front-desk/join", "/queue/r/front-desk/staff", "/legal", "/visilearn/privacy"])(
     "keeps the published page available at %s",
     async (path) => {
       mocks.getUser.mockResolvedValue({ data: { user: null }, error: null });
@@ -65,7 +65,7 @@ describe("request proxy", () => {
     const response = await proxy(request("/home?tab=progress"));
 
     expect(response.status).toBe(307);
-    expect(response.headers.get("location")).toBe("https://fourthcanal.com/queue");
+    expect(response.headers.get("location")).toBe("https://fourthcanal.com/");
     expect(response.cookies.get("fc_auth_return_to")).toBeUndefined();
     expect(mocks.createServerClient).not.toHaveBeenCalled();
   });
@@ -76,7 +76,7 @@ describe("request proxy", () => {
     const response = await proxy(request("/clinic-duty"));
 
     expect(response.status).toBe(307);
-    expect(response.headers.get("location")).toBe("https://fourthcanal.com/queue");
+    expect(response.headers.get("location")).toBe("https://fourthcanal.com/");
     expect(response.cookies.get("fc_auth_return_to")).toBeUndefined();
     expect(mocks.createServerClient).not.toHaveBeenCalled();
   });
@@ -87,7 +87,7 @@ describe("request proxy", () => {
     const response = await proxy(request("/clinic-duty/showcase"));
 
     expect(response.status).toBe(307);
-    expect(response.headers.get("location")).toBe("https://fourthcanal.com/queue");
+    expect(response.headers.get("location")).toBe("https://fourthcanal.com/");
   });
 
   it("unpublishes the shared calendar page", async () => {
@@ -96,7 +96,7 @@ describe("request proxy", () => {
     const response = await proxy(request("/calendar"));
 
     expect(response.status).toBe(307);
-    expect(response.headers.get("location")).toBe("https://fourthcanal.com/queue");
+    expect(response.headers.get("location")).toBe("https://fourthcanal.com/");
   });
 
   it.each(["/api/calendar.ics", "/api/lab-help-queue"])("keeps operational API behavior unchanged at %s", async (path) => {

@@ -61,7 +61,8 @@ export async function POST(
       if (!toStatus) {
         return NextResponse.json({ error: "invalid_action", message: "That guest action is not supported." }, { status: 400 });
       }
-      const { error } = await admin.rpc("queue_transition_entry", {
+      const { error } = await admin.rpc("queue_transition_entry_scoped", {
+        p_lobby_id: lobby.id,
         p_entry_id: payload.entryId,
         p_to_status: toStatus,
         p_actor_kind: "guest",

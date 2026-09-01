@@ -1,23 +1,29 @@
 import "server-only";
 
 import { createHash, randomBytes } from "node:crypto";
+import type { User } from "@supabase/supabase-js";
 import type { NextRequest, NextResponse } from "next/server";
-import { createAdminClient } from "@/lib/supabase/admin";
+import { createAdminClient, getSupabaseAdminKey } from "@/lib/supabase/admin";
 import { createClient as createServerClient } from "@/lib/supabase/server";
 import {
+  countQueueWaitingAhead,
   createQueueSlug,
+  isQueueCandidateOnline,
   isQueueMemberOnline,
-  normalizeQueueEmail,
+  isQueueUuid,
   normalizeQueueText,
-  type QueueAdminInvitation,
+  projectQueueGuestStaffCards,
+  type QueueAdminPromotionRequest,
   type QueueAdminSnapshot,
+  type QueueDisplayStaffCard,
   type QueueDisplaySnapshot,
   type QueueEntry,
   type QueueEntryStatus,
   type QueueGuestSnapshot,
   type QueueLobby,
   type QueueMembership,
-  type QueueStaffCard,
+  type QueueStaffCandidate,
+  type QueueStaffSnapshot,
 } from "@/lib/queue-master";
 
 export const QUEUE_GUEST_COOKIE = "fc_queue_guest";
@@ -30,6 +36,7 @@ type LobbyRow = {
   owner_profile_id: string;
   revision: number;
   created_at: string;
+  closed_at: string | null;
 };
 
 type MembershipRow = {
@@ -58,7 +65,39 @@ type EntryRow = {
   finished_at: string | null;
 };
 
+type CandidateRow = {
+  id: string;
+  lobby_id: string;
+  profile_id: string;
+  display_name: string;
+  email: string;
+  joined_at: string;
+  last_seen_at: string;
+  left_at: string | null;
+};
+
+type PromotionRequestRow = {
+  id: string;
+  lobby_id: string;
+  candidate_id: string;
+  candidate_profile_id: string;
+  requested_by_owner_profile_id: string;
+  status: "pending" | "accepted" | "declined" | "cancelled" | "expired";
+  expires_at: string;
+  responded_at: string | null;
+  cancelled_at: string | null;
+  created_at: string;
+};
+
 type QueueProfile = { id: string; email: string; name: string };
+
+function hasQueueServerConfig() {
+  return Boolean(
+    process.env.NEXT_PUBLIC_SUPABASE_URL
+      && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+      && getSupabaseAdminKey(),
+  );
+}
 
 export class QueueServerError extends Error {
   constructor(
@@ -115,8 +154,15 @@ export function setQueueGuestCookie(response: NextResponse, request: NextRequest
 }
 
 export async function getQueueProfile(): Promise<QueueProfile | null> {
+  if (!hasQueueServerConfig()) return null;
   const supabase = await createServerClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  let user: User | null;
+  try {
+    const result = await supabase.auth.getUser();
+    user = result.data.user;
+  } catch {
+    return null;
+  }
   const providers = Array.isArray(user?.app_metadata?.providers) ? user.app_metadata.providers : [];
   const hasGoogleIdentity = user?.app_metadata?.provider === "google" || providers.includes("google");
   if (!user?.email || user.is_anonymous || !hasGoogleIdentity) return null;
@@ -135,18 +181,7 @@ export async function getQueueProfile(): Promise<QueueProfile | null> {
 export async function requireQueueProfile(): Promise<QueueProfile> {
   const profile = await getQueueProfile();
   if (!profile) throw new QueueServerError("sign_in_required", "Sign in with Google to manage a queue.", 401);
-  await claimQueueInvitations(profile);
   return profile;
-}
-
-async function claimQueueInvitations(profile: QueueProfile) {
-  const admin = createAdminClient();
-  const { error } = await admin.rpc("queue_claim_invitations", {
-    p_profile_id: profile.id,
-    p_email: profile.email,
-    p_display_name: profile.name,
-  });
-  if (error) throw mapQueueDatabaseError(error.message);
 }
 
 export async function createQueueLobby(profile: QueueProfile, nameValue: unknown): Promise<QueueLobby> {
@@ -164,11 +199,32 @@ export async function createQueueLobby(profile: QueueProfile, nameValue: unknown
   return mapLobby(data as LobbyRow);
 }
 
+export async function setQueueLobbyClosed(
+  profile: QueueProfile,
+  lobbyIdValue: unknown,
+  closedValue: unknown,
+): Promise<QueueLobby> {
+  if (!isQueueUuid(lobbyIdValue) || typeof closedValue !== "boolean") {
+    throw new QueueServerError("invalid_lobby_action", "Refresh the dashboard and try again.");
+  }
+  const admin = createAdminClient();
+  const { data, error } = await admin.rpc("queue_set_lobby_closed", {
+    p_lobby_id: lobbyIdValue,
+    p_owner_profile_id: profile.id,
+    p_closed: closedValue,
+  });
+  if (error) throw mapQueueDatabaseError(error.message);
+  return mapLobby(data as LobbyRow);
+}
+
 export async function getQueueHome(profile: QueueProfile | null, token: string | null) {
+  if (!hasQueueServerConfig()) {
+    return { lobbies: [], guestLobby: null, promotionRequests: [] };
+  }
   const admin = createAdminClient();
   let lobbies: QueueLobby[] = [];
+  let promotionRequests: QueueAdminPromotionRequest[] = [];
   if (profile) {
-    await claimQueueInvitations(profile);
     const { data: memberships, error } = await admin
       .from("queue_memberships")
       .select("lobby_id")
@@ -179,12 +235,22 @@ export async function getQueueHome(profile: QueueProfile | null, token: string |
     if (lobbyIds.length) {
       const { data, error: lobbyError } = await admin
         .from("queue_lobbies")
-        .select("id, name, slug, owner_profile_id, revision, created_at")
+        .select("id, name, slug, owner_profile_id, revision, created_at, closed_at")
         .in("id", lobbyIds)
         .order("created_at", { ascending: false });
       if (lobbyError) throw new QueueServerError("lobbies_failed", "Could not load your lobbies.", 500);
       lobbies = (data as LobbyRow[]).map(mapLobby);
     }
+
+    const { data: requestRows, error: requestError } = await admin
+      .from("queue_admin_promotion_requests")
+      .select("id, lobby_id, candidate_id, candidate_profile_id, requested_by_owner_profile_id, status, expires_at, responded_at, cancelled_at, created_at")
+      .eq("candidate_profile_id", profile.id)
+      .eq("status", "pending")
+      .gt("expires_at", new Date().toISOString())
+      .order("created_at", { ascending: false });
+    if (requestError) throw new QueueServerError("promotions_failed", "Could not load your staff requests.", 500);
+    promotionRequests = await mapPromotionRequests(requestRows as PromotionRequestRow[]);
   }
 
   let guestLobby: QueueLobby | null = null;
@@ -192,19 +258,19 @@ export async function getQueueHome(profile: QueueProfile | null, token: string |
   if (guestSession?.last_lobby_id) {
     const { data } = await admin
       .from("queue_lobbies")
-      .select("id, name, slug, owner_profile_id, revision, created_at")
+      .select("id, name, slug, owner_profile_id, revision, created_at, closed_at")
       .eq("id", guestSession.last_lobby_id)
       .maybeSingle();
     guestLobby = data ? mapLobby(data as LobbyRow) : null;
   }
-  return { lobbies, guestLobby };
+  return { lobbies, guestLobby, promotionRequests };
 }
 
 export async function findLobbyBySlug(slug: string): Promise<LobbyRow> {
   const admin = createAdminClient();
   const { data, error } = await admin
     .from("queue_lobbies")
-    .select("id, name, slug, owner_profile_id, revision, created_at")
+    .select("id, name, slug, owner_profile_id, revision, created_at, closed_at")
     .eq("slug", slug.toLowerCase())
     .maybeSingle();
   if (error) throw new QueueServerError("lobby_failed", "Could not load this lobby.", 500);
@@ -232,12 +298,10 @@ export async function getQueueGuestSnapshot(slug: string, token: string | null):
   const currentRow = guestSession
     ? entryRows.find((entry) => entry.guest_session_id === guestSession.id && ["waiting", "called", "helping"].includes(entry.status)) ?? null
     : null;
-  const staff = buildStaffCards(membershipRows, entryRows);
+  const staff = projectQueueGuestStaffCards(buildDisplayStaffCards(membershipRows, entryRows));
   const entries = mapEntries(entryRows, membershipRows);
   const currentEntry = currentRow ? entries.find((entry) => entry.id === currentRow.id) ?? null : null;
-  const waitingAhead = currentRow
-    ? entryRows.filter((entry) => entry.status === "waiting" && entry.sort_position < currentRow.sort_position).length
-    : 0;
+  const waitingAhead = currentEntry ? countQueueWaitingAhead(entries, currentEntry) : 0;
   return { kind: "guest", lobby: mapLobby(lobbyRow), staff, currentEntry, waitingAhead };
 }
 
@@ -248,7 +312,7 @@ export async function getQueueDisplaySnapshot(slug: string): Promise<QueueDispla
   return {
     kind: "display",
     lobby: mapLobby(lobbyRow),
-    staff: buildStaffCards(membershipRows, entryRows),
+    staff: buildDisplayStaffCards(membershipRows, entryRows),
     waiting: entries.filter((entry) => entry.status === "waiting"),
   };
 }
@@ -258,30 +322,72 @@ export async function getQueueAdminSnapshot(slug: string, profile: QueueProfile)
   const meRow = await getMembership(lobbyRow.id, profile.id);
   if (!meRow) throw new QueueServerError("staff_required", "You are not staff for this lobby.", 403);
   const { membershipRows, entryRows } = await loadLobbyRows(lobbyRow.id);
-  let invitations: QueueAdminInvitation[] = [];
+  let candidates: QueueStaffCandidate[] = [];
+  let promotionRequests: QueueAdminPromotionRequest[] = [];
   if (meRow.role === "owner") {
     const admin = createAdminClient();
-    const { data, error } = await admin
-      .from("queue_admin_invitations")
-      .select("id, email, claimed_at, revoked_at, created_at")
+    const [candidateResult, requestResult] = await Promise.all([
+      admin
+      .from("queue_staff_candidates")
+      .select("id, lobby_id, profile_id, display_name, email, joined_at, last_seen_at, left_at")
       .eq("lobby_id", lobbyRow.id)
-      .order("created_at", { ascending: false });
-    if (error) throw new QueueServerError("invites_failed", "Could not load staff invitations.", 500);
-    invitations = (data ?? []).map((row) => ({
-      id: row.id,
-      email: row.email,
-      claimedAt: row.claimed_at,
-      revokedAt: row.revoked_at,
-      createdAt: row.created_at,
-    }));
+      .is("left_at", null)
+      .order("joined_at"),
+      admin
+        .from("queue_admin_promotion_requests")
+        .select("id, lobby_id, candidate_id, candidate_profile_id, requested_by_owner_profile_id, status, expires_at, responded_at, cancelled_at, created_at")
+        .eq("lobby_id", lobbyRow.id)
+        .eq("status", "pending")
+        .gt("expires_at", new Date().toISOString())
+        .order("created_at", { ascending: false }),
+    ]);
+    if (candidateResult.error || requestResult.error) {
+      throw new QueueServerError("staff_pool_failed", "Could not load the staff pool.", 500);
+    }
+    candidates = (candidateResult.data as CandidateRow[]).map(mapCandidate);
+    promotionRequests = await mapPromotionRequests(requestResult.data as PromotionRequestRow[]);
   }
   return {
     kind: "admin",
     lobby: mapLobby(lobbyRow),
     me: mapMembership(meRow),
     memberships: membershipRows.map(mapMembership),
-    invitations,
+    candidates,
+    promotionRequests,
     entries: mapEntries(entryRows, membershipRows),
+  };
+}
+
+export async function getQueueStaffSnapshot(slug: string, profile: QueueProfile): Promise<QueueStaffSnapshot> {
+  const lobbyRow = await findLobbyBySlug(slug);
+  const admin = createAdminClient();
+  const [membership, candidateResult, requestResult] = await Promise.all([
+    getMembership(lobbyRow.id, profile.id),
+    admin
+      .from("queue_staff_candidates")
+      .select("id, lobby_id, profile_id, display_name, email, joined_at, last_seen_at, left_at")
+      .eq("lobby_id", lobbyRow.id)
+      .eq("profile_id", profile.id)
+      .is("left_at", null)
+      .maybeSingle(),
+    admin
+      .from("queue_admin_promotion_requests")
+      .select("id, lobby_id, candidate_id, candidate_profile_id, requested_by_owner_profile_id, status, expires_at, responded_at, cancelled_at, created_at")
+      .eq("lobby_id", lobbyRow.id)
+      .eq("candidate_profile_id", profile.id)
+      .eq("status", "pending")
+      .gt("expires_at", new Date().toISOString())
+      .order("created_at", { ascending: false }),
+  ]);
+  if (candidateResult.error || requestResult.error) {
+    throw new QueueServerError("staff_pool_failed", "Could not load this staff request.", 500);
+  }
+  return {
+    kind: "staff",
+    lobby: mapLobby(lobbyRow),
+    candidate: candidateResult.data ? mapCandidate(candidateResult.data as CandidateRow) : null,
+    membership: membership ? mapMembership(membership) : null,
+    promotionRequests: await mapPromotionRequests(requestResult.data as PromotionRequestRow[]),
   };
 }
 
@@ -356,6 +462,19 @@ export function mapQueueDatabaseError(message: string): QueueServerError {
     QUEUE_GUEST_FORBIDDEN: ["guest_forbidden", "You can only change your own queue session.", 403],
     QUEUE_REASSIGN_BEFORE_REMOVAL: ["reassign_required", "Reassign this staff member's active guests before removing them."],
     QUEUE_OWNER_REQUIRED: ["owner_required", "Only the lobby owner can do that.", 403],
+    QUEUE_ALREADY_STAFF: ["already_staff", "You already have staff access to this lobby."],
+    QUEUE_CANDIDATE_FORBIDDEN: ["candidate_forbidden", "You can only manage your own staff request.", 403],
+    QUEUE_CANDIDATE_UNAVAILABLE: ["candidate_unavailable", "That person is no longer waiting in the staff pool."],
+    QUEUE_PROMOTION_ALREADY_PENDING: ["promotion_pending", "An admin request is already waiting for this person."],
+    QUEUE_PROMOTION_NOT_PENDING: ["promotion_closed", "That admin request is no longer pending."],
+    QUEUE_PROMOTION_FORBIDDEN: ["promotion_forbidden", "You can only respond to your own admin request.", 403],
+    QUEUE_PROMOTION_EXPIRED: ["promotion_expired", "That admin request has expired."],
+    QUEUE_SELF_PROMOTION: ["self_promotion", "Lobby owners cannot promote themselves through the staff pool."],
+    QUEUE_LOBBY_LIMIT: ["lobby_limit_reached", "You can have up to three active lobbies. Close one before creating or reopening another."],
+    QUEUE_LOBBY_CLOSED: ["lobby_closed", "This lobby is closed and is not accepting new guests or staff."],
+    QUEUE_ACTIVE_ENTRIES: ["active_entries", "Finish, cancel, or reassign every waiting and active guest before closing this lobby."],
+    QUEUE_LOBBY_NOT_FOUND: ["lobby_not_found", "This lobby does not exist.", 404],
+    QUEUE_RESOURCE_LOBBY_MISMATCH: ["resource_not_found", "That queue item does not belong to this lobby.", 404],
   };
   const key = Object.keys(known).find((candidate) => message.includes(candidate));
   if (!key) return new QueueServerError("database_error", "The queue changed before this action completed. Refresh and try again.", 409);
@@ -370,12 +489,6 @@ export function queueErrorResponse(error: unknown) {
   return { status: queueError.status, body: { error: queueError.code, message: queueError.message } };
 }
 
-export function validateInvitationEmail(value: unknown) {
-  const email = normalizeQueueEmail(value);
-  if (!email) throw new QueueServerError("invalid_email", "Enter a valid staff email address.");
-  return email;
-}
-
 function mapLobby(row: LobbyRow): QueueLobby {
   return {
     id: row.id,
@@ -384,7 +497,59 @@ function mapLobby(row: LobbyRow): QueueLobby {
     ownerProfileId: row.owner_profile_id,
     revision: Number(row.revision),
     createdAt: row.created_at,
+    closedAt: row.closed_at,
   };
+}
+
+function mapCandidate(row: CandidateRow): QueueStaffCandidate {
+  return {
+    id: row.id,
+    lobbyId: row.lobby_id,
+    profileId: row.profile_id,
+    displayName: row.display_name,
+    email: row.email,
+    joinedAt: row.joined_at,
+    lastSeenAt: row.last_seen_at,
+    leftAt: row.left_at,
+    isOnline: isQueueCandidateOnline(row.last_seen_at),
+  };
+}
+
+async function mapPromotionRequests(rows: PromotionRequestRow[]): Promise<QueueAdminPromotionRequest[]> {
+  if (!rows.length) return [];
+  const admin = createAdminClient();
+  const lobbyIds = [...new Set(rows.map((row) => row.lobby_id))];
+  const candidateIds = [...new Set(rows.map((row) => row.candidate_id))];
+  const [lobbyResult, candidateResult] = await Promise.all([
+    admin.from("queue_lobbies").select("id, name, slug").in("id", lobbyIds),
+    admin.from("queue_staff_candidates").select("id, display_name, email").in("id", candidateIds),
+  ]);
+  if (lobbyResult.error || candidateResult.error) {
+    throw new QueueServerError("promotions_failed", "Could not load staff request details.", 500);
+  }
+  const lobbies = new Map((lobbyResult.data ?? []).map((row) => [row.id, row]));
+  const candidates = new Map((candidateResult.data ?? []).map((row) => [row.id, row]));
+  return rows.map((row) => {
+    const lobby = lobbies.get(row.lobby_id);
+    const candidate = candidates.get(row.candidate_id);
+    const expired = row.status === "pending" && Date.parse(row.expires_at) <= Date.now();
+    return {
+      id: row.id,
+      lobbyId: row.lobby_id,
+      lobbyName: lobby?.name ?? "Queue lobby",
+      lobbySlug: lobby?.slug ?? "",
+      candidateId: row.candidate_id,
+      candidateProfileId: row.candidate_profile_id,
+      candidateName: candidate?.display_name ?? "Staff candidate",
+      candidateEmail: candidate?.email ?? "",
+      requestedByOwnerProfileId: row.requested_by_owner_profile_id,
+      status: expired ? "expired" : row.status,
+      expiresAt: row.expires_at,
+      respondedAt: row.responded_at,
+      cancelledAt: row.cancelled_at,
+      createdAt: row.created_at,
+    };
+  });
 }
 
 function mapMembership(row: MembershipRow): QueueMembership {
@@ -421,7 +586,7 @@ function mapEntries(rows: EntryRow[], memberships: MembershipRow[]): QueueEntry[
   }));
 }
 
-function buildStaffCards(memberships: MembershipRow[], entries: EntryRow[]): QueueStaffCard[] {
+function buildDisplayStaffCards(memberships: MembershipRow[], entries: EntryRow[]): QueueDisplayStaffCard[] {
   const mappedEntries = mapEntries(entries, memberships);
   return memberships.map((membership) => {
     const mapped = mapMembership(membership);

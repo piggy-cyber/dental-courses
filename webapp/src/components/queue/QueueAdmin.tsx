@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
-import { QRCodeSVG } from "qrcode.react";
 import { SignInButton } from "@/components/SignInButton";
 import type { QueueAdminAction, QueueAdminSnapshot, QueueEntry } from "@/lib/queue-master";
 import { QueueError, QueueFrame, QueueLoading } from "./QueueFrame";
+import { QueueQrCard } from "./QueueQrCard";
 import { sendQueueAction, useQueueSnapshot } from "./useQueueSnapshot";
 import styles from "./queue.module.css";
 
@@ -13,7 +13,6 @@ export function QueueAdmin({ slug }: { slug: string }) {
   const { snapshot, error, loading, refresh } = useQueueSnapshot<QueueAdminSnapshot>(slug, "admin");
   const [busyKey, setBusyKey] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
-  const [inviteEmail, setInviteEmail] = useState("");
   const origin = useSyncExternalStore(
     () => () => undefined,
     () => window.location.origin,
@@ -40,7 +39,6 @@ export function QueueAdmin({ slug }: { slug: string }) {
     setActionError(null);
     try {
       await sendQueueAction(slug, "admin", action);
-      if (action.type === "invite") setInviteEmail("");
       await refresh(true);
     } catch (caught) {
       setActionError(caught instanceof Error ? caught.message : "That action could not be completed.");
@@ -52,27 +50,32 @@ export function QueueAdmin({ slug }: { slug: string }) {
   const waiting = useMemo(() => snapshot?.entries.filter((entry) => entry.status === "waiting") ?? [], [snapshot]);
   const active = useMemo(() => snapshot?.entries.find((entry) => entry.assignedMembershipId === snapshot.me.id && (entry.status === "called" || entry.status === "helping")) ?? null, [snapshot]);
 
-  if (loading && !snapshot) return <QueueFrame wide><QueueLoading label="Opening staff dashboard…" /></QueueFrame>;
+  if (loading && !snapshot) return <QueueFrame wide slug={slug}><QueueLoading label="Opening staff dashboard…" /></QueueFrame>;
   if (error && !snapshot) return (
-    <QueueFrame><QueueError message={error} /><div className={styles.signInBlock}><SignInButton returnTo={`/queue/r/${slug}/admin`} /></div></QueueFrame>
+    <QueueFrame slug={slug}><QueueError message={error} /><div className={styles.signInBlock}><SignInButton returnTo={`/queue/r/${slug}/admin`} /></div></QueueFrame>
   );
   if (!snapshot) return null;
   const joinUrl = `${origin}/queue/r/${snapshot.lobby.slug}/join`;
+  const staffUrl = `${origin}/queue/r/${snapshot.lobby.slug}/staff`;
+  const isClosed = Boolean(snapshot.lobby.closedAt);
+  const pendingByCandidate = new Map(snapshot.promotionRequests.filter((request) => request.status === "pending").map((request) => [request.candidateId, request]));
 
   return (
-    <QueueFrame wide>
+    <QueueFrame wide slug={slug}>
       <section className={styles.adminHeader}>
         <div><p className={styles.eyebrow}>Staff dashboard</p><h1>{snapshot.lobby.name}</h1><p>Heartbeat active · updates every 20 seconds</p></div>
         <div className={styles.headerActions}>
-          <Link href={`/queue/r/${slug}/display`}>Open display</Link>
-          <Link href={`/queue/r/${slug}/join`}>Guest view</Link>
-          <button className={snapshot.me.acceptingGuests ? styles.acceptingButton : styles.secondaryButton} disabled={busyKey !== null} onClick={() => act({ type: "set_accepting", accepting: !snapshot.me.acceptingGuests })}>
-            {snapshot.me.acceptingGuests ? "Accepting guests" : "Not accepting"}
+          <Link href="/queue/dashboard">Back to lobby controls</Link>
+          <button className={snapshot.me.acceptingGuests ? styles.acceptingButton : styles.secondaryButton} disabled={busyKey !== null || isClosed} title={isClosed ? "Reopen this lobby from the dashboard before accepting guests." : undefined} onClick={() => act({ type: "set_accepting", accepting: !snapshot.me.acceptingGuests })}>
+            {isClosed ? "Lobby closed" : snapshot.me.acceptingGuests ? "Accepting guests" : "Not accepting"}
           </button>
         </div>
       </section>
 
       {(actionError || error) && <QueueError message={actionError || error || "Queue error"} />}
+      {isClosed ? <div className={styles.notice}>This lobby is closed. New guests, staff candidates, and promotions are blocked. The owner can reopen it from the <Link href="/queue/dashboard">dashboard</Link>.</div> : null}
+
+      <QueueQrCard title="Guest QR code" description="Guests scan this code to choose an available admin and check in." url={joinUrl} testId="guest-qr" />
 
       <div className={styles.adminGrid}>
         <section className={`${styles.panel} ${active ? styles.activePanel : ""}`}>
@@ -89,13 +92,7 @@ export function QueueAdmin({ slug }: { slug: string }) {
           ) : <p className={styles.empty}>Call a waiting guest when you are ready.</p>}
         </section>
 
-        <section className={styles.panel}>
-          <div className={styles.sectionHeading}><div><p className={styles.eyebrow}>Lobby link</p><h2>Guest QR code</h2></div></div>
-          <div className={styles.qrBlock}>
-            {origin ? <QRCodeSVG value={joinUrl} size={148} level="M" marginSize={2} /> : <div className={styles.qrPlaceholder} />}
-            <div><code>{joinUrl || `/queue/r/${slug}/join`}</code><button className={styles.secondaryButton} onClick={() => navigator.clipboard.writeText(joinUrl)}>Copy link</button></div>
-          </div>
-        </section>
+        {snapshot.me.role === "owner" ? <QueueQrCard title="Staff QR code" description="Only share this code with people who may join the signed-in staff pool." url={staffUrl} testId="staff-qr" /> : <section className={styles.panel}><div className={styles.sectionHeading}><div><p className={styles.eyebrow}>Admin access</p><h2>Staff QR is owner-only</h2></div></div><p className={styles.empty}>Ask the lobby owner to share the staff join code with new candidates.</p></section>}
       </div>
 
       <section className={styles.panel}>
@@ -120,6 +117,7 @@ export function QueueAdmin({ slug }: { slug: string }) {
         <div className={styles.sectionHeading}><div><p className={styles.eyebrow}>Presence</p><h2>Staff</h2></div><span>{snapshot.memberships.length}</span></div>
         <div className={styles.membershipGrid}>
           {snapshot.memberships.map((member) => {
+            const assignedGuests = snapshot.entries.filter((entry) => entry.assignedMembershipId === member.id).length;
             const assignedWaiting = waiting.filter((entry) => entry.assignedMembershipId === member.id).length;
             return (
               <article key={member.id} className={!member.isOnline && assignedWaiting ? styles.offlineWarning : ""}>
@@ -127,7 +125,7 @@ export function QueueAdmin({ slug }: { slug: string }) {
                 <div><strong>{member.displayName}</strong><small>{member.role} · {member.isAvailable ? "available" : member.isOnline ? "not accepting" : "offline"}</small></div>
                 <span>{assignedWaiting} waiting</span>
                 {snapshot.me.role === "owner" && member.role !== "owner" && (
-                  <button disabled={busyKey !== null || assignedWaiting > 0} onClick={() => act({ type: "remove_staff", membershipId: member.id }, member.id)}>Remove</button>
+                  <button title={assignedGuests > 0 ? "Reassign all waiting, called, and helping guests before removal." : "Remove this admin from the lobby"} disabled={busyKey !== null || assignedGuests > 0} onClick={() => { if (window.confirm(`Remove ${member.displayName} from this lobby?`)) void act({ type: "remove_staff", membershipId: member.id }, member.id); }}>Remove</button>
                 )}
                 {!member.isOnline && assignedWaiting > 0 && <p>Offline with an existing queue. Reassign guests manually.</p>}
               </article>
@@ -138,22 +136,13 @@ export function QueueAdmin({ slug }: { slug: string }) {
 
       {snapshot.me.role === "owner" && (
         <section className={styles.panel}>
-          <div className={styles.sectionHeading}><div><p className={styles.eyebrow}>Owner tools</p><h2>Invite staff</h2></div></div>
-          <form className={styles.inviteForm} onSubmit={(event) => { event.preventDefault(); void act({ type: "invite", email: inviteEmail }); }}>
-            <label>Google account email<input type="email" value={inviteEmail} onChange={(event) => setInviteEmail(event.target.value)} placeholder="staff@example.com" required /></label>
-            <button className={styles.primaryButton} disabled={busyKey !== null}>Add invitation</button>
-          </form>
+          <div className={styles.sectionHeading}><div><p className={styles.eyebrow}>Owner tools</p><h2>Signed-in staff pool</h2></div><span>{snapshot.candidates.length}</span></div>
           <div className={styles.inviteList}>
-            {snapshot.invitations.map((invite) => (
-              <p key={invite.id}>
-                <strong>{invite.email}</strong>
-                <span>{invite.claimedAt ? "Claimed" : invite.revokedAt ? "Revoked" : "Waiting for sign-in"}</span>
-                {!invite.claimedAt && !invite.revokedAt && (
-                  <button className={styles.secondaryButton} disabled={busyKey !== null} onClick={() => void act({ type: "revoke_invite", invitationId: invite.id }, invite.id)}>Revoke</button>
-                )}
-              </p>
-            ))}
-            {!snapshot.invitations.length && <p className={styles.empty}>No staff invitations yet.</p>}
+            {snapshot.candidates.map((candidate) => {
+              const pending = pendingByCandidate.get(candidate.id);
+              return <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 p-4" key={candidate.id}><div><strong>{candidate.displayName}</strong><p className="text-xs text-slate-500">{candidate.email} · {candidate.isOnline ? "online" : "offline"}</p></div>{pending ? <button className={styles.secondaryButton} disabled={busyKey !== null} onClick={() => { if (window.confirm(`Cancel the admin request for ${candidate.displayName}?`)) void act({ type: "cancel_promotion", requestId: pending.id }, pending.id); }}>Cancel request</button> : <button className={styles.primaryButton} disabled={busyKey !== null || !candidate.isOnline || isClosed} title={isClosed ? "Reopen this lobby before promoting staff." : !candidate.isOnline ? "The candidate must be online to receive a new request." : "Send an in-app admin request"} onClick={() => void act({ type: "request_promotion", candidateId: candidate.id }, candidate.id)}>Request as admin</button>}</div>;
+            })}
+            {!snapshot.candidates.length && <p className={styles.empty}>No candidates are waiting. Share the staff QR above.</p>}
           </div>
         </section>
       )}
@@ -183,8 +172,8 @@ function WaitingRow({ entry, index, entries, snapshot, busy, onAction }: {
         <button disabled={!canManage || busy || !previous} onClick={() => void onAction({ type: "reorder", entryId: entry.id, sortPosition: previous ? Math.max(1, previous.sortPosition - 1) : entry.sortPosition }, entry.id)}>↑</button>
         <button disabled={!canManage || busy || !next} onClick={() => void onAction({ type: "reorder", entryId: entry.id, sortPosition: next ? next.sortPosition + 1 : entry.sortPosition }, entry.id)}>↓</button>
         <button disabled={!canManage || busy} onClick={() => void onAction({ type: "call", entryId: entry.id }, entry.id)}>Call</button>
-        <button disabled={!canManage || busy} onClick={() => void onAction({ type: "cancel", entryId: entry.id }, entry.id)}>Cancel</button>
-        <button disabled={!canManage || busy} onClick={() => void onAction({ type: "no_show", entryId: entry.id }, entry.id)}>No show</button>
+        <button disabled={!canManage || busy} onClick={() => { if (window.confirm(`Cancel ${entry.guestFirstName}'s queue entry?`)) void onAction({ type: "cancel", entryId: entry.id }, entry.id); }}>Cancel</button>
+        <button disabled={!canManage || busy} onClick={() => { if (window.confirm(`Mark ${entry.guestFirstName} as no-show?`)) void onAction({ type: "no_show", entryId: entry.id }, entry.id); }}>No show</button>
       </div>
     </article>
   );

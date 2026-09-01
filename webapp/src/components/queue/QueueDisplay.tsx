@@ -1,20 +1,25 @@
 "use client";
 
+import { useSyncExternalStore } from "react";
 import type { QueueDisplaySnapshot } from "@/lib/queue-master";
 import { QueueError, QueueLoading } from "./QueueFrame";
+import { QueueLobbyNav } from "./QueueLobbyNav";
+import { QueueQrCard } from "./QueueQrCard";
 import { useQueueSnapshot } from "./useQueueSnapshot";
 import styles from "./queue.module.css";
 
 export function QueueDisplay({ slug }: { slug: string }) {
   const { snapshot, error, loading } = useQueueSnapshot<QueueDisplaySnapshot>(slug, "display");
+  const origin = useSyncExternalStore(() => () => undefined, () => window.location.origin, () => "https://fourthcanal.com");
   if (loading && !snapshot) return <main className={styles.display}><QueueLoading /></main>;
   if (error && !snapshot) return <main className={styles.display}><QueueError message={error} /></main>;
   if (!snapshot) return null;
   return (
     <main className={styles.display}>
+      <QueueLobbyNav slug={slug} displayMode />
       <header>
         <div><p>QueueMaster · Classroom Display</p><h1>{snapshot.lobby.name}</h1></div>
-        <span>Live · {snapshot.waiting.length} waiting</span>
+        <span>{snapshot.lobby.closedAt ? "Closed" : "Live"} · {snapshot.waiting.length} waiting</span>
       </header>
       <section className={styles.displayStaff}>
         {snapshot.staff.map((staff) => (
@@ -37,6 +42,7 @@ export function QueueDisplay({ slug }: { slug: string }) {
           {!snapshot.waiting.length && <p>Everyone has been called. New guests can scan the lobby QR code.</p>}
         </div>
       </section>
+      <div className="mt-6 text-slate-900"><QueueQrCard title="Join this queue" description="Scan to choose an available staff member and check in." url={`${origin}/queue/r/${snapshot.lobby.slug}/join`} testId="display-guest-qr" /></div>
       {error && <QueueError message={error} />}
     </main>
   );
