@@ -60,6 +60,9 @@ export type QueueStaffCard = Pick<
   "id" | "displayName" | "acceptingGuests" | "isOnline" | "isAvailable"
 > & {
   waitingCount: number;
+};
+
+export type QueueDisplayStaffCard = QueueStaffCard & {
   activeEntry: QueueEntry | null;
 };
 
@@ -121,7 +124,7 @@ export type QueueStaffSnapshot = {
 export type QueueDisplaySnapshot = {
   kind: "display";
   lobby: QueueLobby;
-  staff: QueueStaffCard[];
+  staff: QueueDisplayStaffCard[];
   waiting: QueueEntry[];
 };
 
@@ -189,6 +192,28 @@ export function isQueueMemberOnline(lastSeenAt: string | null, now = Date.now())
 }
 
 export const isQueueCandidateOnline = isQueueMemberOnline;
+
+export function projectQueueGuestStaffCards(staff: QueueDisplayStaffCard[]): QueueStaffCard[] {
+  return staff.map((card) => ({
+    id: card.id,
+    displayName: card.displayName,
+    acceptingGuests: card.acceptingGuests,
+    isOnline: card.isOnline,
+    isAvailable: card.isAvailable,
+    waitingCount: card.waitingCount,
+  }));
+}
+
+export function countQueueWaitingAhead(
+  entries: ReadonlyArray<Pick<QueueEntry, "status" | "assignedMembershipId" | "sortPosition">>,
+  current: Pick<QueueEntry, "assignedMembershipId" | "sortPosition">,
+): number {
+  return entries.filter((entry) => (
+    entry.status === "waiting"
+      && entry.assignedMembershipId === current.assignedMembershipId
+      && entry.sortPosition < current.sortPosition
+  )).length;
+}
 
 export function canQueueTransition(from: QueueEntryStatus, to: QueueEntryStatus): boolean {
   return (

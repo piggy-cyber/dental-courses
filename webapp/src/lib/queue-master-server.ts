@@ -6,13 +6,16 @@ import type { NextRequest, NextResponse } from "next/server";
 import { createAdminClient, getSupabaseAdminKey } from "@/lib/supabase/admin";
 import { createClient as createServerClient } from "@/lib/supabase/server";
 import {
+  countQueueWaitingAhead,
   createQueueSlug,
   isQueueCandidateOnline,
   isQueueMemberOnline,
   isQueueUuid,
   normalizeQueueText,
+  projectQueueGuestStaffCards,
   type QueueAdminPromotionRequest,
   type QueueAdminSnapshot,
+  type QueueDisplayStaffCard,
   type QueueDisplaySnapshot,
   type QueueEntry,
   type QueueEntryStatus,
@@ -20,7 +23,6 @@ import {
   type QueueLobby,
   type QueueMembership,
   type QueueStaffCandidate,
-  type QueueStaffCard,
   type QueueStaffSnapshot,
 } from "@/lib/queue-master";
 
@@ -296,12 +298,10 @@ export async function getQueueGuestSnapshot(slug: string, token: string | null):
   const currentRow = guestSession
     ? entryRows.find((entry) => entry.guest_session_id === guestSession.id && ["waiting", "called", "helping"].includes(entry.status)) ?? null
     : null;
-  const staff = buildStaffCards(membershipRows, entryRows);
+  const staff = projectQueueGuestStaffCards(buildDisplayStaffCards(membershipRows, entryRows));
   const entries = mapEntries(entryRows, membershipRows);
   const currentEntry = currentRow ? entries.find((entry) => entry.id === currentRow.id) ?? null : null;
-  const waitingAhead = currentRow
-    ? entryRows.filter((entry) => entry.status === "waiting" && entry.sort_position < currentRow.sort_position).length
-    : 0;
+  const waitingAhead = currentEntry ? countQueueWaitingAhead(entries, currentEntry) : 0;
   return { kind: "guest", lobby: mapLobby(lobbyRow), staff, currentEntry, waitingAhead };
 }
 
@@ -312,7 +312,7 @@ export async function getQueueDisplaySnapshot(slug: string): Promise<QueueDispla
   return {
     kind: "display",
     lobby: mapLobby(lobbyRow),
-    staff: buildStaffCards(membershipRows, entryRows),
+    staff: buildDisplayStaffCards(membershipRows, entryRows),
     waiting: entries.filter((entry) => entry.status === "waiting"),
   };
 }
@@ -585,7 +585,7 @@ function mapEntries(rows: EntryRow[], memberships: MembershipRow[]): QueueEntry[
   }));
 }
 
-function buildStaffCards(memberships: MembershipRow[], entries: EntryRow[]): QueueStaffCard[] {
+function buildDisplayStaffCards(memberships: MembershipRow[], entries: EntryRow[]): QueueDisplayStaffCard[] {
   const mappedEntries = mapEntries(entries, memberships);
   return memberships.map((membership) => {
     const mapped = mapMembership(membership);
