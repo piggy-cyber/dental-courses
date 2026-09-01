@@ -34,11 +34,11 @@
     "import:manifest": "node scripts/import-resource-manifest.mjs"
   },
   "dependencies": {
-    "@vercel/analytics": "2.0.1",
-    "@vercel/speed-insights": "2.0.0",
     "@supabase/ssr": "^0.12.0",
     "@supabase/supabase-js": "^2.110.0",
-    "next": "16.2.10",
+    "@vercel/analytics": "2.0.1",
+    "@vercel/speed-insights": "2.0.0",
+    "next": "16.2.11",
     "pg": "^8.22.0",
     "qrcode.react": "4.2.0",
     "react": "19.2.4",
@@ -51,8 +51,8 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "16.2.10",
-    "postcss": "8.5.19",
+    "eslint-config-next": "16.2.11",
+    "postcss": "8.5.23",
     "tailwindcss": "^4",
     "typescript": "^5",
     "vitest": "4.1.10"
