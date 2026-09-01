@@ -8,7 +8,7 @@ export function QueueFrame({ children, wide = false, slug }: { children: ReactNo
   return (
     <main className={styles.page}>
       <header className={styles.siteHeader}>
-        <Link href="/queue" className={styles.brand}>
+        <Link href="/" className={styles.brand}>
           <GraduationCap size={28} aria-hidden="true" />
           <strong>QueueMaster</strong>
         </Link>

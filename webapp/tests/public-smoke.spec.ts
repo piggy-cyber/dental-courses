@@ -2,8 +2,10 @@ import { expect, test } from "@playwright/test";
 
 test("QueueMaster is the production entry point", async ({ request }) => {
   const response = await request.get("/", { maxRedirects: 0 });
-  expect(response.status()).toBe(307);
-  expect(response.headers().location).toBe("/queue");
+  expect(response.status()).toBe(200);
+  const legacy = await request.get("/queue", { maxRedirects: 0 });
+  expect(legacy.status()).toBe(308);
+  expect(legacy.headers().location).toBe("/");
 });
 
 test("former Fourth Canal pages are no longer published", async ({ request }) => {
@@ -19,7 +21,7 @@ test("former Fourth Canal pages are no longer published", async ({ request }) =>
   ]) {
     const response = await request.get(route, { maxRedirects: 0 });
     expect(response.status()).toBe(307);
-    expect(response.headers().location).toBe("/queue");
+    expect(response.headers().location).toBe("/");
   }
 });
 
@@ -41,12 +43,14 @@ test("robots and sitemap reflect the pilot publication boundary", async ({ reque
   await expect(sitemap).toBeOK();
 
   const robotsText = await robots.text();
-  expect(robotsText).toContain("Disallow: /");
+  expect(robotsText).toContain("Disallow: /queue/dashboard");
+  expect(robotsText).toContain("Disallow: /queue/r/");
 
   const sitemapText = await sitemap.text();
   expect(sitemapText).toContain("https://fourthcanal.com/queue/privacy");
   expect(sitemapText).toContain("https://fourthcanal.com/queue/terms");
-  expect(sitemapText).toContain("https://fourthcanal.com/queue/how-it-works");
+  expect(sitemapText).toContain("https://fourthcanal.com/queue/about");
+  expect(sitemapText).toContain("https://fourthcanal.com/queue/instructions");
   expect(sitemapText).not.toContain("https://fourthcanal.com/legal");
   expect(sitemapText).toContain("https://fourthcanal.com/visilearn/privacy");
   expect(sitemapText).not.toContain("https://fourthcanal.com/support");

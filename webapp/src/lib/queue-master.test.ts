@@ -5,9 +5,13 @@ import {
   isQueueActiveStatus,
   isQueueMemberOnline,
   normalizeQueueText,
+  QUEUE_ACTIVE_LOBBY_LIMIT,
 } from "@/lib/queue-master";
 
 describe("QueueMaster contracts", () => {
+  it("uses the approved three-active-lobby pilot cap", () => {
+    expect(QUEUE_ACTIVE_LOBBY_LIMIT).toBe(3);
+  });
   it("creates stable URL-safe lobby slugs", () => {
     expect(createQueueSlug("City Hall & DMV", "A1B2")).toBe("city-hall-dmv-a1b2");
     expect(createQueueSlug("  Déntal Clinic  ")).toBe("dental-clinic");

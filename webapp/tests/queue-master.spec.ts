@@ -2,7 +2,7 @@ import { expect, test, type Locator, type Page } from "@playwright/test";
 import jsQR from "jsqr";
 import { PNG } from "pngjs";
 
-const lobby = { id: "10000000-0000-4000-8000-000000000001", name: "Demo Classroom", slug: "demo-lobby", ownerProfileId: "20000000-0000-4000-8000-000000000001", revision: 7, createdAt: "2026-09-01T12:00:00.000Z" };
+const lobby = { id: "10000000-0000-4000-8000-000000000001", name: "Demo Classroom", slug: "demo-lobby", ownerProfileId: "20000000-0000-4000-8000-000000000001", revision: 7, createdAt: "2026-09-01T12:00:00.000Z", closedAt: null };
 const owner = { id: "30000000-0000-4000-8000-000000000001", lobbyId: lobby.id, profileId: lobby.ownerProfileId, role: "owner", displayName: "Owner One", acceptingGuests: true, lastSeenAt: "2099-01-01T00:00:00.000Z", isOnline: true, isAvailable: true, revokedAt: null };
 const candidate = { id: "40000000-0000-4000-8000-000000000001", lobbyId: lobby.id, profileId: "20000000-0000-4000-8000-000000000002", displayName: "Candidate One", email: "candidate@example.com", joinedAt: "2026-09-01T12:00:00.000Z", lastSeenAt: "2099-01-01T00:00:00.000Z", leftAt: null, isOnline: true };
 const request = { id: "50000000-0000-4000-8000-000000000001", lobbyId: lobby.id, lobbyName: lobby.name, lobbySlug: lobby.slug, candidateId: candidate.id, candidateProfileId: candidate.profileId, candidateName: candidate.displayName, candidateEmail: candidate.email, requestedByOwnerProfileId: owner.profileId, status: "pending", expiresAt: "2099-01-02T00:00:00.000Z", respondedAt: null, cancelledAt: null, createdAt: "2026-09-01T12:00:00.000Z" };
@@ -34,11 +34,13 @@ async function mockQueueApi(page: Page) {
 
 test("every QueueMaster product and legal route is real and internally linked", async ({ page }) => {
   for (const [path, heading] of [
-    ["/queue", "Stop writing names"],
+    ["/", "Stop writing names"],
+    ["/queue/about", "A calmer way to manage a line"],
+    ["/queue/instructions", "Start in a few steps"],
+    ["/queue/support", "Tell us what needs attention"],
     ["/queue/features", "Features Built for Educators"],
     ["/queue/use-cases", "Who uses QueueMaster?"],
     ["/queue/pricing", "Simple Pilot Pricing"],
-    ["/queue/how-it-works", "How it works"],
     ["/queue/privacy", "QueueMaster Privacy Policy"],
     ["/queue/terms", "QueueMaster Terms of Service"],
     ["/queue/dashboard", "Your classroom lobbies"],
@@ -46,9 +48,9 @@ test("every QueueMaster product and legal route is real and internally linked", 
     await page.goto(path);
     await expect(page.getByRole("heading", { name: new RegExp(heading, "i") }).first()).toBeVisible();
   }
-  await page.goto("/queue");
+  await page.goto("/");
   const internalHrefs = await page.locator("a").evaluateAll((links) => links.map((link) => link.getAttribute("href")).filter(Boolean));
-  expect(internalHrefs.every((href) => href!.startsWith("/queue"))).toBe(true);
+  expect(internalHrefs.every((href) => href === "/" || href!.startsWith("/queue"))).toBe(true);
 });
 
 test("pricing and future features cannot imply working billing, SMS, or analytics", async ({ page }) => {

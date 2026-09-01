@@ -20,7 +20,7 @@ export function LegalFooter() {
     pathname === "/visilearn/privacy";
   const isIsolatedAtlasSession = pathname.startsWith("/games/living-atlas/runs/") || pathname.startsWith("/games/living-atlas/recall/");
   const isStandaloneLabQueue = pathname === "/lab-help-queue";
-  const isQueueMaster = pathname === "/queue" || pathname.startsWith("/queue/");
+  const isQueueMaster = pathname === "/" || pathname === "/queue" || pathname.startsWith("/queue/");
 
   if (hasIntegratedFooter || isIsolatedAtlasSession || isStandaloneLabQueue || isQueueMaster) return null;
 

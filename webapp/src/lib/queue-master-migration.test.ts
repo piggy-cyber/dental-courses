@@ -14,6 +14,10 @@ const staffPool = readFileSync(
   resolve(process.cwd(), "supabase/migrations/20260901071538_queue_master_staff_pool.sql"),
   "utf8",
 );
+const lifecycle = readFileSync(
+  resolve(process.cwd(), "supabase/migrations/20260901100812_queue_master_lobby_lifecycle.sql"),
+  "utf8",
+);
 
 const queueTables = [
   "queue_lobbies",
@@ -80,5 +84,26 @@ describe("QueueMaster migration security contract", () => {
       "queue_cancel_admin_promotion(uuid, uuid)",
       "queue_respond_admin_promotion(uuid, uuid, boolean, text)",
     ]) expect(staffPool).toContain(`revoke all on function public.${signature} from public, anon, authenticated;`);
+  });
+
+  it("enforces a concurrent-safe three-active-lobby limit", () => {
+    expect(lifecycle).toContain("add column closed_at timestamptz");
+    expect(lifecycle).toContain("pg_advisory_xact_lock");
+    expect(lifecycle).toMatch(/where owner_profile_id = p_owner_profile_id[\s\S]*closed_at is null[\s\S]*>= 3/);
+    expect(lifecycle).toContain("QUEUE_LOBBY_LIMIT");
+  });
+
+  it("blocks closed-lobby joins and requires active entries to clear before closing", () => {
+    expect(lifecycle).toContain("QUEUE_LOBBY_CLOSED");
+    expect(lifecycle).toContain("queue_entries_require_open_lobby");
+    expect(lifecycle).toContain("queue_staff_candidates_require_open_lobby");
+    expect(lifecycle).toContain("queue_admin_promotions_require_open_lobby");
+    expect(lifecycle).toMatch(/status in \('waiting', 'called', 'helping'\)[\s\S]*QUEUE_ACTIVE_ENTRIES/);
+  });
+
+  it("keeps lifecycle mutations service-only and disables accepting on close", () => {
+    expect(lifecycle).toContain("set accepting_guests = false");
+    expect(lifecycle).toContain("revoke all on function public.queue_set_lobby_closed(uuid, uuid, boolean)");
+    expect(lifecycle).toContain("grant execute on function public.queue_set_lobby_closed(uuid, uuid, boolean)");
   });
 });

@@ -20,7 +20,11 @@ function isGamePath(pathname: string) {
 }
 
 function routeEffectsDisabled(pathname: string) {
-  return isGamePath(pathname) || pathname === "/lab-help-queue";
+  return isGamePath(pathname)
+    || pathname === "/"
+    || pathname === "/lab-help-queue"
+    || pathname === "/queue"
+    || pathname.startsWith("/queue/");
 }
 
 function resolvedMotion(): SiteMotionMode {

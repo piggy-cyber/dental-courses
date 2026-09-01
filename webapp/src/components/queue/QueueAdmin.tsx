@@ -57,6 +57,7 @@ export function QueueAdmin({ slug }: { slug: string }) {
   if (!snapshot) return null;
   const joinUrl = `${origin}/queue/r/${snapshot.lobby.slug}/join`;
   const staffUrl = `${origin}/queue/r/${snapshot.lobby.slug}/staff`;
+  const isClosed = Boolean(snapshot.lobby.closedAt);
   const pendingByCandidate = new Map(snapshot.promotionRequests.filter((request) => request.status === "pending").map((request) => [request.candidateId, request]));
 
   return (
@@ -65,13 +66,14 @@ export function QueueAdmin({ slug }: { slug: string }) {
         <div><p className={styles.eyebrow}>Staff dashboard</p><h1>{snapshot.lobby.name}</h1><p>Heartbeat active · updates every 20 seconds</p></div>
         <div className={styles.headerActions}>
           <Link href="/queue/dashboard">Back to lobby controls</Link>
-          <button className={snapshot.me.acceptingGuests ? styles.acceptingButton : styles.secondaryButton} disabled={busyKey !== null} onClick={() => act({ type: "set_accepting", accepting: !snapshot.me.acceptingGuests })}>
-            {snapshot.me.acceptingGuests ? "Accepting guests" : "Not accepting"}
+          <button className={snapshot.me.acceptingGuests ? styles.acceptingButton : styles.secondaryButton} disabled={busyKey !== null || isClosed} title={isClosed ? "Reopen this lobby from the dashboard before accepting guests." : undefined} onClick={() => act({ type: "set_accepting", accepting: !snapshot.me.acceptingGuests })}>
+            {isClosed ? "Lobby closed" : snapshot.me.acceptingGuests ? "Accepting guests" : "Not accepting"}
           </button>
         </div>
       </section>
 
       {(actionError || error) && <QueueError message={actionError || error || "Queue error"} />}
+      {isClosed ? <div className={styles.notice}>This lobby is closed. New guests, staff candidates, and promotions are blocked. The owner can reopen it from the <Link href="/queue/dashboard">dashboard</Link>.</div> : null}
 
       <QueueQrCard title="Guest QR code" description="Guests scan this code to choose an available admin and check in." url={joinUrl} testId="guest-qr" />
 
@@ -138,7 +140,7 @@ export function QueueAdmin({ slug }: { slug: string }) {
           <div className={styles.inviteList}>
             {snapshot.candidates.map((candidate) => {
               const pending = pendingByCandidate.get(candidate.id);
-              return <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 p-4" key={candidate.id}><div><strong>{candidate.displayName}</strong><p className="text-xs text-slate-500">{candidate.email} · {candidate.isOnline ? "online" : "offline"}</p></div>{pending ? <button className={styles.secondaryButton} disabled={busyKey !== null} onClick={() => { if (window.confirm(`Cancel the admin request for ${candidate.displayName}?`)) void act({ type: "cancel_promotion", requestId: pending.id }, pending.id); }}>Cancel request</button> : <button className={styles.primaryButton} disabled={busyKey !== null || !candidate.isOnline} title={!candidate.isOnline ? "The candidate must be online to receive a new request." : "Send an in-app admin request"} onClick={() => void act({ type: "request_promotion", candidateId: candidate.id }, candidate.id)}>Request as admin</button>}</div>;
+              return <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 p-4" key={candidate.id}><div><strong>{candidate.displayName}</strong><p className="text-xs text-slate-500">{candidate.email} · {candidate.isOnline ? "online" : "offline"}</p></div>{pending ? <button className={styles.secondaryButton} disabled={busyKey !== null} onClick={() => { if (window.confirm(`Cancel the admin request for ${candidate.displayName}?`)) void act({ type: "cancel_promotion", requestId: pending.id }, pending.id); }}>Cancel request</button> : <button className={styles.primaryButton} disabled={busyKey !== null || !candidate.isOnline || isClosed} title={isClosed ? "Reopen this lobby before promoting staff." : !candidate.isOnline ? "The candidate must be online to receive a new request." : "Send an in-app admin request"} onClick={() => void act({ type: "request_promotion", candidateId: candidate.id }, candidate.id)}>Request as admin</button>}</div>;
             })}
             {!snapshot.candidates.length && <p className={styles.empty}>No candidates are waiting. Share the staff QR above.</p>}
           </div>

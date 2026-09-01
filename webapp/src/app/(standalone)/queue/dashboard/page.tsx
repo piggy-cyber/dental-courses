@@ -9,5 +9,5 @@ export default async function QueueDashboardPage() {
   const profile = await getQueueProfile();
   const token = (await cookies()).get(QUEUE_GUEST_COOKIE)?.value ?? null;
   const { lobbies, guestLobby, promotionRequests } = await getQueueHome(profile, token);
-  return <QueueDashboard initialLobbies={lobbies} guestLobby={guestLobby} promotionRequests={promotionRequests} signedIn={Boolean(profile)} />;
+  return <QueueDashboard initialLobbies={lobbies} guestLobby={guestLobby} promotionRequests={promotionRequests} signedIn={Boolean(profile)} viewerProfileId={profile?.id ?? null} />;
 }

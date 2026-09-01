@@ -32,6 +32,7 @@ export function QueueGuest({ slug }: { slug: string }) {
   if (error && !snapshot) return <QueueFrame slug={slug}><QueueError message={error} /></QueueFrame>;
   if (!snapshot) return null;
   const entry = snapshot.currentEntry;
+  const isClosed = Boolean(snapshot.lobby.closedAt);
 
   return (
     <QueueFrame slug={slug}>
@@ -59,6 +60,14 @@ export function QueueGuest({ slug }: { slug: string }) {
             {entry.status === "called" && <button className={styles.primaryButton} disabled={busy} onClick={() => act({ type: "start_helping", entryId: entry.id })}>Start helping</button>}
             {(entry.status === "called" || entry.status === "helping") && <button className={styles.primaryButton} disabled={busy} onClick={() => act({ type: "finish", entryId: entry.id })}>Finish session</button>}
             {entry.status === "waiting" && <button className={styles.secondaryButton} disabled={busy} onClick={() => { if (window.confirm("Leave this queue and give up your place?")) void act({ type: "leave", entryId: entry.id }); }}>Leave queue</button>}
+          </div>
+        </section>
+      ) : isClosed ? (
+        <section className={styles.panel}>
+          <div className={styles.signInBlock}>
+            <p className={styles.eyebrow}>Lobby closed</p>
+            <h2>This queue is not accepting new guests.</h2>
+            <p>The owner can reopen it from the QueueMaster dashboard.</p>
           </div>
         </section>
       ) : (

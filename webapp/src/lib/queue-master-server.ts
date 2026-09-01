@@ -8,6 +8,7 @@ import {
   createQueueSlug,
   isQueueCandidateOnline,
   isQueueMemberOnline,
+  isQueueUuid,
   normalizeQueueText,
   type QueueAdminPromotionRequest,
   type QueueAdminSnapshot,
@@ -32,6 +33,7 @@ type LobbyRow = {
   owner_profile_id: string;
   revision: number;
   created_at: string;
+  closed_at: string | null;
 };
 
 type MembershipRow = {
@@ -179,6 +181,24 @@ export async function createQueueLobby(profile: QueueProfile, nameValue: unknown
   return mapLobby(data as LobbyRow);
 }
 
+export async function setQueueLobbyClosed(
+  profile: QueueProfile,
+  lobbyIdValue: unknown,
+  closedValue: unknown,
+): Promise<QueueLobby> {
+  if (!isQueueUuid(lobbyIdValue) || typeof closedValue !== "boolean") {
+    throw new QueueServerError("invalid_lobby_action", "Refresh the dashboard and try again.");
+  }
+  const admin = createAdminClient();
+  const { data, error } = await admin.rpc("queue_set_lobby_closed", {
+    p_lobby_id: lobbyIdValue,
+    p_owner_profile_id: profile.id,
+    p_closed: closedValue,
+  });
+  if (error) throw mapQueueDatabaseError(error.message);
+  return mapLobby(data as LobbyRow);
+}
+
 export async function getQueueHome(profile: QueueProfile | null, token: string | null) {
   const admin = createAdminClient();
   let lobbies: QueueLobby[] = [];
@@ -194,7 +214,7 @@ export async function getQueueHome(profile: QueueProfile | null, token: string |
     if (lobbyIds.length) {
       const { data, error: lobbyError } = await admin
         .from("queue_lobbies")
-        .select("id, name, slug, owner_profile_id, revision, created_at")
+        .select("id, name, slug, owner_profile_id, revision, created_at, closed_at")
         .in("id", lobbyIds)
         .order("created_at", { ascending: false });
       if (lobbyError) throw new QueueServerError("lobbies_failed", "Could not load your lobbies.", 500);
@@ -217,7 +237,7 @@ export async function getQueueHome(profile: QueueProfile | null, token: string |
   if (guestSession?.last_lobby_id) {
     const { data } = await admin
       .from("queue_lobbies")
-      .select("id, name, slug, owner_profile_id, revision, created_at")
+      .select("id, name, slug, owner_profile_id, revision, created_at, closed_at")
       .eq("id", guestSession.last_lobby_id)
       .maybeSingle();
     guestLobby = data ? mapLobby(data as LobbyRow) : null;
@@ -229,7 +249,7 @@ export async function findLobbyBySlug(slug: string): Promise<LobbyRow> {
   const admin = createAdminClient();
   const { data, error } = await admin
     .from("queue_lobbies")
-    .select("id, name, slug, owner_profile_id, revision, created_at")
+    .select("id, name, slug, owner_profile_id, revision, created_at, closed_at")
     .eq("slug", slug.toLowerCase())
     .maybeSingle();
   if (error) throw new QueueServerError("lobby_failed", "Could not load this lobby.", 500);
@@ -431,6 +451,10 @@ export function mapQueueDatabaseError(message: string): QueueServerError {
     QUEUE_PROMOTION_FORBIDDEN: ["promotion_forbidden", "You can only respond to your own admin request.", 403],
     QUEUE_PROMOTION_EXPIRED: ["promotion_expired", "That admin request has expired."],
     QUEUE_SELF_PROMOTION: ["self_promotion", "Lobby owners cannot promote themselves through the staff pool."],
+    QUEUE_LOBBY_LIMIT: ["lobby_limit_reached", "You can have up to three active lobbies. Close one before creating or reopening another."],
+    QUEUE_LOBBY_CLOSED: ["lobby_closed", "This lobby is closed and is not accepting new guests or staff."],
+    QUEUE_ACTIVE_ENTRIES: ["active_entries", "Finish, cancel, or reassign every waiting and active guest before closing this lobby."],
+    QUEUE_LOBBY_NOT_FOUND: ["lobby_not_found", "This lobby does not exist.", 404],
   };
   const key = Object.keys(known).find((candidate) => message.includes(candidate));
   if (!key) return new QueueServerError("database_error", "The queue changed before this action completed. Refresh and try again.", 409);
@@ -453,6 +477,7 @@ function mapLobby(row: LobbyRow): QueueLobby {
     ownerProfileId: row.owner_profile_id,
     revision: Number(row.revision),
     createdAt: row.created_at,
+    closedAt: row.closed_at,
   };
 }
 

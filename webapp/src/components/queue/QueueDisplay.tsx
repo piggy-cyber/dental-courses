@@ -19,7 +19,7 @@ export function QueueDisplay({ slug }: { slug: string }) {
       <QueueLobbyNav slug={slug} displayMode />
       <header>
         <div><p>QueueMaster · Classroom Display</p><h1>{snapshot.lobby.name}</h1></div>
-        <span>Live · {snapshot.waiting.length} waiting</span>
+        <span>{snapshot.lobby.closedAt ? "Closed" : "Live"} · {snapshot.waiting.length} waiting</span>
       </header>
       <section className={styles.displayStaff}>
         {snapshot.staff.map((staff) => (

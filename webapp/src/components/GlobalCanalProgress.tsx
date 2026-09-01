@@ -28,7 +28,7 @@ export function GlobalCanalProgress() {
   const pathname = usePathname();
   const isIsolatedAtlasSession = pathname.startsWith("/games/living-atlas/runs/") || pathname.startsWith("/games/living-atlas/recall/");
   const isStandaloneLabQueue = pathname === "/lab-help-queue";
-  const isQueueMaster = pathname === "/queue" || pathname.startsWith("/queue/");
+  const isQueueMaster = pathname === "/" || pathname === "/queue" || pathname.startsWith("/queue/");
   if (isIsolatedAtlasSession || isStandaloneLabQueue || isQueueMaster) return null;
   const isGame = pathname === "/games" || pathname.startsWith("/games/");
   const label = routeLabel(pathname);

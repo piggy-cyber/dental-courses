@@ -37,8 +37,15 @@
 .lobbyList article > div { min-width: 0; display: grid; gap: .2rem; }
 .lobbyList strong { color: #12345a; }
 .lobbyList small { overflow: hidden; color: #667381; font: .55rem var(--font-mono-app), monospace; text-overflow: ellipsis; }
-.lobbyList nav { display: flex; gap: .8rem; }
+.lobbyList nav { display: flex; flex-wrap: wrap; align-items: center; gap: .8rem; }
 .lobbyList nav a { color: #064f8f; font-size: .68rem; font-weight: 750; }
+.lobbyLimit { margin: 0; padding: .75rem 1.2rem; border-bottom: 1px solid #d2d7dd; color: #667381; font-size: .68rem; }
+.lobbyTitle { display: flex; flex-wrap: wrap; align-items: center; gap: .55rem; }
+.lobbyTitle b { border-radius: 999px; padding: .2rem .5rem; color: #166534; background: #dcfce7; font-size: .58rem; text-transform: uppercase; }
+.closedLobby { background: #f8fafc; }
+.closedLobby .lobbyTitle b { color: #475569; background: #e2e8f0; }
+.lifecycleButton { min-height: 34px; padding: .35rem .6rem; border: 1px solid #cbd5e1; border-radius: .55rem; color: #475569; background: #fff; font: 750 .63rem var(--font-fc-sans), sans-serif; cursor: pointer; }
+.lifecycleButton:disabled { opacity: .45; cursor: not-allowed; }
 .empty { margin: 0; padding: 1.25rem; color: #667381; font-size: .74rem; line-height: 1.5; }
 .inlineError { margin: 0; padding: .8rem 1.2rem; color: #842d2d; background: #fff0f0; font-size: .7rem; }
 .notice { margin: 1rem 0; padding: 1rem; border: 1px solid #bdc4ce; color: #506273; background: #fffefa; font-size: .78rem; }
@@ -237,7 +244,7 @@
 .primaryButton:hover { background: #047857; }
 .secondaryButton, .headerActions a { border-color: #cbd5e1; color: #334155; background: #fff; }
 .acceptingButton { border-color: #86efac; color: #166534; background: #dcfce7; }
-.lobbyList article, .queueTable > article, .inviteList > p { border-color: #e2e8f0; }
+.lobbyList article, .queueTable > article, .inviteList > p, .lobbyLimit { border-color: #e2e8f0; }
 .lobbyList strong, .queueTable strong, .membershipGrid strong { color: #0f172a; }
 .lobbyList small, .queueTable small, .membershipGrid small, .membershipGrid span, .inviteList span { color: #64748b; }
 .lobbyList nav a { color: #059669; }

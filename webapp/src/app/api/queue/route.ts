@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createQueueLobby, getQueueHome, getQueueProfile, isQueueSameOriginRequest, queueErrorResponse, requireQueueProfile } from "@/lib/queue-master-server";
+import type { QueueLobbyLifecycleAction } from "@/lib/queue-master";
+import { createQueueLobby, getQueueHome, getQueueProfile, isQueueJsonRequest, isQueueSameOriginRequest, queueErrorResponse, requireQueueProfile, setQueueLobbyClosed } from "@/lib/queue-master-server";
 
 export const dynamic = "force-dynamic";
 
@@ -21,13 +22,34 @@ export async function POST(request: NextRequest) {
     if (!isQueueSameOriginRequest(request)) {
       return NextResponse.json({ error: "forbidden", message: "Refresh the page and try again." }, { status: 403 });
     }
-    if (request.headers.get("content-type")?.split(";", 1)[0] !== "application/json") {
+    if (!isQueueJsonRequest(request)) {
       return NextResponse.json({ error: "json_required", message: "Send this request as JSON." }, { status: 415 });
     }
     const profile = await requireQueueProfile();
     const payload = await request.json() as { name?: unknown };
     const lobby = await createQueueLobby(profile, payload.name);
     return NextResponse.json({ lobby }, { status: 201, headers: { "Cache-Control": "private, no-store" } });
+  } catch (error) {
+    const response = queueErrorResponse(error);
+    return NextResponse.json(response.body, { status: response.status });
+  }
+}
+
+export async function PATCH(request: NextRequest) {
+  try {
+    if (!isQueueSameOriginRequest(request)) {
+      return NextResponse.json({ error: "forbidden", message: "Refresh the page and try again." }, { status: 403 });
+    }
+    if (!isQueueJsonRequest(request)) {
+      return NextResponse.json({ error: "json_required", message: "Send this request as JSON." }, { status: 415 });
+    }
+    const profile = await requireQueueProfile();
+    const payload = await request.json() as QueueLobbyLifecycleAction;
+    if (payload.type !== "close" && payload.type !== "reopen") {
+      return NextResponse.json({ error: "invalid_action", message: "That lobby action is not supported." }, { status: 400 });
+    }
+    const lobby = await setQueueLobbyClosed(profile, payload.lobbyId, payload.type === "close");
+    return NextResponse.json({ lobby }, { headers: { "Cache-Control": "private, no-store" } });
   } catch (error) {
     const response = queueErrorResponse(error);
     return NextResponse.json(response.body, { status: response.status });

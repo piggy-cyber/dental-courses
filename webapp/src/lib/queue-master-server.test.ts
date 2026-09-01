@@ -66,4 +66,10 @@ describe("QueueMaster guest token boundary", () => {
     expect(error.code).toBe("reassign_required");
     expect(error.message).not.toContain("internal details");
   });
+
+  it("maps lobby lifecycle failures without leaking database details", () => {
+    expect(mapQueueDatabaseError("QUEUE_LOBBY_LIMIT details").code).toBe("lobby_limit_reached");
+    expect(mapQueueDatabaseError("QUEUE_LOBBY_CLOSED details").code).toBe("lobby_closed");
+    expect(mapQueueDatabaseError("QUEUE_ACTIVE_ENTRIES details").code).toBe("active_entries");
+  });
 });

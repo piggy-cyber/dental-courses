@@ -16,6 +16,8 @@ const PRIVATE_PATH_PREFIXES = [
   "/owner",
   "/preview-lab",
   "/profile",
+  "/queue/dashboard",
+  "/queue/r",
   "/resource",
   "/workspace-settings",
 ] as const;

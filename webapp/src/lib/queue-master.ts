@@ -10,6 +10,7 @@ export const QUEUE_ENTRY_STATUSES = [
 export type QueueEntryStatus = (typeof QUEUE_ENTRY_STATUSES)[number];
 export type QueueMembershipRole = "owner" | "admin";
 export type QueuePromotionRequestStatus = "pending" | "accepted" | "declined" | "cancelled" | "expired";
+export const QUEUE_ACTIVE_LOBBY_LIMIT = 3;
 
 export type QueueLobby = {
   id: string;
@@ -18,6 +19,12 @@ export type QueueLobby = {
   ownerProfileId: string;
   revision: number;
   createdAt: string;
+  closedAt: string | null;
+};
+
+export type QueueLobbyLifecycleAction = {
+  type: "close" | "reopen";
+  lobbyId: string;
 };
 
 export type QueueMembership = {
