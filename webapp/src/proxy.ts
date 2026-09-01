@@ -22,8 +22,30 @@ const protectedPathPrefixes = [
 
 const publicPathPrefixes = ["/clinic-duty/showcase"] as const;
 
+const publishedPagePrefixes = [
+  "/auth",
+  "/legal",
+  "/queue",
+  "/signin",
+  "/visilearn/privacy",
+] as const;
+
+const publishedMetadataPaths = new Set([
+  "/manifest.webmanifest",
+  "/robots.txt",
+  "/sitemap.xml",
+]);
+
 function matchesPathPrefix(path: string, prefix: string) {
   return path === prefix || path.startsWith(`${prefix}/`);
+}
+
+function isPublishedPage(path: string) {
+  return (
+    path.startsWith("/api/") ||
+    publishedMetadataPaths.has(path) ||
+    publishedPagePrefixes.some((prefix) => matchesPathPrefix(path, prefix))
+  );
 }
 
 function clearInvalidAuthCookies(request: NextRequest, response: NextResponse) {
@@ -38,6 +60,13 @@ export async function proxy(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
 
   const path = request.nextUrl.pathname;
+  if (path === "/" || !isPublishedPage(path)) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/queue";
+    url.search = "";
+    return NextResponse.redirect(url);
+  }
+
   const isPublicPath = publicPathPrefixes.some((prefix) => matchesPathPrefix(path, prefix));
   const isProtectedPath = !isPublicPath && protectedPathPrefixes.some((prefix) =>
     matchesPathPrefix(path, prefix)

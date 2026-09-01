@@ -10,7 +10,7 @@ export function QueueFrame({ children, wide = false }: { children: ReactNode; wi
           <span>IV</span>
           <div><strong>QueueMaster</strong><small>by Fourth Canal</small></div>
         </Link>
-        <Link href="/" className={styles.backLink}>Fourth Canal home</Link>
+        <Link href="/legal" className={styles.backLink}>Privacy &amp; terms</Link>
       </header>
       <div className={wide ? styles.wide : styles.container}>{children}</div>
     </main>

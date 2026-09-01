@@ -30,54 +30,76 @@ describe("request proxy", () => {
     mocks.createServerClient.mockReturnValue({ auth: { getUser: mocks.getUser } });
   });
 
-  it("keeps public pages available when Auth is unavailable", async () => {
+  it("redirects the former public pages to QueueMaster without calling Auth", async () => {
     mocks.getUser.mockRejectedValue(new Error("Auth temporarily unavailable"));
 
     const response = await proxy(request("/games/tooth-quest"));
 
-    expect(response.status).toBe(200);
-    expect(response.headers.get("location")).toBeNull();
+    expect(response.status).toBe(307);
+    expect(response.headers.get("location")).toBe("https://fourthcanal.com/queue");
+    expect(mocks.createServerClient).not.toHaveBeenCalled();
   });
 
-  it("fails closed for protected pages when Auth is unavailable", async () => {
+  it("makes QueueMaster the production home", async () => {
+    const response = await proxy(request("/?from=old-home"));
+
+    expect(response.status).toBe(307);
+    expect(response.headers.get("location")).toBe("https://fourthcanal.com/queue");
+  });
+
+  it.each(["/queue", "/queue/r/front-desk/join", "/legal", "/visilearn/privacy"])(
+    "keeps the published page available at %s",
+    async (path) => {
+      mocks.getUser.mockResolvedValue({ data: { user: null }, error: null });
+
+      const response = await proxy(request(path));
+
+      expect(response.status).toBe(200);
+      expect(response.headers.get("location")).toBeNull();
+    },
+  );
+
+  it("unpublishes former protected pages before Auth is called", async () => {
     mocks.getUser.mockRejectedValue(new Error("Auth temporarily unavailable"));
 
     const response = await proxy(request("/home?tab=progress"));
 
     expect(response.status).toBe(307);
-    expect(response.headers.get("location")).toBe("https://fourthcanal.com/");
-    expect(response.cookies.get("fc_auth_return_to")?.value).toBe("/home?tab=progress");
+    expect(response.headers.get("location")).toBe("https://fourthcanal.com/queue");
+    expect(response.cookies.get("fc_auth_return_to")).toBeUndefined();
+    expect(mocks.createServerClient).not.toHaveBeenCalled();
   });
 
-  it("fails closed for Sim Clinic Duty before rendering its protected RPC", async () => {
+  it("unpublishes Sim Clinic Duty before rendering its protected RPC", async () => {
     mocks.getUser.mockResolvedValue({ data: { user: null }, error: null });
 
     const response = await proxy(request("/clinic-duty"));
 
     expect(response.status).toBe(307);
-    expect(response.headers.get("location")).toBe("https://fourthcanal.com/");
-    expect(response.cookies.get("fc_auth_return_to")?.value).toBe("/clinic-duty");
+    expect(response.headers.get("location")).toBe("https://fourthcanal.com/queue");
+    expect(response.cookies.get("fc_auth_return_to")).toBeUndefined();
+    expect(mocks.createServerClient).not.toHaveBeenCalled();
   });
 
-  it("keeps the read-only Sim Clinic Duty showcase public", async () => {
+  it("unpublishes the read-only Sim Clinic Duty showcase", async () => {
     mocks.getUser.mockResolvedValue({ data: { user: null }, error: null });
 
     const response = await proxy(request("/clinic-duty/showcase"));
 
-    expect(response.status).toBe(200);
-    expect(response.headers.get("location")).toBeNull();
+    expect(response.status).toBe(307);
+    expect(response.headers.get("location")).toBe("https://fourthcanal.com/queue");
   });
 
-  it.each(["/calendar", "/api/calendar.ics"])("keeps the shared calendar public at %s", async (path) => {
+  it("unpublishes the shared calendar page", async () => {
     mocks.getUser.mockResolvedValue({ data: { user: null }, error: null });
 
-    const response = await proxy(request(path));
+    const response = await proxy(request("/calendar"));
 
-    expect(response.status).toBe(200);
-    expect(response.headers.get("location")).toBeNull();
+    expect(response.status).toBe(307);
+    expect(response.headers.get("location")).toBe("https://fourthcanal.com/queue");
   });
 
-  it.each(["/lab-help-queue", "/api/lab-help-queue"])("keeps the anonymous Lab Help Queue public at %s", async (path) => {
+  it.each(["/api/calendar.ics", "/api/lab-help-queue"])("keeps operational API behavior unchanged at %s", async (path) => {
     mocks.getUser.mockResolvedValue({ data: { user: null }, error: null });
 
     const response = await proxy(request(path));
@@ -92,18 +114,18 @@ describe("request proxy", () => {
       error: { code: "refresh_token_not_found", status: 400 },
     });
 
-    const response = await proxy(request("/profile", "sb-project-auth-token=expired"));
+    const response = await proxy(request("/queue/r/front-desk/admin", "sb-project-auth-token=expired"));
 
-    expect(response.status).toBe(307);
+    expect(response.status).toBe(200);
     expect(response.cookies.get("sb-project-auth-token")?.value).toBe("");
     expect(response.cookies.get("sb-project-auth-token")?.maxAge).toBe(0);
   });
 
-  it("continues to serve public routes without Supabase configuration", async () => {
+  it("continues to serve QueueMaster without Supabase configuration", async () => {
     delete process.env.NEXT_PUBLIC_SUPABASE_URL;
     delete process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-    const response = await proxy(request("/support"));
+    const response = await proxy(request("/queue"));
 
     expect(response.status).toBe(200);
     expect(mocks.createServerClient).not.toHaveBeenCalled();
