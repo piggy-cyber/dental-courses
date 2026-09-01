@@ -6,6 +6,11 @@ import { createClient } from "@/lib/supabase/client";
 
 type QueueApiError = { message?: string };
 
+const hasRealtimeConfig = Boolean(
+  process.env.NEXT_PUBLIC_SUPABASE_URL
+    && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+);
+
 export function useQueueSnapshot<T extends { lobby: { id: string; revision: number } }>(
   slug: string,
   view: "guest" | "admin" | "display" | "staff",
@@ -44,7 +49,7 @@ export function useQueueSnapshot<T extends { lobby: { id: string; revision: numb
   }, [refresh]);
 
   useEffect(() => {
-    if (!snapshot?.lobby.id) return;
+    if (!snapshot?.lobby.id || !hasRealtimeConfig) return;
     const supabase = createClient();
     const channel = supabase
       .channel(`queue:${snapshot.lobby.id}`)
