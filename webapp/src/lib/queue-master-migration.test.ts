@@ -10,6 +10,10 @@ const hardening = readFileSync(
   resolve(process.cwd(), "supabase/migrations/20260901051737_queue_master_advisor_hardening.sql"),
   "utf8",
 );
+const staffPool = readFileSync(
+  resolve(process.cwd(), "supabase/migrations/20260901071538_queue_master_staff_pool.sql"),
+  "utf8",
+);
 
 const queueTables = [
   "queue_lobbies",
@@ -47,5 +51,34 @@ describe("QueueMaster migration security contract", () => {
   it("does not alter Fourth Canal roles or the lab help queue", () => {
     expect(migration).not.toMatch(/alter table public\.profiles/i);
     expect(migration).not.toMatch(/alter table public\.lab_help_queue_entries/i);
+  });
+
+  it.each(["queue_staff_candidates", "queue_admin_promotion_requests"])("secures the new %s table from browser roles", (table) => {
+    expect(staffPool).toContain(`alter table public.${table} enable row level security;`);
+    expect(staffPool).toContain(`revoke all on table public.${table} from public, anon, authenticated;`);
+    expect(staffPool).toContain(`create policy "Queue service role access" on public.${table}`);
+  });
+
+  it("disables email invitation claiming and creates no replacement email workflow", () => {
+    expect(staffPool).toContain("QUEUE_EMAIL_INVITATIONS_DEPRECATED");
+    expect(staffPool).not.toMatch(/insert into public\.queue_admin_invitations/i);
+  });
+
+  it("enforces unique pending requests, expiry, online candidates, and atomic acceptance", () => {
+    expect(staffPool).toMatch(/queue_admin_promotion_requests_one_pending_idx[\s\S]*where status = 'pending'/);
+    expect(staffPool).toContain("now() + interval '24 hours'");
+    expect(staffPool).toContain("candidate.last_seen_at < now() - interval '45 seconds'");
+    expect(staffPool).toMatch(/queue_respond_admin_promotion[\s\S]*insert into public\.queue_memberships[\s\S]*accepting_guests[\s\S]*false/);
+  });
+
+  it("keeps all staff pool functions service-only", () => {
+    for (const signature of [
+      "queue_join_staff_pool(uuid, uuid, text, text)",
+      "queue_staff_candidate_heartbeat(uuid, uuid)",
+      "queue_leave_staff_pool(uuid, uuid)",
+      "queue_request_admin_promotion(uuid, uuid)",
+      "queue_cancel_admin_promotion(uuid, uuid)",
+      "queue_respond_admin_promotion(uuid, uuid, boolean, text)",
+    ]) expect(staffPool).toContain(`revoke all on function public.${signature} from public, anon, authenticated;`);
   });
 });

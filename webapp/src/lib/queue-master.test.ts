@@ -4,7 +4,6 @@ import {
   createQueueSlug,
   isQueueActiveStatus,
   isQueueMemberOnline,
-  normalizeQueueEmail,
   normalizeQueueText,
 } from "@/lib/queue-master";
 
@@ -18,11 +17,6 @@ describe("QueueMaster contracts", () => {
     expect(normalizeQueueText("  Rick   Ahn ", 40)).toBe("Rick Ahn");
     expect(normalizeQueueText("bad\u0000value", 40)).toBeNull();
     expect(normalizeQueueText("x".repeat(41), 40)).toBeNull();
-  });
-
-  it("normalizes invitation emails", () => {
-    expect(normalizeQueueEmail(" Staff@Example.COM ")).toBe("staff@example.com");
-    expect(normalizeQueueEmail("not-an-email")).toBeNull();
   });
 
   it("expires staff presence after 45 seconds", () => {

@@ -47,7 +47,7 @@ describe("request proxy", () => {
     expect(response.headers.get("location")).toBe("https://fourthcanal.com/queue");
   });
 
-  it.each(["/queue", "/queue/r/front-desk/join", "/legal", "/visilearn/privacy"])(
+  it.each(["/queue", "/queue/dashboard", "/queue/features", "/queue/use-cases", "/queue/pricing", "/queue/how-it-works", "/queue/privacy", "/queue/terms", "/queue/r/front-desk/join", "/queue/r/front-desk/staff", "/legal", "/visilearn/privacy"])(
     "keeps the published page available at %s",
     async (path) => {
       mocks.getUser.mockResolvedValue({ data: { user: null }, error: null });

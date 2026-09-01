@@ -25,7 +25,11 @@ test("former Fourth Canal pages are no longer published", async ({ request }) =>
 
 test("required legal and extension privacy pages remain published", async ({ page }) => {
   await page.goto("/legal");
-  await expect(page.getByRole("heading", { name: /legal center/i })).toBeVisible();
+  await expect(page).toHaveURL(/\/queue\/privacy$/);
+  await expect(page.getByRole("heading", { name: /queuemaster privacy policy/i })).toBeVisible();
+
+  await page.goto("/queue/terms");
+  await expect(page.getByRole("heading", { name: /queuemaster terms of service/i })).toBeVisible();
 
   await page.goto("/visilearn/privacy");
   await expect(page.getByRole("heading", { name: /privacy policy/i })).toBeVisible();
@@ -40,7 +44,10 @@ test("robots and sitemap reflect the pilot publication boundary", async ({ reque
   expect(robotsText).toContain("Disallow: /");
 
   const sitemapText = await sitemap.text();
-  expect(sitemapText).toContain("https://fourthcanal.com/legal");
+  expect(sitemapText).toContain("https://fourthcanal.com/queue/privacy");
+  expect(sitemapText).toContain("https://fourthcanal.com/queue/terms");
+  expect(sitemapText).toContain("https://fourthcanal.com/queue/how-it-works");
+  expect(sitemapText).not.toContain("https://fourthcanal.com/legal");
   expect(sitemapText).toContain("https://fourthcanal.com/visilearn/privacy");
   expect(sitemapText).not.toContain("https://fourthcanal.com/support");
   expect(sitemapText).not.toContain("https://fourthcanal.com/games");

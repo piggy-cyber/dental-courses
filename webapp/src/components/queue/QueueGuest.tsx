@@ -28,13 +28,13 @@ export function QueueGuest({ slug }: { slug: string }) {
     }
   }
 
-  if (loading && !snapshot) return <QueueFrame><QueueLoading /></QueueFrame>;
-  if (error && !snapshot) return <QueueFrame><QueueError message={error} /></QueueFrame>;
+  if (loading && !snapshot) return <QueueFrame slug={slug}><QueueLoading /></QueueFrame>;
+  if (error && !snapshot) return <QueueFrame slug={slug}><QueueError message={error} /></QueueFrame>;
   if (!snapshot) return null;
   const entry = snapshot.currentEntry;
 
   return (
-    <QueueFrame>
+    <QueueFrame slug={slug}>
       <section className={styles.lobbyHeading}>
         <p className={styles.eyebrow}>Guest check-in</p>
         <h1>{snapshot.lobby.name}</h1>
@@ -58,7 +58,7 @@ export function QueueGuest({ slug }: { slug: string }) {
           <div className={styles.actions}>
             {entry.status === "called" && <button className={styles.primaryButton} disabled={busy} onClick={() => act({ type: "start_helping", entryId: entry.id })}>Start helping</button>}
             {(entry.status === "called" || entry.status === "helping") && <button className={styles.primaryButton} disabled={busy} onClick={() => act({ type: "finish", entryId: entry.id })}>Finish session</button>}
-            {entry.status === "waiting" && <button className={styles.secondaryButton} disabled={busy} onClick={() => act({ type: "leave", entryId: entry.id })}>Leave queue</button>}
+            {entry.status === "waiting" && <button className={styles.secondaryButton} disabled={busy} onClick={() => { if (window.confirm("Leave this queue and give up your place?")) void act({ type: "leave", entryId: entry.id }); }}>Leave queue</button>}
           </div>
         </section>
       ) : (

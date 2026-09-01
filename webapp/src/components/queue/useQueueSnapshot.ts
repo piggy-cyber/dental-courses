@@ -7,7 +7,7 @@ type QueueApiError = { message?: string };
 
 export function useQueueSnapshot<T extends { lobby: { id: string; revision: number } }>(
   slug: string,
-  view: "guest" | "admin" | "display",
+  view: "guest" | "admin" | "display" | "staff",
 ) {
   const [snapshot, setSnapshot] = useState<T | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -62,7 +62,7 @@ export function useQueueSnapshot<T extends { lobby: { id: string; revision: numb
 
 export async function sendQueueAction(
   slug: string,
-  audience: "guest" | "admin",
+  audience: "guest" | "admin" | "staff",
   action: object,
 ) {
   const response = await fetch(`/api/queue/r/${encodeURIComponent(slug)}/${audience}`, {

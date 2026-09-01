@@ -9,7 +9,6 @@ import {
   mapQueueDatabaseError,
   queueErrorResponse,
   requireQueueProfile,
-  validateInvitationEmail,
 } from "@/lib/queue-master-server";
 
 export async function POST(
@@ -69,28 +68,21 @@ export async function POST(
         p_sort_position: payload.type === "reorder" ? payload.sortPosition : null,
       });
       if (error) throw mapQueueDatabaseError(error.message);
-    } else if (payload.type === "invite") {
+    } else if (payload.type === "request_promotion") {
       if (membership.role !== "owner") return ownerRequired();
-      const email = validateInvitationEmail(payload.email);
-      const { error } = await admin.from("queue_admin_invitations").insert({
-        lobby_id: lobby.id,
-        email,
-        invited_by_profile_id: profile.id,
+      if (!isQueueUuid(payload.candidateId)) return invalidAction();
+      const { error } = await admin.rpc("queue_request_admin_promotion", {
+        p_candidate_id: payload.candidateId,
+        p_owner_profile_id: profile.id,
       });
-      if (error?.code === "23505") {
-        return NextResponse.json({ error: "already_invited", message: "That email already has an active invitation." }, { status: 409 });
-      }
       if (error) throw mapQueueDatabaseError(error.message);
-    } else if (payload.type === "revoke_invite") {
+    } else if (payload.type === "cancel_promotion") {
       if (membership.role !== "owner") return ownerRequired();
-      if (!isQueueUuid(payload.invitationId)) return invalidAction();
-      const { error } = await admin
-        .from("queue_admin_invitations")
-        .update({ revoked_at: new Date().toISOString() })
-        .eq("id", payload.invitationId)
-        .eq("lobby_id", lobby.id)
-        .is("claimed_at", null)
-        .is("revoked_at", null);
+      if (!isQueueUuid(payload.requestId)) return invalidAction();
+      const { error } = await admin.rpc("queue_cancel_admin_promotion", {
+        p_request_id: payload.requestId,
+        p_owner_profile_id: profile.id,
+      });
       if (error) throw mapQueueDatabaseError(error.message);
     } else if (payload.type === "remove_staff") {
       if (membership.role !== "owner") return ownerRequired();

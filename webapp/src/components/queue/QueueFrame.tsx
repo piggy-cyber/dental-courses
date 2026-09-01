@@ -2,8 +2,9 @@ import Link from "next/link";
 import { GraduationCap } from "lucide-react";
 import type { ReactNode } from "react";
 import styles from "./queue.module.css";
+import { QueueLobbyNav } from "./QueueLobbyNav";
 
-export function QueueFrame({ children, wide = false }: { children: ReactNode; wide?: boolean }) {
+export function QueueFrame({ children, wide = false, slug }: { children: ReactNode; wide?: boolean; slug?: string }) {
   return (
     <main className={styles.page}>
       <header className={styles.siteHeader}>
@@ -12,10 +13,12 @@ export function QueueFrame({ children, wide = false }: { children: ReactNode; wi
           <strong>QueueMaster</strong>
         </Link>
         <nav className={styles.frameNav}>
-          <Link href="/queue">Home</Link>
-          <Link href="/legal">Privacy &amp; terms</Link>
+          <Link href="/queue/dashboard">Dashboard</Link>
+          <Link href="/queue/privacy">Privacy</Link>
+          <form action="/auth/signout" method="post"><button className="text-sm font-semibold text-slate-600">Sign Out</button></form>
         </nav>
       </header>
+      {slug ? <QueueLobbyNav slug={slug} /> : null}
       <div className={wide ? styles.wide : styles.container}>{children}</div>
     </main>
   );
