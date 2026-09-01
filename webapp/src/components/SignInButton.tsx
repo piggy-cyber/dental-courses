@@ -3,11 +3,24 @@
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 
-export function SignInButton() {
+export function SignInButton({ returnTo }: { returnTo?: string } = {}) {
   const [busy, setBusy] = useState(false);
 
   async function signIn() {
     setBusy(true);
+    if (returnTo) {
+      const body = new FormData();
+      body.set("next", returnTo);
+      const returnResponse = await fetch("/auth/start", {
+        method: "POST",
+        headers: { Accept: "application/json" },
+        body,
+      });
+      if (!returnResponse.ok) {
+        setBusy(false);
+        return;
+      }
+    }
     const supabase = createClient();
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "google",

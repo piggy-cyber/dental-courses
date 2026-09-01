@@ -20,8 +20,9 @@ export function LegalFooter() {
     pathname === "/visilearn/privacy";
   const isIsolatedAtlasSession = pathname.startsWith("/games/living-atlas/runs/") || pathname.startsWith("/games/living-atlas/recall/");
   const isStandaloneLabQueue = pathname === "/lab-help-queue";
+  const isQueueDisplay = pathname.startsWith("/queue/r/") && pathname.endsWith("/display");
 
-  if (hasIntegratedFooter || isIsolatedAtlasSession || isStandaloneLabQueue) return null;
+  if (hasIntegratedFooter || isIsolatedAtlasSession || isStandaloneLabQueue || isQueueDisplay) return null;
 
   return (
     <footer className={`${isGame ? "" : "fc-site"} site-legal-footer border-t border-brand-line bg-brand-panel text-brand-muted`}>

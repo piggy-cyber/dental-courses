@@ -5,6 +5,10 @@
       "schedule": "17 9 * * *"
     },
     {
+      "path": "/api/cron/queue-pilot-retention",
+      "schedule": "27 9 * * *"
+    },
+    {
       "path": "/api/cron/sim-clinic-photo-retention",
       "schedule": "0 8 * * *"
     }
