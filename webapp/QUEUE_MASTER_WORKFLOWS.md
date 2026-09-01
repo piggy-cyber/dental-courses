@@ -1,20 +1,20 @@
 # QueueMaster workflow and maintenance guide
 
-QueueMaster is a self-contained Fourth Canal feature under `/queue`. It reuses Fourth Canal Google Auth, Supabase, and deployment configuration, but its `queue_*` tables do not grant or reuse Fourth Canal course roles, approval status, or admin permissions.
+QueueMaster is the public Fourth Canal homepage and a self-contained application whose lobby and information routes live under `/queue`. It reuses Fourth Canal Google Auth, Supabase, and deployment configuration, but its `queue_*` tables do not grant or reuse Fourth Canal course roles, approval status, or admin permissions.
 
 ## Routes
 
-- `/queue` — product landing page.
+- `/` — QueueMaster product landing page. Legacy `/queue` permanently redirects here.
 - `/queue/dashboard` — create/reopen owned and administered lobbies, resume a guest lobby, and answer promotion requests.
 - `/queue/r/[slug]/join` — anonymous guest check-in and active-session controls.
 - `/queue/r/[slug]/staff` — Google sign-in, explicit staff-pool join, heartbeat, and promotion response.
 - `/queue/r/[slug]/admin` — membership heartbeat, availability, guest actions, owner staff controls, and both QR cards.
 - `/queue/r/[slug]/display` — read-only classroom view with a permanent guest QR.
-- `/queue/how-it-works`, `/queue/privacy`, `/queue/terms` — public workflow and legal pages.
+- `/queue/about`, `/queue/instructions`, `/queue/privacy`, `/queue/terms`, and `/queue/support` — public product, workflow, legal, and support pages. Legacy `/queue/how-it-works` redirects to `/queue/instructions`.
 
 ## Owner workflow
 
-1. Sign in with Google at `/queue/dashboard` and create a lobby.
+1. Sign in with Google at `/queue/dashboard` and create a lobby. Each owner can keep up to three lobbies active; closing an empty lobby frees a slot without deleting its history.
 2. Share the guest QR (`/join`) with guests and the owner-only staff QR (`/staff`) with potential admins.
 3. Turn on **Accepting guests**. Admin membership heartbeats run every 20 seconds and expire after 45 seconds.
 4. Review active `queue_staff_candidates`, then call the service-only `queue_request_admin_promotion` function through the owner-authorized API.
@@ -24,7 +24,7 @@ QueueMaster is a self-contained Fourth Canal feature under `/queue`. It reuses F
 ## Guest workflow
 
 1. Scan the guest QR, select an effectively available admin, and enter only first name plus desk/car location.
-2. `queue_join_lobby` atomically rejects duplicate active entries and offline/non-accepting admins.
+2. `queue_join_lobby` atomically rejects duplicate active entries and offline/non-accepting admins. The guest position counts only people waiting for the same selected admin.
 3. The random guest token stays in an HttpOnly, SameSite=Lax cookie; Supabase stores only its SHA-256 hash.
 4. `called` and `helping` are both green public states. The assigned admin or that guest can start helping and finish.
 5. A waiting guest can leave. Owner/assigned admin can reorder, reassign, cancel, or no-show according to the server and database transition rules.
@@ -40,7 +40,7 @@ QueueMaster is a self-contained Fourth Canal feature under `/queue`. It reuses F
 
 ## Realtime and privacy
 
-All database mutations advance the lobby revision and publish `queue_changed` with only `lobby_id` and `revision`. Names, emails, locations, tokens, session IDs, candidate IDs, and request IDs are never broadcast. Each client refetches its role-specific server snapshot after a broadcast, reconnect, or polling fallback.
+All database mutations advance the lobby revision and publish `queue_changed` with only `lobby_id` and `revision`. Names, emails, locations, tokens, session IDs, candidate IDs, and request IDs are never broadcast. Each client refetches its role-specific server snapshot after a broadcast, reconnect, or polling fallback. Anonymous guest snapshots contain availability and the guest's own active entry, but omit other guests' active-session details.
 
 ## Offline and retention behavior
 
@@ -52,4 +52,4 @@ All database mutations advance the lobby revision and publish `queue_changed` wi
 
 ## Release boundary
 
-The migration `20260901071538_queue_master_staff_pool.sql` is additive and deprecates, but does not delete, `queue_admin_invitations`. It disables `queue_claim_invitations`. Do not apply this migration or deploy the branch until the release owner explicitly approves production migration and deployment.
+Two additive migrations remain pending for production: `20260901071538_queue_master_staff_pool.sql` replaces email invitations with the in-app staff pool without deleting invitation history, and `20260901100812_queue_master_lobby_lifecycle.sql` adds close/reopen behavior plus the three-active-lobby limit. Do not apply either migration or merge/deploy this branch until the release owner explicitly approves the production migration and release.
