@@ -13,6 +13,19 @@ export const metadata: Metadata = {
 
 export default async function LivingAtlasPage() {
   const { profile, userId } = await getOptionalSessionProfile();
-  const catalogue = await getLivingAtlasPublicCatalogue();
-  return <LivingAtlasCatalogue courses={catalogue} signedIn={Boolean(userId && profile?.status !== "revoked")} />;
+  let catalogue = null;
+  try {
+    catalogue = await getLivingAtlasPublicCatalogue();
+  } catch (error) {
+    if (!(error instanceof Error) || error.message !== "Supabase server credentials are not configured.") {
+      throw error;
+    }
+  }
+  return (
+    <LivingAtlasCatalogue
+      courses={catalogue ?? []}
+      catalogueAvailable={catalogue !== null}
+      signedIn={Boolean(userId && profile?.status !== "revoked")}
+    />
+  );
 }

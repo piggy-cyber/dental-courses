@@ -19,9 +19,11 @@ function startHref(deckId: string | null, signedIn: boolean) {
 
 export function LivingAtlasCatalogue({
   courses,
+  catalogueAvailable = true,
   signedIn,
 }: {
   courses: LivingAtlasPublicCatalogueCourse[];
+  catalogueAvailable?: boolean;
   signedIn: boolean;
 }) {
   const [query, setQuery] = useState("");
@@ -60,13 +62,13 @@ export function LivingAtlasCatalogue({
           </p>
         </div>
         <aside className={styles.catalogueCallout}>
-          <strong>{courses.length} courses</strong>
-          <span>{courses.reduce((total, course) => total + course.deckCount, 0)} organized recall and practice decks</span>
-          {signedIn ? <span className={styles.catalogueSignedIn}>Account ready · choose a deck to begin</span> : <Link href="/games/living-atlas/access" className={styles.primaryButton}>Create account to practice</Link>}
+          <strong>{catalogueAvailable ? `${courses.length} courses` : "Catalogue temporarily unavailable"}</strong>
+          <span>{catalogueAvailable ? `${courses.reduce((total, course) => total + course.deckCount, 0)} organized recall and practice decks` : "The public catalogue cannot load in this preview environment. Try again later."}</span>
+          {catalogueAvailable ? (signedIn ? <span className={styles.catalogueSignedIn}>Account ready · choose a deck to begin</span> : <Link href="/games/living-atlas/access" className={styles.primaryButton}>Create account to practice</Link>) : null}
         </aside>
       </section>
 
-      <section className={styles.catalogueToolbar} aria-label="Filter the Living Atlas course catalogue">
+      {catalogueAvailable ? <section className={styles.catalogueToolbar} aria-label="Filter the Living Atlas course catalogue">
         <label className={styles.catalogueSearch}>
           <span>Find a course, code, or deck</span>
           <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="e.g. pharmacology, DSRE 335, lecture 1" />
@@ -96,15 +98,15 @@ export function LivingAtlasCatalogue({
           <button type="button" aria-pressed={view === "grid"} onClick={() => setView("grid")}>Grid</button>
           <button type="button" aria-pressed={view === "list"} onClick={() => setView("list")}>List</button>
         </div>
-      </section>
+      </section> : null}
 
-      <section className={styles.catalogueSummary} aria-live="polite">
+      {catalogueAvailable ? <section className={styles.catalogueSummary} aria-live="polite">
         <strong>{filtered.length} course{filtered.length === 1 ? "" : "s"}</strong>
         <span>{visibleDecks} deck{visibleDecks === 1 ? "" : "s"} shown</span>
         {!signedIn ? <span>Deck content unlocks after account creation.</span> : null}
-      </section>
+      </section> : null}
 
-      <section className={`${styles.catalogueCourses} ${view === "list" ? styles.catalogueCoursesList : ""}`} aria-label="Living Atlas course catalogue">
+      {catalogueAvailable ? <section className={`${styles.catalogueCourses} ${view === "list" ? styles.catalogueCoursesList : ""}`} aria-label="Living Atlas course catalogue">
         {filtered.map((course) => {
           const expanded = openCourse === course.courseSlug;
           return (
@@ -138,9 +140,9 @@ export function LivingAtlasCatalogue({
             </article>
           );
         })}
-      </section>
+      </section> : null}
 
-      {!filtered.length ? <section className={styles.catalogueEmpty}><h2>No courses match those filters.</h2><p>Try a broader course name, a different term, or reset the year filter.</p></section> : null}
+      {!catalogueAvailable ? <section className={styles.catalogueEmpty}><h2>The catalogue is safe, but unavailable here.</h2><p>This preview does not have access to the private catalogue service. No study content or account data was exposed.</p></section> : !filtered.length ? <section className={styles.catalogueEmpty}><h2>No courses match those filters.</h2><p>Try a broader course name, a different term, or reset the year filter.</p></section> : null}
 
       <section className={styles.catalogueAccountNote}>
         <div><p className={styles.eyebrow}>Account boundary</p><h2>Browse first. Study when you are ready.</h2><p>Creating an account unlocks personal sessions, saved progress, image tools, flags, repair queues, and your companion’s learning record. It never exposes answer keys before you answer.</p></div>
