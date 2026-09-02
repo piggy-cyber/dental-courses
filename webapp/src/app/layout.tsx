@@ -36,11 +36,11 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://fourthcanal.com"),
   applicationName: "Fourth Canal",
   title: {
-    default: "Fourth Canal — Local-first transcript workflow",
+    default: "Fourth Canal: Recording transcripts for Notion",
     template: "%s · Fourth Canal",
   },
   description:
-    "Capture authorized recording materials in Chrome, verify them on Mac, and keep transcripts in your own Notion workspace.",
+    "Capture authorized recording files in Chrome, verify them on your Mac, and store transcripts in your own Notion workspace.",
   manifest: "/manifest.webmanifest",
   icons: {
     icon: [
@@ -53,16 +53,16 @@ export const metadata: Metadata = {
     type: "website",
     url: "/",
     siteName: "Fourth Canal",
-    title: "Fourth Canal — Local-first transcript workflow",
+    title: "Fourth Canal: Recording transcripts for Notion",
     description:
-      "From authorized recordings to a clean Notion transcript library.",
+      "Capture authorized recording files in Chrome, verify them on your Mac, and store transcripts in your own Notion workspace.",
     images: ["/brand/fourth-canal-social-preview-v2.png"],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Fourth Canal — Local-first transcript workflow",
+    title: "Fourth Canal: Recording transcripts for Notion",
     description:
-      "From authorized recordings to a clean Notion transcript library.",
+      "Capture authorized recording files in Chrome, verify them on your Mac, and store transcripts in your own Notion workspace.",
     images: ["/brand/fourth-canal-social-preview-v2.png"],
   },
   robots: {
@@ -111,7 +111,7 @@ export default function RootLayout({
               "@type": "Organization",
               name: "Fourth Canal",
               url: "https://fourthcanal.com",
-              description: "Independent creator of local-first transcript and student workflow tools.",
+              description: "Independent creator of transcript and student workflow tools.",
             },
             {
               "@context": "https://schema.org",
@@ -119,7 +119,7 @@ export default function RootLayout({
               name: "Fourth Canal",
               url: "https://fourthcanal.com",
               inLanguage: "en-US",
-              description: "Local-first software for organizing authorized recording materials in a customer-owned Notion workspace.",
+              description: "Software for organizing authorized recording files in a customer-controlled Notion workspace.",
             },
           ]}
         />

@@ -15,8 +15,8 @@ export default function SupportPage() {
     <CommercialShell>
       <SupportIntro />
       <section className={styles.narrowSection}>
-        <SectionHeading eyebrow="Contact support" title="Tell us what needs attention." description="Use the existing reviewed support form for site, account, accessibility, content, privacy, copyright, or security concerns. Do not include patient information, grades, passwords, transcript content, provider links, or other sensitive records." />
-        <SupportForm />
+        <SectionHeading title="Contact support" description="Use the reviewed support form for site, account, accessibility, content, privacy, copyright, or security concerns. Do not include patient information, grades, passwords, transcript content, provider links, or other sensitive records." />
+        <SupportForm className={styles.supportForm} />
         <p className={styles.compatibilityLine}>Standard response target: within two business days. Fourth Canal does not promise emergency service or resolution before an academic or business deadline.</p>
       </section>
     </CommercialShell>

@@ -1,4 +1,3 @@
-import { AlertTriangle } from "lucide-react";
 import { CommercialShell } from "@/components/commercial/CommercialShell";
 import { Notice, PageHero, styles } from "@/components/commercial/CommercialPrimitives";
 
@@ -61,7 +60,7 @@ const documents = {
       ["Independent services", "EchoVideo/Echo360, Zoom, Notion, Google Chrome, Apple macOS, Stripe, and customer institutions are independently operated."],
       ["No endorsement", "Fourth Canal is not affiliated with, endorsed by, sponsored by, or representative of these providers or any educational institution."],
       ["Availability", "Provider changes, customer permissions, caption publication timing, institutional configuration, and outages can affect capture or organization."],
-      ["Status reporting", "A future public status page will report only Fourth Canal-operated account, billing, authorization-broker, download, and update services—not the operating status of independent providers."],
+      ["Status reporting", "A future public status page will report only Fourth Canal-operated account, billing, authorization-broker, download, and update services. It will not report the operating status of independent providers."],
     ],
   },
   "open-source": {
@@ -81,9 +80,9 @@ export function CommercialLegalPage({ kind }: { kind: LegalKind }) {
   const document = documents[kind];
   return (
     <CommercialShell>
-      <PageHero eyebrow="Draft placeholder · legal review required" title={document.title} description={document.intro} actions={false} />
+      <PageHero title={document.title} description={document.intro} actions={false} status="Draft legal document. Counsel review required." />
       <section className={styles.narrowSection}>
-        <Notice warning><AlertTriangle aria-hidden="true" /><span>This is a product-boundary draft, not final legal advice or a production policy. Counsel approval is required before paid launch.</span></Notice>
+        <Notice warning>This draft describes the product boundary. It is not final legal advice or a production policy. Counsel approval is required before paid launch.</Notice>
         <div className={styles.legalBody}>
           {document.sections.map(([title, copy]) => <section key={title} className={styles.legalSection}><h2>{title}</h2><p>{copy}</p></section>)}
         </div>

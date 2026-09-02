@@ -1,6 +1,5 @@
 "use client";
 
-import { CheckCircle2, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import styles from "./CommercialSite.module.css";
 
@@ -50,12 +49,11 @@ export function BetaButton({
                 <p>This preview keeps your entry on this device only. It does not send or save your email.</p>
               </div>
               <button ref={closeRef} type="button" className={styles.closeButton} aria-label="Close beta dialog" onClick={() => setOpen(false)}>
-                <X size={18} aria-hidden="true" />
+                <span aria-hidden="true">×</span>
               </button>
             </div>
             {complete ? (
               <div className={styles.success} role="status">
-                <CheckCircle2 size={20} aria-hidden="true" />
                 <strong>Preview complete.</strong>
                 <p>No information was transmitted. A real beta list will be enabled only after release approval.</p>
               </div>

@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "Fourth Canal",
     short_name: "Fourth Canal",
     description:
-      "Local-first transcript workflow for authorized recordings.",
+      "Capture authorized recording files and store transcripts in your own Notion workspace.",
     start_url: "/",
     display: "browser",
     background_color: "#F7F8F9",

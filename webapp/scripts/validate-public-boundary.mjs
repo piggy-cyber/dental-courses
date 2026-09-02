@@ -37,6 +37,41 @@ for (const file of publicFiles) {
   for (const pattern of forbidden) assert(!pattern.test(source), `${file} exposes a private-workspace reference: ${pattern}`);
 }
 
+const commercialDesignFiles = [
+  "src/app/page.tsx",
+  "src/app/manifest.ts",
+  "src/app/(commercial)/security/report/page.tsx",
+  "src/app/support/page.tsx",
+  "src/components/commercial/BetaDialog.tsx",
+  "src/components/commercial/CommercialAccount.tsx",
+  "src/components/commercial/CommercialHome.tsx",
+  "src/components/commercial/CommercialLegalPage.tsx",
+  "src/components/commercial/CommercialPages.tsx",
+  "src/components/commercial/CommercialPrimitives.tsx",
+  "src/components/commercial/CommercialShell.tsx",
+  "src/components/commercial/CommercialSite.module.css",
+  "src/components/commercial/PrototypeSecurityReport.tsx",
+];
+const forbiddenCommercialDesign = [
+  ["gradient", /\b(?:linear|radial|conic)-gradient\s*\(/i],
+  ["backdrop blur", /backdrop-filter\s*:/i],
+  ["display-serif font", /var\(--font-fc-display\)|\bBodoni\b/i],
+  ["Inter font", /\bInter\b/],
+  ["eyebrow label", /\beyebrow\b/i],
+  ["headline badge", /prototypeBadge/i],
+  ["decorative Lucide import", /from\s+["']lucide-react["']/],
+  ["em dash", /—/],
+  ["decorative transition", /\b(?:transition|animation)\s*:/i],
+  ["large corner radius", /border-radius:\s*(?:[5-9]|[1-9]\d+)px/i],
+  ["template wording", /\b(?:calm control plane|clean workflow|visible boundary|seamless)\b/i],
+];
+for (const file of commercialDesignFiles) {
+  const source = readFileSync(resolve(root, file), "utf8");
+  for (const [label, pattern] of forbiddenCommercialDesign) {
+    assert(!pattern.test(source), `${file} contains prohibited commercial ${label}: ${pattern}`);
+  }
+}
+
 for (const file of ["src/app/page.tsx", "src/app/(public)/guides/page.tsx"]) {
   const source = readFileSync(resolve(root, file), "utf8");
   assert(!/courses\.length/.test(source), `${file} exposes a fixed course count`);
@@ -48,4 +83,4 @@ const robotsSource = readFileSync(resolve(root, "src/app/robots.ts"), "utf8");
 for (const privateRoute of ["/admin", "/contacts", "/course", "/d1", "/home", "/library", "/resource", "/workspace-settings"]) {
   assert(!robotsSource.includes(privateRoute), `robots.ts publicly enumerates a private route: ${privateRoute}`);
 }
-console.log("Public access boundary validation passed.");
+console.log("Public access and commercial design boundary validation passed.");

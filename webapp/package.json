@@ -30,6 +30,8 @@
     "validate:brand": "node scripts/validate-brand-integrity.mjs",
     "validate:micp-placeholder": "node scripts/validate-micp-placeholder.mjs",
     "validate:public-boundary": "node scripts/validate-public-boundary.mjs",
+    "scan:commercial-privacy": "node scripts/scan-commercial-privacy.mjs",
+    "verify:commercial-routes": "node scripts/verify-commercial-routes.mjs",
     "import:d2-calendar": "node scripts/import-d2-canvas-calendar.mjs",
     "import:manifest": "node scripts/import-resource-manifest.mjs"
   },

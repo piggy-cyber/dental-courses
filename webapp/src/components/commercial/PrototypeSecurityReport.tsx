@@ -1,6 +1,5 @@
 "use client";
 
-import { CheckCircle2 } from "lucide-react";
 import { useState } from "react";
 import styles from "./CommercialSite.module.css";
 
@@ -10,7 +9,6 @@ export function PrototypeSecurityReport() {
     <section className={styles.panel}>
       {sent ? (
         <div className={styles.success} role="status">
-          <CheckCircle2 size={20} aria-hidden="true" />
           <strong>Prototype success state tested.</strong>
           <p>No report or contact information was transmitted.</p>
           <button className={styles.buttonSecondary} type="button" onClick={() => setSent(false)}>Reset form</button>

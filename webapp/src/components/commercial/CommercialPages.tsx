@@ -1,28 +1,4 @@
 import Link from "next/link";
-import {
-  AlarmClock,
-  AlertTriangle,
-  ArrowRight,
-  Blocks,
-  CheckCircle2,
-  CircleX,
-  CloudOff,
-  Database,
-  Download,
-  FileText,
-  Fingerprint,
-  FolderDown,
-  HardDrive,
-  Laptop,
-  Link2,
-  LockKeyhole,
-  MousePointerClick,
-  PanelsTopLeft,
-  RefreshCw,
-  Route,
-  Search,
-  SquareActivity,
-} from "lucide-react";
 import { BetaButton } from "@/components/commercial/BetaDialog";
 import { CheckList, CtaBand, FeatureGrid, Notice, PageHero, SectionHeading, styles } from "@/components/commercial/CommercialPrimitives";
 
@@ -30,60 +6,61 @@ const supported = [
   "Chrome 116 or newer",
   "Apple-silicon Mac",
   "macOS 13 or newer",
-  "EchoVideo and Echo360 lesson domains covered by the public extension",
+  "Declared EchoVideo and Echo360 lesson domains",
   "Zoom recording playback pages",
-  "Customer-owned Notion workspace",
+  "A Notion workspace controlled by the customer",
   "Native VTT, validated TXT fallback where implemented, and manual VTT/TXT import",
 ];
 
 const unsupported = [
   "Intel Macs, Windows, iPhone, and iPad",
   "Safari, Firefox, and Edge",
-  "Google Meet or Drive automatic capture",
+  "Automatic Google Meet or Drive capture",
   "Generic webpage scraping",
   "Locked, expired, or unauthorized recordings",
-  "Circumvention of DRM or institutional controls",
-  "Guaranteed availability before captions are published",
+  "DRM or institutional-control circumvention",
+  "Capture before captions are published",
   "Guaranteed merged MP4 output",
   "Automation while Chrome is closed or signed out",
 ];
 
 const permissionRows = [
-  ["Supported site access", "Recognizes transcript and source-media responses only on declared EchoVideo/Echo360 and Zoom playback pages."],
-  ["Downloads", "Saves the VTT, timestamped TXT, and provider-supplied source files the customer explicitly requests."],
-  ["Storage", "Keeps settings, job state, exact-session identity, and recovery state locally in Chrome."],
-  ["Alarms", "Wakes scheduled checks without running continuous background polling."],
-  ["Tabs and scripting", "Detects the active supported recording page and runs the matching local capture helper."],
-  ["Network observation", "Identifies provider transcript and media responses on supported pages; browser cookies are never exported from Chrome."],
+  ["Supported site access", "Recognizes transcript and source-media responses on declared EchoVideo, Echo360, and Zoom playback pages."],
+  ["Downloads", "Saves the VTT, timestamped TXT, and provider-supplied source files that the customer requests."],
+  ["Storage", "Keeps settings, job state, exact-session identity, and recovery state in Chrome."],
+  ["Alarms", "Runs scheduled checks without continuous background polling."],
+  ["Tabs and scripting", "Recognizes the active supported recording page and starts its capture helper."],
+  ["Network observation", "Identifies provider transcript and media responses. Browser cookies are not exported."],
 ] as const;
 
 export function VisiLearnPage() {
   return (
     <>
-      <PageHero eyebrow="Fourth Canal VisiLearn" title="Authorized capture at the browser edge." description="A Chrome companion for exact-session transcript and source-media capture on supported Echo360 and Zoom recording pages you are already authorized to open." />
+      <PageHero title="Capture transcript files from a recording open in Chrome." description="VisiLearn works on supported Echo360 and Zoom pages that you are already authorized to access." />
       <section className={styles.section}>
+        <SectionHeading title="What VisiLearn saves" />
         <FeatureGrid items={[
-          { icon: FileText, title: "Original transcript files", text: "Preserve provider-supplied WebVTT and generate a readable timestamped TXT without inventing transcript content." },
-          { icon: MousePointerClick, title: "Exact-session selection", text: "Capture the recording you deliberately opened, with stable session identity instead of fuzzy title matching." },
-          { icon: PanelsTopLeft, title: "Passive captions", text: "Show local caption support without replacing or interfering with the provider’s playback controls." },
-          { icon: FolderDown, title: "Authorized source media", text: "Save available provider-supplied media components through the customer’s signed-in browser session." },
-          { icon: HardDrive, title: "Local browser state", text: "Keep settings, capture state, and the Mac connection on the customer’s device." },
-          { icon: Route, title: "Honest file roles", text: "Preserve separate audio and video streams as separate originals rather than presenting them as a merged MP4." },
+          { title: "Original transcript", text: "Keeps provider-supplied WebVTT and creates readable timestamped text without changing the transcript." },
+          { title: "Exact recording identity", text: "Associates files with the recording you opened instead of matching similar titles." },
+          { title: "Passive captions", text: "Provides local caption support without replacing provider playback controls." },
+          { title: "Provider source media", text: "Saves available source components through the signed-in browser session." },
+          { title: "Browser state", text: "Stores settings, capture state, and the Mac connection on the device." },
+          { title: "Separate stream roles", text: "Keeps separate audio and video streams as separate originals." },
         ]} />
       </section>
       <section className={styles.sectionAlt}>
         <div>
-          <SectionHeading eyebrow="Chrome permissions" title="Every requested capability has one narrow job." description="The public package must remove the existing school-specific Canvas helper before Chrome Web Store submission. The permission explanations below describe the institution-neutral release boundary." />
+          <SectionHeading title="Chrome permissions" description="Each permission is limited to a specific capture or recovery task." />
           <div className={styles.tableWrap}>
             <table className={styles.table}>
-              <thead><tr><th>Permission group</th><th>Why VisiLearn needs it</th></tr></thead>
+              <thead><tr><th>Permission group</th><th>Purpose</th></tr></thead>
               <tbody>{permissionRows.map(([permission, reason]) => <tr key={permission}><td>{permission}</td><td>{reason}</td></tr>)}</tbody>
             </table>
           </div>
-          <div className={styles.notice}><LockKeyhole aria-hidden="true" /><span>Browser cookies and provider credentials never leave Chrome. VisiLearn does not bypass login, access controls, DRM, or institutional policy.</span></div>
+          <Notice>Browser cookies and provider credentials stay in Chrome. VisiLearn does not bypass login, access controls, DRM, or institutional policy.</Notice>
         </div>
       </section>
-      <CtaBand title="Capture only what you are authorized to open." description="Check the declared browser, provider, and Mac support boundary before joining the private beta." />
+      <CtaBand title="Confirm support before installing." description="Check the browser, provider, Mac, and file requirements for the private beta." />
     </>
   );
 }
@@ -91,33 +68,34 @@ export function VisiLearnPage() {
 export function TranscriptPage() {
   return (
     <>
-      <PageHero eyebrow="Fourth Canal Transcript for Mac" title="A calm control plane for local transcript work." description="Schedule capture, validate originals, surface exceptions, and organize a customer-owned Notion library from an Apple-silicon Mac." />
+      <PageHero title="Verify files on your Mac before they reach Notion." description="Fourth Canal Transcript schedules capture, checks completed files, sends verified records to Notion, and keeps failed work available for review." />
       <section className={styles.section}>
+        <SectionHeading title="Mac application responsibilities" />
         <FeatureGrid items={[
-          { icon: AlarmClock, title: "Scheduled capture", text: "Coordinate approved recording jobs while clearly showing when Chrome is closed, signed out, or disconnected." },
-          { icon: SquareActivity, title: "Connection health", text: "Show the background worker, VisiLearn bridge, Downloads permission, and Notion connection as separate states." },
-          { icon: Fingerprint, title: "SHA-256 validation", text: "Copy, hash, and verify every completed file before the temporary staging copy is removed." },
-          { icon: Database, title: "Notion upload and read-back", text: "Write the transcript and metadata, then verify the destination record instead of assuming success." },
-          { icon: FolderDown, title: "Manual VTT/TXT import", text: "Bring in a meeting or retained file without depending on an automatic provider capture." },
-          { icon: RefreshCw, title: "Retry and recovery", text: "Retry or requeue clear failures while preserving unavailable, incomplete, and ambiguous items for deliberate review." },
+          { title: "Scheduled capture", text: "Coordinates approved jobs and reports when Chrome is closed, signed out, or disconnected." },
+          { title: "Connection status", text: "Reports the worker, VisiLearn bridge, Downloads permission, and Notion connection separately." },
+          { title: "SHA-256 verification", text: "Copies, hashes, and verifies a completed file before removing the staging copy." },
+          { title: "Notion write and read-back", text: "Writes the transcript and metadata, then confirms the destination record." },
+          { title: "Manual VTT/TXT import", text: "Imports a meeting or retained file without an automatic provider capture." },
+          { title: "Retry and recovery", text: "Retries defined failures and keeps ambiguous or incomplete work for manual review." },
         ]} />
       </section>
       <section className={styles.sectionAlt}>
         <div className={styles.split}>
           <div>
-            <SectionHeading eyebrow="Background behavior" title="Automation that fails visibly instead of guessing." description="The local worker can schedule and validate work in the background. It never invents a match, deletes a recovery copy before verification, or requires transcript contents for license checks." />
-            <Notice warning><AlertTriangle aria-hidden="true" /><span>Scheduled browser capture still requires Chrome to remain open, signed in, and connected to the local Mac app.</span></Notice>
+            <SectionHeading title="Failure behavior" description="The worker does not guess when identity, file integrity, or destination verification is missing." />
+            <Notice warning>Scheduled capture requires Chrome to remain open, signed in, and connected to the Mac app.</Notice>
           </div>
           <CheckList items={[
-            "Downloading, Ready, and Failed states remain visible",
-            "Per-file completion is recorded before a bundle becomes Ready",
-            "Interrupted and corrupt files stay available for recovery",
-            "Duplicate refreshes update the same exact session instead of creating another record",
-            "Automatic linking requires an exact automation ID or normalized provider URL",
+            "Downloading, Ready, and Failed remain separate states",
+            "Every required file completes before a bundle becomes Ready",
+            "Interrupted and corrupt files remain available for recovery",
+            "A repeat refresh updates the same exact session",
+            "Automatic linking requires an automation ID or normalized provider URL",
           ]} />
         </div>
       </section>
-      <CtaBand title="Keep the operator local and legible." description="The private beta validates the workflow before public installers and automatic updates are enabled." />
+      <CtaBand title="Test with a sample file first." description="The private beta checks the complete workflow before public installers and automatic updates are enabled." />
     </>
   );
 }
@@ -125,24 +103,24 @@ export function TranscriptPage() {
 export function NotionPage() {
   return (
     <>
-      <PageHero eyebrow="Transcript Library for Notion" title="Your permanent database stays in your workspace." description="Fourth Canal creates one supported standalone Transcript Library beneath a parent page the customer chooses. It does not host a competing transcript library." />
+      <PageHero title="Store the permanent transcript library in your workspace." description="Fourth Canal creates one supported Transcript Library under a Notion page that you choose." />
       <section className={styles.section}>
         <div className={styles.split}>
           <div>
-            <SectionHeading eyebrow="Customer-owned destination" title="Disconnect the bridge without losing the library." description="Canceling, disconnecting Notion, or removing the Mac app does not delete transcript files or readable text already stored in the customer’s workspace." />
-            <Notice warning><AlertTriangle aria-hidden="true" /><span>Public Notion OAuth is not enabled during the private beta. The account preview shows only a coarse connected or disconnected state.</span></Notice>
+            <SectionHeading title="Disconnect without deleting records." description="Canceling, disconnecting Notion, or removing the Mac app does not delete transcript files or readable text already stored in your workspace." />
+            <Notice warning>Public Notion OAuth is disabled during the private beta. Account screens show only synthetic connection state.</Notice>
           </div>
           <div className={styles.tableWrap}>
             <table className={styles.table}>
-              <thead><tr><th>Supported field</th><th>Purpose</th></tr></thead>
+              <thead><tr><th>Database field</th><th>Purpose</th></tr></thead>
               <tbody>
                 {[
-                  ["Original attachment", "Preserve the provider-supplied VTT or imported file"],
-                  ["Readable text", "Keep searchable timestamped transcript text"],
-                  ["Recorded at and type", "Describe the recording without changing the original"],
-                  ["Verification hash", "Identify the exact file uploaded"],
-                  ["Status and error", "Show recoverable processing state"],
-                  ["Exact automation identity", "Link only by stable ID or normalized provider URL"],
+                  ["Original attachment", "Preserves the provider-supplied VTT or imported file"],
+                  ["Readable text", "Stores searchable timestamped transcript text"],
+                  ["Recorded at and type", "Describes the recording without modifying the original"],
+                  ["Verification hash", "Identifies the exact uploaded file"],
+                  ["Status and error", "Reports recoverable processing state"],
+                  ["Automation identity", "Links by stable ID or normalized provider URL"],
                 ].map(([field, purpose]) => <tr key={field}><td>{field}</td><td>{purpose}</td></tr>)}
               </tbody>
             </table>
@@ -151,15 +129,15 @@ export function NotionPage() {
       </section>
       <section className={styles.sectionAlt}>
         <div>
-          <SectionHeading eyebrow="Export and deletion" title="The workspace remains independent." />
+          <SectionHeading title="Export, disconnect, and delete" />
           <FeatureGrid items={[
-            { icon: Download, title: "Export from Notion", text: "Use Notion’s normal export tools for the database and readable transcript content." },
-            { icon: Link2, title: "Disconnect cleanly", text: "Revoke the connection without removing existing customer-owned records." },
-            { icon: CircleX, title: "Delete deliberately", text: "Delete transcript records through the customer’s Notion workspace; account deletion does not silently remove them." },
+            { title: "Export from Notion", text: "Use Notion export tools for the database and readable transcript content." },
+            { title: "Disconnect", text: "Revoke the connection without removing existing records." },
+            { title: "Delete a transcript", text: "Delete records inside Notion. Account deletion does not remove them." },
           ]} />
         </div>
       </section>
-      <CtaBand title="Keep Notion as the source of truth." description="Start with one supported database schema, then preserve the customer’s ordinary export and deletion controls." />
+      <CtaBand title="Notion remains the source of truth." description="Fourth Canal supports one database schema and leaves ordinary export and deletion controls with the customer." />
     </>
   );
 }
@@ -167,57 +145,60 @@ export function NotionPage() {
 export function CompatibilityPage() {
   return (
     <>
-      <PageHero eyebrow="Planned launch support" title="A deliberately narrow compatibility boundary." description="The first commercial release will support only combinations Fourth Canal can test and maintain honestly." actions={false} />
+      <PageHero title="Supported platforms and file types." description="The first release covers only combinations that Fourth Canal can test and maintain." actions={false} />
       <section className={styles.section}>
         <div className={styles.split}>
-          <div><SectionHeading eyebrow="Supported" title="Planned launch matrix" /><CheckList items={supported} /></div>
-          <div><SectionHeading eyebrow="Not supported" title="Outside the first release" /><CheckList items={unsupported} negative /></div>
+          <div><SectionHeading title="Supported in the planned release" /><CheckList items={supported} /></div>
+          <div><SectionHeading title="Not supported" /><CheckList items={unsupported} negative /></div>
         </div>
+        <Notice warning>Provider support does not guarantee that a particular recording includes captions or source media. Provider and institutional policy control availability.</Notice>
       </section>
-      <section className={styles.sectionAlt}>
-        <div>
-          <Notice warning><AlertTriangle aria-hidden="true" /><span>Compatibility with a provider does not guarantee a particular recording has captions or source media. Provider and institutional policy always controls availability.</span></Notice>
-        </div>
-      </section>
-      <CtaBand title="Your setup not listed?" description="Join the private beta list for compatibility updates without enabling unsupported capture." />
+      <CtaBand title="Setup not listed?" description="Request beta access for compatibility updates. Unsupported capture will remain disabled." />
     </>
   );
 }
 
 export function SecurityPage() {
+  const boundaries = [
+    ["Signed-in Chrome", "Provider session, supported page context, settings, and capture job state", "Cookies and credentials are not exported"],
+    ["Customer Mac", "Temporary staging, verification, recovery files, logs, and Keychain credentials", "Files remain on the device until the customer sends them elsewhere"],
+    ["Customer Notion", "Transcript attachment, readable text, metadata, status, and verification hash", "The workspace is controlled by the customer"],
+    ["Fourth Canal account", "Email, plan, device activation, software versions, and setup completion", "No transcript, recording, course, filename, or Notion content"],
+  ] as const;
   return (
     <>
-      <PageHero eyebrow="Security and privacy" title="A visible boundary from browser to customer database." description="Each part of Fourth Canal receives only the information it needs. Transcript content stays out of Fourth Canal-operated account systems." actions={false} />
+      <PageHero title="What each part of Fourth Canal can access." description="Transcript content stays out of Fourth Canal account systems. The table below identifies where each class of data is handled." actions={false} />
       <section className={styles.section}>
-        <FeatureGrid items={[
-          { icon: PanelsTopLeft, title: "Signed-in Chrome", text: "Provider session, cookies, supported page context, local settings, and capture job state." },
-          { icon: Laptop, title: "Customer Mac", text: "Temporary staging, validation, recovery files, local logs, and Keychain credentials." },
-          { icon: Database, title: "Customer Notion", text: "Permanent transcript attachment, readable text, metadata, status, and verification hash." },
-        ]} />
+        <div className={styles.tableWrap}>
+          <table className={styles.table}>
+            <thead><tr><th>Component</th><th>Handles</th><th>Limit</th></tr></thead>
+            <tbody>{boundaries.map(([component, handles, limit]) => <tr key={component}><td>{component}</td><td>{handles}</td><td>{limit}</td></tr>)}</tbody>
+          </table>
+        </div>
       </section>
       <section className={styles.sectionAlt}>
         <div className={styles.split}>
           <div>
-            <SectionHeading eyebrow="Fourth Canal account" title="Minimal commercial state only." description="The account may hold email, subscription status, device activation, current software versions, and coarse onboarding booleans." />
-            <Link href="/security/report" className={styles.buttonSecondary}>Report a security issue <ArrowRight size={16} aria-hidden="true" /></Link>
+            <SectionHeading title="Account data limits" description="The account may store only commercial and coarse setup state." />
+            <Link href="/security/report" className={styles.buttonSecondary}>Report a security issue</Link>
           </div>
           <CheckList negative items={[
-            "No transcript text or captured media",
-            "No browser cookies or provider credentials",
-            "No recording URLs, titles, course names, or filenames",
-            "No Notion database content, page identifiers, or access tokens in account views",
-            "No transcript or browser-session data in license checks",
+            "Transcript text or captured media",
+            "Browser cookies or provider credentials",
+            "Recording URLs, titles, course names, or filenames",
+            "Notion page content, identifiers, or access tokens",
+            "Transcript or browser-session data in license checks",
           ]} />
         </div>
       </section>
       <section className={styles.section}>
-        <SectionHeading eyebrow="Analytics boundary" title="Aggregate public-site measurement only." />
-        <div className={styles.cardGrid}>
-          <div><CheckList items={["Normalized public page", "Referrer domain", "Coarse region and device category", "Named CTA events after review"]} /></div>
-          <div><CheckList negative items={["No advertising pixels", "No cross-site identifiers", "No session replay", "No form-content capture", "No analytics in the extension, Mac app, or account pages"]} /></div>
+        <SectionHeading title="Public-site analytics" description="Only aggregate measurement may be enabled after review." />
+        <div className={styles.split}>
+          <CheckList items={["Normalized public page", "Referrer domain", "Coarse region and device category", "Named button events after review"]} />
+          <CheckList negative items={["Advertising pixels", "Cross-site identifiers", "Session replay", "Form-content capture", "Analytics in the extension, Mac app, or account pages"]} />
         </div>
       </section>
-      <CtaBand title="Security starts with a smaller data boundary." description="Fourth Canal-operated services are designed not to receive the recording content they do not need." />
+      <CtaBand title="Collect less account data." description="Fourth Canal does not need transcript contents, recording details, or browser credentials to manage a subscription." />
     </>
   );
 }
@@ -225,102 +206,90 @@ export function SecurityPage() {
 export function DownloadPage() {
   return (
     <>
-      <PageHero eyebrow="Private beta downloads" title="Install access stays controlled during testing." description="Approved testers receive installation instructions separately. The public site does not expose executable downloads before signing, notarization, and Chrome Web Store approval." actions={false} />
+      <PageHero title="Private beta installation access." description="Approved testers receive installation instructions separately. This page does not expose executable downloads." actions={false} status="Private beta prototype. Public downloads are disabled." />
       <section className={styles.section}>
-        <div className={styles.cardGrid}>
-          <DownloadCard icon={Blocks} name="Fourth Canal VisiLearn" version="Private beta 1.6.0" requirement="Chrome 116 or newer" />
-          <DownloadCard icon={Laptop} name="Fourth Canal Transcript" version="Private beta 1.1.0" requirement="Apple-silicon · macOS 13+" />
+        <div className={styles.tableWrap}>
+          <table className={styles.table}>
+            <thead><tr><th>Software</th><th>Version</th><th>Requirement</th><th>Access</th></tr></thead>
+            <tbody>
+              <tr><td>Fourth Canal VisiLearn</td><td>Private beta 1.6.0</td><td>Chrome 116 or newer</td><td><BetaButton label="Request access" secondary /></td></tr>
+              <tr><td>Fourth Canal Transcript</td><td>Private beta 1.1.0</td><td>Apple silicon and macOS 13 or newer</td><td><BetaButton label="Request access" secondary /></td></tr>
+            </tbody>
+          </table>
         </div>
-        <Notice><CloudOff aria-hidden="true" /><span>These controls explain the release boundary. They do not begin a download, checkout, activation, or external connection.</span></Notice>
+        <Notice>These controls do not start a download, checkout, activation, or external connection.</Notice>
       </section>
       <section className={styles.sectionAlt}>
         <div>
-          <SectionHeading eyebrow="Planned onboarding" title="Test the connection before a real recording." />
+          <SectionHeading title="Planned setup order" />
           <CheckList items={[
             "Install VisiLearn from the Chrome Web Store",
             "Open a Fourth Canal account through an email magic link",
             "Install the signed and notarized Mac package",
-            "Confirm processor, macOS, Downloads access, device license, and local Chrome connection",
-            "Connect Notion and create a fresh supported Transcript Library",
-            "Validate the workflow with a bundled sample VTT",
-            "Then test one recording the customer is authorized to open",
+            "Confirm macOS, processor, Downloads access, and the Chrome connection",
+            "Connect Notion and create a supported Transcript Library",
+            "Run the bundled sample VTT",
+            "Test one recording that you are authorized to open",
           ]} />
         </div>
       </section>
-      <CtaBand title="Public downloads are a release gate, not a placeholder link." description="The private beta remains controlled until distribution and isolation checks pass." />
+      <CtaBand title="Downloads remain disabled until release checks pass." description="Distribution requires signed packages, legal review, isolation testing, and an external beta." />
     </>
   );
 }
 
-function DownloadCard({ icon: Icon, name, version, requirement }: { icon: typeof Blocks; name: string; version: string; requirement: string }) {
-  return (
-    <article className={styles.card}>
-      <Icon aria-hidden="true" />
-      <h3>{name}</h3>
-      <p>{version}</p>
-      <p>{requirement}</p>
-      <BetaButton label="Request beta access" secondary />
-    </article>
-  );
-}
-
 const pricingPlans = [
-  { name: "VisiLearn Free", price: "$0", period: "forever", features: ["Chrome extension", "Manual VTT/TXT capture", "Authorized source-media capture", "Passive captions", "Local settings"] },
-  { name: "Fourth Canal Complete", price: "$5", period: "monthly", featured: true, features: ["$48 annual option", "14-day no-card trial", "Mac scheduling and validation", "One Notion workspace", "Two personal Mac activations", "Updates and standard support"] },
-  { name: "Education & Teams", price: "Private", period: "pilot", features: ["Controlled pilot only", "Guided onboarding", "Organizational evaluation", "No self-service multi-user administration"] },
-];
+  ["VisiLearn Free", "$0", "Chrome extension; manual VTT/TXT capture; supported source media; passive captions; local settings"],
+  ["Fourth Canal Complete", "$5 monthly or $48 yearly", "Mac scheduling and verification; one Notion workspace; two Mac activations; updates and support"],
+  ["Education and Teams", "Private pilot", "Guided onboarding and organizational evaluation; no self-service team administration"],
+] as const;
 
 export function PricingPage() {
   return (
     <>
-      <PageHero eyebrow="Planned pricing" title="Simple account pricing without transcript metering." description="Private beta testing is free for approved participants. Public checkout and billing remain disabled until the commercial release gates pass." actions={false} />
+      <PageHero title="Planned pricing." description="Private beta testing is free. Public checkout and billing remain disabled until the commercial release checks pass." actions={false} status="Private beta prototype. No payment can be made on this site." />
       <section className={styles.section}>
-        <div className={styles.priceGrid}>
-          {pricingPlans.map((plan) => (
-            <article key={plan.name} className={`${styles.priceCard} ${plan.featured ? styles.priceCardFeatured : ""}`}>
-              <span className={styles.miniLabel}>{plan.featured ? "Complete" : "Planned"}</span>
-              <h3>{plan.name}</h3>
-              <div className={styles.price}><strong>{plan.price}</strong><span>{plan.period}</span></div>
-              <ul>{plan.features.map((feature) => <li key={feature}><CheckCircle2 aria-hidden="true" />{feature}</li>)}</ul>
-              <BetaButton label={plan.name === "Education & Teams" ? "Contact about pilot" : "Join private beta"} secondary={!plan.featured} />
-            </article>
-          ))}
+        <div className={styles.tableWrap}>
+          <table className={styles.table}>
+            <thead><tr><th>Plan</th><th>Price</th><th>Includes</th><th>Beta access</th></tr></thead>
+            <tbody>{pricingPlans.map(([plan, price, includes]) => <tr key={plan}><td>{plan}</td><td>{price}</td><td>{includes}</td><td><BetaButton label={plan === "Education and Teams" ? "Contact about pilot" : "Request access"} secondary /></td></tr>)}</tbody>
+          </table>
         </div>
       </section>
       <section className={styles.sectionAlt}>
         <div className={styles.split}>
-          <div><SectionHeading eyebrow="Commercial rules" title="Maintenance-funded, customer-owned." description="There is no lifetime license at launch because browser and provider compatibility require ongoing maintenance." /></div>
+          <SectionHeading title="Subscription rules" description="Ongoing browser and provider changes require maintained software. A lifetime license is not planned." />
           <CheckList items={[
-            "Annual subscribers receive a 14-day refund window on the first annual charge",
+            "The first annual charge has a planned 14-day refund window",
             "Cancellation takes effect at the end of the paid period",
-            "Expired automatic Mac workflows pause; customer Notion and local recovery files are not deleted",
-            "The free Chrome extension remains usable after Complete expires",
-            "Teams remain a controlled pilot until administration and permission behavior are tested",
+            "Expiration pauses automatic Mac workflows without deleting customer files",
+            "VisiLearn Free remains available after Complete expires",
+            "Teams remain a controlled pilot until administration and permissions are tested",
           ]} />
         </div>
       </section>
-      <CtaBand title="The private beta remains free." description="Billing begins only after public distribution, legal review, external beta, and account-operation gates are complete." />
+      <CtaBand title="The private beta is free." description="Billing begins only after public distribution, legal review, external testing, and account-operation checks are complete." />
     </>
   );
 }
 
 export function ChangelogPage() {
   const entries = [
-    { version: "1.6.0 / 1.1.0", label: "Current private beta", items: ["Restored exact-session media bundle lifecycle", "Added local video-library validation and recovery states", "Preserved separate audio and video originals", "Kept public distribution disabled pending release gates"] },
-    { version: "Commercial foundation", label: "Prototype milestone", items: ["Defined the Chrome → Mac → customer Notion product family", "Added pricing, compatibility, account, support, security, and legal prototypes", "Added release contract and private-data scan"] },
-  ];
+    ["1.6.0 / 1.1.0", "Current private beta", ["Restored the exact-session media bundle lifecycle", "Added file verification and recovery states", "Kept separate audio and video originals", "Kept public distribution disabled"]],
+    ["Commercial foundation", "Website milestone", ["Defined the Chrome, Mac, and Notion product roles", "Added pricing, compatibility, account, support, security, and legal prototypes", "Added release-contract and private-data checks"]],
+  ] as const;
   return (
     <>
-      <PageHero eyebrow="Product history" title="A transparent private-beta changelog." description="These entries describe verified local product and commercial-foundation milestones. They are not claims of public distribution or completed live acceptance." actions={false} />
+      <PageHero title="Private beta changes." description="These entries describe verified product and website work. They do not claim public distribution or completed live acceptance." actions={false} />
       <section className={styles.narrowSection}>
-        {entries.map((entry) => (
-          <article key={entry.version} className={styles.panel}>
-            <span className={styles.miniLabel}>{entry.label}</span>
-            <h2>{entry.version}</h2>
-            <CheckList items={entry.items} />
+        {entries.map(([version, label, items]) => (
+          <article key={version} className={styles.panel}>
+            <p className={styles.statusLine}>{label}</p>
+            <h2>{version}</h2>
+            <CheckList items={[...items]} />
           </article>
         ))}
-        <Notice warning><AlertTriangle aria-hidden="true" /><span>One real authorized Echo capture and repeat remains a product acceptance gate. Chrome Web Store distribution, signed/notarized Mac installation, billing, and public Notion OAuth are not live.</span></Notice>
+        <Notice warning>One authorized Echo capture and repeat remains a product acceptance check. Chrome Web Store distribution, signed and notarized Mac installation, billing, and public Notion OAuth are not live.</Notice>
       </section>
     </>
   );
@@ -329,22 +298,20 @@ export function ChangelogPage() {
 export function SupportIntro() {
   return (
     <>
-      <PageHero eyebrow="Support" title="Start with the task, then share only safe diagnostics." description="Search the setup and recovery paths below. If you still need help, use the existing support form without including transcript content, recording URLs, account secrets, or school records." actions={false} />
+      <PageHero title="Support by task." description="Start with setup and recovery documentation. If that does not resolve the issue, send only the diagnostic information required for the case." actions={false} />
       <section className={styles.section}>
-        <SectionHeading eyebrow="Five-minute setup" title="Common paths, organized around the job." />
-        <div className={styles.cardGrid}>
-          {[
-            ["Install and connect", "VisiLearn, the Mac app, Downloads access, local connection, and the sample VTT."],
-            ["Capture a recording", "Echo360 lesson capture, Zoom playback capture, scheduled work, and manual VTT/TXT import."],
-            ["Repair the workflow", "Extension not detected, Chrome signed out, worker stale, Notion authorization expired, or schema changed."],
-            ["Recover safely", "Unavailable transcript, ambiguous session, retained temporary file, duplicate protection, or upload read-back failure."],
-          ].map(([title, copy]) => <article key={title} className={styles.card}><Search aria-hidden="true" /><h3>{title}</h3><p>{copy}</p></article>)}
-        </div>
+        <SectionHeading title="Documentation topics" />
+        <FeatureGrid items={[
+          { title: "Install and connect", text: "VisiLearn, the Mac app, Downloads access, local connection, and the sample VTT." },
+          { title: "Capture a recording", text: "Echo360 and Zoom capture, scheduled work, and manual VTT/TXT import." },
+          { title: "Repair a connection", text: "Extension detection, Chrome sign-in, worker status, Notion authorization, and schema changes." },
+          { title: "Recover a file", text: "Unavailable transcripts, ambiguous sessions, retained staging files, duplicate protection, and failed read-back." },
+        ]} />
       </section>
       <section className={styles.sectionAlt}>
         <div className={styles.split}>
-          <div><SectionHeading eyebrow="Support sequence" title="Documentation first, private files only with consent." /></div>
-          <CheckList items={["Searchable task documentation", "Copy safe diagnostics from the Mac app", "Email or ticket support", "Attach a file or log only after explicit approval", "Screen sharing only with separate consent"]} />
+          <SectionHeading title="Support order" description="Send private files or use screen sharing only after separate consent." />
+          <CheckList items={["Search the task documentation", "Copy safe diagnostics from the Mac app", "Send an email or support ticket", "Attach a file or log only after approval", "Use screen sharing only after separate consent"]} />
         </div>
       </section>
     </>

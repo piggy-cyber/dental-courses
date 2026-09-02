@@ -41,7 +41,7 @@ const CATEGORY_LABELS: Record<SupportCategory, string> = {
 
 type SupportStatus = "idle" | "sending" | "sent" | "error";
 
-export function SupportForm() {
+export function SupportForm({ className = "" }: { className?: string }) {
   const [category, setCategory] = useState<SupportCategory>("site");
   const [message, setMessage] = useState("");
   const [replyEmail, setReplyEmail] = useState("");
@@ -125,7 +125,7 @@ export function SupportForm() {
   }
 
   return (
-    <form onSubmit={submit} className="app-card max-w-3xl space-y-5 p-6 sm:p-8">
+    <form onSubmit={submit} className={`app-card max-w-3xl space-y-5 p-6 sm:p-8 ${className}`}>
       <div className="grid gap-5 sm:grid-cols-2">
         <label className="block text-sm font-semibold text-brand-navy">
           Request type

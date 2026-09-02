@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { CommercialHome } from "@/components/commercial/CommercialHome";
 
 export const metadata: Metadata = {
-  title: { absolute: "Fourth Canal — Local-first transcript workflow" },
-  description: "Capture authorized Echo360 and Zoom recording materials in Chrome, verify them on Mac, and keep transcripts in your own Notion workspace.",
+  title: { absolute: "Fourth Canal: Recording transcripts for Notion" },
+  description: "Capture authorized recording files in Chrome, verify them on your Mac, and store transcripts in your own Notion workspace.",
   alternates: { canonical: "/" },
   robots: { index: true, follow: true },
 };

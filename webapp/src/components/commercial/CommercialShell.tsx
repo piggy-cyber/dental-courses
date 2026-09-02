@@ -52,19 +52,19 @@ export function CommercialHeader() {
     <header className={styles.header}>
       <div className={styles.headerInner}>
         <BrandMarkPublic className={styles.brand} />
-        <span className={styles.prototypeBadge}>Private beta prototype</span>
+        <span className={styles.statusLine}>Private beta</span>
         <nav className={styles.desktopNav} aria-label="Fourth Canal products">
           {primaryLinks.map(([label, href]) => <Link key={href} href={href} className={styles.navLink}>{label}</Link>)}
         </nav>
         <div className={styles.headerActions}>
-          <Link href="/account" className={styles.buttonSecondary}>Account preview</Link>
-          <BetaButton />
+          <Link href="/account" className={styles.navLink}>Account prototype</Link>
+          <BetaButton label="Request access" />
         </div>
         <details className={styles.mobileMenu}>
           <summary>Menu</summary>
           <nav className={styles.mobileNav} aria-label="Mobile navigation">
             {primaryLinks.map(([label, href]) => <Link key={href} href={href} className={styles.navLink}>{label}</Link>)}
-            <Link href="/account" className={styles.navLink}>Account preview</Link>
+            <Link href="/account" className={styles.navLink}>Account prototype</Link>
           </nav>
         </details>
       </div>
@@ -79,7 +79,7 @@ export function CommercialFooter() {
       <div className={styles.footerInner}>
         <div className={styles.footerBrand}>
           <BrandMarkPublic />
-          <p>From authorized recordings to an organized transcript library in your own Notion workspace.</p>
+          <p>Chrome captures the files. Your Mac verifies them. Your Notion workspace stores them.</p>
         </div>
         <div className={styles.footerGroups}>
           {groups.map(([title, links]) => (
