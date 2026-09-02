@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { PublicHeader } from "@/components/PublicHeader";
+import { CommercialShell } from "@/components/commercial/CommercialShell";
+import { SectionHeading, styles } from "@/components/commercial/CommercialPrimitives";
+import { SupportIntro } from "@/components/commercial/CommercialPages";
 import { SupportForm } from "@/components/SupportForm";
 
 export const metadata: Metadata = {
@@ -11,21 +12,13 @@ export const metadata: Metadata = {
 
 export default function SupportPage() {
   return (
-    <div className="fc-site public-core-page public-tool-page">
-      <PublicHeader />
-      <main className="public-tool-main space-y-8">
-        <nav className="public-core-breadcrumb" aria-label="Breadcrumb">
-          <Link href="/">Home</Link><span aria-hidden="true">/</span><span>Support</span>
-        </nav>
-        <header className="public-tool-hero">
-          <p className="eyebrow">Support</p>
-          <h1>Tell us what needs attention.</h1>
-          <p>
-            Use this form for site, account, accessibility, content, privacy, copyright, and security concerns. Do not include patient information, grades, passwords, or other sensitive records.
-          </p>
-        </header>
+    <CommercialShell>
+      <SupportIntro />
+      <section className={styles.narrowSection}>
+        <SectionHeading eyebrow="Contact support" title="Tell us what needs attention." description="Use the existing reviewed support form for site, account, accessibility, content, privacy, copyright, or security concerns. Do not include patient information, grades, passwords, transcript content, provider links, or other sensitive records." />
         <SupportForm />
-      </main>
-    </div>
+        <p className={styles.compatibilityLine}>Standard response target: within two business days. Fourth Canal does not promise emergency service or resolution before an academic or business deadline.</p>
+      </section>
+    </CommercialShell>
   );
 }

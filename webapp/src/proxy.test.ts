@@ -30,14 +30,14 @@ describe("request proxy", () => {
     mocks.createServerClient.mockReturnValue({ auth: { getUser: mocks.getUser } });
   });
 
-  it("redirects the former public pages to QueueMaster without calling Auth", async () => {
+  it("keeps the games catalog public when Auth is unavailable", async () => {
     mocks.getUser.mockRejectedValue(new Error("Auth temporarily unavailable"));
 
     const response = await proxy(request("/games/tooth-quest"));
 
-    expect(response.status).toBe(307);
-    expect(response.headers.get("location")).toBe("https://fourthcanal.com/");
-    expect(mocks.createServerClient).not.toHaveBeenCalled();
+    expect(response.status).toBe(200);
+    expect(response.headers.get("location")).toBeNull();
+    expect(mocks.createServerClient).toHaveBeenCalledOnce();
   });
 
   it("makes QueueMaster the production home", async () => {
@@ -90,13 +90,13 @@ describe("request proxy", () => {
     expect(response.headers.get("location")).toBe("https://fourthcanal.com/");
   });
 
-  it("unpublishes the shared calendar page", async () => {
+  it("keeps the shared calendar page public", async () => {
     mocks.getUser.mockResolvedValue({ data: { user: null }, error: null });
 
     const response = await proxy(request("/calendar"));
 
-    expect(response.status).toBe(307);
-    expect(response.headers.get("location")).toBe("https://fourthcanal.com/");
+    expect(response.status).toBe(200);
+    expect(response.headers.get("location")).toBeNull();
   });
 
   it.each(["/api/calendar.ics", "/api/lab-help-queue"])("keeps operational API behavior unchanged at %s", async (path) => {

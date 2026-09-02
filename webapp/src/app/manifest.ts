@@ -2,14 +2,14 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "QueueMaster by Fourth Canal",
-    short_name: "QueueMaster",
+    name: "Fourth Canal",
+    short_name: "Fourth Canal",
     description:
-      "A quiet, fair, and organized way to manage classroom questions and help queues.",
+      "Local-first transcript workflow for authorized recordings.",
     start_url: "/",
     display: "browser",
-    background_color: "#F8FAFC",
-    theme_color: "#059669",
+    background_color: "#F7F8F9",
+    theme_color: "#17375F",
     icons: [
       {
         src: "/brand/favicon.svg",

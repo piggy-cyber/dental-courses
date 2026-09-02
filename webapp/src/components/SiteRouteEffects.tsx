@@ -19,9 +19,26 @@ function isGamePath(pathname: string) {
   return pathname === "/games" || pathname.startsWith("/games/");
 }
 
+function isCommercialPath(pathname: string) {
+  return pathname === "/"
+    || pathname === "/visilearn"
+    || pathname === "/transcript"
+    || pathname === "/notion"
+    || pathname === "/pricing"
+    || pathname === "/compatibility"
+    || pathname === "/security"
+    || pathname.startsWith("/security/")
+    || pathname === "/download"
+    || pathname === "/changelog"
+    || pathname === "/support"
+    || pathname === "/account"
+    || pathname.startsWith("/account/")
+    || pathname.startsWith("/legal/");
+}
+
 function routeEffectsDisabled(pathname: string) {
   return isGamePath(pathname)
-    || pathname === "/"
+    || isCommercialPath(pathname)
     || pathname === "/lab-help-queue"
     || pathname === "/queue"
     || pathname.startsWith("/queue/");

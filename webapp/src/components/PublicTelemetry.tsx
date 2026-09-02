@@ -5,6 +5,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { useSyncExternalStore } from "react";
 
 const PRIVATE_PATH_PREFIXES = [
+  "/account",
   "/admin",
   "/api",
   "/auth",

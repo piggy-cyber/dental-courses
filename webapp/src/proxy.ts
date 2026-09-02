@@ -23,11 +23,27 @@ const protectedPathPrefixes = [
 const publicPathPrefixes = ["/clinic-duty/showcase"] as const;
 
 const publishedPagePrefixes = [
+  "/about",
+  "/account",
   "/auth",
+  "/calendar",
+  "/changelog",
+  "/compatibility",
+  "/download",
+  "/games",
+  "/grade-calculator",
+  "/guides",
+  "/lab-help-queue",
+  "/lab-projects",
   "/legal",
+  "/notion",
+  "/pricing",
   "/queue",
+  "/security",
   "/signin",
-  "/visilearn/privacy",
+  "/support",
+  "/transcript",
+  "/visilearn",
 ] as const;
 
 const publishedMetadataPaths = new Set([

@@ -16,6 +16,10 @@ const publicFiles = [
   "src/components/PublicCourseDirectory.tsx",
   "src/components/PublicHeader.tsx",
   "src/components/SignInPanel.tsx",
+  "src/components/commercial/CommercialHome.tsx",
+  "src/components/commercial/CommercialLegalPage.tsx",
+  "src/components/commercial/CommercialPages.tsx",
+  "src/components/commercial/CommercialShell.tsx",
   "src/components/games/GameNavigation.tsx",
   "src/components/games/MicpOcclusionTrainer.tsx",
 ];
@@ -26,7 +30,7 @@ const forbidden = [
   /approved student accounts/i,
   /dental study workspace/i,
   /relationship workspace/i,
-  /\b(?:recorded lectures?|lecture recordings?|transcripts?|powerpoint|canvas|groupme|course files?)\b/i,
+  /\b(?:recorded lectures?|lecture recordings?|powerpoint|groupme|course files?)\b/i,
 ];
 for (const file of publicFiles) {
   const source = readFileSync(resolve(root, file), "utf8");

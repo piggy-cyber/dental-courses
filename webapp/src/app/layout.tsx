@@ -34,13 +34,13 @@ const brandDisplay = Bodoni_Moda({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://fourthcanal.com"),
-  applicationName: "QueueMaster",
+  applicationName: "Fourth Canal",
   title: {
-    default: "QueueMaster by Fourth Canal",
-    template: "%s · QueueMaster",
+    default: "Fourth Canal — Local-first transcript workflow",
+    template: "%s · Fourth Canal",
   },
   description:
-    "A quiet, fair, and organized way to manage classroom questions, office hours, and help queues.",
+    "Capture authorized recording materials in Chrome, verify them on Mac, and keep transcripts in your own Notion workspace.",
   manifest: "/manifest.webmanifest",
   icons: {
     icon: [
@@ -52,17 +52,17 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     url: "/",
-    siteName: "QueueMaster",
-    title: "QueueMaster by Fourth Canal",
+    siteName: "Fourth Canal",
+    title: "Fourth Canal — Local-first transcript workflow",
     description:
-      "A quiet, fair, and organized way to manage classroom questions, office hours, and help queues.",
+      "From authorized recordings to a clean Notion transcript library.",
     images: ["/brand/fourth-canal-social-preview-v2.png"],
   },
   twitter: {
     card: "summary_large_image",
-    title: "QueueMaster by Fourth Canal",
+    title: "Fourth Canal — Local-first transcript workflow",
     description:
-      "A quiet, fair, and organized way to manage classroom questions, office hours, and help queues.",
+      "From authorized recordings to a clean Notion transcript library.",
     images: ["/brand/fourth-canal-social-preview-v2.png"],
   },
   robots: {
@@ -111,15 +111,15 @@ export default function RootLayout({
               "@type": "Organization",
               name: "Fourth Canal",
               url: "https://fourthcanal.com",
-              description: "Independent creator and operator of QueueMaster.",
+              description: "Independent creator of local-first transcript and student workflow tools.",
             },
             {
               "@context": "https://schema.org",
               "@type": "WebSite",
-              name: "QueueMaster",
+              name: "Fourth Canal",
               url: "https://fourthcanal.com",
               inLanguage: "en-US",
-              description: "A realtime queue for classrooms, office hours, labs, and shared spaces.",
+              description: "Local-first software for organizing authorized recording materials in a customer-owned Notion workspace.",
             },
           ]}
         />

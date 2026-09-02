@@ -20,9 +20,24 @@ export function LegalFooter() {
     pathname === "/visilearn/privacy";
   const isIsolatedAtlasSession = pathname.startsWith("/games/living-atlas/runs/") || pathname.startsWith("/games/living-atlas/recall/");
   const isStandaloneLabQueue = pathname === "/lab-help-queue";
-  const isQueueMaster = pathname === "/" || pathname === "/queue" || pathname.startsWith("/queue/");
+  const isQueueMaster = pathname === "/queue" || pathname.startsWith("/queue/");
+  const hasCommercialFooter =
+    pathname === "/" ||
+    pathname === "/visilearn" ||
+    pathname === "/transcript" ||
+    pathname === "/notion" ||
+    pathname === "/pricing" ||
+    pathname === "/compatibility" ||
+    pathname === "/security" ||
+    pathname.startsWith("/security/") ||
+    pathname === "/download" ||
+    pathname === "/changelog" ||
+    pathname === "/support" ||
+    pathname === "/account" ||
+    pathname.startsWith("/account/") ||
+    pathname.startsWith("/legal/");
 
-  if (hasIntegratedFooter || isIsolatedAtlasSession || isStandaloneLabQueue || isQueueMaster) return null;
+  if (hasIntegratedFooter || hasCommercialFooter || isIsolatedAtlasSession || isStandaloneLabQueue || isQueueMaster) return null;
 
   return (
     <footer className={`${isGame ? "" : "fc-site"} site-legal-footer border-t border-brand-line bg-brand-panel text-brand-muted`}>

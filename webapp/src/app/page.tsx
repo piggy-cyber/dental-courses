@@ -1,17 +1,13 @@
 import type { Metadata } from "next";
-import { QueueHome } from "@/components/queue/QueueHome";
-import { getQueueProfile } from "@/lib/queue-master-server";
-
-export const dynamic = "force-dynamic";
+import { CommercialHome } from "@/components/commercial/CommercialHome";
 
 export const metadata: Metadata = {
-  title: { absolute: "QueueMaster by Fourth Canal" },
-  description: "A quiet, fair, and organized way to manage classroom questions, office hours, and help queues.",
+  title: { absolute: "Fourth Canal — Local-first transcript workflow" },
+  description: "Capture authorized Echo360 and Zoom recording materials in Chrome, verify them on Mac, and keep transcripts in your own Notion workspace.",
   alternates: { canonical: "/" },
   robots: { index: true, follow: true },
 };
 
-export default async function QueueMasterHomePage() {
-  const profile = await getQueueProfile();
-  return <QueueHome signedIn={Boolean(profile)} />;
+export default function FourthCanalHomePage() {
+  return <CommercialHome />;
 }
